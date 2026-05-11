@@ -20,17 +20,20 @@ DATA_PATH = APP_DIR / "review_data.json"
 CSS = r"""
 :root {
   color-scheme: light;
-  --bg: #f5f7fb;
+  --bg: #eef3f8;
   --panel: #ffffff;
   --ink: #111827;
   --muted: #64748b;
-  --line: #d7dee9;
-  --soft: #edf2f7;
+  --line: #cbd5e1;
+  --soft: #f1f5f9;
   --accent: #0284c7;
+  --accent-soft: #e0f2fe;
   --event: #facc15;
   --ok: #16a34a;
   --bad: #dc2626;
   --unsure: #9333ea;
+  --viewer: #07111f;
+  --shadow: 0 14px 32px rgba(15, 23, 42, 0.10);
 }
 * { box-sizing: border-box; }
 body {
@@ -46,25 +49,30 @@ body {
   overflow: hidden;
 }
 .stage {
-  padding: 12px 14px;
+  padding: 14px;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 .side {
   border-left: 1px solid var(--line);
   background: var(--panel);
-  padding: 12px;
+  padding: 14px;
   overflow: auto;
+  box-shadow: -10px 0 28px rgba(15, 23, 42, 0.06);
 }
 h1 {
-  font-size: 18px;
+  font-size: 19px;
+  letter-spacing: 0;
   margin: 0;
 }
 h2 {
-  font-size: 14px;
-  margin: 14px 0 8px;
+  font-size: 13px;
+  margin: 16px 0 8px;
+  color: #334155;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 .topbar,
 .toolbar,
@@ -76,15 +84,26 @@ h2 {
 }
 .topbar {
   justify-content: space-between;
+  min-height: 32px;
+}
+.toolbar {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 7px 8px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset;
 }
 button,
 select {
-  height: 30px;
+  height: 31px;
   border: 1px solid var(--line);
-  background: #fff;
+  background: #ffffff;
   border-radius: 6px;
   padding: 0 9px;
   color: var(--ink);
+  font-weight: 600;
+  font-size: 12px;
+  box-shadow: 0 1px 1px rgba(15, 23, 42, 0.04);
 }
 button.active,
 button:hover {
@@ -99,29 +118,35 @@ label {
   color: var(--muted);
   white-space: nowrap;
 }
+input[type="checkbox"] {
+  accent-color: var(--accent);
+}
 input[type="range"] {
   vertical-align: middle;
+  accent-color: var(--accent);
 }
 .viewerScroll {
   flex: 1;
-  min-height: 420px;
+  min-height: 500px;
   overflow: auto;
-  background: #08111f;
-  border: 1px solid #cbd5e1;
-  border-radius: 7px;
+  background: var(--viewer);
+  border: 1px solid #94a3b8;
+  border-radius: 9px;
   display: flex;
   align-items: flex-start;
   justify-content: center;
+  box-shadow: var(--shadow);
 }
 .viewerWrap {
   position: relative;
   display: inline-block;
-  margin: 10px;
+  margin: 14px;
   line-height: 0;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.36);
 }
 #frameImg {
   display: block;
-  width: 520px;
+  width: 753px;
   height: auto;
   image-rendering: auto;
   user-select: none;
@@ -140,12 +165,14 @@ input[type="range"] {
   gap: 10px;
   color: var(--muted);
   font-size: 12px;
+  min-height: 16px;
 }
 .traceBox {
   background: #fff;
   border: 1px solid var(--line);
-  border-radius: 7px;
-  padding: 6px;
+  border-radius: 9px;
+  padding: 8px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
 }
 #traceCanvas {
   display: block;
@@ -172,13 +199,14 @@ input[type="range"] {
 }
 .metric {
   border: 1px solid var(--line);
-  background: #f8fafc;
-  border-radius: 7px;
+  background: linear-gradient(#ffffff, #f8fafc);
+  border-radius: 8px;
   padding: 8px;
 }
 .metric b {
   display: block;
-  font-size: 17px;
+  font-size: 18px;
+  color: #0f172a;
 }
 .metric span {
   color: var(--muted);
@@ -188,20 +216,24 @@ input[type="range"] {
   max-height: 245px;
   overflow: auto;
   border: 1px solid var(--line);
-  border-radius: 7px;
+  border-radius: 8px;
+  background: #ffffff;
 }
 .roiRow {
   display: grid;
   grid-template-columns: 44px 1fr 68px;
   gap: 6px;
-  padding: 7px 8px;
+  padding: 8px 9px;
   border-bottom: 1px solid #edf2f7;
   font-size: 12px;
   cursor: pointer;
 }
 .roiRow:hover,
 .roiRow.sel {
-  background: #e0f2fe;
+  background: var(--accent-soft);
+}
+.roiRow.sel {
+  box-shadow: inset 3px 0 0 var(--accent);
 }
 .roiRow.deleted {
   opacity: 0.48;
@@ -223,7 +255,8 @@ input[type="range"] {
   max-height: 180px;
   overflow: auto;
   border: 1px solid var(--line);
-  border-radius: 7px;
+  border-radius: 8px;
+  background: #ffffff;
 }
 .eventRow {
   display: grid;
@@ -240,9 +273,10 @@ input[type="range"] {
 textarea {
   width: 100%;
   border: 1px solid var(--line);
-  border-radius: 7px;
+  border-radius: 8px;
   padding: 7px;
   resize: vertical;
+  font-family: Arial, Helvetica, sans-serif;
 }
 .smallTable {
   width: 100%;
@@ -264,6 +298,10 @@ textarea {
 .saveState {
   font-size: 12px;
   color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+  padding: 5px 9px;
 }
 .saveState.ok { color: var(--ok); }
 .saveState.bad { color: var(--bad); }
@@ -284,6 +322,7 @@ const ctx = overlay.getContext('2d');
 const slider = document.getElementById('frameSlider');
 const frameLabel = document.getElementById('frameLabel');
 const statusEl = document.getElementById('statusText');
+const selectionText = document.getElementById('selectionText');
 const saveStateEl = document.getElementById('saveState');
 const traceCanvas = document.getElementById('traceCanvas');
 const traceCtx = traceCanvas.getContext('2d');
@@ -312,7 +351,7 @@ function defaultAnnotations() {
       eventThreshold: 2.4,
       kalmanGain: 0.06,
       spikeGain: 0.008,
-      zoom: 2.1,
+      zoom: 3.0,
       brightness: 1,
       contrast: 1.08,
       overlayOpacity: 0.72,
@@ -562,6 +601,8 @@ function setFrame(frame){
   frameLabel.textContent = currentFrame;
   img.src = framePath(currentFrame);
   statusEl.textContent = `Frame ${currentFrame} / ${data.video.frames}`;
+  const roi = selectedRoi();
+  selectionText.textContent = roi ? `ROI ${roi.id}${selectedEventFrame ? `, event f${selectedEventFrame}` : ''}` : '';
   drawTrace();
 }
 
@@ -835,7 +876,7 @@ HTML_TEMPLATE = """<!doctype html>
       <button id="fullscreenBtn">Fullscreen</button>
       <label>Frame <input id="frameSlider" type="range" min="1" max="{frames}" value="1"></label>
       <b id="frameLabel">1</b>
-      <label>Zoom <input id="zoom" type="range" min="0.75" max="5" step="0.05"> <span id="zoomLabel">2.10</span></label>
+      <label>Zoom <input id="zoom" type="range" min="0.75" max="5" step="0.05"> <span id="zoomLabel">3.00</span></label>
       <label>Brightness <input id="brightness" type="range" min="0.4" max="2.5" step="0.02"> <span id="brightnessLabel">1.00</span></label>
       <label>Contrast <input id="contrast" type="range" min="0.5" max="3" step="0.02"> <span id="contrastLabel">1.08</span></label>
     </div>
@@ -856,7 +897,7 @@ HTML_TEMPLATE = """<!doctype html>
     </div>
     <div class="status">
       <span id="statusText"></span>
-      <span>Keys: j/k ROI, n/p event, a/r/u ROI, e/x event, arrows frame, space play, f fullscreen</span>
+      <span id="selectionText"></span>
     </div>
     <div class="traceBox">
       <canvas id="traceCanvas" width="1000" height="260"></canvas>
