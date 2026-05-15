@@ -194,6 +194,7 @@ function defaultAnnotations() {
       roiFocusMode: 'all',
       neighborRadiusPx: 36,
       uiMode: 'basic',
+      theme: 'system',
       reviewerId: '',
       manualRoiMode: 'select',
       manualRoiRadius: 6,
@@ -1403,6 +1404,7 @@ function applySettingsToControls() {
   if(roiFocusMode) roiFocusMode.value = setting('roiFocusMode') || 'all';
   const uiMode = document.getElementById('uiMode');
   if(uiMode) uiMode.value = setting('uiMode') || 'basic';
+  for(const select of document.querySelectorAll('.themeSelect')) select.value = setting('theme') || 'system';
   const reviewerIdInput = document.getElementById('reviewerIdInput');
   if(reviewerIdInput) reviewerIdInput.value = setting('reviewerId') || '';
   const manualRoiMode = document.getElementById('manualRoiMode');
@@ -1415,6 +1417,7 @@ function applySettingsToControls() {
   renderSnapshotControls();
   renderRecoveryControls();
   applyUiMode();
+  applyTheme();
   applyDisplaySettings();
 }
 
@@ -1422,6 +1425,20 @@ function applyUiMode(){
   const mode = setting('uiMode') === 'advanced' ? 'advanced' : 'basic';
   appRoot.classList.toggle('basic-ui', mode === 'basic');
   appRoot.classList.toggle('advanced-ui', mode === 'advanced');
+}
+
+function resolvedTheme(){
+  const theme = setting('theme') || 'system';
+  if(theme === 'dark' || theme === 'light') return theme;
+  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function applyTheme(){
+  const theme = setting('theme') || 'system';
+  const resolved = resolvedTheme();
+  document.documentElement.dataset.theme = resolved;
+  appRoot.dataset.themePreference = theme;
+  for(const select of document.querySelectorAll('.themeSelect')) select.value = theme;
 }
 
 function populateEvidenceSelect(){
@@ -3806,8 +3823,19 @@ function initControls(){
   };
   document.getElementById('archCompareModeBtn').onclick = () => setArchitectureMode('compare');
   document.getElementById('archBuildModeBtn').onclick = () => setArchitectureMode('build');
+  document.getElementById('pipelineNewArchitectureBtn').onclick = () => {
+    pipelineDraft = makePresetPipeline('current_review_pipeline');
+    pipelineDraft.label = 'Untitled architecture';
+    pipelineDraft.run_id = `planned_architecture_${Date.now().toString(36)}`;
+    pipelineDraft.template_id = slugify(pipelineDraft.run_id);
+    pipelineDraft.description = '';
+    selectedPipelineStageId = pipelineDraft.pipeline[0]?.id || null;
+    setArchitectureMode('build');
+    renderPipelineBuilder();
+  };
   document.getElementById('pipelineNewBtn').onclick = () => {
     pipelineDraft = makePresetPipeline(document.getElementById('pipelinePresetSelect').value);
+    pipelineDraft.template_id = slugify(pipelineDraft.run_id);
     selectedPipelineStageId = pipelineDraft.pipeline[0]?.id || null;
     renderPipelineBuilder();
   };
@@ -3818,16 +3846,26 @@ function initControls(){
       pipelineDraft = normalizePipelineDraft(JSON.parse(JSON.stringify(Object.assign({}, selected, {execution:{status:'planned'}}))));
       pipelineDraft.run_id = `planned_clone_${Date.now().toString(36)}`;
       pipelineDraft.label = `Planned clone of ${selected.label || selected.run_id}`;
+      pipelineDraft.template_id = slugify(pipelineDraft.run_id);
       selectedPipelineStageId = pipelineDraft.pipeline?.[0]?.id || null;
       renderPipelineBuilder();
     }
   };
+  document.getElementById('pipelineSaveTemplateBtn').onclick = saveArchitectureTemplate;
   document.getElementById('pipelineSaveBtn').onclick = savePlannedRun;
+  document.getElementById('pipelineUseExperimentBtn').onclick = useCurrentArchitectureInExperiment;
   document.getElementById('pipelineDownloadBtn').onclick = () => downloadJson('planned_architecture_run.json', plannedManifest());
   document.getElementById('uiMode').onchange = e => {
     setSetting('uiMode', e.target.value);
     applyUiMode();
   };
+  for(const select of document.querySelectorAll('.themeSelect')) select.onchange = e => {
+    setSetting('theme', e.target.value);
+    applyTheme();
+  };
+  window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener?.('change', () => {
+    if((setting('theme') || 'system') === 'system') applyTheme();
+  });
   document.getElementById('reviewerIdInput').onchange = e => {
     setSetting('reviewerId', e.target.value.trim());
     recordAction('reviewer_id_set');
@@ -4350,6 +4388,157 @@ function renderComponentLibrary(){
   };
 }
 
+function slugify(value){
+  return String(value || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '') || `pipeline_${Date.now().toString(36)}`;
+}
+
+function savedPipelineTemplates(){
+  data.architectureRuns = data.architectureRuns || {schema_version: 1, dataset_id: datasetId, runs: []};
+  data.architectureRuns.saved_pipelines = Array.isArray(data.architectureRuns.saved_pipelines) ? data.architectureRuns.saved_pipelines : [];
+  return data.architectureRuns.saved_pipelines;
+}
+
+function pipelineTemplateFromDraft(){
+  return {
+    id: slugify(pipelineDraft.template_id || pipelineDraft.run_id || pipelineDraft.label),
+    label: pipelineDraft.label || 'Untitled architecture',
+    description: pipelineDraft.description || '',
+    dataset_id: datasetId,
+    createdAt: pipelineDraft.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    source: 'architecture_lab',
+    pipeline: JSON.parse(JSON.stringify(pipelineDraft.pipeline || [])),
+    sweep: pipelineDraft.sweep ? JSON.parse(JSON.stringify(pipelineDraft.sweep)) : undefined,
+    artifacts: JSON.parse(JSON.stringify(pipelineDraft.artifacts || {})),
+    summary: JSON.parse(JSON.stringify(pipelineDraft.summary || {}))
+  };
+}
+
+function normalizeTemplateForDraft(template){
+  const draft = normalizePipelineDraft({
+    schema_version: 1,
+    run_id: `planned_${slugify(template.id || template.label)}_${Date.now().toString(36)}`,
+    label: template.label || 'Untitled architecture',
+    description: template.description || '',
+    dataset_id: datasetId,
+    pipeline: template.pipeline || [],
+    sweep: template.sweep,
+    artifacts: template.artifacts || {source_video: data.dataset?.paths?.raw_video || data.video?.name || '', intermediates: []},
+    summary: template.summary || {roi_count: 0, event_count: 0, suggestion_count: 0, frame_count: data.video.frames},
+    execution: {status: 'planned'}
+  });
+  draft.template_id = template.id || '';
+  return draft;
+}
+
+async function persistArchitectureRuns(manifest, successText, fallbackName='architecture_runs.json'){
+  data.architectureRuns = manifest;
+  if(serverBacked){
+    try {
+      const res = await fetch('architecture_runs.json', {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(manifest, null, 2)});
+      if(!res.ok) throw new Error(await res.text());
+      setSaveState(successText, 'ok');
+      return true;
+    } catch (_) {
+      downloadJson(fallbackName, manifest);
+      setSaveState(`downloaded ${fallbackName}`, 'ok');
+      return false;
+    }
+  }
+  downloadJson(fallbackName, manifest);
+  setSaveState(`downloaded ${fallbackName}`, 'ok');
+  return false;
+}
+
+async function saveArchitectureTemplate(){
+  const manifest = Object.assign({schema_version: 1, dataset_id: datasetId, runs: []}, data.architectureRuns || {});
+  const template = pipelineTemplateFromDraft();
+  const templates = savedPipelineTemplates().filter(item => item.id !== template.id);
+  const previous = savedPipelineTemplates().find(item => item.id === template.id);
+  if(previous?.createdAt) template.createdAt = previous.createdAt;
+  manifest.saved_pipelines = [...templates, template].sort((a,b) => String(a.label || a.id).localeCompare(String(b.label || b.id)));
+  await persistArchitectureRuns(manifest, `saved architecture ${template.label}`, `${datasetId}_architecture_library.json`);
+  pipelineDraft.template_id = template.id;
+  renderArchitectureLab();
+  renderExperimentLab();
+}
+
+async function renameArchitectureTemplate(templateId){
+  const template = savedPipelineTemplates().find(item => item.id === templateId);
+  if(!template) return;
+  const nextLabel = prompt('Architecture name', template.label || template.id);
+  if(nextLabel === null) return;
+  const nextDescription = prompt('Architecture description', template.description || '');
+  if(nextDescription === null) return;
+  const manifest = Object.assign({schema_version: 1, dataset_id: datasetId, runs: []}, data.architectureRuns || {});
+  manifest.saved_pipelines = savedPipelineTemplates().map(item => item.id === templateId ? Object.assign({}, item, {
+    label: nextLabel.trim() || item.label || item.id,
+    description: nextDescription.trim(),
+    updatedAt: new Date().toISOString()
+  }) : item);
+  await persistArchitectureRuns(manifest, 'renamed saved architecture', `${datasetId}_architecture_library.json`);
+  renderArchitectureLab();
+  renderExperimentLab();
+}
+
+async function deleteArchitectureTemplate(templateId){
+  const template = savedPipelineTemplates().find(item => item.id === templateId);
+  if(!template) return;
+  if(!confirm(`Delete saved architecture "${template.label || template.id}"? Planned/generated runs will not be deleted.`)) return;
+  const manifest = Object.assign({schema_version: 1, dataset_id: datasetId, runs: []}, data.architectureRuns || {});
+  manifest.saved_pipelines = savedPipelineTemplates().filter(item => item.id !== templateId);
+  if(experimentDraft.baseTemplateId === templateId) experimentDraft.baseTemplateId = '';
+  await persistArchitectureRuns(manifest, 'deleted saved architecture', `${datasetId}_architecture_library.json`);
+  renderArchitectureLab();
+  renderExperimentLab();
+}
+
+function loadTemplateIntoBuilder(templateId){
+  const template = savedPipelineTemplates().find(item => item.id === templateId);
+  if(!template) return;
+  pipelineDraft = normalizeTemplateForDraft(template);
+  selectedPipelineStageId = pipelineDraft.pipeline?.[0]?.id || null;
+  setArchitectureMode('build');
+  renderPipelineBuilder();
+}
+
+async function useCurrentArchitectureInExperiment(){
+  const template = pipelineTemplateFromDraft();
+  await saveArchitectureTemplate();
+  experimentDraft.baseTemplateId = template.id;
+  location.hash = '#experiments';
+  renderExperimentLab();
+}
+
+function renderArchitectureLibrary(){
+  const templates = savedPipelineTemplates();
+  if(!templates.length) return `
+    <section class="archCard savedArchitectureLibrary">
+      <div class="runCardHeader"><h3>Saved Architectures</h3><span class="runStatus">0 saved</span></div>
+      <p class="hint">Save a named architecture from Build Pipeline to reuse it in Experiment Lab.</p>
+    </section>`;
+  const cards = templates.map(template => `
+    <article class="savedArchitectureCard">
+      <div class="runCardHeader">
+        <h3>${escapeHtml(template.label || template.id)}</h3>
+        <span class="runStatus">${escapeHtml((template.pipeline || []).length)} stages</span>
+      </div>
+      <p class="hint">${escapeHtml(template.description || template.id || '')}</p>
+      <div class="archEvidence">${(template.pipeline || []).map(stage => `<span>${escapeHtml(stageDef(stage)?.label || stageOp(stage) || stage.id || 'stage')}</span>`).join('')}</div>
+      <div class="buttonRow">
+        <button type="button" data-load-template="${escapeHtml(template.id)}">Edit</button>
+        <button type="button" data-template-experiment="${escapeHtml(template.id)}">Experiment</button>
+        <button type="button" data-rename-template="${escapeHtml(template.id)}">Rename</button>
+        <button type="button" data-delete-template="${escapeHtml(template.id)}">Delete</button>
+      </div>
+    </article>`).join('');
+  return `
+    <section class="archCard savedArchitectureLibrary">
+      <div class="runCardHeader"><h3>Saved Architectures</h3><span class="runStatus">${templates.length} saved</span></div>
+      <div class="savedArchitectureGrid">${cards}</div>
+    </section>`;
+}
+
 function renderArchitectureLab(){
   const root = document.getElementById('architectureRuns');
   if(!root) return;
@@ -4361,10 +4550,14 @@ function renderArchitectureLab(){
   renderPipelineBuilder();
   root.innerHTML = '';
   if(!runs.length){
-    root.innerHTML = '<p class="hint">No architecture runs are attached yet. Use tools/build_architecture_run.py to create architecture_runs.json.</p>';
+    root.innerHTML = renderArchitectureLibrary() + '<p class="hint">No architecture runs are attached yet. Use tools/build_architecture_run.py to create architecture_runs.json.</p>';
+    for(const btn of root.querySelectorAll('[data-load-template]')) btn.onclick = () => loadTemplateIntoBuilder(btn.dataset.loadTemplate);
+    for(const btn of root.querySelectorAll('[data-template-experiment]')) btn.onclick = () => { experimentDraft.baseTemplateId = btn.dataset.templateExperiment; location.hash = '#experiments'; };
+    for(const btn of root.querySelectorAll('[data-rename-template]')) btn.onclick = () => renameArchitectureTemplate(btn.dataset.renameTemplate);
+    for(const btn of root.querySelectorAll('[data-delete-template]')) btn.onclick = () => deleteArchitectureTemplate(btn.dataset.deleteTemplate);
     return;
   }
-  root.innerHTML = renderParameterExperiments(runs);
+  root.innerHTML = renderArchitectureLibrary() + renderParameterExperiments(runs);
   for(const run of runs){
     const card = document.createElement('div');
     const status = run.execution?.status || 'completed';
@@ -4403,6 +4596,10 @@ function renderArchitectureLab(){
   for(const btn of root.querySelectorAll('[data-activate-run]')) btn.onclick = () => selectActiveRun(btn.dataset.activateRun, {loadReview:false});
   for(const btn of root.querySelectorAll('[data-load-review-run]')) btn.onclick = () => selectActiveRun(btn.dataset.loadReviewRun, {loadReview:true});
   for(const btn of root.querySelectorAll('[data-exp-label]')) btn.onclick = () => setExperimentLabel(btn.dataset.runId, btn.dataset.expLabel);
+  for(const btn of root.querySelectorAll('[data-load-template]')) btn.onclick = () => loadTemplateIntoBuilder(btn.dataset.loadTemplate);
+  for(const btn of root.querySelectorAll('[data-template-experiment]')) btn.onclick = () => { experimentDraft.baseTemplateId = btn.dataset.templateExperiment; location.hash = '#experiments'; };
+  for(const btn of root.querySelectorAll('[data-rename-template]')) btn.onclick = () => renameArchitectureTemplate(btn.dataset.renameTemplate);
+  for(const btn of root.querySelectorAll('[data-delete-template]')) btn.onclick = () => deleteArchitectureTemplate(btn.dataset.deleteTemplate);
 }
 
 function runLabel(run){
@@ -4500,6 +4697,35 @@ function experimentParamOptions(){
   return options;
 }
 
+function experimentBaseOptions(){
+  const templateOptions = savedPipelineTemplates().map(item => ({kind: 'template', id: item.id, label: `Saved: ${item.label || item.id}`}));
+  const presetOptions = ARCHITECTURE_PRESETS.map(item => ({kind: 'preset', id: item.id, label: `Preset: ${item.label}`}));
+  const runOptions = architectureRuns().map(run => ({kind: 'run', id: run.run_id, label: `Run: ${run.label || run.run_id}`}));
+  return [...templateOptions, ...presetOptions, ...runOptions];
+}
+
+function applyExperimentBase(value){
+  const [kind, ...rest] = String(value || '').split(':');
+  const id = rest.join(':');
+  if(kind === 'template') {
+    const template = savedPipelineTemplates().find(item => item.id === id);
+    if(template) pipelineDraft = normalizeTemplateForDraft(template);
+    experimentDraft.baseTemplateId = id;
+  } else if(kind === 'run') {
+    const run = runById(id);
+    if(run) pipelineDraft = normalizePipelineDraft(JSON.parse(JSON.stringify(Object.assign({}, run, {execution:{status:'planned'}}))));
+    experimentDraft.baseTemplateId = '';
+  } else {
+    pipelineDraft = makePresetPipeline(id || 'current_review_pipeline');
+    pipelineDraft.template_id = slugify(pipelineDraft.run_id);
+    experimentDraft.baseTemplateId = '';
+  }
+  selectedPipelineStageId = pipelineDraft.pipeline?.[0]?.id || null;
+  experimentDraft.setRows = [];
+  experimentDraft.optunaRows = [];
+  renderExperimentLab();
+}
+
 function experimentRunWithOverride(baseRun, override, index=0){
   const run = JSON.parse(JSON.stringify(baseRun));
   const stage = run.pipeline?.find(s => s.id === override.stage);
@@ -4522,6 +4748,30 @@ function experimentRunWithOverride(baseRun, override, index=0){
 function experimentManifest(){
   const base = plannedRun();
   base.experiment = Object.assign({}, base.experiment || {}, {source: 'experiment_lab', mode: experimentDraft.mode || 'sweep'});
+  if(experimentDraft.mode === 'optuna') {
+    const study = {
+      id: slugify(`optuna_${pipelineDraft.run_id || pipelineDraft.label}`),
+      source: 'experiment_lab',
+      mode: 'optuna_plan',
+      createdAt: new Date().toISOString(),
+      base_pipeline_id: pipelineDraft.template_id || '',
+      base_run_id: base.run_id,
+      label: `${pipelineDraft.label || base.run_id} Optuna plan`,
+      direction: experimentDraft.optuna?.direction || 'maximize',
+      objective: experimentDraft.optuna?.objective || 'accepted_control_ready_rois',
+      trials: Math.max(1, Number(experimentDraft.optuna?.trials) || 40),
+      sampler: experimentDraft.optuna?.sampler || 'tpe',
+      pruner: experimentDraft.optuna?.pruner || 'median',
+      search_space: experimentDraft.optunaRows || []
+    };
+    return {
+      schema_version: 1,
+      dataset_id: datasetId,
+      experiment: {source: 'experiment_lab', mode: 'optuna_plan', generatedAt: new Date().toISOString()},
+      optimization_studies: [study],
+      runs: [Object.assign({}, base, {optimization_study_id: study.id})]
+    };
+  }
   if(experimentDraft.mode === 'sets' && experimentDraft.setRows.length) {
     return {
       schema_version: 1,
@@ -4553,6 +4803,64 @@ function addExperimentSetRow(){
     param: opt.name,
     value
   });
+  renderExperimentLab();
+}
+
+function addOptunaSearchRow(){
+  const optionValue = document.getElementById('optunaParamSelect')?.value || '';
+  const opt = experimentParamOptions().find(item => `${item.stage.id}.${item.name}` === optionValue) || experimentParamOptions()[0];
+  if(!opt) return;
+  const min = Number(document.getElementById('optunaMinInput')?.value);
+  const max = Number(document.getElementById('optunaMaxInput')?.value);
+  experimentDraft.optunaRows.push({
+    stage: opt.stage.id,
+    stage_id: stageOp(opt.stage),
+    param: opt.name,
+    type: 'float',
+    low: Number.isFinite(min) ? min : Number(opt.spec.min ?? 0),
+    high: Number.isFinite(max) ? max : Number(opt.spec.max ?? 1)
+  });
+  renderExperimentLab();
+}
+
+function optunaRowSeedValues(row){
+  const low = Number(row.low);
+  const high = Number(row.high);
+  if(!Number.isFinite(low) || !Number.isFinite(high)) return [];
+  const a = Math.min(low, high);
+  const b = Math.max(low, high);
+  const mid = (a + b) / 2;
+  return [...new Set([a, mid, b].map(value => Number(value.toFixed(6))))];
+}
+
+function convertOptunaPlanToSweepSeeds(){
+  const rows = experimentDraft.optunaRows || [];
+  const axes = rows.map(row => ({
+    stage: row.stage,
+    stage_id: row.stage_id,
+    param: row.param,
+    values: optunaRowSeedValues(row),
+    label: `${row.stage}.${row.param}`
+  })).filter(axis => axis.values.length);
+  if(!axes.length) {
+    setSaveState('add Optuna search-space bounds before converting to sweep seeds', 'bad');
+    return;
+  }
+  setSweepFactors(axes);
+  experimentDraft.mode = 'sweep';
+  setSaveState(`converted ${axes.length} Optuna parameter${axes.length === 1 ? '' : 's'} to sweep seeds`, 'ok');
+  renderExperimentLab();
+  renderPipelineBuilder();
+}
+
+function duplicateOptunaPlan(){
+  const stamp = Date.now().toString(36);
+  experimentDraft.optuna = Object.assign({}, experimentDraft.optuna, {
+    objective: `${experimentDraft.optuna?.objective || 'objective'}_${stamp}`
+  });
+  experimentDraft.optunaRows = JSON.parse(JSON.stringify(experimentDraft.optunaRows || []));
+  experimentDraft.mode = 'optuna';
+  setSaveState('duplicated Optuna plan draft', 'ok');
   renderExperimentLab();
 }
 
@@ -4590,20 +4898,14 @@ async function saveExperimentPlan({activateFirst=false}={}){
     createdAt: new Date().toISOString(),
     run_ids: manifestPatch.runs.map(r => r.run_id)
   });
-  data.architectureRuns = manifest;
-  if(serverBacked){
-    try {
-      const res = await fetch('architecture_runs.json', {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(manifest, null, 2)});
-      if(!res.ok) throw new Error(await res.text());
-      setSaveState('saved experiment plan', 'ok');
-    } catch (_) {
-      downloadJson(`${datasetId}_experiment_plan.json`, manifest);
-      setSaveState('downloaded experiment plan', 'ok');
-    }
-  } else {
-    downloadJson(`${datasetId}_experiment_plan.json`, manifest);
-    setSaveState('downloaded experiment plan', 'ok');
+  if(manifestPatch.optimization_studies?.length) {
+    const studyIds = new Set(manifestPatch.optimization_studies.map(study => study.id));
+    manifest.optimization_studies = [
+      ...(manifest.optimization_studies || []).filter(study => !studyIds.has(study.id)),
+      ...manifestPatch.optimization_studies
+    ];
   }
+  await persistArchitectureRuns(manifest, 'saved experiment plan', `${datasetId}_experiment_plan.json`);
   if(activateFirst && manifestPatch.runs?.[0]?.run_id) annotations.settings.activeRunId = manifestPatch.runs[0].run_id;
   renderExperimentLab();
   renderArchitectureLab();
@@ -4622,6 +4924,8 @@ function renderExperimentLab(){
   if(!root) return;
   const params = experimentParamOptions();
   const paramOptions = params.map(item => `<option value="${escapeHtml(item.stage.id + '.' + item.name)}">${escapeHtml(item.stage.id)}.${escapeHtml(item.name)} (${escapeHtml(item.def?.label || stageOp(item.stage))})</option>`).join('');
+  const baseOptions = experimentBaseOptions();
+  const baseValue = experimentDraft.baseTemplateId ? `template:${experimentDraft.baseTemplateId}` : '';
   const manifest = experimentManifest();
   const validation = validatePipeline(pipelineDraft);
   const previewRows = manifest.runs.slice(0, 24).map(run => {
@@ -4636,6 +4940,14 @@ function renderExperimentLab(){
       <td>${escapeHtml(row.stage)}.${escapeHtml(row.param)}</td>
       <td><input data-experiment-set-value="${index}" value="${escapeHtml(row.value)}"></td>
       <td><button type="button" data-remove-experiment-set="${index}">Remove</button></td>
+    </tr>`).join('');
+  const optunaRows = (experimentDraft.optunaRows || []).map((row, index) => `
+    <tr>
+      <td>${escapeHtml(row.stage)}.${escapeHtml(row.param)}</td>
+      <td>${escapeHtml(row.type || 'float')}</td>
+      <td><input data-optuna-low="${index}" value="${escapeHtml(row.low)}"></td>
+      <td><input data-optuna-high="${index}" value="${escapeHtml(row.high)}"></td>
+      <td><button type="button" data-remove-optuna-row="${index}">Remove</button></td>
     </tr>`).join('');
   root.innerHTML = `
     <section class="experimentHero">
@@ -4653,6 +4965,12 @@ function renderExperimentLab(){
     <div class="experimentGrid">
       <section class="archCard">
         <div class="runCardHeader"><h3>Base Pipeline</h3><span class="runStatus">${validation.status}</span></div>
+        <label>Model instance
+          <select id="experimentBaseSelect">
+            <option value="">Current Build Pipeline stack</option>
+            ${baseOptions.map(item => `<option value="${escapeHtml(item.kind + ':' + item.id)}" ${baseValue === item.kind + ':' + item.id ? 'selected' : ''}>${escapeHtml(item.label)}</option>`).join('')}
+          </select>
+        </label>
         <label>Preset
           <select id="experimentPresetSelect">
             ${ARCHITECTURE_PRESETS.map(p => `<option value="${escapeHtml(p.id)}">${escapeHtml(p.label)}</option>`).join('')}
@@ -4672,9 +4990,10 @@ function renderExperimentLab(){
           <select id="experimentModeSelect">
             <option value="sweep" ${experimentDraft.mode === 'sweep' ? 'selected' : ''}>Sweep axes</option>
             <option value="sets" ${experimentDraft.mode === 'sets' ? 'selected' : ''}>Named sets</option>
+            <option value="optuna" ${experimentDraft.mode === 'optuna' ? 'selected' : ''}>Optuna plan</option>
           </select>
         </label>
-        <p class="hint">Sweep mode uses the Build Pipeline stack's sweep axes. Set mode saves named one-off variants for targeted comparisons.</p>
+        <p class="hint">Sweep mode uses stack axes. Set mode saves named variants. Optuna plan mode stores study/search-space metadata only; it does not run optimization in the browser.</p>
       </section>
       <section class="archCard">
         <div class="runCardHeader"><h3>Named Set Builder</h3><span class="runStatus">${experimentDraft.setRows.length} sets</span></div>
@@ -4682,6 +5001,26 @@ function renderExperimentLab(){
         <label>Value <input id="experimentSetValueInput" placeholder="new value"></label>
         <button type="button" id="experimentAddSetBtn" ${params.length ? '' : 'disabled'}>Add Set</button>
         <table class="smallTable"><tr><th>Label</th><th>Parameter</th><th>Value</th><th></th></tr>${setRows || '<tr><td colspan="4">No named sets yet.</td></tr>'}</table>
+      </section>
+      <section class="archCard">
+        <div class="runCardHeader"><h3>Optuna Plan</h3><span class="runStatus">${(experimentDraft.optunaRows || []).length} params</span></div>
+        <label>Study direction
+          <select id="optunaDirectionSelect">
+            <option value="maximize" ${experimentDraft.optuna.direction === 'maximize' ? 'selected' : ''}>Maximize</option>
+            <option value="minimize" ${experimentDraft.optuna.direction === 'minimize' ? 'selected' : ''}>Minimize</option>
+          </select>
+        </label>
+        <label>Objective <input id="optunaObjectiveInput" value="${escapeHtml(experimentDraft.optuna.objective || '')}"></label>
+        <label>Trial budget <input id="optunaTrialsInput" type="number" min="1" value="${escapeHtml(experimentDraft.optuna.trials || 40)}"></label>
+        <label>Parameter <select id="optunaParamSelect">${paramOptions}</select></label>
+        <label>Low <input id="optunaMinInput" placeholder="min"></label>
+        <label>High <input id="optunaMaxInput" placeholder="max"></label>
+        <button type="button" id="optunaAddParamBtn" ${params.length ? '' : 'disabled'}>Add Optuna Parameter</button>
+        <div class="buttonRow">
+          <button type="button" id="optunaDuplicateBtn">Duplicate Optuna Plan</button>
+          <button type="button" id="optunaConvertSweepBtn">Convert To Sweep Seeds</button>
+        </div>
+        <table class="smallTable"><tr><th>Parameter</th><th>Type</th><th>Low</th><th>High</th><th></th></tr>${optunaRows || '<tr><td colspan="5">No Optuna search space yet.</td></tr>'}</table>
       </section>
     </div>
     <section class="archCard">
@@ -4696,6 +5035,7 @@ function renderExperimentLab(){
         <pre id="experimentManifestPreview">${escapeHtml(JSON.stringify(manifest, null, 2))}</pre>
       </details>
     </section>`;
+  document.getElementById('experimentBaseSelect').onchange = e => applyExperimentBase(e.target.value);
   document.getElementById('experimentModeSelect').onchange = e => { experimentDraft.mode = e.target.value; renderExperimentLab(); };
   document.getElementById('experimentLoadPresetBtn').onclick = loadExperimentPreset;
   document.getElementById('experimentCloneActiveBtn').onclick = cloneActiveRunToExperiment;
@@ -4703,6 +5043,12 @@ function renderExperimentLab(){
   document.getElementById('experimentSaveBtn').onclick = () => saveExperimentPlan();
   document.getElementById('experimentDownloadBtn').onclick = () => downloadJson(`${datasetId}_experiment_plan.json`, experimentManifest());
   document.getElementById('experimentPreviewBtn').onclick = generateExperimentPreview;
+  document.getElementById('optunaDirectionSelect').onchange = e => { experimentDraft.optuna.direction = e.target.value; renderExperimentLab(); };
+  document.getElementById('optunaObjectiveInput').onchange = e => { experimentDraft.optuna.objective = e.target.value; renderExperimentLab(); };
+  document.getElementById('optunaTrialsInput').onchange = e => { experimentDraft.optuna.trials = Math.max(1, Number(e.target.value) || 40); renderExperimentLab(); };
+  document.getElementById('optunaAddParamBtn').onclick = addOptunaSearchRow;
+  document.getElementById('optunaDuplicateBtn').onclick = duplicateOptunaPlan;
+  document.getElementById('optunaConvertSweepBtn').onclick = convertOptunaPlanToSweepSeeds;
   const presetSelect = document.getElementById('experimentPresetSelect');
   const matchingPreset = ARCHITECTURE_PRESETS.find(p => pipelineDraft.label?.toLowerCase().includes(p.label.toLowerCase().split(' ')[0]));
   if(presetSelect && matchingPreset) presetSelect.value = matchingPreset.id;
@@ -4721,6 +5067,20 @@ function renderExperimentLab(){
   };
   for(const btn of root.querySelectorAll('[data-remove-experiment-set]')) btn.onclick = () => {
     experimentDraft.setRows.splice(Number(btn.dataset.removeExperimentSet), 1);
+    renderExperimentLab();
+  };
+  for(const input of root.querySelectorAll('[data-optuna-low]')) input.onchange = e => {
+    const row = experimentDraft.optunaRows[Number(e.target.dataset.optunaLow)];
+    if(row && Number.isFinite(Number(e.target.value))) row.low = Number(e.target.value);
+    renderExperimentLab();
+  };
+  for(const input of root.querySelectorAll('[data-optuna-high]')) input.onchange = e => {
+    const row = experimentDraft.optunaRows[Number(e.target.dataset.optunaHigh)];
+    if(row && Number.isFinite(Number(e.target.value))) row.high = Number(e.target.value);
+    renderExperimentLab();
+  };
+  for(const btn of root.querySelectorAll('[data-remove-optuna-row]')) btn.onclick = () => {
+    experimentDraft.optunaRows.splice(Number(btn.dataset.removeOptunaRow), 1);
     renderExperimentLab();
   };
 }
@@ -4843,7 +5203,7 @@ const ARCHITECTURE_PRESETS = [
 
 let pipelineDraft = makePresetPipeline('current_review_pipeline');
 let selectedPipelineStageId = pipelineDraft.pipeline[0]?.id || null;
-let experimentDraft = {mode: 'sweep', setRows: []};
+let experimentDraft = {mode: 'sweep', setRows: [], optunaRows: [], optuna: {direction: 'maximize', objective: 'accepted_control_ready_rois', trials: 40, sampler: 'tpe', pruner: 'median'}};
 
 function escapeHtml(value){
   return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -5175,7 +5535,29 @@ function downloadText(name, text, type='text/plain'){
   URL.revokeObjectURL(a.href);
 }
 
+function renderPipelineIdentityPanel(){
+  const root = document.getElementById('pipelineIdentityPanel');
+  if(!root) return;
+  const template = pipelineTemplateFromDraft();
+  const saved = savedPipelineTemplates().some(item => item.id === template.id);
+  root.innerHTML = `
+    <div class="pipelineIdentityGrid">
+      <label>Architecture name <input id="pipelineLabelInput" value="${escapeHtml(pipelineDraft.label || '')}" placeholder="Adaptive CFAR hindbrain v1"></label>
+      <label>Local ID <input id="pipelineRunIdInput" value="${escapeHtml(pipelineDraft.run_id || '')}" placeholder="planned_adaptive_cfar_v1"></label>
+      <label class="wide">Description <input id="pipelineDescriptionInput" value="${escapeHtml(pipelineDraft.description || '')}" placeholder="What this architecture is meant to test"></label>
+    </div>
+    <p class="hint">${saved ? 'This architecture name/ID matches a saved local template.' : 'Save Architecture stores this stack as a reusable local template for Experiment Lab.'}</p>`;
+  document.getElementById('pipelineLabelInput').onchange = e => { pipelineDraft.label = e.target.value; renderPipelineBuilder(); };
+  document.getElementById('pipelineRunIdInput').onchange = e => {
+    pipelineDraft.run_id = slugify(e.target.value);
+    pipelineDraft.template_id = slugify(e.target.value);
+    renderPipelineBuilder();
+  };
+  document.getElementById('pipelineDescriptionInput').onchange = e => { pipelineDraft.description = e.target.value; renderPipelineBuilder(); };
+}
+
 function renderPipelineBuilder(){
+  renderPipelineIdentityPanel();
   const palette = document.getElementById('pipelineStagePalette');
   const stack = document.getElementById('pipelineStack');
   const inspector = document.getElementById('pipelineInspector');
@@ -5254,8 +5636,6 @@ function renderPipelineBuilder(){
     const numericParams = Object.entries(def?.params || {}).filter(([, spec]) => spec.type === 'number');
     const sweepParamOptions = numericParams.map(([name]) => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('');
     inspector.innerHTML = `
-      <label>Run label <input id="pipelineLabelInput" value="${escapeHtml(pipelineDraft.label)}"></label>
-      <label>Run ID <input id="pipelineRunIdInput" value="${escapeHtml(pipelineDraft.run_id)}"></label>
       <h3>${escapeHtml(def?.label || selected.op)}</h3>
       <div class="stageExplain">
         <p>${escapeHtml(def?.description || '')}</p>
@@ -5276,8 +5656,6 @@ function renderPipelineBuilder(){
         <label>Values <input id="sweepValuesInput" placeholder="1.8, 2.2, 2.6"></label>
         <button type="button" id="addSweepAxisBtn" ${numericParams.length ? '' : 'disabled'}>Add sweep axis</button>
       </section>`;
-    document.getElementById('pipelineLabelInput').onchange = e => { pipelineDraft.label = e.target.value; renderPipelineBuilder(); };
-    document.getElementById('pipelineRunIdInput').onchange = e => { pipelineDraft.run_id = e.target.value; renderPipelineBuilder(); };
     document.getElementById('stageIdInput').onchange = e => { selected.id = e.target.value.trim(); selectedPipelineStageId = selected.id; renderPipelineBuilder(); };
     for(const input of inspector.querySelectorAll('[data-stage-param]')) input.oninput = e => {
       const spec = def.params[e.target.dataset.stageParam];
@@ -5327,20 +5705,7 @@ async function savePlannedRun(){
   const manifest = Object.assign({}, data.architectureRuns || {schema_version: 1, dataset_id: datasetId, runs: []});
   const plannedIds = new Set(planned.runs.map(r => r.run_id));
   manifest.runs = [...(manifest.runs || []).filter(r => !plannedIds.has(r.run_id)), ...planned.runs];
-  data.architectureRuns = manifest;
-  if(serverBacked){
-    try {
-      const res = await fetch('architecture_runs.json', {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(manifest, null, 2)});
-      if(!res.ok) throw new Error(await res.text());
-      setSaveState('saved planned run', 'ok');
-    } catch (_) {
-      downloadJson('planned_architecture_run.json', manifest);
-      setSaveState('downloaded planned run', 'ok');
-    }
-  } else {
-    downloadJson('planned_architecture_run.json', manifest);
-    setSaveState('downloaded planned run', 'ok');
-  }
+  await persistArchitectureRuns(manifest, 'saved planned run', 'planned_architecture_run.json');
   if(planned.runs?.[0]?.run_id) annotations.settings.activeRunId = planned.runs[0].run_id;
   renderArchitectureLab();
   renderRunSyncControls();
@@ -6387,7 +6752,7 @@ function renderReviewReport(){
 }
 
 function routePage(){
-  const hash = (location.hash || '#review').replace(/^#\/?/, '');
+  const hash = (location.hash || '#architecture').replace(/^#\/?/, '');
   const page = hash === 'architecture' || hash === 'architecture-lab' ? 'architecture' : hash === 'experiments' || hash === 'experiment-lab' ? 'experiments' : hash === 'metrics' || hash === 'audit' ? 'metrics' : hash === 'process' || hash === 'process-lab' || hash === 'qc' || hash === 'dataset-qc' ? 'qc' : hash === 'report' ? 'report' : 'review';
   for(const id of ['reviewTab','reviewTabArch','reviewTabExperiments','reviewTabMetrics','reviewTabQc','reviewTabReport']) document.getElementById(id)?.classList.toggle('active', page === 'review');
   for(const id of ['architectureTab','architectureTabArch','architectureTabExperiments','architectureTabMetrics','architectureTabQc','architectureTabReport']) document.getElementById(id)?.classList.toggle('active', page === 'architecture');
@@ -6409,6 +6774,11 @@ function routePage(){
   else if(page === 'qc') renderDatasetQc();
   else if(page === 'report') renderReviewReport();
   else resizeOverlay();
+  appRoot.classList.remove('booting');
+  if(!routePage.lastPage || routePage.lastPage !== page) {
+    window.requestAnimationFrame(() => window.scrollTo({top: 0, left: 0, behavior: 'auto'}));
+  }
+  routePage.lastPage = page;
 }
 
 async function boot(){

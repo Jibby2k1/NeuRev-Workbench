@@ -2,10 +2,13 @@
   color-scheme: light;
   --bg: #eef3f8;
   --panel: #ffffff;
+  --panel-2: #f8fafc;
   --ink: #111827;
   --muted: #64748b;
   --line: #cbd5e1;
   --soft: #f1f5f9;
+  --control: #ffffff;
+  --control-hover: #eff6ff;
   --accent: #0284c7;
   --accent-soft: #e0f2fe;
   --event: #facc15;
@@ -14,6 +17,26 @@
   --unsure: #9333ea;
   --viewer: #07111f;
   --shadow: 0 14px 32px rgba(15, 23, 42, 0.10);
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0d1117;
+  --panel: #161b22;
+  --panel-2: #1f2937;
+  --ink: #e5e7eb;
+  --muted: #9ca3af;
+  --line: #374151;
+  --soft: #111827;
+  --control: #1f2937;
+  --control-hover: #243244;
+  --accent: #38bdf8;
+  --accent-soft: #0c4a6e;
+  --event: #fde047;
+  --ok: #22c55e;
+  --bad: #f87171;
+  --unsure: #c084fc;
+  --viewer: #030712;
+  --shadow: 0 14px 32px rgba(0, 0, 0, 0.34);
 }
 * { box-sizing: border-box; }
 body {
@@ -25,8 +48,11 @@ body {
 .app {
   display: grid;
   grid-template-columns: minmax(1020px, 1fr) 450px;
-  height: 100dvh;
-  overflow: hidden;
+  min-height: 100dvh;
+  overflow: visible;
+}
+.app.booting {
+  visibility: hidden;
 }
 .app.arch-mode {
   display: block;
@@ -54,9 +80,9 @@ body {
   gap: 5px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: #ffffff;
+  background: var(--control);
   padding: 3px 7px;
-  color: #334155;
+  color: var(--ink);
   font-weight: 700;
 }
 .modeToggle select {
@@ -67,7 +93,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: #334155;
+  color: var(--ink);
   font-size: 12px;
   font-weight: 700;
 }
@@ -83,9 +109,9 @@ body {
   min-width: 0;
   min-height: 0;
   display: grid;
-  grid-template-rows: auto auto minmax(260px, 1fr) auto auto;
+  grid-template-rows: auto auto minmax(260px, 56vh) auto auto;
   gap: 10px;
-  overflow: hidden;
+  overflow: visible;
 }
 .side {
   border-left: 1px solid var(--line);
@@ -102,7 +128,7 @@ h1 {
 h2 {
   font-size: 13px;
   margin: 16px 0 8px;
-  color: #334155;
+  color: var(--ink);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -128,15 +154,15 @@ h2 {
   text-decoration: none;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: #fff;
+  background: var(--control);
   padding: 6px 10px;
   font-size: 12px;
   font-weight: 700;
 }
 .navTabs a.active {
   background: var(--accent-soft);
-  border-color: #7dd3fc;
-  color: #075985;
+  border-color: var(--accent);
+  color: var(--ink);
 }
 .textButton {
   display: inline-flex;
@@ -145,7 +171,7 @@ h2 {
   min-height: 31px;
   border: 1px solid var(--line);
   border-radius: 6px;
-  background: #ffffff;
+  background: var(--control);
   padding: 0 9px;
   color: var(--ink);
   font-size: 12px;
@@ -153,11 +179,109 @@ h2 {
   text-decoration: none;
 }
 .toolbar {
-  background: rgba(255, 255, 255, 0.82);
+  background: color-mix(in srgb, var(--panel) 86%, transparent);
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 7px 8px;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset;
+}
+.stage.reviewOnly {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.stage.reviewOnly > .toolbar,
+.stage.reviewOnly > .toolbarDisclosure,
+.stage.reviewOnly > .status,
+.stage.reviewOnly > .guidedPanelShell,
+.stage.reviewOnly > .reviewEvidenceGrid {
+  flex: 0 0 auto;
+}
+.stage.reviewOnly .toolbar {
+  min-height: 0;
+  padding: 2px 5px;
+}
+.stage.reviewOnly button,
+.stage.reviewOnly select,
+.stage.reviewOnly input[type="search"],
+.stage.reviewOnly input[type="text"],
+.stage.reviewOnly input[type="number"] {
+  height: 24px;
+  margin: 0;
+  padding: 0 6px;
+  font-size: 11px;
+  line-height: 1;
+}
+.primaryReviewToolbar {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 6px;
+}
+.primaryReviewToolbar .frameControl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1 260px;
+  min-width: 0;
+}
+.primaryReviewToolbar input[type="range"] {
+  height: 16px;
+  margin: 0;
+  width: 100%;
+}
+.primaryReviewToolbar b {
+  min-width: 3.2em;
+  text-align: right;
+  font-size: 12px;
+}
+.toolbarDisclosure {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  padding: 0;
+  line-height: 1.1;
+}
+.toolbarDisclosure > summary {
+  display: flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 2px 7px;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.toolbarDisclosure[open] > summary {
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--line);
+}
+.toolbarDisclosure .toolbar {
+  border: 0;
+  border-radius: 0 0 8px 8px;
+  padding: 2px 5px;
+  box-shadow: none;
+}
+.compactToolGroup {
+  align-items: center;
+  gap: 5px;
+}
+.compactToolGroup label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.compactToolGroup input[type="range"] {
+  height: 16px;
+  margin: 0;
+  max-width: 140px;
+}
+@media (max-width: 1050px) {
+  .primaryReviewToolbar {
+    flex-wrap: wrap;
+  }
 }
 button,
 select,
@@ -166,7 +290,7 @@ input[type="text"],
 input[type="number"] {
   height: 31px;
   border: 1px solid var(--line);
-  background: #ffffff;
+  background: var(--control);
   border-radius: 6px;
   padding: 0 9px;
   color: var(--ink);
@@ -179,8 +303,8 @@ input[type="search"] {
 }
 button.active,
 button:hover {
-  border-color: #93c5fd;
-  background: #eff6ff;
+  border-color: var(--accent);
+  background: var(--control-hover);
 }
 button.accept.active { background: #dcfce7; border-color: #86efac; }
 button.reject.active { background: #fee2e2; border-color: #fca5a5; }
@@ -198,7 +322,8 @@ input[type="range"] {
   accent-color: var(--accent);
 }
 .viewerScroll {
-  min-height: 0;
+  min-height: 260px;
+  max-height: min(56vh, 620px);
   overflow: auto;
   background: var(--viewer);
   border: 1px solid #94a3b8;
@@ -789,8 +914,8 @@ textarea {
 }
 .architecturePage {
   padding: 16px;
-  height: 100vh;
-  overflow: auto;
+  min-height: 100dvh;
+  overflow: visible;
 }
 .archGrid {
   display: grid;
@@ -824,7 +949,7 @@ textarea {
 }
 .experimentGrid {
   display: grid;
-  grid-template-columns: minmax(280px, 1fr) minmax(260px, 0.8fr) minmax(320px, 1.2fr);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 14px;
   margin-bottom: 14px;
 }
@@ -1540,11 +1665,104 @@ textarea {
   border-color: #60a5fa;
   color: #1e3a8a;
 }
+.pipelineIdentityCard {
+  margin-bottom: 12px;
+}
+.pipelineIdentityGrid {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(220px, 1fr);
+  gap: 10px;
+}
+.pipelineIdentityGrid .wide {
+  grid-column: 1 / -1;
+}
+.pipelineIdentityGrid input {
+  width: 100%;
+  margin-top: 4px;
+}
+.savedArchitectureLibrary {
+  grid-column: 1 / -1;
+  margin-bottom: 12px;
+}
+.savedArchitectureGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 10px;
+}
+.savedArchitectureCard {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-2);
+  padding: 10px;
+}
+:root[data-theme="dark"] .metric,
+:root[data-theme="dark"] .guidedPanelShell,
+:root[data-theme="dark"] .guidedHero,
+:root[data-theme="dark"] .reviewSessionPanel,
+:root[data-theme="dark"] .sessionStatus,
+:root[data-theme="dark"] .sessionQueueGrid span,
+:root[data-theme="dark"] .archCard,
+:root[data-theme="dark"] .componentCard,
+:root[data-theme="dark"] .presetCard,
+:root[data-theme="dark"] .pipelineStage,
+:root[data-theme="dark"] .exampleCard,
+:root[data-theme="dark"] .experimentHero,
+:root[data-theme="dark"] .snapshotBox,
+:root[data-theme="dark"] .reportPanel,
+:root[data-theme="dark"] .qcStageTile {
+  background: var(--panel);
+  color: var(--ink);
+  border-color: var(--line);
+}
+:root[data-theme="dark"] .smallTable th,
+:root[data-theme="dark"] .smallTable td,
+:root[data-theme="dark"] details,
+:root[data-theme="dark"] textarea {
+  background: var(--panel);
+  color: var(--ink);
+  border-color: var(--line);
+}
+:root[data-theme="dark"] .smallTable th,
+:root[data-theme="dark"] .qcStageTile.missing,
+:root[data-theme="dark"] .pipelineStage.disabled,
+:root[data-theme="dark"] .runSyncStatus,
+:root[data-theme="dark"] .savedArchitectureCard {
+  background: var(--panel-2);
+}
+:root[data-theme="dark"] .metric b,
+:root[data-theme="dark"] .sessionStatus b,
+:root[data-theme="dark"] .sessionQueueGrid b,
+:root[data-theme="dark"] .guidedHero h3,
+:root[data-theme="dark"] .archCard h3,
+:root[data-theme="dark"] .componentTitle h4 {
+  color: var(--ink);
+}
+:root[data-theme="dark"] .qcWarning {
+  background: #422006;
+  border-color: #92400e;
+  color: #fde68a;
+}
+:root[data-theme="dark"] .pipelineWarning {
+  background: #1e293b;
+  color: #fef3c7;
+}
+:root[data-theme="dark"] .stageTypeChip,
+:root[data-theme="dark"] .pipelineParam,
+:root[data-theme="dark"] .artifactFlow i {
+  background: #1e3a8a;
+  color: #bfdbfe !important;
+  border-color: #2563eb;
+}
+:root[data-theme="dark"] .rtBadge {
+  background: #111827;
+  color: #d1d5db !important;
+  border-color: #374151;
+}
 @media (max-width: 1180px) {
   .app { grid-template-columns: 1fr; height: auto; overflow: visible; }
-  .stage { display: flex; overflow: visible; }
+  .stage { display: flex; flex-direction: column; overflow: visible; }
   .side { border-left: 0; border-top: 1px solid var(--line); }
-  .viewerScroll { min-height: 520px; }
+  .viewerScroll { min-height: 300px; max-height: 52vh; }
   .reviewEvidenceGrid { grid-template-columns: 1fr; }
   .selectedRoiPanel { max-height: none; }
   .pipelineBuilderGrid,

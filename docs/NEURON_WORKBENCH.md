@@ -44,11 +44,11 @@ server.
 
 | Goal | Dashboard Page | Notes |
 | --- | --- | --- |
-| Validate candidate neurons and events | `Review` | Main annotation page. Start here. |
+| Build or compare pipeline stacks | `Architecture Lab` | Configure stages, save reusable named architectures, and compare completed/generated runs. |
+| Plan threshold sweeps or hand-picked variants | `Experiment Lab` | Select a saved model instance, plan sweeps/sets/Optuna studies, and launch the first preview locally. |
 | Tune overlays, filters, labels, and manual ROIs | `Review` | Use `Basic` mode for routine review and `Advanced` for controls. |
-| Build or compare pipeline stacks | `Architecture Lab` | Configure stages and compare completed/generated runs. |
-| Plan threshold sweeps or hand-picked variants | `Experiment Lab` | Saves planned runs and can launch the first preview locally. |
 | Inspect intermediate outputs frame-by-frame | `Process Lab` | Synchronized raw/intermediate stage grid. |
+| Validate candidate neurons and events | `Review` | Main annotation page with compact transport controls and collapsible review/display tools. |
 | Track review burden and readiness | `Metrics/Audit` | Includes tuning gate, robustness examples, validation, and adjudication. |
 | Share current progress | `Review Session` panel or `Report` | Export handoff Markdown/JSON or report Markdown. |
 
@@ -268,6 +268,8 @@ Funnel, or another tunnel tool and share the generated public URL.
 
 The Review page is organized for repeated ROI triage:
 
+- `Theme` can be set to `System`, `Light`, or `Dark`. The setting is saved with
+  dashboard preferences and applies across all tabs.
 - `Basic` mode is the default low-clutter review surface. It keeps playback,
   video, trace, event timeline, selected ROI context, core ROI/event labels,
   notes, simple navigation, and guided review visible.
@@ -292,6 +294,9 @@ The Review page is organized for repeated ROI triage:
   session continuation
 - the primary video panel remains the spatial reference for frame playback,
   ROI overlays, and discovery overlays
+- the primary transport row stays compact: play, frame slider, fit width,
+  fullscreen, and screenshot remain visible while secondary review tools live
+  in collapsible groups
 - the trace panel stays adjacent to the selected ROI workflow so candidate
   events can be checked against frame context
 - the ROI/event controls, labels, queues, filters, and notes are grouped into
@@ -557,7 +562,9 @@ manifests. Build mode is a planning/export surface: it captures dataset
 references, proposed pipeline options, output locations, and run metadata so the
 configuration can be saved or handed to command-line tooling. In v1 it does not
 run Fiji, Python, Suite2p, CaImAn, PMD, OASIS, or any other pipeline inside the
-browser.
+browser. The `Pipeline Identity` section lets a user name the architecture,
+assign a stable local ID, add a short description, save it as a reusable local
+template, and send that template directly to Experiment Lab.
 
 Planned pipeline manifests should be treated as requested or proposed work
 until a real run artifact exists. Once a pipeline has actually executed, attach
@@ -582,12 +589,17 @@ not scientific ground truth.
 The generated app includes an Experiment Lab page at `#experiments`. It is a
 planning surface for parameter studies:
 
+- `Model instance` selects a saved architecture template, preset, active run, or
+  current Build Pipeline stack as the experiment base.
 - `Sweep axes` mode uses the current Build Pipeline stack and configured sweep
   axes to create a cartesian set of planned architecture runs.
 - `Named sets` mode creates hand-picked one-parameter variants with readable
   labels for small targeted comparisons.
-- `Save Plan` writes planned runs into `architecture_runs.json` through the
-  local server; static mode downloads the JSON.
+- `Optuna plan` mode stores study metadata and numeric search-space bounds for
+  later optimization tooling. It does not run Optuna in the browser.
+- `Save Plan` writes planned runs and optimization-study metadata into
+  `architecture_runs.json` through the local server; static mode downloads the
+  JSON.
 - `Generate First Preview` saves the plan, activates the first planned run, and
   calls the same local generation endpoint used by Architecture Lab.
 

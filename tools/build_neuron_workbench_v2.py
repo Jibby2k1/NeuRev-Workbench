@@ -1779,22 +1779,29 @@ HTML_TEMPLATE = """<!doctype html>
 <link rel="stylesheet" href="workbench.css">
 </head>
 <body>
-<div class="app" id="appRoot">
+<div class="app booting" id="appRoot">
   <main class="stage reviewOnly">
     <div class="topbar">
       <h1>Neuron Annotation Workbench: {dataset_id}</h1>
       <nav class="navTabs">
-        <a id="reviewTab" href="#review">Review</a>
         <a id="architectureTab" href="#architecture">Architecture Lab</a>
         <a id="experimentsTab" href="#experiments">Experiment Lab</a>
-        <a id="metricsTab" href="#metrics">Metrics</a>
         <a id="qcTab" href="#process">Process Lab</a>
+        <a id="reviewTab" href="#review">Review</a>
+        <a id="metricsTab" href="#metrics">Metrics</a>
         <a id="reportTab" href="#report">Report</a>
       </nav>
       <label class="modeToggle">Mode
         <select id="uiMode">
           <option value="basic">Basic</option>
           <option value="advanced">Advanced</option>
+        </select>
+      </label>
+      <label class="modeToggle">Theme
+        <select class="themeSelect" aria-label="Theme">
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
         </select>
       </label>
       <label class="reviewerField">Reviewer <input id="reviewerIdInput" type="text" placeholder="initials"></label>
@@ -1821,13 +1828,19 @@ HTML_TEMPLATE = """<!doctype html>
       <button id="refreshRunBtn">Refresh</button>
     </div>
     <div id="runGeneratePanel" class="runGeneratePanel hidden advancedOnly"></div>
-    <div class="toolbar">
+    <div class="toolbar primaryReviewToolbar">
       <button id="playBtn">Play</button>
+      <label class="frameControl">Frame <input id="frameSlider" type="range" min="1" max="{frames}" value="1"></label>
+      <b id="frameLabel">1</b>
       <button id="fitBtn">Fit Width</button>
       <button id="fullscreenBtn">Fullscreen</button>
-      <button id="prevActiveFrameBtn">Prev Active</button>
-      <button id="nextActiveFrameBtn">Next Active</button>
       <button id="exportScreenshotBtn">Screenshot</button>
+    </div>
+    <details class="toolbarDisclosure">
+      <summary>Review tools</summary>
+      <div class="toolbar compactToolGroup">
+        <button id="prevActiveFrameBtn">Prev Active</button>
+        <button id="nextActiveFrameBtn">Next Active</button>
       <label>Workflow
         <select id="reviewWorkflowPreset">
           <option value="custom">Custom</option>
@@ -1846,12 +1859,16 @@ HTML_TEMPLATE = """<!doctype html>
       <select id="bookmarkSelect" aria-label="Review bookmarks"></select>
       <button id="bookmarkGoBtn" type="button">Open Mark</button>
       <button id="bookmarkDeleteBtn" type="button">Delete Mark</button>
-      <label>Frame <input id="frameSlider" type="range" min="1" max="{frames}" value="1"></label>
-      <b id="frameLabel">1</b>
-      <label class="advancedOnly">Zoom <input id="zoom" type="range" min="0.75" max="5" step="0.05"> <span id="zoomLabel">3.00</span></label>
-      <label class="advancedOnly">Brightness <input id="brightness" type="range" min="0.4" max="2.5" step="0.02"> <span id="brightnessLabel">1.00</span></label>
-      <label class="advancedOnly">Contrast <input id="contrast" type="range" min="0.5" max="3" step="0.02"> <span id="contrastLabel">1.08</span></label>
-    </div>
+      </div>
+    </details>
+    <details class="toolbarDisclosure advancedOnly">
+      <summary>Display controls</summary>
+      <div class="toolbar compactToolGroup">
+        <label>Zoom <input id="zoom" type="range" min="0.75" max="5" step="0.05"> <span id="zoomLabel">3.00</span></label>
+        <label>Brightness <input id="brightness" type="range" min="0.4" max="2.5" step="0.02"> <span id="brightnessLabel">1.00</span></label>
+        <label>Contrast <input id="contrast" type="range" min="0.5" max="3" step="0.02"> <span id="contrastLabel">1.08</span></label>
+      </div>
+    </details>
     <div class="toolbar">
       <label><input id="showRois" type="checkbox" checked> ROIs</label>
       <label><input id="showLabels" type="checkbox" checked> IDs</label>
@@ -2275,13 +2292,20 @@ HTML_TEMPLATE = """<!doctype html>
     <div class="topbar">
       <h1>Architecture Lab: {dataset_id}</h1>
       <nav class="navTabs">
-        <a id="reviewTabArch" href="#review">Review</a>
         <a id="architectureTabArch" href="#architecture">Architecture Lab</a>
         <a id="experimentsTabArch" href="#experiments">Experiment Lab</a>
-        <a id="metricsTabArch" href="#metrics">Metrics</a>
         <a id="qcTabArch" href="#process">Process Lab</a>
+        <a id="reviewTabArch" href="#review">Review</a>
+        <a id="metricsTabArch" href="#metrics">Metrics</a>
         <a id="reportTabArch" href="#report">Report</a>
       </nav>
+      <label class="modeToggle">Theme
+        <select class="themeSelect" aria-label="Theme">
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </label>
     </div>
     <p class="hint">This page compares standardized architecture-run artifacts and builds planned pipeline manifests. Build mode configures and exports plans; it does not execute Fiji or Python pipelines in the browser.</p>
     <div class="toolbar">
@@ -2295,6 +2319,10 @@ HTML_TEMPLATE = """<!doctype html>
       <div class="archGrid" id="architectureRuns"></div>
     </div>
     <div id="architectureBuildPanel" class="hidden">
+      <section class="archCard pipelineIdentityCard">
+        <h2>Pipeline Identity</h2>
+        <div id="pipelineIdentityPanel"></div>
+      </section>
       <div class="toolbar">
         <label>Preset
           <select id="pipelinePresetSelect">
@@ -2308,9 +2336,12 @@ HTML_TEMPLATE = """<!doctype html>
             <option value="oasis_import">OASIS event model</option>
           </select>
         </label>
+        <button id="pipelineNewArchitectureBtn">New Architecture</button>
         <button id="pipelineNewBtn">Load Preset</button>
         <button id="pipelineCloneRunBtn">Clone Run A</button>
+        <button id="pipelineSaveTemplateBtn">Save Architecture</button>
         <button id="pipelineSaveBtn">Save Planned Run</button>
+        <button id="pipelineUseExperimentBtn">Use In Experiment Lab</button>
         <button id="pipelineDownloadBtn">Download JSON</button>
       </div>
       <div class="pipelineBuilderGrid">
@@ -2353,13 +2384,20 @@ HTML_TEMPLATE = """<!doctype html>
     <div class="topbar">
       <h1>Experiment Lab: {dataset_id}</h1>
       <nav class="navTabs">
-        <a id="reviewTabExperiments" href="#review">Review</a>
         <a id="architectureTabExperiments" href="#architecture">Architecture Lab</a>
         <a id="experimentsTabExperiments" href="#experiments">Experiment Lab</a>
-        <a id="metricsTabExperiments" href="#metrics">Metrics</a>
         <a id="qcTabExperiments" href="#process">Process Lab</a>
+        <a id="reviewTabExperiments" href="#review">Review</a>
+        <a id="metricsTabExperiments" href="#metrics">Metrics</a>
         <a id="reportTabExperiments" href="#report">Report</a>
       </nav>
+      <label class="modeToggle">Theme
+        <select class="themeSelect" aria-label="Theme">
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </label>
     </div>
     <div id="experimentLab"></div>
   </section>
@@ -2367,13 +2405,20 @@ HTML_TEMPLATE = """<!doctype html>
     <div class="topbar">
       <h1>Metrics/Audit: {dataset_id}</h1>
       <nav class="navTabs">
-        <a id="reviewTabMetrics" href="#review">Review</a>
         <a id="architectureTabMetrics" href="#architecture">Architecture Lab</a>
         <a id="experimentsTabMetrics" href="#experiments">Experiment Lab</a>
-        <a id="metricsTabMetrics" href="#metrics">Metrics</a>
         <a id="qcTabMetrics" href="#process">Process Lab</a>
+        <a id="reviewTabMetrics" href="#review">Review</a>
+        <a id="metricsTabMetrics" href="#metrics">Metrics</a>
         <a id="reportTabMetrics" href="#report">Report</a>
       </nav>
+      <label class="modeToggle">Theme
+        <select class="themeSelect" aria-label="Theme">
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </label>
     </div>
     <p class="hint">This page summarizes the current annotation state from the live autosave data. It is useful for tracking review progress, burden, accepted events, control-ready ROIs, and discovery outcomes.</p>
     <div id="metricsAudit"></div>
@@ -2382,13 +2427,20 @@ HTML_TEMPLATE = """<!doctype html>
     <div class="topbar">
       <h1>Process Lab: {dataset_id}</h1>
       <nav class="navTabs">
-        <a id="reviewTabQc" href="#review">Review</a>
         <a id="architectureTabQc" href="#architecture">Architecture Lab</a>
         <a id="experimentsTabQc" href="#experiments">Experiment Lab</a>
-        <a id="metricsTabQc" href="#metrics">Metrics</a>
         <a id="qcTabQc" href="#process">Process Lab</a>
+        <a id="reviewTabQc" href="#review">Review</a>
+        <a id="metricsTabQc" href="#metrics">Metrics</a>
         <a id="reportTabQc" href="#report">Report</a>
       </nav>
+      <label class="modeToggle">Theme
+        <select class="themeSelect" aria-label="Theme">
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </label>
     </div>
     <p class="hint">This page inspects the active architecture run in pipeline order, including raw frames, generated intermediates, artifact states, and lightweight process warnings.</p>
     <div id="datasetQc"></div>
@@ -2397,13 +2449,20 @@ HTML_TEMPLATE = """<!doctype html>
     <div class="topbar">
       <h1>Review Report: {dataset_id}</h1>
       <nav class="navTabs">
-        <a id="reviewTabReport" href="#review">Review</a>
         <a id="architectureTabReport" href="#architecture">Architecture Lab</a>
         <a id="experimentsTabReport" href="#experiments">Experiment Lab</a>
-        <a id="metricsTabReport" href="#metrics">Metrics</a>
         <a id="qcTabReport" href="#process">Process Lab</a>
+        <a id="reviewTabReport" href="#review">Review</a>
+        <a id="metricsTabReport" href="#metrics">Metrics</a>
         <a id="reportTabReport" href="#report">Report</a>
       </nav>
+      <label class="modeToggle">Theme
+        <select class="themeSelect" aria-label="Theme">
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </label>
     </div>
     <div id="reportPageBody"></div>
   </section>

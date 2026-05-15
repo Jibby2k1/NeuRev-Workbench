@@ -84,8 +84,15 @@ pipeline?"
 
 - Architecture Lab owns the ordered stage stack, component descriptions,
   parameter meanings, real-time badges, validation messages, and run comparison.
+- Saved architectures are stored as reusable local templates in
+  `architecture_runs.json` under `saved_pipelines[]`; they are not counted as
+  completed/generated runs until materialized as planned/generated run entries.
+  The Architecture Library supports edit, experiment, rename, and delete
+  actions. Deleting a saved architecture template does not delete planned or
+  generated runs that were created from it.
 - Experiment Lab reuses that stack to create sweep axes or named parameter
-  sets, then saves them as planned architecture runs.
+  sets, or to define planning-only Optuna studies, then saves the resulting
+  plans for local generation.
 - Both pages write through the same `architecture_runs.json` contract, so the
   selected run stays synchronized with Review and Process Lab.
 
@@ -156,6 +163,14 @@ browser. A sweep is stored as manifest-level `sweep.parameters`, and each
 expanded planned run receives a `sweep` assignment with the exact stage,
 parameter, and value used. The dashboard and `tools/build_pipeline_run.py` use
 the same plan/export-only contract.
+
+Experiment Lab also supports an `Optuna plan` mode. This v1 integration records
+the intended study direction, objective, trial budget, sampler/pruner labels,
+and numeric search-space bounds for selected stage parameters. It intentionally
+does not add an `optuna` dependency or execute optimization jobs from the
+browser yet. The dashboard can duplicate an Optuna plan draft or convert its
+numeric bounds into low/mid/high sweep seed values for a small deterministic
+first pass.
 
 Recommended first sweeps are narrow and interpretable:
 

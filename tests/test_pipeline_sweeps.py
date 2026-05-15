@@ -27,6 +27,31 @@ def _sweep_spec() -> dict:
 
 
 class PipelineSweepTests(unittest.TestCase):
+    def test_manifest_normalization_preserves_dashboard_root_metadata(self):
+        from neurobench.architecture_runs import as_run_manifest
+
+        manifest = as_run_manifest(
+            {
+                "schema_version": 1,
+                "dataset_id": "d",
+                "saved_pipelines": [{"id": "template_a", "label": "Template A", "pipeline": []}],
+                "experiments": [{"id": "experiment_a", "run_ids": ["run_a"]}],
+                "optimization_studies": [{"id": "study_a", "base_pipeline_id": "template_a"}],
+                "runs": [
+                    {
+                        "schema_version": 1,
+                        "run_id": "run_a",
+                        "dataset_id": "d",
+                        "artifacts": {},
+                    }
+                ],
+            }
+        )
+
+        self.assertEqual(manifest["saved_pipelines"][0]["id"], "template_a")
+        self.assertEqual(manifest["experiments"][0]["id"], "experiment_a")
+        self.assertEqual(manifest["optimization_studies"][0]["id"], "study_a")
+
     def test_planned_manifest_expands_sweep_deterministically(self):
         from neurobench.architecture_runs import build_planned_manifest
 
