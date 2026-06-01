@@ -1,11 +1,13 @@
-# Architecture Lab
+# Pipelines
 
-Architecture Lab is the comparison page inside the neuron workbench. It is
-available at:
+Pipelines is the comparison and pipeline-builder page inside the neuron
+workbench. It is available at:
 
 ```text
-http://127.0.0.1:8765/#architecture
+http://127.0.0.1:8765/#pipelines
 ```
+
+Legacy links to `#architecture` and `#architecture-lab` still open this page.
 
 The page consumes standardized architecture-run metadata. A run can represent
 the current Fiji/Groovy pipeline, a Python CFAR pipeline, or future imports such
@@ -16,7 +18,7 @@ PMD-denoised videos can be attached with `tools/import_pmd_run.py`, and OASIS
 trace outputs can be attached with `tools/import_oasis_run.py`; see
 `docs/SOTA_INTEGRATIONS.md`.
 
-Architecture Lab has two related modes:
+Pipelines has two related modes:
 
 - Compare mode reads completed architecture-run manifests and reports candidate
   counts, accepted/control-ready counts, review burden, evidence maps, and
@@ -33,18 +35,26 @@ Build mode now has three practical surfaces:
 - a component library grouped by import, preprocessing, filtering, artifact,
   ROI, trace, event, ensemble, and ranking roles
 
-Each component card shows what the stage does, why it exists, whether it is
-implemented/planned/external, its input/output artifact contract, its tunable
-parameters, real-time badges, and the QC outputs the Process Lab page should be
-able to inspect.
+It also includes a `Multi-stage CFAR cascade` preset. This represents the
+professor-suggested idea of a small reference-region CFAR followed by a larger
+reference-region CFAR as two explicit CFAR stages, not as a hidden composite
+block. The default cascade intersects the two masks so compact candidates must
+survive both a fine local-background check and a broader background check.
 
-Architecture Lab, Review, and Process Lab now share an active run selection.
+Each component card shows what the stage does, why it exists, whether it is
+implemented/planned/external, whether a local Python runner is available, its
+input/output artifact contract, its tunable parameters, real-time badges, and
+the QC outputs the Data page should be able to inspect. `Implemented`
+means the stage is part of the Neurobench model; `local runner` means the
+stdlib/Python executor can currently run it for local sweeps.
+
+Pipelines, Review, and Data now share an active run selection.
 Selecting a completed/generated run can load that run's `review_data.json` when
 the file is reachable from the local workbench server. Selecting a planned run
 does not change the Review video or pretend outputs exist. When the dashboard
 is served locally, Generate View starts a whitelisted local job that runs the
-selected Architecture Lab run, updates `architecture_runs.json`, and refreshes
-Review/Process Lab when outputs are ready. Generated runs are isolated under
+selected pipeline run, updates `architecture_runs.json`, and refreshes
+Review/Data when outputs are ready. Generated runs are isolated under
 `app/generated_runs/<run_id>/` so a parameter test does not overwrite the
 baseline dashboard.
 
@@ -53,7 +63,7 @@ Run B, then load A/B Review to fetch each generated `review_data.json` into a
 browser cache. The viewer shows the same frame from both runs side-by-side with
 ROI circles and event-near-frame highlights. It is read-only: changing A/B
 selection does not replace the main Review page until you explicitly choose
-`Use A In Review/QC` or `Use B In Review/QC`. Use `Next Difference` or
+`Use A In Review/Data` or `Use B In Review/Data`. Use `Next Difference` or
 `Prev Difference` to jump to frames where the two loaded runs have different
 candidate event counts.
 
@@ -62,6 +72,15 @@ workbench can configure, save, and export planned pipeline metadata, but it does
 not run Fiji/Groovy, Python, Suite2p, CaImAn, PMD, OASIS, denoising models, or
 other compute pipelines in-browser.
 
+
+## Run Readiness Badges
+
+Pipeline cards now show compact readiness badges for local executability,
+review-data availability, ROI candidates, intermediate outputs, projection
+diagnostics, and stencil coverage. A warning badge does not invalidate a run; it
+marks what should be generated, attached, or inspected before using the run for
+review decisions.
+
 ## Recommended Workflow
 
 1. Use `Compare` mode to understand the current baseline and any completed
@@ -69,20 +88,20 @@ other compute pipelines in-browser.
 2. Use `Build Pipeline` only when you want to change the actual sequence of
    stages or their parameters.
 3. Keep the stack small for early experiments. Prefer one or two parameter
-   changes at a time so Review and Process Lab comparisons remain interpretable.
+   changes at a time so Review and Data comparisons remain interpretable.
 4. Save planned runs before generation. Planned runs are visible to Review,
-   Experiment Lab, and Process Lab, but they remain clearly marked as planned
+   Experiment Lab, and Data, but they remain clearly marked as planned
    until generated artifacts exist.
-5. Generate a preview first. Inspect the output in Review and Process Lab
+5. Generate a preview first. Inspect the output in Review and Data
    before launching a full run.
 
-## Architecture Lab vs. Experiment Lab
+## Pipelines vs. Experiment Lab
 
-Use Architecture Lab when the question is "what should this pipeline contain?"
+Use Pipelines when the question is "what should this pipeline contain?"
 Use Experiment Lab when the question is "which values should we try for this
 pipeline?"
 
-- Architecture Lab owns the ordered stage stack, component descriptions,
+- Pipelines owns the ordered stage stack, component descriptions,
   parameter meanings, real-time badges, validation messages, and run comparison.
 - Saved architectures are stored as reusable local templates in
   `architecture_runs.json` under `saved_pipelines[]`; they are not counted as
@@ -93,8 +112,120 @@ pipeline?"
 - Experiment Lab reuses that stack to create sweep axes or named parameter
   sets, or to define planning-only Optuna studies, then saves the resulting
   plans for local generation.
+- Experiment Lab also has an Experiment Command Center that surfaces run queue
+  readiness, imported LLM proposal sets, sweep budget warnings, annotation-aware
+  next-step recommendations, utility scores, and baseline deltas before more
+  compute is launched.
+- Session Recipe turns the current objective, highest-priority action, planned
+  runs, suggested parameter moves, and safeguards into a compact Markdown/JSON
+  handoff for lab discussion or external LLM-assisted architecture planning.
+- LLM Architecture Request builds a copyable/downloadable prompt from the
+  recipe, current stack, available stage catalog, extra constraints, and the
+  expected proposal JSON shape. It supports architecture-feedback, compact
+  parameter-search, noise/artifact-control, and 100 Hz real-time request modes.
+- LLM Proposal Intake accepts pasted proposal JSON, performs lightweight
+  browser checks for required fields, unknown stage IDs, sweep-axis references,
+  and combination counts, then exposes the local importer command. When issues
+  are found, it can generate a repair prompt with the exact errors, warnings,
+  known stage IDs, and expected schema shape. It also triages parsed proposals
+  into candidate, budget-review, or repair-first decisions and can export a
+  compact Markdown review note. Candidate-only export creates a normalized JSON
+  pack containing only import candidates for the first local test pass. Import
+  Readiness shows whether full or candidate import is safer and provides
+  copyable commands for both paths. When served locally, **Import Full To
+  Dashboard** and **Import Candidates To Dashboard** call the matching
+  `/api/llm-proposals/import` endpoint to validate and merge the proposal pack
+  into `architecture_runs.json` without launching execution. The CLI command is
+  still shown for reproducible terminal workflows. Post-Import Plan then gives
+  the reload, preview-generation, and optional local experiment-run sequence.
+- LLM Proposal Lifecycle persists proposal decisions such as try-next,
+  promising, reject, needs-repair, generated, and discussed. It summarizes
+  generated outcomes and creates a follow-up prompt from review failure signals.
+- Prioritized Action Queue merges checklist blockers, recommendation cards,
+  sensitivity signals, follow-up suggestions, and coverage gaps into a ranked
+  set of concrete next steps. Queue items can be marked done, snoozed, or
+  reopened to keep the next-step surface focused during longer review sessions.
+  Action History records recent queue state changes for session handoff.
+- The Experiment Command Center has a `Focus` selector with guided,
+  diagnostics, and all-panel views, so the page can stay compact while still
+  exposing deeper analyses when needed.
+- The command center includes an evaluation checklist and decision matrix so
+  run selection is driven by explicit gates, utility scores, labels, notes, and
+  exportable TSV summaries rather than memory.
+- Parameter Sensitivity groups explicit sweep/named-set changes by parameter
+  and reports values tested, generated/scored counts, average utility, score
+  spread, best run, and a suggested next move.
+- Follow-up Planner converts the strongest sensitivity signals into small local
+  refinements around the best observed value and can add them back to
+  Experiment Lab as named sets or a sweep axis.
+- Parameter Coverage Map scans the current pipeline stack for numeric
+  parameters that have not been tested yet and can add small probe sets or a
+  sweep axis directly from the coverage table.
+- The Experiment Command Center can export a concise Markdown brief,
+  provider-neutral LLM prompt, proposal-intake summary, and machine-readable
+  handoff JSON, so architecture feedback can happen outside the dashboard
+  without copying raw dashboard state by hand.
 - Both pages write through the same `architecture_runs.json` contract, so the
-  selected run stays synchronized with Review and Process Lab.
+  selected run stays synchronized with Review and Data.
+
+## LLM-Guided Architecture Proposals
+
+The workbench supports an LLM-assisted planning workflow without embedding a
+chat UI or sending data to a provider from the dashboard. The intended flow is:
+
+1. Build a provider-neutral handoff context:
+
+   ```bash
+   neurobench llm context \
+     --dataset-manifest Outputs/Manifests/calcium_rest_cropped.dataset.json \
+     --architecture-runs Outputs/NeuronReview/calcium_rest_cropped/app/architecture_runs.json \
+     --objective review_efficiency \
+     --max-combinations 4096 \
+     --context-out Outputs/ArchitectureRuns/calcium_rest_cropped/llm_context.json \
+     --prompt-out Outputs/ArchitectureRuns/calcium_rest_cropped/llm_prompt.md
+   ```
+
+2. Give the prompt/context to an LLM and ask it to return JSON matching
+   `schemas/llm_architecture_proposal.schema.json`.
+3. Import the returned proposals:
+
+   ```bash
+   neurobench llm import-proposals \
+     Outputs/ArchitectureRuns/calcium_rest_cropped/llm_proposals.json \
+     --architecture-runs Outputs/NeuronReview/calcium_rest_cropped/app/architecture_runs.json \
+     --out Outputs/NeuronReview/calcium_rest_cropped/app/architecture_runs.json \
+     --validation-report Outputs/ArchitectureRuns/calcium_rest_cropped/llm_validation_report.json
+   ```
+
+Imported proposals become saved architecture templates, planned runs, and an
+experiment record in the same `architecture_runs.json` used by Pipelines,
+Experiment Lab, Review, and Data. The importer rejects unknown
+stages, duplicate step IDs, out-of-range parameters, ambiguous sweep references,
+and per-architecture sweeps larger than the configured combination budget
+(`4096` by default).
+
+The LLM should reference sweep axes by concrete step ID. This matters for
+architectures with repeated stages, such as:
+
+```json
+{"stage": "cfar_small_ref", "param": "pfa", "values": [0.01, 0.03]}
+```
+
+For local executable tests of LLM proposal packs, use:
+
+```bash
+neurobench llm run-proposals \
+  Outputs/ArchitectureRuns/calcium_rest_cropped/llm_proposals.json \
+  --run-root Outputs/ArchitectureRuns/calcium_rest_cropped/llm_runs \
+  --ground-truth-csv Inputs/annotations/resting_crop_ground_truth.csv
+```
+
+This runner only executes stages marked with `local runner` in the component
+catalog. When a ground-truth CSV is provided, the summary adds object
+precision/recall, event-onset recall, burden counts, and runtime so proposal
+sets can be compared before committing to full Review generation. Full
+Review-app generation still uses the dashboard's local Generate View path and
+the existing Fiji/Python bridge.
 
 ## Create A Run Manifest
 
@@ -130,7 +261,7 @@ browser:
   architecture-run manifests
 - optional `artifacts.proposal_analysis`,
   `artifacts.artifact_classifier_tsv`, and
-  `artifacts.missed_neuron_proposals_tsv` entries for generated Process Lab
+  `artifacts.missed_neuron_proposals_tsv` entries for generated Data
   triage
 - optional `artifacts.intermediates[]` entries for browser-readable stage
   outputs, preferably PNG frame patterns such as
@@ -139,7 +270,7 @@ browser:
 - provenance notes, including who configured the plan and when it was exported
 
 Completed run manifests remain the comparison source of truth. A planned
-manifest should not be counted as a completed Architecture Lab run until the
+manifest should not be counted as a completed pipeline run until the
 external pipeline has produced artifacts and an architecture-run manifest is
 attached.
 
@@ -180,17 +311,17 @@ Recommended first sweeps are narrow and interpretable:
 - Kalman positive-innovation event threshold
 
 Use the exported planned manifest as a run sheet for Fiji/Python execution, then
-merge completed runs back into Architecture Lab for comparison.
+merge completed runs back into Pipelines for comparison.
 
 In the dashboard, saving a sweep expands it into separate planned run IDs.
 Generate those run IDs from the Review run selector to produce side-by-side
-Review and Process Lab artifacts for each combination.
+Review and Data artifacts for each combination.
 
 The Compare view includes a Parameter Experiments table for these generated
 runs. It shows ROI/event/suggestion counts, annotation-derived burden when
 available, artifact-like queue counts, missed-neuron candidate counts, run
 status, and a lightweight reviewer label. Selecting Run A makes that run the
-global active run used by Review and Process Lab.
+global active run used by Review and Data.
 
 For a standard review-pack starting point, generate grouped planned runs:
 
@@ -258,7 +389,7 @@ manifest should intentionally overwrite an earlier run.
 
 ## Current Fields
 
-Architecture Lab v1 shows:
+Pipelines v1 shows:
 
 - run ID and label
 - dataset ID
@@ -273,16 +404,16 @@ Architecture Lab v1 shows:
   status, real-time badges, expected QC outputs, and one-click recommended
   architecture presets
 
-Process Lab is tied to the selected architecture run. That page shows the
+Data is tied to the selected pipeline run. That page shows the
 ordered pipeline context beside frame/evidence navigation so QC warnings can be
 interpreted against the exact stack that produced or is expected to produce the
 candidate set.
 
-When generated intermediate outputs are attached, Process Lab displays them as a
+When generated intermediate outputs are attached, Data displays them as a
 synchronized stage grid driven by a single frame slider. Missing stage outputs
 are shown as placeholders so it is obvious what still needs to be exported.
 
-The companion Metrics/Audit page is available at `#metrics` and summarizes the
+The companion Progress page is available at `#progress` and summarizes the
 current annotation burden and review progress.
 
 ## Review/Test Planning

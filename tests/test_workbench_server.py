@@ -7,6 +7,33 @@ import unittest
 from pathlib import Path
 
 
+def _llm_proposal_set() -> dict:
+    return {
+        "schema_version": 1,
+        "proposal_set_id": "server_import_v1",
+        "dataset_id": "demo",
+        "objective": "review_efficiency",
+        "max_combinations_per_architecture": 16,
+        "proposals": [
+            {
+                "id": "small_cfar",
+                "label": "Small CFAR",
+                "rationale": "Validate server-side import of a bounded proposal.",
+                "hypothesis": "A compact sweep can be tested locally.",
+                "priority": 1,
+                "expected_tradeoffs": "Small synthetic test only.",
+                "pipeline": [
+                    {"id": "source", "stage_id": "source_video_import", "params": {"source": "raw.npy"}},
+                    {"id": "highpass", "stage_id": "temporal_highpass_gaussian", "params": {"sigma_frames": 2.0}},
+                    {"id": "smooth", "stage_id": "spatial_gaussian", "params": {"sigma_px": 0.4}},
+                    {"id": "cfar", "stage_id": "gamma_cfar", "params": {"pfa": 0.01, "guard_px": 1, "training_radius_px": 5}},
+                ],
+                "sweep": {"parameters": [{"stage": "cfar", "param": "pfa", "values": [0.01, 0.02]}]},
+            }
+        ],
+    }
+
+
 class WorkbenchServerTests(unittest.TestCase):
     def test_environment_report_has_generation_keys(self):
         from neurobench.workbench.server import environment_report
@@ -100,6 +127,52 @@ class WorkbenchServerTests(unittest.TestCase):
                 os.environ["NEUROBENCH_OWNER_TOKEN"] = old
             else:
                 os.environ.pop("NEUROBENCH_OWNER_TOKEN", None)
+
+    def test_post_handlers_are_explicitly_whitelisted(self):
+        from neurobench.workbench.server import WorkbenchHandler
+
+        self.assertEqual(
+            set(WorkbenchHandler.POST_HANDLERS),
+            {
+                ("jobs", "generate-view"),
+                ("jobs", "generate-preview"),
+                ("materialize-traces",),
+                ("llm-proposals", "import"),
+            },
+        )
+        self.assertEqual(WorkbenchHandler.POST_HANDLERS[("llm-proposals", "import")], "_handle_llm_proposal_import_post")
+
+    def test_llm_proposal_import_validates_and_updates_architecture_runs(self):
+        from neurobench.workbench.server import import_llm_proposals_into_app, load_json
+
+        with tempfile.TemporaryDirectory() as tmp:
+            app_dir = Path(tmp) / "app"
+            app_dir.mkdir()
+            (app_dir / "architecture_runs.json").write_text(
+                json.dumps({"schema_version": 1, "dataset_id": "demo", "runs": []}),
+                encoding="utf-8",
+            )
+
+            result = import_llm_proposals_into_app(app_dir, {"proposal": _llm_proposal_set()})
+            manifest = load_json(app_dir / "architecture_runs.json")
+
+            self.assertTrue(result["ok"])
+            self.assertEqual(result["proposal_set_id"], "server_import_v1")
+            self.assertEqual(result["validation_report"]["status"], "valid")
+            self.assertEqual(len(result["run_ids"]), 2)
+            self.assertEqual(len(result["saved_pipeline_ids"]), 1)
+            self.assertEqual(len(manifest["runs"]), 2)
+            self.assertEqual(manifest["llm_proposal_sets"][0]["proposal_set_id"], "server_import_v1")
+
+    def test_llm_proposal_import_rejects_invalid_payload(self):
+        from neurobench.workbench.server import import_llm_proposals_into_app
+
+        with tempfile.TemporaryDirectory() as tmp:
+            app_dir = Path(tmp) / "app"
+            app_dir.mkdir()
+
+            with self.assertRaisesRegex(ValueError, "required"):
+                import_llm_proposals_into_app(app_dir, {"proposal": {"schema_version": 1}})
 
     def test_legacy_server_script_reexports_package_helpers(self):
         from neurobench.workbench import GenerationJob as PackageGenerationJob

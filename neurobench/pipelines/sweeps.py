@@ -79,11 +79,12 @@ def render_sweep_summary_markdown(summary: Mapping[str, Any]) -> str:
         "",
         "## Runs",
         "",
-        "| Run | Status | Parameters | Artifacts | Output |",
-        "| --- | --- | --- | --- | --- |",
+        "| Run | Status | Parameters | Artifacts | Metrics | Output |",
+        "| --- | --- | --- | --- | --- | --- |",
     ]
     for run in summary.get("runs", []) or []:
         parameters = ", ".join(f"{item['stage']}.{item['param']}={item['value']}" for item in run.get("sweep_parameters", []) or [])
+        metrics = _metric_summary(run.get("metrics") or {})
         lines.append(
             "| "
             + " | ".join(
@@ -92,10 +93,24 @@ def render_sweep_summary_markdown(summary: Mapping[str, Any]) -> str:
                     f"`{run.get('status', '')}`",
                     parameters or "none",
                     str(run.get("artifact_count", 0)),
+                    metrics or "n/a",
                     f"`{run.get('run_root', '')}`",
                 ]
             )
             + " |"
+        )
+    overview = dict(summary.get("metric_overview") or {})
+    if overview:
+        lines.extend(
+            [
+                "",
+                "## Metric Overview",
+                "",
+                f"- Best recall run: `{overview.get('best_recall_run_id', 'n/a')}`",
+                f"- Lowest burden run: `{overview.get('lowest_burden_run_id', 'n/a')}`",
+                f"- Mean candidate count: {_fmt_metric(overview.get('mean_candidate_count'))}",
+                f"- Mean event count: {_fmt_metric(overview.get('mean_event_count'))}",
+            ]
         )
     failures = [run for run in summary.get("runs", []) or [] if run.get("status") == "failed"]
     if failures:
@@ -120,6 +135,31 @@ def _base_record(planned_run: Mapping[str, Any], run_dir: Path, root: Path) -> d
 def _safe_name(value: str) -> str:
     name = re.sub(r"[^A-Za-z0-9._-]+", "_", value).strip("._-")
     return name or "run"
+
+
+def _metric_summary(metrics: Mapping[str, Any]) -> str:
+    if not metrics:
+        return ""
+    fields = []
+    for key, label in (
+        ("candidate_count", "candidates"),
+        ("event_count", "events"),
+        ("active_fraction", "active"),
+        ("object_recall", "obj recall"),
+        ("object_precision", "obj precision"),
+        ("event_onset_recall", "event recall"),
+    ):
+        if key in metrics:
+            fields.append(f"{label}={_fmt_metric(metrics.get(key))}")
+    return ", ".join(fields)
+
+
+def _fmt_metric(value: Any) -> str:
+    if value is None:
+        return "n/a"
+    if isinstance(value, float):
+        return f"{value:.3g}"
+    return str(value)
 
 
 def _display_path(path: Path, root: Path) -> str:

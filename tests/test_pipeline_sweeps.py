@@ -37,6 +37,7 @@ class PipelineSweepTests(unittest.TestCase):
                 "saved_pipelines": [{"id": "template_a", "label": "Template A", "pipeline": []}],
                 "experiments": [{"id": "experiment_a", "run_ids": ["run_a"]}],
                 "optimization_studies": [{"id": "study_a", "base_pipeline_id": "template_a"}],
+                "llm_proposal_sets": [{"proposal_set_id": "proposal_a"}],
                 "runs": [
                     {
                         "schema_version": 1,
@@ -51,6 +52,7 @@ class PipelineSweepTests(unittest.TestCase):
         self.assertEqual(manifest["saved_pipelines"][0]["id"], "template_a")
         self.assertEqual(manifest["experiments"][0]["id"], "experiment_a")
         self.assertEqual(manifest["optimization_studies"][0]["id"], "study_a")
+        self.assertEqual(manifest["llm_proposal_sets"][0]["proposal_set_id"], "proposal_a")
 
     def test_planned_manifest_expands_sweep_deterministically(self):
         from neurobench.architecture_runs import build_planned_manifest

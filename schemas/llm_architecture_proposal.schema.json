@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Neurobench LLM Architecture Proposal Set",
+  "type": "object",
+  "required": ["schema_version", "proposal_set_id", "dataset_id", "objective", "proposals"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "proposal_set_id": {"type": "string", "minLength": 1},
+    "dataset_id": {"type": "string", "minLength": 1},
+    "objective": {"type": "string", "minLength": 1},
+    "max_combinations_per_architecture": {"type": "integer", "minimum": 1},
+    "proposals": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/proposal"}
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "proposal": {
+      "type": "object",
+      "required": ["id", "label", "rationale", "hypothesis", "pipeline"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "label": {"type": "string", "minLength": 1},
+        "rationale": {"type": "string", "minLength": 1},
+        "hypothesis": {"type": "string", "minLength": 1},
+        "priority": {"type": "integer", "minimum": 1},
+        "expected_tradeoffs": {"type": "string"},
+        "pipeline": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/pipeline_step"}
+        },
+        "sweep": {"$ref": "#/$defs/sweep"}
+      },
+      "additionalProperties": true
+    },
+    "pipeline_step": {
+      "type": "object",
+      "required": ["id"],
+      "anyOf": [
+        {"required": ["stage_id"]},
+        {"required": ["stage"]}
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "stage_id": {"type": "string", "minLength": 1},
+        "stage": {"type": "string", "minLength": 1},
+        "params": {"type": "object"},
+        "metadata": {"type": "object"},
+        "artifacts": {"type": "object"}
+      },
+      "additionalProperties": true
+    },
+    "sweep": {
+      "type": "object",
+      "required": ["parameters"],
+      "properties": {
+        "id": {"type": "string"},
+        "label": {"type": "string"},
+        "description": {"type": "string"},
+        "parameters": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["stage", "param", "values"],
+            "properties": {
+              "stage": {"type": "string", "minLength": 1},
+              "stage_id": {"type": "string", "minLength": 1},
+              "param": {"type": "string", "minLength": 1},
+              "values": {"type": "array", "minItems": 1}
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

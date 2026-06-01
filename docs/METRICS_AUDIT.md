@@ -1,10 +1,12 @@
-# Metrics/Audit
+# Progress
 
-The workbench Metrics/Audit page is available at:
+The workbench Progress page is available at:
 
 ```text
-http://127.0.0.1:8765/#metrics
+http://127.0.0.1:8765/#progress
 ```
+
+Legacy links to `#metrics` and `#audit` still open this page.
 
 It summarizes the live annotation state from `annotations.json` and browser
 memory. It is intended for review management, not final scientific evaluation.

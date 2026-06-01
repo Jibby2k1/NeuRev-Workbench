@@ -24,6 +24,8 @@ def dataset_rows(root: Path) -> list[dict]:
         annotations = app_dir / "annotations.json"
         architecture_runs = app_dir / "architecture_runs.json"
         data = load_json(review_data)
+        app_html = app_index.read_text(encoding="utf-8", errors="ignore") if app_index.exists() else ""
+        has_review_subpages = "reviewStencilPage" in app_html and "reviewOverlapPage" in app_html
         dataset = data.get("dataset", {})
         video = data.get("video", {})
         qc = data.get("qc", {})
@@ -41,6 +43,8 @@ def dataset_rows(root: Path) -> list[dict]:
                 "review_data": review_data.relative_to(root).as_posix(),
                 "annotations": annotations.relative_to(root).as_posix(),
                 "architecture_runs": architecture_runs.relative_to(root).as_posix(),
+                "review_stencil": app_index.relative_to(root).as_posix() + "#review-stencil" if has_review_subpages else "",
+                "review_overlap": app_index.relative_to(root).as_posix() + "#review-overlap" if has_review_subpages else "",
             }
         )
     return rows
@@ -68,6 +72,8 @@ def render(rows: list[dict]) -> str:
           <a href="{html.escape(row['review_data'])}">Review data</a>
           <a href="{html.escape(row['annotations'])}">Annotations</a>
           <a href="{html.escape(row['architecture_runs'])}">Pipeline runs</a>
+          {f'<a href="{html.escape(row["review_stencil"])}">Review stencil</a>' if row.get('review_stencil') else ''}
+          {f'<a href="{html.escape(row["review_overlap"])}">Sweep overlap</a>' if row.get('review_overlap') else ''}
         </nav>
       </article>"""
         )

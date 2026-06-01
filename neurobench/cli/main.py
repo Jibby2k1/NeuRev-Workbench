@@ -5,12 +5,13 @@ import argparse
 from collections.abc import Sequence
 
 from neurobench.cli.dataset import add_dataset_subcommands, add_validate_subcommands
+from neurobench.cli.llm import add_llm_subcommands
 from neurobench.cli.report import add_report_subcommands
 from neurobench.cli.run import add_run_subcommands
+from neurobench.cli.workbench import add_workbench_subcommands
 
 
 COMMAND_GROUPS = {
-    "workbench": "Build and serve local review workbenches.",
     "review": "Create review batches and reports.",
     "metrics": "Compute scientific metrics.",
     "report": "Generate human-readable reports.",
@@ -29,6 +30,8 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", metavar="command")
     add_dataset_subcommands(subparsers)
     add_run_subcommands(subparsers)
+    add_workbench_subcommands(subparsers)
+    add_llm_subcommands(subparsers)
     add_report_subcommands(subparsers)
     add_validate_subcommands(subparsers)
     for name, help_text in COMMAND_GROUPS.items():

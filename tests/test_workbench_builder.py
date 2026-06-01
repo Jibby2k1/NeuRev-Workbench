@@ -54,13 +54,65 @@ class WorkbenchBuilderTests(unittest.TestCase):
             annotations = json.loads(paths["annotations"].read_text(encoding="utf-8"))
             architecture_runs = json.loads(paths["architecture_runs"].read_text(encoding="utf-8"))
 
-        self.assertIn("Neuron Annotation Workbench: synthetic_app", index)
+        self.assertIn("Neuron Annotation Workbench - synthetic_app", index)
+        self.assertIn("workbench.css?v=", index)
+        self.assertIn("workbench.js?v=", index)
         self.assertEqual(data["dataset"]["dataset_id"], "synthetic_app")
         self.assertIn("pipelineCatalog", data)
         self.assertEqual(annotations["schema_version"], 3)
         self.assertEqual(architecture_runs["runs"][0]["run_id"], "current_review_pipeline")
         self.assertTrue(paths["css"].name.endswith(".css"))
         self.assertTrue(paths["js"].name.endswith(".js"))
+
+    def test_resolve_build_inputs_uses_review_data_dataset_id_without_manifest(self):
+        from neurobench.workbench.builder import resolve_build_inputs
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            review_path = root / "review_data.json"
+            payload = _review_payload()
+            payload["dataset"] = {"dataset_id": "external_test"}
+            review_path.write_text(json.dumps(payload), encoding="utf-8")
+
+            inputs = resolve_build_inputs(
+                app_dir=root / "app",
+                review_data=review_path,
+                default_app_dir=root / "default_app",
+                default_review_data=root / "missing_review_data.json",
+                default_dataset_id="calcium_video_2",
+            )
+
+        self.assertEqual(inputs["dataset_id"], "external_test")
+        self.assertEqual(inputs["review_data_path"], review_path.resolve())
+
+    def test_build_workbench_preserves_review_dataset_without_manifest(self):
+        from neurobench.workbench.builder import build_workbench
+        from tools import build_neuron_workbench_v2 as legacy_builder
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            review_path = root / "review_data.json"
+            payload = _review_payload()
+            payload["dataset"] = {
+                "dataset_id": "external_test",
+                "raw_video": "Inputs/external_test/zebrafish_test.mp4",
+            }
+            review_path.write_text(json.dumps(payload), encoding="utf-8")
+
+            paths = build_workbench(
+                app_dir=root / "app",
+                review_data_path=review_path,
+                dataset_id="external_test",
+                html_template=legacy_builder.HTML_TEMPLATE,
+                css_fallback=legacy_builder.CSS,
+                js_fallback=legacy_builder.JS,
+            )
+            index = paths["index"].read_text(encoding="utf-8")
+            embedded = index.split('<script id="review-data" type="application/json">', 1)[1].split("</script>", 1)[0]
+            data = json.loads(embedded)
+
+        self.assertEqual(data["dataset"]["dataset_id"], "external_test")
+        self.assertEqual(data["dataset"]["raw_video"], "Inputs/external_test/zebrafish_test.mp4")
 
     def test_legacy_build_script_uses_package_builder(self):
         with tempfile.TemporaryDirectory() as tmp:

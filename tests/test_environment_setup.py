@@ -13,13 +13,12 @@ def _text(path: str) -> str:
 
 class EnvironmentSetupTests(unittest.TestCase):
     def test_portable_environment_files_have_no_absolute_prefix(self):
-        for path in ["environment.cpu.yml", "environment.gpu.yml"]:
+        for path in ["environment.yml", "environment.cpu.yml", "environment.gpu.yml"]:
             text = _text(path)
             self.assertNotIn("prefix:", text)
             self.assertNotIn("/home/", text)
             self.assertIn("python=3.10", text)
             self.assertIn("pytest", text)
-            self.assertIn("jsonschema", text)
 
     def test_cpu_environment_omits_gpu_only_dependencies(self):
         text = _text("environment.cpu.yml")

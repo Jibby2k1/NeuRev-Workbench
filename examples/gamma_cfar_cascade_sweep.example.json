@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "dataset_id": "calcium_rest_cropped",
+  "run_id": "gamma_cfar_cascade_grid_v1",
+  "label": "High-recall cascaded Gamma CFAR 36-run grid",
+  "pipeline": [
+    {
+      "id": "source",
+      "stage_id": "source_video_import",
+      "params": {
+        "source": "Outputs/GammaCFAR/calcium_rest_cropped/calcium_rest_cropped.npy"
+      }
+    },
+    {
+      "id": "highpass",
+      "stage_id": "temporal_highpass_gaussian",
+      "params": {
+        "sigma_frames": 6.0
+      }
+    },
+    {
+      "id": "smooth",
+      "stage_id": "spatial_gaussian",
+      "params": {
+        "sigma_px": 0.6
+      }
+    },
+    {
+      "id": "score",
+      "stage_id": "robust_positive_local_z",
+      "params": {
+        "local_radius_px": 11,
+        "epsilon": 1.0
+      }
+    },
+    {
+      "id": "cfar_small_ref",
+      "stage_id": "gamma_cfar",
+      "params": {
+        "pfa": 0.06,
+        "guard_px": 2,
+        "training_radius_px": 6
+      }
+    },
+    {
+      "id": "cfar_large_ref",
+      "stage_id": "gamma_cfar",
+      "params": {
+        "pfa": 0.06,
+        "guard_px": 3,
+        "training_radius_px": 12
+      },
+      "metadata": {
+        "previous_mask_step": "cfar_small_ref",
+        "combine_mode": "intersection"
+      }
+    },
+    {
+      "id": "components",
+      "stage_id": "component_filter",
+      "params": {
+        "seed_z": 3.2,
+        "min_area_px": 6,
+        "max_area_px": 260,
+        "support_min_frames": 12
+      }
+    },
+    {
+      "id": "traces",
+      "stage_id": "local_background_ring",
+      "params": {
+        "outer_radius_px": 15,
+        "neuropil_weight": 0.7
+      }
+    },
+    {
+      "id": "events",
+      "stage_id": "robust_kalman_positive_innovation",
+      "params": {
+        "event_threshold_z": 2.4,
+        "kalman_gain": 0.06,
+        "spike_gain": 0.008
+      }
+    },
+    {
+      "id": "rank",
+      "stage_id": "heuristic_priority_v1",
+      "params": {
+        "local_correlation_weight": 0.25,
+        "event_support_weight": 0.35,
+        "artifact_weight": -0.3
+      }
+    }
+  ],
+  "sweep": {
+    "id": "gamma_cfar_cascade_small_grid",
+    "label": "High-recall cascaded Gamma CFAR grid",
+    "parameters": [
+      {
+        "stage": "cfar_small_ref",
+        "param": "pfa",
+        "values": [
+          0.04,
+          0.06,
+          0.1,
+          0.14
+        ]
+      },
+      {
+        "stage": "cfar_large_ref",
+        "param": "training_radius_px",
+        "values": [
+          10,
+          14,
+          18
+        ]
+      },
+      {
+        "stage": "components",
+        "param": "support_min_frames",
+        "values": [
+          8,
+          12,
+          18
+        ]
+      }
+    ]
+  },
+  "artifacts": {}
+}

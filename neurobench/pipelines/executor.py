@@ -27,6 +27,7 @@ class DryRunStep:
     input_artifact: str
     output_artifact: str
     params: Mapping[str, Any]
+    metadata: Mapping[str, Any]
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -35,6 +36,7 @@ class DryRunStep:
             "input_artifact": self.input_artifact,
             "output_artifact": self.output_artifact,
             "params": dict(self.params),
+            "metadata": dict(self.metadata),
         }
 
 
@@ -51,7 +53,7 @@ def dry_run_pipeline(
     The dry run does not execute image processing code. It validates stage IDs,
     parameter defaults/ranges, stage availability, and optionally artifact flow.
     """
-    registry = registry or default_stage_registry()
+    registry = registry or default_stage_registry(runner_stage_ids=tuple(_STAGE_RUNNERS))
     spec = _as_spec(spec_or_pipeline)
     pipeline = normalize_pipeline(spec.get("pipeline"), require_structured=True)
     steps = registry.validate_steps(pipeline, require_executable=require_executable)
@@ -74,6 +76,10 @@ def dry_run_pipeline(
                 input_artifact=input_artifact,
                 output_artifact=output_artifact,
                 params=dict(step.get("params") or {}),
+                metadata={
+                    **dict(step.get("metadata") or {}),
+                    "expected_qc_outputs": list(stage.expected_qc_outputs),
+                },
             )
         )
 
@@ -138,6 +144,8 @@ def execute_pipeline(
             output_key, output_path = runner(step, artifacts, store)
             if output_key:
                 artifacts[output_key] = output_path
+                artifacts[f"{step['step_id']}:{output_key}"] = output_path
+                artifacts[str(step["step_id"])] = output_path
             logger.stage_completed(stage_id, step_id=step["step_id"], output_artifact=output_key)
         pipeline_run.status = "completed"
         pipeline_run.completed_at = datetime.now(timezone.utc).isoformat()
@@ -231,7 +239,7 @@ def _run_robust_positive_local_z(
     store: ArtifactStore,
 ) -> tuple[str, Path]:
     np = _load_numpy()
-    source = artifacts.get("highpass_video") or artifacts.get("raw_video")
+    source = artifacts.get("denoised_video") or artifacts.get("highpass_video") or artifacts.get("raw_video")
     if source is None:
         raise ValueError(f"Pipeline step '{step['step_id']}' requires missing artifact 'highpass_video'.")
     video = _load_npy(source).astype(np.float32, copy=False)
@@ -251,13 +259,174 @@ def _run_robust_positive_local_z(
     return "z_stack", out
 
 
+def _run_event_preserving_noise_suppression(
+    step: Mapping[str, Any],
+    artifacts: Mapping[str, Path],
+    store: ArtifactStore,
+) -> tuple[str, Path]:
+    np = _load_numpy()
+    source = artifacts.get("highpass_video") or artifacts.get("raw_video")
+    if source is None:
+        raise ValueError(f"Pipeline step '{step['step_id']}' requires missing artifact 'highpass_video'.")
+    video = _load_npy(source).astype(np.float32, copy=False)
+    params = step["params"]
+    sigma_px = float(params.get("spatial_sigma_px", 1.0))
+    temporal_window = max(1, int(params.get("temporal_window_frames", 3)))
+    threshold_z = float(params.get("threshold_z", 6.0))
+    denoised = video.astype(np.float32, copy=True)
+    try:
+        from scipy.ndimage import gaussian_filter, median_filter
+
+        if sigma_px > 0:
+            denoised = gaussian_filter(denoised, sigma=(0.0, sigma_px, sigma_px), mode="nearest").astype(np.float32, copy=False)
+        if temporal_window > 1:
+            if temporal_window % 2 == 0:
+                temporal_window += 1
+            temporal_median = median_filter(video, size=(temporal_window, 1, 1), mode="nearest")
+            residual = video - temporal_median
+            frame_scale = np.median(np.abs(residual), axis=(1, 2), keepdims=True) * 1.4826 + 1e-6
+            impulse = np.abs(residual) > threshold_z * frame_scale
+            denoised[impulse] = temporal_median[impulse]
+    except ModuleNotFoundError:
+        pass
+    out = store.artifact_path("preprocessing", "denoised_video.npy")
+    np.save(out, denoised.astype(np.float32, copy=False))
+    store.register_file(
+        out,
+        artifact_id="denoised_video.v1",
+        kind="denoised_video",
+        producer_stage=str(step["stage_id"]),
+        summary={"shape": [int(value) for value in denoised.shape], "spatial_sigma_px": sigma_px, "temporal_window_frames": temporal_window},
+    )
+    return "denoised_video", out
+
+
+def _run_adaptive_ewma_z(
+    step: Mapping[str, Any],
+    artifacts: Mapping[str, Path],
+    store: ArtifactStore,
+) -> tuple[str, Path]:
+    np = _load_numpy()
+    source = artifacts.get("denoised_video") or artifacts.get("highpass_video") or _require_artifact(artifacts, "raw_video", step)
+    video = _load_npy(source).astype(np.float32, copy=False)
+    params = step["params"]
+    alpha = float(params.get("alpha", 0.02))
+    threshold_z = float(params.get("threshold_z", 3.0))
+    epsilon = float(params.get("epsilon", 1.0))
+    if not 0 < alpha <= 1:
+        raise ValueError("adaptive_ewma_z alpha must be in (0, 1].")
+    mean = video[0].astype(np.float32, copy=True)
+    var = np.ones_like(mean, dtype=np.float32) * float(np.var(video[0]) + epsilon)
+    z_stack = np.zeros_like(video, dtype=np.float32)
+    for index, frame in enumerate(video):
+        std = np.sqrt(np.maximum(var, 0.0) + epsilon)
+        z_stack[index] = np.maximum((frame - mean) / std, 0.0)
+        delta = frame - mean
+        mean = mean + alpha * delta
+        var = (1.0 - alpha) * (var + alpha * delta * delta)
+    out = store.artifact_path("preprocessing", "adaptive_ewma_z_stack.npy")
+    np.save(out, z_stack.astype(np.float32, copy=False))
+    store.register_file(
+        out,
+        artifact_id="adaptive_ewma_z_stack.v1",
+        kind="z_stack",
+        producer_stage=str(step["stage_id"]),
+        summary={
+            "shape": [int(value) for value in z_stack.shape],
+            "alpha": alpha,
+            "threshold_z": threshold_z,
+            "active_fraction": float(np.mean(z_stack >= threshold_z)),
+        },
+    )
+    return "z_stack", out
+
+
+def _run_candidate_event_pipeline(
+    step: Mapping[str, Any],
+    artifacts: Mapping[str, Path],
+    store: ArtifactStore,
+) -> tuple[str, Path]:
+    np = _load_numpy()
+    source = _require_artifact(artifacts, "z_stack", step)
+    z_stack = _load_npy(source).astype(np.float32, copy=False)
+    params = step["params"]
+    threshold = float(params.get("event_threshold_z", params.get("threshold_z", 2.4)))
+    min_area = int(params.get("min_area_px", 4))
+    mask = z_stack >= threshold
+    events: list[dict[str, Any]] = []
+    try:
+        from scipy import ndimage
+
+        for frame_index, frame_mask in enumerate(mask):
+            labels, count = ndimage.label(frame_mask)
+            objects = ndimage.find_objects(labels)
+            for label_index, slices in enumerate(objects, start=1):
+                if slices is None:
+                    continue
+                component = labels[slices] == label_index
+                area = int(np.count_nonzero(component))
+                if area < min_area:
+                    continue
+                ys, xs = np.nonzero(component)
+                y0, x0 = slices[0].start, slices[1].start
+                abs_xs = xs + x0
+                abs_ys = ys + y0
+                peak = float(np.max(z_stack[frame_index][slices][component]))
+                events.append(
+                    {
+                        "event_id": f"event_{len(events) + 1:04d}",
+                        "frame": int(frame_index),
+                        "x": float(np.mean(abs_xs)),
+                        "y": float(np.mean(abs_ys)),
+                        "area_px": area,
+                        "peak_z": peak,
+                    }
+                )
+    except ModuleNotFoundError:
+        frame_indices, ys, xs = np.nonzero(mask)
+        for frame_index, y, x in zip(frame_indices, ys, xs):
+            events.append(
+                {
+                    "event_id": f"event_{len(events) + 1:04d}",
+                    "frame": int(frame_index),
+                    "x": float(x),
+                    "y": float(y),
+                    "area_px": 1,
+                    "peak_z": float(z_stack[frame_index, y, x]),
+                }
+            )
+    out = store.artifact_path("events", "candidate_event_components.json")
+    out.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "event_threshold_z": threshold,
+                "min_area_px": min_area,
+                "events": events,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    store.register_file(
+        out,
+        artifact_id="candidate_event_components.v1",
+        kind="candidate_events",
+        producer_stage=str(step["stage_id"]),
+        summary={"event_count": len(events), "event_threshold_z": threshold, "min_area_px": min_area},
+    )
+    return "candidate_events", out
+
+
 def _run_spatial_gaussian(
     step: Mapping[str, Any],
     artifacts: Mapping[str, Path],
     store: ArtifactStore,
 ) -> tuple[str, Path]:
     np = _load_numpy()
-    source = _require_artifact(artifacts, "highpass_video", step)
+    source = artifacts.get("denoised_video") or _require_artifact(artifacts, "highpass_video", step)
     video = _load_npy(source).astype(np.float32, copy=False)
     sigma = float(step["params"].get("sigma_px", 0.8))
     if sigma > 0:
@@ -354,7 +523,27 @@ def _run_gamma_cfar(
         device=_resolved_device(store),
     )
     mask = result["mask"].astype(np.uint8, copy=False)
-    out = store.artifact_path("candidates", "candidate_mask.npy")
+    metadata = dict(step.get("metadata") or {})
+    previous_step = metadata.get("previous_mask_step") or params.get("previous_mask_step")
+    combine_mode = str(metadata.get("combine_mode") or params.get("combine_mode") or "replace")
+    if previous_step:
+        previous_path = artifacts.get(f"{previous_step}:candidate_mask") or artifacts.get(str(previous_step))
+        if previous_path is None:
+            raise ValueError(f"Pipeline step '{step['step_id']}' references missing previous mask step '{previous_step}'.")
+        previous_mask = _load_npy(previous_path).astype(bool, copy=False)
+        if previous_mask.shape != mask.shape:
+            raise ValueError(
+                f"Pipeline step '{step['step_id']}' previous mask shape {previous_mask.shape} does not match {mask.shape}."
+            )
+        if combine_mode == "intersection":
+            mask = (previous_mask & mask.astype(bool, copy=False)).astype(np.uint8, copy=False)
+        elif combine_mode == "union":
+            mask = (previous_mask | mask.astype(bool, copy=False)).astype(np.uint8, copy=False)
+        elif combine_mode == "replace":
+            pass
+        else:
+            raise ValueError(f"Unsupported CFAR combine_mode '{combine_mode}'. Use replace, intersection, or union.")
+    out = store.artifact_path("candidates", f"{_safe_step_name(str(step['step_id']))}_candidate_mask.npy")
     np.save(out, mask)
     summary: dict[str, Any] = {
         "shape": [int(value) for value in mask.shape],
@@ -362,13 +551,18 @@ def _run_gamma_cfar(
         "guard_px": guard_px,
         "training_radius_px": training_radius_px,
         "threshold_z": float(result["threshold_z"]),
-        "active_fraction": float(result["active_fraction"]),
+        "active_fraction": float(np.mean(mask)),
+        "combine_mode": combine_mode,
     }
+    if previous_step:
+        summary["previous_mask_step"] = str(previous_step)
     if "update_alpha" in params:
         summary["update_alpha"] = float(params["update_alpha"])
+    latest_out = store.artifact_path("candidates", "candidate_mask.npy")
+    np.save(latest_out, mask)
     store.register_file(
         out,
-        artifact_id="candidate_mask.v1",
+        artifact_id=f"{_safe_step_name(str(step['step_id']))}_candidate_mask.v1",
         kind="candidate_mask",
         producer_stage=str(step["stage_id"]),
         summary=summary,
@@ -378,14 +572,28 @@ def _run_gamma_cfar(
 
 def _run_component_filter(step: Mapping[str, Any], artifacts: Mapping[str, Path], store: ArtifactStore) -> tuple[str, Path]:
     np = _load_numpy()
-    source = _require_artifact(artifacts, "z_stack", step)
-    z_stack = _load_npy(source).astype(np.float32, copy=False)
     params = step["params"]
     seed_z = float(params.get("seed_z", 2.0))
-    min_area = int(params.get("min_area_px", 8))
+    min_area = int(params.get("min_area_px", 4))
     max_area = int(params.get("max_area_px", 260))
-    projection = np.max(z_stack, axis=0)
-    mask = projection >= seed_z
+    support_min_frames = max(1, int(params.get("support_min_frames", 1)))
+    if "candidate_mask" in artifacts:
+        source = _require_artifact(artifacts, "candidate_mask", step)
+        candidate_mask = _load_npy(source).astype(bool, copy=False)
+        projection = np.sum(candidate_mask.astype(np.float32, copy=False), axis=0)
+        z_stack = _load_npy(artifacts["z_stack"]).astype(np.float32, copy=False) if "z_stack" in artifacts else None
+        if z_stack is not None:
+            evidence_projection = np.max(z_stack, axis=0)
+            mask = (projection >= float(support_min_frames)) & (evidence_projection >= seed_z)
+        else:
+            mask = projection >= float(support_min_frames)
+        evidence_source = "candidate_mask"
+    else:
+        source = _require_artifact(artifacts, "z_stack", step)
+        z_stack = _load_npy(source).astype(np.float32, copy=False)
+        projection = np.max(z_stack, axis=0)
+        mask = projection >= seed_z
+        evidence_source = "z_stack"
     try:
         from scipy import ndimage
     except ModuleNotFoundError as exc:
@@ -404,7 +612,10 @@ def _run_component_filter(step: Mapping[str, Any], artifacts: Mapping[str, Path]
         y0, x0 = slices[0].start, slices[1].start
         abs_xs = xs + x0
         abs_ys = ys + y0
-        peak = float(np.max(projection[slices][component]))
+        if z_stack is not None:
+            peak = float(np.max(np.max(z_stack, axis=0)[slices][component]))
+        else:
+            peak = float(np.max(projection[slices][component]))
         candidates.append(
             {
                 "id": f"roi_{len(candidates) + 1:03d}",
@@ -422,9 +633,191 @@ def _run_component_filter(step: Mapping[str, Any], artifacts: Mapping[str, Path]
         artifact_id="roi_candidates.v1",
         kind="roi_candidates",
         producer_stage=str(step["stage_id"]),
-        summary={"count": len(candidates), "seed_z": seed_z, "min_area_px": min_area, "max_area_px": max_area},
+        summary={
+            "count": len(candidates),
+            "seed_z": seed_z,
+            "min_area_px": min_area,
+            "max_area_px": max_area,
+            "support_min_frames": support_min_frames,
+            "evidence_source": evidence_source,
+        },
     )
     return "roi_candidates", out
+
+
+def _run_local_background_ring(
+    step: Mapping[str, Any],
+    artifacts: Mapping[str, Path],
+    store: ArtifactStore,
+) -> tuple[str, Path]:
+    np = _load_numpy()
+    source = artifacts.get("denoised_video") or artifacts.get("highpass_video") or artifacts.get("raw_video")
+    if source is None:
+        raise ValueError(f"Pipeline step '{step['step_id']}' requires a video artifact for trace extraction.")
+    video = _load_npy(source).astype(np.float32, copy=False)
+    candidate_path = _require_artifact(artifacts, "roi_candidates", step)
+    candidates = json.loads(candidate_path.read_text(encoding="utf-8")).get("candidates", [])
+    params = step["params"]
+    outer_radius = max(1, int(params.get("outer_radius_px", 15)))
+    neuropil_weight = float(params.get("neuropil_weight", 0.7))
+    y_grid, x_grid = np.mgrid[0 : video.shape[1], 0 : video.shape[2]]
+    traces = []
+    for candidate in candidates:
+        cx = float(candidate.get("x", 0.0))
+        cy = float(candidate.get("y", 0.0))
+        area = max(1.0, float(candidate.get("area_px", 9.0)))
+        inner_radius = max(1.0, float(np.sqrt(area / np.pi)))
+        distances = np.sqrt((x_grid - cx) ** 2 + (y_grid - cy) ** 2)
+        roi_mask = distances <= inner_radius
+        ring_mask = (distances > inner_radius + 1.0) & (distances <= max(inner_radius + 2.0, float(outer_radius)))
+        if not np.any(roi_mask):
+            continue
+        raw_trace = video[:, roi_mask].mean(axis=1)
+        if np.any(ring_mask):
+            background_trace = video[:, ring_mask].mean(axis=1)
+        else:
+            background_trace = np.zeros_like(raw_trace)
+        corrected = raw_trace - neuropil_weight * background_trace
+        traces.append(
+            {
+                "roi_id": str(candidate.get("id") or candidate.get("candidate_id") or f"roi_{len(traces) + 1:03d}"),
+                "x": cx,
+                "y": cy,
+                "area_px": area,
+                "inner_radius_px": inner_radius,
+                "outer_radius_px": outer_radius,
+                "neuropil_weight": neuropil_weight,
+                "raw_trace": [float(value) for value in raw_trace],
+                "background_trace": [float(value) for value in background_trace],
+                "corrected_trace": [float(value) for value in corrected],
+            }
+        )
+    out = store.artifact_path("traces", "roi_traces.json")
+    out.write_text(json.dumps({"schema_version": 1, "traces": traces}, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    store.register_file(
+        out,
+        artifact_id="roi_traces.v1",
+        kind="roi_traces",
+        producer_stage=str(step["stage_id"]),
+        summary={"count": len(traces), "outer_radius_px": outer_radius, "neuropil_weight": neuropil_weight},
+    )
+    return "roi_traces", out
+
+
+def _run_trace_event_scoring(
+    step: Mapping[str, Any],
+    artifacts: Mapping[str, Path],
+    store: ArtifactStore,
+) -> tuple[str, Path]:
+    payload = _trace_events_payload(step, artifacts, mode="robust_z")
+    out = store.artifact_path("events", "candidate_events.json")
+    out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    store.register_file(
+        out,
+        artifact_id="candidate_events.v1",
+        kind="candidate_events",
+        producer_stage=str(step["stage_id"]),
+        summary={"event_count": len(payload["events"]), "roi_count": len(payload["roi_event_counts"]), "mode": "robust_z"},
+    )
+    return "candidate_events", out
+
+
+def _run_robust_kalman_positive_innovation(
+    step: Mapping[str, Any],
+    artifacts: Mapping[str, Path],
+    store: ArtifactStore,
+) -> tuple[str, Path]:
+    payload = _trace_events_payload(step, artifacts, mode="robust_kalman")
+    out = store.artifact_path("events", "kalman_candidate_events.json")
+    out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    store.register_file(
+        out,
+        artifact_id="kalman_candidate_events.v1",
+        kind="candidate_events",
+        producer_stage=str(step["stage_id"]),
+        summary={"event_count": len(payload["events"]), "roi_count": len(payload["roi_event_counts"]), "mode": "robust_kalman"},
+    )
+    return "candidate_events", out
+
+
+def _trace_events_payload(step: Mapping[str, Any], artifacts: Mapping[str, Path], *, mode: str) -> dict[str, Any]:
+    np = _load_numpy()
+    traces_path = _require_artifact(artifacts, "roi_traces", step)
+    traces = json.loads(traces_path.read_text(encoding="utf-8")).get("traces", [])
+    params = step["params"]
+    threshold = float(params.get("event_threshold_z", params.get("threshold_z", 2.4)))
+    events: list[dict[str, Any]] = []
+    counts: dict[str, int] = {}
+    for trace_row in traces:
+        roi_id = str(trace_row.get("roi_id") or "")
+        trace = np.asarray(trace_row.get("corrected_trace") or trace_row.get("raw_trace") or [], dtype=np.float32)
+        if not roi_id or trace.size == 0:
+            continue
+        if mode == "robust_kalman":
+            score = _kalman_positive_innovation_score(
+                trace,
+                kalman_gain=float(params.get("kalman_gain", 0.06)),
+                spike_gain=float(params.get("spike_gain", 0.008)),
+                negative_gain=float(params.get("negative_gain", 0.11)),
+            )
+        else:
+            center = float(np.median(trace))
+            scale = float(1.4826 * np.median(np.abs(trace - center)) + 1e-6)
+            score = np.maximum((trace - center) / scale, 0.0)
+        frames = _local_maxima(score, threshold)
+        counts[roi_id] = len(frames)
+        for frame in frames:
+            events.append(
+                {
+                    "roi_id": roi_id,
+                    "frame": int(frame),
+                    "score": float(score[frame]),
+                    "amplitude": float(trace[frame]),
+                    "mode": mode,
+                }
+            )
+    return {
+        "schema_version": 1,
+        "event_threshold_z": threshold,
+        "mode": mode,
+        "events": events,
+        "roi_event_counts": counts,
+    }
+
+
+def _kalman_positive_innovation_score(trace, *, kalman_gain: float, spike_gain: float, negative_gain: float):
+    np = _load_numpy()
+    baseline = float(trace[0])
+    innovations = np.zeros_like(trace, dtype=np.float32)
+    scale_values: list[float] = []
+    for index, value in enumerate(trace):
+        innovation = float(value - baseline)
+        innovations[index] = max(0.0, innovation)
+        scale_values.append(abs(innovation))
+        if innovation > 0:
+            baseline += spike_gain * innovation
+        else:
+            baseline += negative_gain * innovation
+        baseline += kalman_gain * (float(value) - baseline)
+    scale = float(1.4826 * np.median(np.asarray(scale_values, dtype=np.float32)) + 1e-6)
+    return innovations / scale
+
+
+def _local_maxima(score, threshold: float) -> list[int]:
+    frames: list[int] = []
+    for index, value in enumerate(score):
+        if float(value) < threshold:
+            continue
+        left = float(score[index - 1]) if index > 0 else float("-inf")
+        right = float(score[index + 1]) if index + 1 < len(score) else float("-inf")
+        if float(value) >= left and float(value) >= right:
+            frames.append(index)
+    return frames
+
+
+def _safe_step_name(value: str) -> str:
+    cleaned = "".join(ch if ch.isalnum() or ch in {"_", "-", "."} else "_" for ch in value).strip("._-")
+    return cleaned or "step"
 
 
 def _run_heuristic_priority_v1(
@@ -462,6 +855,39 @@ def _run_heuristic_priority_v1(
     return "ranked_candidates", out
 
 
+def _run_generate_neuron_review_app(
+    step: Mapping[str, Any],
+    artifacts: Mapping[str, Path],
+    store: ArtifactStore,
+) -> tuple[str, Path]:
+    upstream = (
+        artifacts.get("ranked_candidates")
+        or artifacts.get("candidate_events")
+        or artifacts.get("roi_candidates")
+        or artifacts.get("z_stack")
+    )
+    if upstream is None:
+        raise ValueError(f"Pipeline step '{step['step_id']}' requires candidate artifacts for review app generation.")
+    payload = {
+        "schema_version": 1,
+        "stage_id": str(step["stage_id"]),
+        "step_id": str(step["step_id"]),
+        "status": "manifest_only",
+        "message": "The local executor recorded review-app intent. Full dashboard generation is handled by the workbench Generate View job.",
+        "source_artifact": str(upstream),
+    }
+    out = store.artifact_path("review_app", "review_app_manifest.json")
+    out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    store.register_file(
+        out,
+        artifact_id="review_app_manifest.v1",
+        kind="review_app",
+        producer_stage=str(step["stage_id"]),
+        summary={"status": "manifest_only", "source_artifact": upstream.name},
+    )
+    return "review_app", out
+
+
 def _require_artifact(artifacts: Mapping[str, Path], key: str, step: Mapping[str, Any]) -> Path:
     if key not in artifacts:
         raise ValueError(f"Pipeline step '{step['step_id']}' requires missing artifact '{key}'.")
@@ -484,11 +910,18 @@ def _record_input_checksum(store: ArtifactStore, record: Mapping[str, Any]) -> N
 _STAGE_RUNNERS = {
     "source_video_import": _run_source_video_import,
     "temporal_highpass_gaussian": _run_temporal_highpass_gaussian,
+    "event_preserving_noise_suppression": _run_event_preserving_noise_suppression,
     "robust_positive_local_z": _run_robust_positive_local_z,
+    "adaptive_ewma_z": _run_adaptive_ewma_z,
     "spatial_gaussian": _run_spatial_gaussian,
     "rigid_shift_estimate": _run_rigid_shift_estimate,
     "gamma_cfar": _run_gamma_cfar,
     "adaptive_gamma_cfar": _run_gamma_cfar,
+    "candidate_event_pipeline": _run_candidate_event_pipeline,
     "component_filter": _run_component_filter,
+    "local_background_ring": _run_local_background_ring,
+    "trace_event_scoring": _run_trace_event_scoring,
+    "robust_kalman_positive_innovation": _run_robust_kalman_positive_innovation,
     "heuristic_priority_v1": _run_heuristic_priority_v1,
+    "generate_neuron_review_app": _run_generate_neuron_review_app,
 }

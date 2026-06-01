@@ -90,6 +90,13 @@ Data helpers for Neurobench.
 - Signature: `as_video_store(video: Any) -> VideoStore`
 - Summary: Return ``video`` as a ``VideoStore`` without copying when possible.
 
+### `build_dataset_intake_manifest`
+
+- Kind: `function`
+- Source: `neurobench.data.intake`
+- Signature: `build_dataset_intake_manifest(*, dataset_id: str, raw_video: str | Path, app_dir: str | Path | None=None, frame_rate_hz: float | None=None, pixel_size_microns: float | None=None, source_template: str='local', name: str | None=None, modality: str='light_sheet_calcium', indicator: str='GCaMP') -> dict[str, Any]`
+- Summary: Create a manifest stub for a dataset before heavy processing runs.
+
 ### `checksum_file`
 
 - Kind: `function`
@@ -118,6 +125,13 @@ Data helpers for Neurobench.
 - Signature: `dataset_input_checksums(manifest: Mapping[str, Any] | Any, *, manifest_path: str | Path | None=None, path_keys: Iterable[str] | None=None, require_exists: bool=True) -> list[dict[str, Any]]`
 - Summary: Compute checksum records for input-like paths in a dataset manifest.
 
+### `dataset_intake_report`
+
+- Kind: `function`
+- Source: `neurobench.data.intake`
+- Signature: `dataset_intake_report(manifest: Mapping[str, Any], *, base_dir: str | Path | None=None) -> dict[str, Any]`
+- Summary: No docstring summary available.
+
 ### `generate_synthetic_calcium_dataset`
 
 - Kind: `function`
@@ -132,12 +146,26 @@ Data helpers for Neurobench.
 - Signature: `input_path_keys(paths: Mapping[str, Any], *, path_keys: Iterable[str] | None=None) -> list[str]`
 - Summary: Select manifest path keys that should be treated as immutable inputs.
 
+### `intake_checks`
+
+- Kind: `function`
+- Source: `neurobench.data.intake`
+- Signature: `intake_checks(manifest: Mapping[str, Any], *, base_dir: str | Path | None=None) -> list[IntakeCheck]`
+- Summary: Return conservative readiness checks for a dataset manifest stub.
+
 ### `open_video`
 
 - Kind: `function`
 - Source: `neurobench.data.video`
 - Signature: `open_video(path: str | Path, *, mmap: bool=True) -> VideoStore`
 - Summary: Open a supported video path as a ``VideoStore``.
+
+### `PUBLIC_DATASET_TEMPLATES`
+
+- Kind: `object`
+- Source: `neurobench.data`
+- Signature: `PUBLIC_DATASET_TEMPLATES`
+- Summary: Exported by __all__.
 
 ### `render_dataset_qc_markdown`
 
@@ -507,7 +535,7 @@ Pipeline execution and artifact helpers.
 
 - Kind: `function`
 - Source: `neurobench.pipelines.stages`
-- Signature: `default_stage_registry() -> StageRegistry`
+- Signature: `default_stage_registry(*, runner_stage_ids: Sequence[str] | None=None) -> StageRegistry`
 - Summary: No docstring summary available.
 
 ### `DeviceSpec`
@@ -649,7 +677,7 @@ Realtime helpers for online Neurobench experiments.
 
 ## `neurobench.reports`
 
-Report rendering helpers.
+Report rendering helpers with lazy imports for optional dependencies.
 
 ### `build_metrics_report_from_pipeline_run`
 
@@ -672,6 +700,13 @@ Report rendering helpers.
 - Signature: `build_run_comparison_report(reports: Sequence[MetricsReport | Mapping[str, Any]], *, metric_specs: Sequence[tuple[str, str, str]]=DEFAULT_COMPARISON_METRICS) -> dict[str, Any]`
 - Summary: Build a structured comparison from multiple MetricsReport objects.
 
+### `build_sweep_evidence_report`
+
+- Kind: `function`
+- Source: `neurobench.reports.sweep_evidence`
+- Signature: `build_sweep_evidence_report(app_dir: str | Path, *, architecture_runs_path: str | Path | None=None, annotations_path: str | Path | None=None, stability_radius_px: float=DEFAULT_STABILITY_RADIUS_PX, stability_min_support_runs: int=DEFAULT_STABILITY_MIN_SUPPORT_RUNS, stencil_edge_margin_px: float=DEFAULT_STENCIL_EDGE_MARGIN_PX, target_roi_range: tuple[int, int]=DEFAULT_TARGET_ROI_RANGE, top_n: int=8) -> dict[str, Any]`
+- Summary: Build a reproducible metric report for all generated sweep runs in an app.
+
 ### `render_metrics_report_markdown`
 
 - Kind: `function`
@@ -686,6 +721,13 @@ Report rendering helpers.
 - Signature: `render_run_comparison_markdown(comparison: Mapping[str, Any]) -> str`
 - Summary: Render a structured run comparison to Markdown.
 
+### `render_sweep_evidence_markdown`
+
+- Kind: `function`
+- Source: `neurobench.reports.sweep_evidence`
+- Signature: `render_sweep_evidence_markdown(report: Mapping[str, Any]) -> str`
+- Summary: Render a compact professor-facing Markdown summary.
+
 ### `write_metrics_report_markdown`
 
 - Kind: `function`
@@ -699,6 +741,13 @@ Report rendering helpers.
 - Source: `neurobench.reports.comparison`
 - Signature: `write_run_comparison_markdown(comparison: Mapping[str, Any], path: str | Path) -> Path`
 - Summary: No docstring summary available.
+
+### `write_sweep_evidence_report`
+
+- Kind: `function`
+- Source: `neurobench.reports.sweep_evidence`
+- Signature: `write_sweep_evidence_report(app_dir: str | Path, *, output: str | Path | None=None, markdown_output: str | Path | None=None, architecture_runs_path: str | Path | None=None, annotations_path: str | Path | None=None, attach: bool=True, **kwargs: Any) -> dict[str, Any]`
+- Summary: Write JSON and Markdown sweep evidence reports, optionally attaching them to the manifest.
 
 ## `neurobench.review`
 
@@ -761,6 +810,13 @@ Workbench package helpers and static assets.
 - Signature: `architecture_runs_from_review(data: Mapping[str, Any], review_data_path: Path, dataset_id: str) -> dict[str, Any]`
 - Summary: Create a baseline architecture-run manifest from a review_data payload.
 
+### `attach_pipeline_intermediates`
+
+- Kind: `function`
+- Source: `neurobench.workbench.intermediates`
+- Signature: `attach_pipeline_intermediates(*, pipeline_run_path: Path, architecture_runs_path: Path, run_id: str | None=None, out_root: Path | None=None, frame_pattern: str='frame_%03d.png', include_kinds: set[str] | None=None) -> dict[str, Any]`
+- Summary: No docstring summary available.
+
 ### `build_workbench`
 
 - Kind: `function`
@@ -789,6 +845,13 @@ Workbench package helpers and static assets.
 - Signature: `environment_report() -> dict[str, Any]`
 - Summary: No docstring summary available.
 
+### `export_intermediate_stack`
+
+- Kind: `function`
+- Source: `neurobench.workbench.intermediates`
+- Signature: `export_intermediate_stack(*, input_path: Path, input_kind: str, out_dir: Path, stage_id: str, step_id: str | None=None, label: str | None=None, description: str | None=None, run_id: str | None=None, architecture_runs_path: Path | None=None, frame_pattern: str='frame_%03d.png') -> dict[str, Any]`
+- Summary: No docstring summary available.
+
 ### `generated_dataset_manifest`
 
 - Kind: `function`
@@ -802,6 +865,13 @@ Workbench package helpers and static assets.
 - Source: `neurobench.workbench.server`
 - Signature: `class GenerationJob(*, app_dir: Path, payload: dict[str, Any])`
 - Summary: Mutable status record for a generated workbench run.
+
+### `import_llm_proposals_into_app`
+
+- Kind: `function`
+- Source: `neurobench.workbench.server`
+- Signature: `import_llm_proposals_into_app(app_dir: Path, payload: dict[str, Any]) -> dict[str, Any]`
+- Summary: Validate and merge an LLM proposal set into a workbench architecture manifest.
 
 ### `JobRegistry`
 

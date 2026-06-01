@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Neuron Annotation Workbench - {dataset_id}</title>
+<link rel="stylesheet" href="workbench.css?v={asset_version}">
+</head>
+<body>
+<div class="app booting" id="appRoot">
+  <main class="stage reviewOnly">
+    <div class="topbar">
+      <h1>Neurobench</h1>
+      <span class="pageContext">Review · {dataset_id}</span>
+      <nav class="navTabs">
+        <a id="homeTab" data-nav-page="home" href="#home">Home</a>
+        <a id="qcTab" data-nav-page="qc" href="#data">Data</a>
+        <a id="architectureTab" data-nav-page="architecture" href="#pipelines">Pipelines</a>
+        <a id="experimentsTab" data-nav-page="experiments" href="#experiments">Experiment Lab</a>
+        <a id="reviewTab" data-nav-page="review" href="#review">Review</a>
+        <a id="metricsTab" data-nav-page="metrics" href="#progress">Progress</a>
+        <a id="reportTab" data-nav-page="report" href="#report">Report</a>
+      </nav>
+      <label class="modeToggle">Mode
+        <select id="uiMode" class="uiModeSelect">
+          <option value="guided">Guided</option>
+          <option value="standard">Standard</option>
+          <option value="expert">Expert</option>
+        </select>
+      </label>
+      <label class="modeToggle">Theme
+        <select class="themeSelect" aria-label="Theme">
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </label>
+      <label class="reviewerField">Reviewer <input id="reviewerIdInput" type="text" placeholder="initials"></label>
+      <button id="nextMissingReviewerBtn" class="advancedOnly" type="button">Next Missing Reviewer</button>
+      <button id="stampSelectedReviewerBtn" class="advancedOnly" type="button">Stamp Selected</button>
+      <button id="stampMissingReviewerBtn" class="advancedOnly" type="button">Stamp Missing</button>
+      <span id="saveState" class="saveState">loading</span>
+    </div>
+    <div class="nextBestActionShell" data-next-action></div>
+    <nav class="reviewSubnav" aria-label="Review views">
+      <a id="reviewInspectSubtab" href="#review">Inspect</a>
+      <a id="reviewStencilSubtab" href="#review-stencil">Stencil</a>
+      <a id="reviewOverlapSubtab" href="#candidate-overlay">Candidate Overlay</a>
+      <a id="reviewTriageSubtab" href="#review-triage">Triage</a>
+    </nav>
+    <div class="toolbar runSyncBar">
+      <label>Sweep <select id="activeRunSelect"></select></label>
+      <span id="activeRunStatus" class="runSyncStatus">loading run status</span>
+      <span id="activeRunDetail" class="runSyncStatus"></span>
+      <label>Backend
+        <select id="generationBackend">
+          <option value="auto">Auto</option>
+          <option value="fiji_groovy">Fiji/Groovy</option>
+          <option value="python_gpu">Python GPU</option>
+        </select>
+      </label>
+      <button id="loadRunReviewBtn">Load Review</button>
+      <button id="openRunViewBtn">Open View</button>
+      <button id="previewRunViewBtn">Generate Preview</button>
+      <button id="generateRunViewBtn">Generate View</button>
+      <button id="unlockGenerationBtn">Unlock Generation</button>
+      <button id="refreshRunBtn">Refresh</button>
+    </div>
+    <div id="runGeneratePanel" class="runGeneratePanel hidden advancedOnly"></div>
+    <section class="reviewProjectionStrip" aria-label="Raw diagnostic projections">
+      <figure><img src="diagnostics/raw_mean.png" alt="Raw mean projection"><figcaption>Raw mean</figcaption></figure>
+      <figure><img src="diagnostics/raw_max.png" alt="Raw max projection"><figcaption>Raw max</figcaption></figure>
+      <figure><img src="diagnostics/temporal_std.png" alt="Temporal standard deviation projection"><figcaption>Temporal std</figcaption></figure>
+      <figure><img src="diagnostics/z_max_sample.png" alt="Positive z maximum sample"><figcaption>Z max</figcaption></figure>
+      <figure><a href="#candidate-overlay"><img src="diagnostics/recommended_candidate_overlay.png" alt="Recommended candidate overlay"><figcaption>Candidate overlay</figcaption></a></figure>
+    </section>
+    <section id="reviewStencilPage" class="reviewUtilityPage hidden">
+      <div class="runCardHeader">
+        <div>
+          <h2>Anatomy Stencil</h2>
+          <p class="hint">Draw the expected hindbrain region on raw projections. The saved polygon is used as an anatomy prior for mask-aware inspection.</p>
+        </div>
+        <span id="stencilStatus" class="runSyncStatus">loading</span>
+      </div>
+      <div class="toolbar compactToolGroup">
+        <label>Projection
+          <select id="stencilProjectionSelect">
+            <option value="raw_max.png">Raw max</option>
+            <option value="raw_mean.png">Raw mean</option>
+            <option value="temporal_std.png">Temporal std</option>
+            <option value="z_max_sample.png">Z max sample</option>
+            <option value="recommended_candidate_overlay.png">Candidate overlay</option>
+          </select>
+        </label>
+        <button id="stencilUndoBtn" type="button">Undo Point</button>
+        <button id="stencilClearBtn" type="button">Clear Stencil</button>
+        <button id="stencilSaveBtn" type="button">Save Stencil</button>
+        <button id="stencilReloadBtn" type="button">Reload Saved</button>
+      </div>
+      <div class="reviewUtilityGrid">
+        <div class="projectionCanvasShell">
+          <canvas id="stencilCanvas" width="1008" height="792" aria-label="Anatomy stencil projection"></canvas>
+        </div>
+        <aside class="reviewUtilitySide">
+          <section class="archCard">
+            <h3>Stencil Metrics</h3>
+            <div class="metric"><b id="stencilPointCount">0</b><span>points</span></div>
+            <div class="metric"><b id="stencilAreaPx">0 px</b><span>area</span></div>
+            <div class="metric"><b id="stencilBounds">-</b><span>bounds</span></div>
+          </section>
+          <section class="archCard">
+            <h3>Saved Polygon</h3>
+            <pre id="stencilJsonPreview" class="reportPreview">{{}}</pre>
+          </section>
+        </aside>
+      </div>
+    </section>
+    <section id="reviewOverlapPage" class="reviewUtilityPage hidden">
+      <div class="runCardHeader">
+        <div>
+          <h2>Candidate Overlay</h2>
+          <p class="hint">Compare candidate ROI locations across selected sweeps on the diagnostic candidate overlay and inspect x/y/z details before loading one sweep into Review.</p>
+        </div>
+        <span id="overlapStatus" class="runSyncStatus">loading</span>
+      </div>
+      <div class="toolbar compactToolGroup">
+        <label>Projection
+          <select id="overlapProjectionSelect">
+            <option value="recommended_candidate_overlay.png">Candidate overlay</option>
+            <option value="raw_max.png">Raw max</option>
+            <option value="raw_mean.png">Raw mean</option>
+            <option value="temporal_std.png">Temporal std</option>
+            <option value="z_max_sample.png">Z max sample</option>
+          </select>
+        </label>
+        <label>Runs
+          <select id="overlapRunSelect" multiple size="5"></select>
+        </label>
+        <label><input id="overlapShowStencil" type="checkbox" checked> stencil</label>
+        <label>Sort
+          <select id="overlapSortSelect">
+            <option value="roi_count">ROI count</option>
+            <option value="event_count">Event count</option>
+            <option value="inside_stencil">Inside stencil</option>
+            <option value="plausible_size_fraction">Plausible size</option>
+            <option value="pfa">PFA</option>
+            <option value="support">Support</option>
+          </select>
+        </label>
+        <button id="overlapLoadBtn" type="button">Load Selected Runs</button>
+        <button id="overlapUseActiveBtn" type="button">Use Active Sweep</button>
+      </div>
+      <div class="reviewUtilityGrid">
+        <div class="projectionCanvasShell">
+          <canvas id="overlapCanvas" width="1008" height="792" aria-label="Candidate overlay sweep comparison"></canvas>
+        </div>
+        <aside class="reviewUtilitySide">
+          <section class="archCard">
+            <h3>Selected ROI</h3>
+            <div id="overlapSelectedDetails" class="hint">Click an ROI marker to inspect sweep, x, y, z, and parameters.</div>
+            <button id="overlapOpenInReviewBtn" type="button" disabled>Load ROI In Review</button>
+          </section>
+          <section class="archCard">
+            <h3>Coverage</h3>
+            <div id="overlapCoverageSummary"></div>
+          </section>
+        </aside>
+      </div>
+    </section>
+    <section id="reviewTriagePage" class="reviewUtilityPage hidden">
+      <div class="runCardHeader">
+        <div>
+          <h2>Review Triage</h2>
+          <p class="hint">Use lightweight sweep summaries, stencil coverage, and queue shortcuts before opening trace-heavy ROI details.</p>
+        </div>
+        <span id="triageStatus" class="runSyncStatus">loading</span>
+      </div>
+      <div class="toolbar compactToolGroup">
+        <button id="triageLoadActiveBtn" type="button">Refresh Active Sweep</button>
+        <button id="triageInsideStencilBtn" type="button">Review Inside Stencil</button>
+        <button id="triageOutsideStencilBtn" type="button">Review Outside Stencil</button>
+        <button id="triageOpenOverlapBtn" type="button">Open Candidate Overlay</button>
+      </div>
+      <div class="reviewUtilityGrid">
+        <div class="triageMain">
+          <section class="archCard">
+            <h3>Stencil Gap Guidance</h3>
+            <div id="triageStencilGapPanel"></div>
+          </section>
+          <section class="archCard">
+            <h3>Queue Preview</h3>
+            <div id="triageQueuePreview"></div>
+          </section>
+        </div>
+        <aside class="reviewUtilitySide">
+          <section class="archCard">
+            <h3>Active Sweep</h3>
+            <div id="triageRunSummary"></div>
+          </section>
+        </aside>
+      </div>
+    </section>
+    <div class="toolbar primaryReviewToolbar">
+      <button id="playBtn">Play</button>
+      <label class="frameControl">Frame <input id="frameSlider" type="range" min="1" max="{frames}" value="1"></label>
+      <b id="frameLabel">1</b>
+      <button id="fitBtn">Fit Width</button>
+      <button id="fitHeightBtn">Fit Height</button>
+      <button id="fullscreenBtn">Fullscreen</button>
+      <button id="exportScreenshotBtn">Screenshot</button>
+    </div>
+    <details class="toolbarDisclosure">
+      <summary>Review tools</summary>
+      <div class="toolbar compactToolGroup">
+        <button id="prevActiveFrameBtn">Prev Active</button>
+        <button id="nextActiveFrameBtn">Next Active</button>
+      <label>Workflow
+        <select id="reviewWorkflowPreset">
+          <option value="custom">Custom</option>
+          <option value="validate_neurons">Validate neurons</option>
+          <option value="find_missed_neurons">Find missed neurons</option>
+          <option value="clean_artifacts">Clean artifacts</option>
+          <option value="tune_parameters">Tune parameters</option>
+          <option value="fast_triage">Fast triage</option>
+          <option value="event_validation">Event validation</option>
+          <option value="missed_neuron_search">Missed neuron search</option>
+          <option value="artifact_cleanup">Artifact cleanup</option>
+          <option value="mask_editing">Mask editing</option>
+        </select>
+      </label>
+      <button id="shortcutHelpBtn" type="button">Shortcuts</button>
+      <label>Jump <input id="quickJumpInput" type="search" placeholder="ROI 12 or f120"></label>
+      <button id="quickJumpBtn" type="button">Go</button>
+      <button id="undoAnnotationBtn" type="button">Undo Label</button>
+      <button id="bookmarkAddBtn" type="button">Bookmark</button>
+      <select id="bookmarkSelect" aria-label="Review bookmarks"></select>
+      <button id="bookmarkGoBtn" type="button">Open Mark</button>
+      <button id="bookmarkDeleteBtn" type="button">Delete Mark</button>
+      </div>
+    </details>
+    <details class="toolbarDisclosure advancedOnly">
+      <summary>Display controls</summary>
+      <div class="toolbar compactToolGroup">
+        <label>Zoom <input id="zoom" type="range" min="0.75" max="5" step="0.05"> <span id="zoomLabel">3.00</span></label>
+        <label>Brightness <input id="brightness" type="range" min="0.4" max="2.5" step="0.02"> <span id="brightnessLabel">1.00</span></label>
+        <label>Contrast <input id="contrast" type="range" min="0.5" max="3" step="0.02"> <span id="contrastLabel">1.08</span></label>
+      </div>
+    </details>
+    <details class="toolbarDisclosure">
+      <summary>Overlay views</summary>
+      <div class="toolbar compactToolGroup overlayViewControls">
+        <button id="togglePotentialRoisBtn" type="button">Hide Potential Neurons</button>
+        <button id="toggleAnnotatedNeuronRoisBtn" type="button">Hide Annotated Neurons</button>
+        <button id="toggleAnnotatedNonNeuronRoisBtn" type="button">Hide Annotated Non-Neurons</button>
+        <button id="showAllRoiGroupsBtn" type="button">Show All</button>
+        <label>ROI labels
+          <select id="roiLabelMode">
+            <option value="all">All</option>
+            <option value="selected">Selected</option>
+            <option value="off">Off</option>
+          </select>
+        </label>
+        <label><input id="showStencilOverlay" type="checkbox" checked> Stencil</label>
+        <span id="overlayViewStatus" class="hint"></span>
+      </div>
+    </details>
+    <details class="toolbarDisclosure expertOnly">
+      <summary>Overlay, trace, and manual ROI controls</summary>
+      <div class="toolbar compactToolGroup">
+      <label><input id="showRois" type="checkbox" checked> ROIs</label>
+      <label><input id="showLabels" type="checkbox" checked> IDs</label>
+      <label><input id="showEvents" type="checkbox" checked> event frames</label>
+      <label><input id="showSuggestions" type="checkbox" checked> suggestions</label>
+      <label><input id="showEvidence" type="checkbox"> evidence map</label>
+      <select id="evidenceSelect"></select>
+      <label>Overlay <input id="overlayOpacity" type="range" min="0.1" max="1" step="0.02"> <span id="overlayOpacityLabel">0.72</span></label>
+      <label>Preset
+        <select id="overlayPresetSelect">
+          <option value="validate">Validate firing</option>
+          <option value="dense">Dense triage</option>
+          <option value="discovery">Discovery</option>
+          <option value="custom">Custom</option>
+        </select>
+      </label>
+      <label>Selected
+        <select id="selectedOverlayMode">
+          <option value="outline">Outline</option>
+          <option value="soft">Soft fill</option>
+          <option value="event">Event-aware</option>
+        </select>
+      </label>
+      <label>Selected fill <input id="selectedFillOpacity" type="range" min="0" max="0.85" step="0.01"> <span id="selectedFillOpacityLabel">0.10</span></label>
+      <label>Outline <input id="selectedOutlineWidth" type="range" min="1" max="5" step="0.5"> <span id="selectedOutlineWidthLabel">2.5</span></label>
+      <label>Focus
+        <select id="roiFocusMode">
+          <option value="all">All ROIs</option>
+          <option value="solo">Selected only</option>
+          <option value="neighbors">Nearby</option>
+        </select>
+      </label>
+      <label>Radius <input id="neighborRadiusPx" type="range" min="8" max="120" step="2"> <span id="neighborRadiusPxLabel">36</span></label>
+      <span id="focusSummary" class="hint"></span>
+      <label>event z <input id="eventThreshold" type="range" min="1.2" max="5" step="0.1"> <span id="eventThresholdLabel">2.4</span></label>
+      <label>Kalman gain <input id="kalmanGain" type="range" min="0.01" max="0.18" step="0.005"> <span id="kalmanGainLabel">0.060</span></label>
+      <label>spike gain <input id="spikeGain" type="range" min="0" max="0.05" step="0.002"> <span id="spikeGainLabel">0.008</span></label>
+      <label>Manual ROI
+        <select id="manualRoiMode">
+          <option value="select">Select</option>
+          <option value="center">Center</option>
+          <option value="circle">Circle</option>
+          <option value="lasso">Lasso</option>
+        </select>
+      </label>
+      <label>Manual radius <input id="manualRoiRadius" type="range" min="2" max="30" step="1"> <span id="manualRoiRadiusLabel">6</span></label>
+      <button id="manualRoiCancelBtn" type="button">Cancel Manual</button>
+      <label>Edit ROI
+        <select id="roiEditMode">
+          <option value="off">Off</option>
+          <option value="brush_add">Brush add</option>
+          <option value="brush_erase">Brush erase</option>
+        </select>
+      </label>
+      <label>Brush <input id="roiEditBrushRadius" type="range" min="1" max="18" step="1"> <span id="roiEditBrushRadiusLabel">4</span></label>
+      <button id="roiEditDoneBtn" type="button">Finish Edit</button>
+      <button id="roiEditUndoBtn" type="button">Undo Mask</button>
+      <button id="roiEditRevertBtn" type="button">Revert To Source</button>
+      <button id="materializeManualTracesBtn" type="button">Materialize Traces</button>
+      </div>
+    </details>
+    <div class="viewerScroll" id="viewerScroll">
+      <div class="viewerWrap" id="viewerWrap">
+        <img id="frameImg" alt="video frame">
+        <img id="evidenceImg" alt="evidence map">
+        <canvas id="overlay"></canvas>
+      </div>
+    </div>
+    <div class="status">
+      <span id="statusText" aria-live="polite"></span>
+      <span id="selectionText" aria-live="polite"></span>
+    </div>
+    <div id="shortcutOverlay" class="shortcutOverlay hidden" role="dialog" aria-modal="true" aria-labelledby="shortcutOverlayTitle">
+      <div class="shortcutPanel">
+        <div class="runCardHeader">
+          <h2 id="shortcutOverlayTitle">Keyboard Shortcuts</h2>
+          <button id="shortcutCloseBtn" type="button">Close</button>
+        </div>
+        <div class="shortcutGrid">
+          <div><b>Space</b><span>Play / pause</span></div>
+          <div><b>Left / Right</b><span>Previous / next frame</span></div>
+          <div><b>j / k</b><span>Next / previous ROI</span></div>
+          <div><b>n / p</b><span>Next / previous event</span></div>
+          <div><b>N / P</b><span>Next / previous event queue item</span></div>
+          <div><b>. / ,</b><span>Next / previous suggestion</span></div>
+          <div><b>v / V</b><span>Next / previous active frame</span></div>
+          <div><b>a / r / u</b><span>Accept / reject / unsure ROI</span></div>
+          <div><b>e / x</b><span>Accept / reject event</span></div>
+          <div><b>g / G</b><span>Promote suggestion / promote and next</span></div>
+          <div><b>m / M</b><span>Mark missed / mark missed and next</span></div>
+          <div><b>Ctrl/Cmd Z</b><span>Undo last label</span></div>
+          <div><b>0</b><span>Reset trace zoom</span></div>
+          <div><b>?</b><span>Show / hide this panel</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="reviewEvidenceGrid">
+      <div class="traceBox">
+        <div class="traceControls">
+          <span id="traceWindowText">frames 1-{frames}</span>
+          <button id="traceFullBtn" type="button">Full</button>
+          <button id="traceEvent2sBtn" type="button">±2s</button>
+          <button id="traceEvent5sBtn" type="button">±5s</button>
+          <button id="traceResetZoomBtn" type="button">Reset zoom</button>
+        </div>
+        <canvas id="traceCanvas" width="1000" height="260" role="img" aria-label="Selected ROI trace"></canvas>
+        <canvas id="eventTimelineCanvas" width="1000" height="72" role="img" aria-label="Visible event density timeline"></canvas>
+        <div class="legend">
+          <span><i class="dot" style="background:#2563eb"></i>dF/F</span>
+          <span><i class="dot" style="background:#64748b"></i>Kalman baseline</span>
+          <span><i class="dot" style="background:#f59e0b"></i>event z</span>
+          <span><i class="dot" style="background:#facc15"></i>called event</span>
+        </div>
+      </div>
+      <section class="contextPanel selectedRoiPanel" aria-labelledby="selectedRoiContextHeading">
+        <div class="topbar">
+          <h2 id="selectedRoiContextHeading">Selected ROI Context</h2>
+          <div class="buttonRow">
+            <button id="eventWindowPrevBtn">Prev Event</button>
+            <button id="eventWindowNextBtn">Next Event</button>
+          </div>
+        </div>
+        <canvas id="roiCropCanvas" width="260" height="260" role="img" aria-label="Selected ROI crop"></canvas>
+        <div id="roiEvidenceCard"></div>
+        <div class="filmstrip" id="eventFilmstrip" aria-label="Event-centered frames"></div>
+      </section>
+    </div>
+  </main>
+  <aside class="side reviewOnly">
+    <div class="metricGrid summaryGrid">
+      <div class="metric"><b id="roiCount"></b><span>candidate ROIs</span></div>
+      <div class="metric"><b id="visibleCount"></b><span>visible in queue</span></div>
+      <div class="metric"><b id="eventAcceptedCount"></b><span>accepted events</span></div>
+      <div class="metric"><b id="acceptedCount"></b><span>accepted ROIs</span></div>
+    </div>
+    <details>
+      <summary>Dataset Summary</summary>
+      <div class="metricGrid">
+      <div class="metric"><b id="suggestionCount"></b><span>missed suggestions</span></div>
+      <div class="metric"><b id="suggestionVisibleCount"></b><span>visible suggestions</span></div>
+      <div class="metric"><b id="eventCount"></b><span>events at threshold</span></div>
+      <div class="metric"><b id="rejectedCount"></b><span>rejected ROIs</span></div>
+      <div class="metric"><b id="unsureCount"></b><span>unsure ROIs</span></div>
+      <div class="metric"><b id="promotedCount"></b><span>promoted missed</span></div>
+      <div class="metric"><b id="missedCount"></b><span>marked missed</span></div>
+      <div class="metric"><b id="artifactCount"></b><span>artifact suggestions</span></div>
+      <div class="metric"><b>{frames}</b><span>frames</span></div>
+      </div>
+    </details>
+    <h2>ROI Review</h2>
+    <section class="reviewSessionPanel" id="reviewSessionPanel" aria-label="Review session checklist"></section>
+    <section class="guidedPanelShell">
+      <div class="topbar">
+        <h2>Guided Review</h2>
+        <button id="reviewModeToggle">Explore / Guided</button>
+      </div>
+      <div id="guidedPanel"></div>
+    </section>
+    <div class="buttonRow">
+      <button id="acceptBtn" class="accept">Accept</button>
+      <button id="rejectBtn" class="reject">Reject</button>
+      <button id="unsureBtn" class="unsure">Unsure</button>
+      <button id="acceptNextBtn" class="accept">Accept + Next</button>
+      <button id="rejectNextBtn" class="reject">Reject + Next</button>
+      <button id="unsureNextBtn" class="unsure">Unsure + Next</button>
+      <button id="strongNeuronNextBtn" class="accept">Strong Neuron + Next</button>
+      <button id="artifactRoiNextBtn" class="reject">Artifact ROI + Next</button>
+      <button id="clearBtn">Clear</button>
+      <button id="deleteBtn">Hide ROI</button>
+    </div>
+    <div class="toolbar">
+      <button id="nextActiveRoiBtn">Next Active ROI</button>
+      <button id="nextUncertainRoiBtn">Next Uncertain</button>
+      <button id="nextArtifactRiskBtn">Next Artifact Risk</button>
+      <button id="missedNeuronModeBtn">Missed Mode</button>
+    </div>
+    <textarea id="roiNotes" rows="3" placeholder="Notes for selected ROI"></textarea>
+    <div class="toolbar advancedOnly">
+      <select id="traceQuality">
+        <option value="">Trace quality</option>
+        <option value="good">Good trace</option>
+        <option value="weak">Weak trace</option>
+        <option value="noisy">Noisy trace</option>
+        <option value="unusable">Unusable trace</option>
+      </select>
+      <select id="controlReady">
+        <option value="">Control ready?</option>
+        <option value="yes">Control ready</option>
+        <option value="maybe">Maybe</option>
+        <option value="no">Not ready</option>
+      </select>
+      <select id="roiArtifactClass">
+        <option value="">ROI artifact class</option>
+        <option value="none">None</option>
+        <option value="motion">Motion</option>
+        <option value="vessel_static_structure">Vessel/static</option>
+        <option value="motion_artifact">Motion artifact</option>
+        <option value="background_fluctuation">Background fluctuation</option>
+        <option value="impulse_noise">Impulse noise</option>
+        <option value="split_needed">Split needed</option>
+        <option value="merge_needed">Merge needed</option>
+        <option value="redraw_needed">Redraw needed</option>
+        <option value="low_snr_uncertain">Low-SNR uncertain</option>
+      </select>
+      <select id="needsAction">
+        <option value="">Needs action?</option>
+        <option value="review_trace">Review trace</option>
+        <option value="split_needed">Split needed</option>
+        <option value="merge_needed">Merge needed</option>
+        <option value="redraw_needed">Redraw needed</option>
+      </select>
+      <input id="identityGroup" placeholder="Identity group" style="height:31px;border:1px solid var(--line);border-radius:6px;padding:0 8px;max-width:130px">
+      <select id="roiConfidence">
+        <option value="">Confidence</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select>
+      <input id="roiReasonTags" placeholder="Reason tags" style="height:31px;border:1px solid var(--line);border-radius:6px;padding:0 8px;max-width:150px">
+    </div>
+    <div class="toolbar advancedOnly">
+      <span class="hint"><b id="multiSelectCount">1</b> selected</span>
+      <button id="bulkAcceptBtn">Accept Selected</button>
+      <button id="bulkRejectBtn">Reject Selected</button>
+      <button id="bulkUnsureBtn">Unsure Selected</button>
+      <input id="bulkIdentityGroup" placeholder="Group selected" style="height:31px;border:1px solid var(--line);border-radius:6px;padding:0 8px;max-width:135px">
+      <button id="bulkIdentityBtn">Set Group</button>
+      <select id="bulkNeedsAction">
+        <option value="">Bulk action</option>
+        <option value="merge_needed">Merge needed</option>
+        <option value="split_needed">Split needed</option>
+        <option value="redraw_needed">Redraw needed</option>
+        <option value="review_trace">Review trace</option>
+      </select>
+      <button id="bulkNeedsActionBtn">Apply</button>
+      <button id="virtualMergeBtn">Virtual Merge</button>
+      <button id="visualSplitBtn">Visual Split</button>
+      <button id="clearMultiSelectBtn">Clear Multi</button>
+    </div>
+    <h2>Event Review</h2>
+    <div class="buttonRow">
+      <button id="eventAcceptBtn" class="accept">Accept Event</button>
+      <button id="eventRejectBtn" class="reject">Reject Event</button>
+      <button id="eventUnsureBtn" class="unsure">Unsure</button>
+      <button id="eventAcceptNextBtn" class="accept">Accept + Next</button>
+      <button id="eventRejectNextBtn" class="reject">Reject + Next</button>
+      <button id="eventUnsureNextBtn" class="unsure">Unsure + Next</button>
+      <button id="eventArtifactNextBtn" class="reject">Artifact + Next</button>
+      <button id="eventClearBtn">Clear</button>
+    </div>
+    <div class="toolbar">
+      <select id="eventQueueSelect">
+        <option value="all">All events</option>
+        <option value="unlabeled">Unlabeled events</option>
+        <option value="accepted">Accepted events</option>
+        <option value="rejected">Rejected events</option>
+        <option value="unsure">Unsure events</option>
+        <option value="highZ">High-z events</option>
+        <option value="missingReviewer">Missing reviewer ID</option>
+        <option value="reviewedByMe">Reviewed by me</option>
+        <option value="reviewedByOther">Reviewed by other</option>
+      </select>
+      <button id="eventQueuePrevBtn">Prev Event Queue</button>
+      <button id="eventQueueNextBtn">Next Event Queue</button>
+      <span id="eventQueueStatusText" class="hint">0 events</span>
+    </div>
+    <div class="toolbar advancedOnly">
+      <select id="eventType">
+        <option value="">Event type</option>
+        <option value="clear_transient">Clear transient</option>
+        <option value="weak_transient">Weak transient</option>
+        <option value="slow_transient">Slow transient</option>
+        <option value="artifact">Artifact</option>
+      </select>
+      <select id="timingQuality">
+        <option value="">Timing quality</option>
+        <option value="clear_frame">Clear frame</option>
+        <option value="ambiguous">Ambiguous</option>
+        <option value="slow_transient">Slow transient</option>
+      </select>
+      <select id="eventConfidence">
+        <option value="">Confidence</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select>
+      <input id="eventReasonTags" placeholder="Reason tags" style="height:31px;border:1px solid var(--line);border-radius:6px;padding:0 8px;max-width:150px">
+    </div>
+    <textarea id="eventNotes" rows="2" placeholder="Notes for selected event"></textarea>
+    <section class="manualDiscoveryPanel">
+      <div class="runCardHeader">
+        <h2>Missed Neuron Workflow</h2>
+        <span class="runStatus">manual ROI + events</span>
+      </div>
+      <p class="hint">Draw a manual ROI, then mark rough or precise event windows on the current selected candidate.</p>
+      <div class="buttonRow">
+        <button id="startManualNeuronBtn" type="button">Add Missed Neuron</button>
+        <button id="markEventStartBtn" type="button">Start = Frame</button>
+        <button id="markEventEndBtn" type="button">End = Frame</button>
+      </div>
+      <div class="toolbar compactToolGroup">
+        <label>Start <input id="manualEventStart" type="number" min="1" max="{frames}" value="1"></label>
+        <label>End <input id="manualEventEnd" type="number" min="1" max="{frames}" value="1"></label>
+        <label>Timing
+          <select id="manualEventPrecision">
+            <option value="rough">Rough</option>
+            <option value="precise">Precise</option>
+          </select>
+        </label>
+        <label>State
+          <select id="manualEventState">
+            <option value="candidate">Candidate</option>
+            <option value="accept">Accept</option>
+            <option value="unsure">Unsure</option>
+            <option value="reject">Reject</option>
+          </select>
+        </label>
+        <button id="saveManualEventWindowBtn" type="button">Save Window</button>
+      </div>
+      <div id="manualEventWindowList" class="manualEventWindowList"></div>
+    </section>
+    <div class="eventList" id="eventList"></div>
+    <details id="discoveryDetails" class="advancedOnly">
+      <summary>Discovery Suggestions</summary>
+      <div class="buttonRow">
+        <button id="suggestionPromoteBtn" class="accept">Promote</button>
+        <button id="suggestionPromoteNextBtn" class="accept">Promote + Next</button>
+        <button id="suggestionMissedBtn">Missed Neuron</button>
+        <button id="suggestionMissedNextBtn">Missed + Next</button>
+        <button id="suggestionDuplicateBtn">Duplicate</button>
+        <button id="suggestionDuplicateNextBtn">Duplicate + Next</button>
+        <button id="suggestionArtifactBtn" class="reject">Artifact</button>
+        <button id="suggestionArtifactNextBtn" class="reject">Artifact + Next</button>
+        <button id="suggestionUnsureBtn" class="unsure">Unsure</button>
+        <button id="suggestionUnsureNextBtn" class="unsure">Unsure + Next</button>
+        <button id="suggestionClearBtn">Clear</button>
+      </div>
+      <div id="suggestionContextCard"></div>
+      <select id="artifactClass" style="width:100%;margin:6px 0;height:30px">
+        <option value="">Artifact class</option>
+        <option value="vessel_static_structure">Vessel/static structure</option>
+        <option value="motion_artifact">Motion artifact</option>
+        <option value="background_fluctuation">Background fluctuation</option>
+        <option value="impulse_noise">Impulse noise</option>
+        <option value="border_artifact">Border artifact</option>
+        <option value="saturation_bright_blob">Saturation/bright blob</option>
+        <option value="uncertain_artifact">Uncertain artifact</option>
+      </select>
+      <textarea id="suggestionNotes" rows="2" placeholder="Notes for selected discovery suggestion"></textarea>
+      <div class="toolbar">
+        <select id="suggestionConfidence">
+          <option value="">Confidence</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+        <input id="suggestionReasonTags" placeholder="Reason tags" style="height:31px;border:1px solid var(--line);border-radius:6px;padding:0 8px;max-width:160px">
+      </div>
+      <div class="toolbar">
+        <select id="discoveryQueueSelect">
+          <option value="all">All suggestions</option>
+          <option value="unlabeled">Unlabeled</option>
+          <option value="promoted">Promoted</option>
+          <option value="missed">Marked missed</option>
+          <option value="artifact">Artifacts</option>
+          <option value="artifactSuspects">Artifact suspects</option>
+          <option value="missingReviewer">Missing reviewer ID</option>
+          <option value="reviewedByMe">Reviewed by me</option>
+          <option value="reviewedByOther">Reviewed by other</option>
+        </select>
+        <button id="suggestionQueuePrevBtn">Prev Suggestion</button>
+        <button id="suggestionQueueNextBtn">Next Suggestion</button>
+        <span id="suggestionQueueStatusText" class="hint">0 suggestions</span>
+      </div>
+      <div class="suggestionList" id="suggestionList"></div>
+    </details>
+    <h2>Review Queue</h2>
+    <div class="toolbar advancedOnly">
+      <select id="queueSelect">
+        <option value="unlabeled">Unlabeled first</option>
+        <option value="annotationBatch">Next annotation batch</option>
+        <option value="priority">Priority score</option>
+        <option value="strongNeuron">Strong neuron candidates</option>
+        <option value="needsEventReview">Event review needed</option>
+        <option value="weakTrace">Weak/noisy traces</option>
+        <option value="mergedCluster">Merged/large clusters</option>
+        <option value="artifactLike">Artifact-like</option>
+        <option value="uncertain">Most uncertain</option>
+        <option value="localCorrelation">Local correlation</option>
+        <option value="eventSupport">Event support</option>
+        <option value="traceSnr">Trace SNR</option>
+        <option value="artifactRisk">Artifact risk</option>
+        <option value="insideStencil">Inside stencil</option>
+        <option value="outsideStencil">Outside stencil</option>
+        <option value="stencilEdge">Near stencil edge</option>
+        <option value="highEvents">High event count</option>
+        <option value="highNoise">High noise</option>
+        <option value="accepted">Accepted</option>
+        <option value="rejected">Rejected</option>
+        <option value="unsure">Unsure</option>
+        <option value="missingReviewer">Missing reviewer ID</option>
+        <option value="reviewedByMe">Reviewed by me</option>
+        <option value="reviewedByOther">Reviewed by other</option>
+        <option value="deleted">Hidden</option>
+        <option value="needsAction">Needs action</option>
+        <option value="controlReady">Control-ready</option>
+        <option value="problemTrace">Problem traces</option>
+        <option value="all">All active</option>
+      </select>
+      <label>area >= <input id="minArea" type="range" min="0" max="260" step="1"> <span id="minAreaLabel">0</span></label>
+      <label>events >= <input id="minEvents" type="range" min="0" max="12" step="1"> <span id="minEventsLabel">0</span></label>
+      <button id="queuePrevBtn">Prev Queue</button>
+      <button id="queueNextBtn">Next Queue</button>
+      <span id="queueStatusText" class="hint">0 queued</span>
+    </div>
+    <div class="roiList" id="roiList"></div>
+    <details class="advancedOnly">
+      <summary>Parameter Snapshots</summary>
+      <div class="toolbar">
+        <select id="parameterSnapshotSelect"></select>
+        <button id="snapshotSaveBtn">Save Snapshot</button>
+        <button id="snapshotRestoreBtn">Restore</button>
+        <button id="snapshotDeleteBtn">Delete</button>
+      </div>
+      <p id="snapshotSummary" class="hint"></p>
+    </details>
+    <details class="advancedOnly">
+      <summary>Autosave Recovery</summary>
+      <div class="toolbar">
+        <select id="recoverySnapshotSelect"></select>
+        <button id="recoveryRestoreBtn">Restore</button>
+        <button id="recoveryDownloadBtn">Download</button>
+      </div>
+      <p id="recoverySnapshotSummary" class="hint"></p>
+    </details>
+    <details class="advancedOnly">
+      <summary>Export</summary>
+      <div class="buttonRow">
+        <button id="exportRoiBtn">Export ROI TSV</button>
+        <button id="exportEventBtn">Export Event TSV</button>
+        <button id="exportSuggestionBtn">Export Discovery TSV</button>
+        <button id="exportSplitMergeBtn">Export Split/Merge TSV</button>
+        <button id="exportActiveRoiQueueBtn">Export ROI Queue</button>
+        <button id="exportActiveEventQueueBtn">Export Event Queue</button>
+        <button id="exportActiveSuggestionQueueBtn">Export Suggestion Queue</button>
+        <button id="exportJsonBtn">Export JSON</button>
+        <button id="exportProvenanceAuditBtn">Export Provenance Audit</button>
+      </div>
+    </details>
+    <details class="advancedOnly">
+      <summary>Parameters</summary>
+      <table class="smallTable" id="paramTable"></table>
+    </details>
+    <p class="hint">Run through the local server for autosave to <code>annotations.json</code>. Static file mode still keeps a browser-local backup and supports TSV export.</p>
+  </aside>
+  <section id="homePage" class="architecturePage homePage hidden">
+    <div class="topbar" data-page-chrome="home"></div>
+    <div id="workflowHome"></div>
+  </section>
+  <section id="architecturePage" class="architecturePage hidden">
+    <div class="topbar" data-page-chrome="architecture"></div>
+    <div class="nextBestActionShell" data-next-action></div>
+    <p class="hint">This page manages reusable pipeline architectures. Standard mode compares saved runs; Expert mode exposes raw stage editing and manifest export.</p>
+    <div class="toolbar">
+      <button id="archCompareModeBtn">Compare</button>
+      <button id="archBuildModeBtn">Build Pipeline</button>
+      <label class="compareRunControl">Run A <select id="archRunA"></select></label>
+      <label class="compareRunControl">Run B <select id="archRunB"></select></label>
+    </div>
+    <div id="architectureComparePanel">
+      <div class="contextPanel" id="runComparison"></div>
+      <div class="archGrid" id="architectureRuns"></div>
+    </div>
+    <div id="architectureBuildPanel" class="hidden">
+      <section class="archCard pipelineIdentityCard">
+        <h2>Pipeline Identity</h2>
+        <div id="pipelineIdentityPanel"></div>
+      </section>
+      <div class="toolbar">
+        <label>Preset
+          <select id="pipelinePresetSelect">
+            <option value="current_review_pipeline">Current-style local-z pipeline</option>
+            <option value="adaptive_cfar">Adaptive CFAR detector</option>
+            <option value="multi_stage_cfar">Multi-stage CFAR cascade</option>
+            <option value="artifact_suppression">Artifact suppression pass</option>
+            <option value="high_recall_discovery">High-recall discovery</option>
+            <option value="motion_aware">Motion-aware QC</option>
+            <option value="pmd_import">PMD denoised local-z</option>
+            <option value="suite2p_import">Suite2p import</option>
+            <option value="oasis_import">OASIS event model</option>
+          </select>
+        </label>
+        <button id="pipelineNewArchitectureBtn">New Architecture</button>
+        <button id="pipelineNewBtn">Reload Selected Preset</button>
+        <button id="pipelineCloneRunBtn">Clone Run A</button>
+        <button id="pipelineSaveTemplateBtn">Save Architecture</button>
+        <button id="pipelineSaveBtn">Save Planned Run</button>
+        <button id="pipelineUseExperimentBtn">Use In Experiment Lab</button>
+        <button id="pipelineDownloadBtn">Download JSON</button>
+      </div>
+      <div class="pipelineBuilderGrid">
+        <section class="archCard">
+          <h2>Stage Palette</h2>
+          <div id="pipelineStagePalette"></div>
+        </section>
+        <section class="archCard">
+          <h2>Pipeline Stack</h2>
+          <div id="pipelineStack"></div>
+        </section>
+        <section class="archCard">
+          <h2>Parameters</h2>
+          <div id="pipelineInspector"></div>
+        </section>
+      </div>
+      <section class="archCard architecturePresets">
+        <h2>Recommended Architectures</h2>
+        <div id="architecturePresetGallery"></div>
+      </section>
+      <section class="archCard componentLibraryShell expertOnly">
+        <h2>Component Library</h2>
+        <div id="componentLibrary"></div>
+      </section>
+      <div class="pipelineBuilderGrid bottom">
+        <section class="archCard">
+          <h2>Validation</h2>
+          <div id="pipelineValidation"></div>
+        </section>
+        <section class="archCard wide">
+          <details open class="expertOnly">
+            <summary>Expert Manifest Preview</summary>
+            <pre id="pipelineJsonPreview"></pre>
+          </details>
+        </section>
+      </div>
+    </div>
+  </section>
+  <section id="experimentsPage" class="architecturePage hidden">
+    <div class="topbar" data-page-chrome="experiments"></div>
+    <div class="nextBestActionShell" data-next-action></div>
+    <div id="experimentLab"></div>
+  </section>
+  <section id="metricsPage" class="architecturePage hidden">
+    <div class="topbar" data-page-chrome="metrics"></div>
+    <div class="nextBestActionShell" data-next-action></div>
+    <p class="hint">This page summarizes the current annotation state from the live autosave data. It is useful for tracking review progress, burden, accepted events, control-ready ROIs, and discovery outcomes.</p>
+    <div id="metricsAudit"></div>
+  </section>
+  <section id="qcPage" class="architecturePage hidden">
+    <div class="topbar" data-page-chrome="qc"></div>
+    <div class="nextBestActionShell" data-next-action></div>
+    <nav class="reviewSubnav dataSubnav" aria-label="Data views">
+      <a id="dataInspectSubtab" href="#data">Inspect</a>
+      <a id="dataCompareSubtab" href="#data-compare">Compare</a>
+    </nav>
+    <p id="dataPageHint" class="hint">This page inspects the active pipeline run in pipeline order, including raw frames, generated intermediates, artifact states, and lightweight process warnings.</p>
+    <div id="datasetQc"></div>
+    <div id="datasetCompare" class="hidden"></div>
+  </section>
+  <section id="reportPage" class="architecturePage hidden">
+    <div class="topbar" data-page-chrome="report"></div>
+    <div class="nextBestActionShell" data-next-action></div>
+    <div id="reportPageBody"></div>
+  </section>
+</div>
+<script id="review-data" type="application/json">{data_json}</script>
+<script src="workbench.js?v={asset_version}"></script>
+</body>
+</html>

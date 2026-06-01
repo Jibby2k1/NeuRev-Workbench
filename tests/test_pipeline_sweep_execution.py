@@ -97,6 +97,7 @@ class PipelineSweepExecutionTests(unittest.TestCase):
                         "run_id": "r",
                         "status": "failed",
                         "artifact_count": 0,
+                        "metrics": {"candidate_count": 3, "object_recall": 0.5},
                         "run_root": "001_r",
                         "sweep_parameters": [{"stage": "score", "param": "epsilon", "value": 0.1}],
                         "error_type": "RuntimeError",
@@ -108,6 +109,8 @@ class PipelineSweepExecutionTests(unittest.TestCase):
 
         self.assertIn("## Failures", markdown)
         self.assertIn("RuntimeError: boom", markdown)
+        self.assertIn("candidates=3", markdown)
+        self.assertIn("obj recall=0.5", markdown)
 
 
 if __name__ == "__main__":

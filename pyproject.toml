@@ -44,4 +44,4 @@ neurobench = "neurobench.cli.main:main"
 include = ["neurobench*"]
 
 [tool.setuptools.package-data]
-"neurobench.workbench" = ["assets/*.js", "assets/*.css"]
+"neurobench.workbench" = ["assets/*.js", "assets/*.css", "assets/*.html"]

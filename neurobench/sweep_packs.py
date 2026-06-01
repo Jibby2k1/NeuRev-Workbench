@@ -7,9 +7,9 @@ from typing import Any, Mapping
 
 SWEEP_PRESETS: dict[str, dict[str, Any]] = {
     "permissive": {"event_threshold_z": 2.0, "seed_z": 1.6, "grow_z": 0.8, "min_area_px": 4},
-    "balanced": {"event_threshold_z": 2.4, "seed_z": 2.0, "grow_z": 1.1, "min_area_px": 8},
+    "balanced": {"event_threshold_z": 2.4, "seed_z": 2.0, "grow_z": 1.1, "min_area_px": 4},
     "strict": {"event_threshold_z": 2.8, "seed_z": 2.4, "grow_z": 1.4, "min_area_px": 12},
-    "artifact_suppression": {"event_threshold_z": 2.6, "seed_z": 2.2, "grow_z": 1.3, "min_area_px": 10},
+    "artifact_suppression": {"event_threshold_z": 2.6, "seed_z": 2.2, "grow_z": 1.3, "min_area_px": 8},
     "high_recall": {"event_threshold_z": 1.8, "seed_z": 1.4, "grow_z": 0.7, "min_area_px": 3},
 }
 

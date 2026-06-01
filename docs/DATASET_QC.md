@@ -1,16 +1,18 @@
-# Process Lab
+# Data
 
-The workbench Process Lab page is available at:
+The workbench Data page is available at:
 
 ```text
-http://127.0.0.1:8765/#process
+http://127.0.0.1:8765/#data
 ```
 
-It provides lightweight checks for the current video and candidate set:
+Legacy links to `#process`, `#process-lab`, `#qc`, and `#dataset-qc` still
+open this page. It provides lightweight checks for the current video and
+candidate set:
 
 - an interactive frame viewer with play, previous/next, frame slider, and
   synchronized stage tiles
-- a run selector tied to Architecture Lab manifests
+- a run selector tied to Pipelines manifests
 - the selected run's ordered pipeline with each stage's expected QC outputs
 - frame size and frame count
 - candidate ROI count
@@ -31,7 +33,7 @@ produced, the relevant intermediate output.
 
 ## Recommended Workflow
 
-1. Select the same run that you are inspecting in Review or Architecture Lab.
+1. Select the same run that you are inspecting in Review or Pipelines.
 2. Use the synchronized frame slider to inspect raw frames and generated stage
    outputs side-by-side.
 3. Toggle missing outputs when you need to know which pipeline stages are still
@@ -57,11 +59,14 @@ modify the raw video or hide candidates.
 
 ## Pipeline-Linked QC
 
-Process Lab now uses the selected Architecture Lab run as its context. The
+Data now uses the selected pipeline run as its context. The
 pipeline panel shows the sequential stages, their artifact flow, and the QC
 outputs each stage declares in `neurobench.pipeline_catalog`. Outputs already
 present in the current review data are highlighted; missing outputs remain
 visible so it is clear what a future run should export for stronger diagnosis.
+Every locally runnable stage now declares at least one expected Data
+output, so planned pipelines expose a complete inspection checklist before the
+heavier preview-generation step runs.
 
 The main QC viewer is a synchronized stage grid. The raw video tile is always
 shown first. Generated stage outputs appear beside it when the run manifest
@@ -75,10 +80,23 @@ project paths under `Outputs/NeuronReview/<dataset>/app`, and cross-dataset app
 paths. Broken media tiles are replaced with explicit missing-artifact messages
 instead of silently rendering blank images.
 
+
+## Anatomy Stencil Coverage
+
+The Data page reports stencil-aware coverage when
+`annotations.settings.anatomyStencil.polygon` exists. The metrics count loaded
+candidate ROI centers that fall inside the polygon, near its edge, or outside
+it, and count candidate events for the in/near-stencil subset. These values are
+review-prioritization diagnostics only; they do not relabel ROIs or change the
+scientific detector output.
+
+Use `Review > Stencil` to draw or update the rough hindbrain region, then use
+`Review > Overlap` to compare sweep ROI coverage against the same polygon.
+
 ## Discovery And Artifact Triage
 
-Process Lab can now read a generated `analysis/proposal_analysis.json` artifact
-from the selected Architecture Lab run. This file contains two explicit tables:
+Data can now read a generated `analysis/proposal_analysis.json` artifact from
+the selected pipeline run. This file contains two explicit tables:
 
 - missed-neuron proposals ranked by discovery score, event support, local
   coherence, compactness, repeated activity, and artifact penalties
@@ -102,7 +120,7 @@ browser-side estimates from the embedded review data.
 To attach a TIFF stack as an intermediate stage output:
 
 ```bash
-python3 tools/export_intermediate_frames.py \
+python3 -m neurobench.cli.main workbench export-intermediate \
   --input-tif Outputs/HighPass/calcium_rest_cropped/calcium_rest_cropped_hp_gaussian_sigma06f_float32.tif \
   --out-dir Outputs/NeuronReview/calcium_rest_cropped/app/intermediates/current_review_pipeline/temporal_highpass_gaussian \
   --architecture-runs Outputs/NeuronReview/calcium_rest_cropped/app/architecture_runs.json \
@@ -111,7 +129,40 @@ python3 tools/export_intermediate_frames.py \
   --label "Temporal high-pass"
 ```
 
+Local Python pipeline artifacts can be exported the same way without optional
+image libraries by using `.npy` stacks:
+
+```bash
+python3 -m neurobench.cli.main workbench export-intermediate \
+  --input-npy Outputs/Runs/example/artifacts/preprocessing/highpass_video.npy \
+  --out-dir Outputs/NeuronReview/calcium_rest_cropped/app/generated_runs/example/intermediates/temporal_highpass_gaussian \
+  --architecture-runs Outputs/NeuronReview/calcium_rest_cropped/app/architecture_runs.json \
+  --run-id example \
+  --stage-id temporal_highpass_gaussian \
+  --step-id highpass \
+  --label "Temporal high-pass"
+```
+
+After a local executor run, use the manifest-driven helper to export common
+frame-like artifacts (`highpass_video`, `z_stack`, `candidate_mask`, and related
+`.npy` stacks) and attach them to the matching workbench run in one step:
+
+```bash
+python3 -m neurobench.cli.main workbench attach-intermediates \
+  --pipeline-run Outputs/Runs/example/pipeline_run.json \
+  --architecture-runs Outputs/NeuronReview/calcium_rest_cropped/app/architecture_runs.json \
+  --run-id example
+```
+
+Compatibility scripts `tools/export_intermediate_frames.py` and
+`tools/attach_pipeline_intermediates.py` remain available for older workflows,
+but the canonical implementation lives in `neurobench.workbench.intermediates`.
+
 This makes the page useful as both a dataset audit and a pipeline sanity check:
 if a warning points to drift, nonuniform background, saturation, impulse noise,
 or missed-neuron burden, the user can immediately see which stage in the
 current architecture is supposed to handle that failure mode.
+
+## Stencil Gap Reports
+
+When `stencil_gap_report_file` is present on an architecture run, the Review Triage page lists low-coverage boxes inside the saved anatomy stencil. These boxes are only inspection guidance: they do not change detector output or annotation truth. Use them to jump back to Review Inspect and look at raw projections around under-covered hindbrain regions.

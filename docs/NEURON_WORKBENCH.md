@@ -44,12 +44,14 @@ server.
 
 | Goal | Dashboard Page | Notes |
 | --- | --- | --- |
-| Build or compare pipeline stacks | `Architecture Lab` | Configure stages, save reusable named architectures, and compare completed/generated runs. |
-| Plan threshold sweeps or hand-picked variants | `Experiment Lab` | Select a saved model instance, plan sweeps/sets/Optuna studies, and launch the first preview locally. |
-| Tune overlays, filters, labels, and manual ROIs | `Review` | Use `Basic` mode for routine review and `Advanced` for controls. |
-| Inspect intermediate outputs frame-by-frame | `Process Lab` | Synchronized raw/intermediate stage grid. |
+| Decide where to go next | `Home` | Shows the active run, next best action, and workflow cards for the full dashboard. |
+| Build or compare pipeline stacks | `Pipelines` | Configure stages, save reusable named architectures, and compare completed/generated runs. |
+| Plan threshold sweeps or hand-picked variants | `Experiment Lab` | Select a model instance, inspect recommendation cards, plan sweeps/sets/Optuna studies, and launch the first preview locally. |
+| Ask an LLM for architecture ideas | CLI handoff | Generate context/prompt files, validate returned JSON, and import proposals into Pipelines. |
+| Tune overlays, filters, labels, and manual ROIs | `Review` | Use `Guided` for routine review, `Standard` for common controls, and `Expert` for manual/editing tools. |
+| Inspect intermediate outputs frame-by-frame | `Data` | Synchronized raw/intermediate stage grid. |
 | Validate candidate neurons and events | `Review` | Main annotation page with compact transport controls and collapsible review/display tools. |
-| Track review burden and readiness | `Metrics/Audit` | Includes tuning gate, robustness examples, validation, and adjudication. |
+| Track review burden and readiness | `Progress` | Includes tuning gate, robustness examples, validation, and adjudication. |
 | Share current progress | `Review Session` panel or `Report` | Export handoff Markdown/JSON or report Markdown. |
 
 ## What It Reviews
@@ -126,11 +128,81 @@ Static dashboard code now lives in `neurobench/workbench/assets/`. The builder
 copies those tracked assets into the app directory, which makes UI changes much
 easier to review than editing large embedded Python strings.
 
+The JavaScript source of truth is `neurobench/workbench/assets/src/`.
+`neurobench/workbench/assets/workbench.js` is the generated served bundle. Edit
+ordered source modules, then rebuild/check the bundle:
+
+```bash
+python3 tools/build_workbench_assets.py
+python3 tools/build_workbench_assets.py --check
+```
+
+The HTML shell is packaged as `neurobench/workbench/assets/workbench.html`; the
+legacy builder script is only a CLI wrapper around the package builder.
+
+For an optional real-browser smoke check, run:
+
+```bash
+NEUROBENCH_BROWSER_SMOKE=1 python3 -m pytest tests/test_workbench_browser_smoke.py
+```
+
+The smoke test builds a tiny workbench, opens it with Firefox headless, and
+checks that a browser screenshot is produced. It is opt-in because local desktop
+Firefox sessions can interfere with headless screenshot mode on some machines.
+
 The v1 builder configures and exports a static/local browser workbench. It does
 not execute image-processing pipelines in the browser. Pipeline runs still
 happen through Fiji/Groovy, Python, or imported external-tool outputs; the
 browser consumes the resulting JSON, manifests, frames, evidence maps, and
 autosaved annotations.
+
+
+## Lightweight Sweep Review Payloads
+
+Large Gamma CFAR sweeps can keep full `review_rois.json` files for compatibility while also exposing lighter browser payloads:
+
+- `review_rois_summary_file`: ROI geometry, priority, stencil status inputs, and compact event summaries without full traces.
+- `review_trace_shards_dir`: one JSON shard per ROI containing trace arrays loaded only when that ROI is selected.
+- `stencil_gap_report_file`: rough low-coverage boxes inside the saved anatomy stencil for Review Triage.
+
+Build or refresh these sidecars for an existing app with:
+
+```bash
+python3 tools/build_review_roi_sidecars.py --app-dir Outputs/NeuronReview/051626_3_right_50hz/app
+```
+
+Export CFAR contrast maps for Data Compare with:
+
+```bash
+.venv-neurobench/bin/python tools/export_cfar_contrast_maps.py \
+  --app-dir Outputs/NeuronReview/051626_3_right_50hz/app \
+  --sweep-root Outputs/GammaCFAR/051626_3_right_50hz/gamma_cfar_cascade_grid_50hz_v2 \
+  --all-runs \
+  --chunk-frames 10 \
+  --normalization-sample-stride 10
+```
+
+The Review Overlap and Triage pages prefer the summary payload. The Inspect page loads an ROI trace shard on demand, so changing sweeps no longer requires pulling every trace-heavy ROI record into memory. Data Compare consumes the contrast-map frame sequences directly from `artifacts.intermediates`.
+
+## Dataset Intake For Future Data
+
+Before running heavy processing on a new local or public dataset, create a
+metadata-only intake manifest:
+
+```bash
+neurobench dataset intake \
+  --source-template dandi-nwb \
+  --dataset-id example_public_fish \
+  --raw-video Inputs/Public/example.nwb \
+  --frame-rate-hz 50 \
+  --pixel-size-microns 0.5 \
+  --out Outputs/Manifests/example_public_fish.dataset.json \
+  --report-out Outputs/Manifests/example_public_fish.intake_report.json
+```
+
+The intake command does not download large public data. It records expected
+paths, frame rate, pixel size, source type, and readiness checks so conversion
+or optional dependency gaps are visible before the dashboard is built.
 
 ## Process A New Dataset
 
@@ -183,6 +255,11 @@ The server supports:
   rebuilding the multi-dataset index
 - `POST /api/materialize-traces`: extract traces for manual/edited virtual ROI
   masks from the local raw video and save them into `annotations.json`
+- `POST /api/llm-proposals/import`: validate an LLM architecture proposal pack
+  and merge planned runs/templates into `architecture_runs.json`; this endpoint
+  imports metadata only and does not execute arbitrary commands. In Experiment
+  Lab, this powers the **Import Full To Dashboard** and **Import Candidates To
+  Dashboard** buttons.
 - `GET /api/jobs` and `GET /api/jobs/<job_id>`: generation status and logs
 - `PUT /annotations.json`: autosave endpoint
 
@@ -195,7 +272,7 @@ sends the token as `X-Neurobench-Owner-Token`; the token is never exposed by
 `GET /api/environment`. This is the recommended mode before sharing the
 dashboard through a tunnel.
 
-Generated Architecture Lab runs are written under the dataset app instead of
+Generated pipeline runs are written under the dataset app instead of
 overwriting the baseline review data:
 
 ```text
@@ -236,7 +313,7 @@ Funnel, or another tunnel tool and share the generated public URL.
 
 1. Set `Reviewer` before labeling. This stamps new ROI, event, suggestion,
    manual ROI, and split/merge decisions with `reviewer_id`.
-2. Start in `Basic` mode with the `Fast triage` workflow preset.
+2. Start in `Guided` mode with the `Fast triage` workflow preset.
 3. Use the `Review Session` panel to confirm autosave, active run, current
    queues, and tuning-readiness progress.
 4. Label the `Next annotation batch` queue before broad parameter tuning.
@@ -244,20 +321,41 @@ Funnel, or another tunnel tool and share the generated public URL.
    reviewed events.
 5. Switch to `Missed neuron search` or `Artifact cleanup` when the main queue
    is too noisy or obvious candidates are missing.
-6. Use `Process Lab` to inspect raw/intermediate frame outputs when a parameter
+6. Use `Data` to inspect raw/intermediate frame outputs when a parameter
    change appears to introduce artifacts.
-7. Use `Metrics/Audit` before exporting. Check reviewer provenance, accepted
+7. Use `Progress` before exporting. Check reviewer provenance, accepted
    events, control-ready ROIs, robustness examples, and adjudication results.
 8. Export a `Review Session` handoff or `Report` Markdown when sharing status
    with a lab-mate.
 
 ## User Experience Notes
 
-- Advanced controls are intentionally hideable. New reviewers should stay in
-  `Basic` mode until they need generation, detector, manual ROI, split/merge,
+- Expert controls are intentionally hideable. New reviewers should stay in
+  `Guided` mode until they need generation, detector, manual ROI, split/merge,
   or export tools.
+- `Home` is now a guided launchpad. It prioritizes one next action and the
+  four main workflows instead of showing every metric up front.
+- `Experiment Lab` opens as a wizard-first planner: choose a base pipeline,
+  choose a strategy, add named sets or search metadata, preview runs, then save
+  or generate a first preview. Advisor, LLM, and diagnostics panels live behind
+  Expert disclosures.
+- `Data` distinguishes true missing frame outputs from summary-only stages. A
+  stage such as component extraction, background-ring correction, Kalman event
+  scoring, or priority ranking may show a diagnostic summary when no video
+  artifact was exported.
 - Overlay opacity, selected-ROI fill, outline width, and focus mode are
   workflow preferences. They do not alter the saved scientific labels.
+
+- Review now shows a raw projection strip for quick inspection of raw mean, raw
+  max, temporal standard deviation, z-max sample, and candidate overlay without
+  leaving the ROI workflow. Click the candidate-overlay thumbnail or open
+  `Review > Candidate Overlay` (`#candidate-overlay`) for the full sweep overlay
+  view.
+- Stencil-aware queues are available in Expert queue controls: `Inside stencil`,
+  `Outside stencil`, and `Near stencil edge`. The stencil is an inspection prior
+  for review prioritization, not ground-truth segmentation.
+- Frame labels include seconds when `frame_rate_hz` is present, so 50 Hz and
+  future high-rate datasets can be inspected without mentally converting frames.
 - The trace plot is interactive: use the trace window controls and frame marker
   to navigate temporal context while validating event markers.
 - Manual ROI and mask editing are review aids for missed candidates. When
@@ -270,10 +368,12 @@ The Review page is organized for repeated ROI triage:
 
 - `Theme` can be set to `System`, `Light`, or `Dark`. The setting is saved with
   dashboard preferences and applies across all tabs.
-- `Basic` mode is the default low-clutter review surface. It keeps playback,
+- `Guided` mode is the default low-clutter review surface. It keeps playback,
   video, trace, event timeline, selected ROI context, core ROI/event labels,
   notes, simple navigation, and guided review visible.
-- `Advanced` mode reveals generation controls, detector thresholds, Kalman
+- `Standard` mode adds common run-selection and display controls for routine
+  parameter inspection.
+- `Expert` mode reveals generation controls, detector thresholds, Kalman
   trace parameters, overlay tuning, manual ROI tools, split/merge tools,
   parameter snapshots, export controls, and raw parameters.
 - The mode setting is a user workflow preference saved in `annotations.json`;
@@ -332,7 +432,7 @@ The Review page is organized for repeated ROI triage:
   promotions.
 - `Bookmark`, `Open Mark`, and `Delete Mark` provide a small revisit list for
   frames, selected ROIs, selected events, and suggestions within the active run.
-- In Advanced mode, shift/ctrl/cmd multi-select can label several selected ROIs
+- In Expert mode, shift/ctrl/cmd multi-select can label several selected ROIs
   at once with `Accept Selected`, `Reject Selected`, or `Unsure Selected`, in
   addition to the existing group/action/split/merge controls.
 - Common compound decisions have one-click presets: `Strong Neuron + Next`
@@ -340,7 +440,7 @@ The Review page is organized for repeated ROI triage:
   evidence tags; `Artifact ROI + Next` rejects the ROI with artifact metadata;
   `Artifact + Next` rejects the selected event as an artifact and advances
   through the event queue.
-- Advanced queue controls show the selected ROI's position in the filtered
+- Expert queue controls show the selected ROI's position in the filtered
   queue and provide `Prev Queue` / `Next Queue` buttons for mouse-first review.
 - Reviewer-aware queues can show reviewed ROIs missing `reviewer_id`, ROIs
   reviewed by the current `Reviewer`, or ROIs reviewed by someone else.
@@ -350,7 +450,7 @@ The Review page is organized for repeated ROI triage:
   label-and-advance buttons for promote, missed-neuron, duplicate, artifact,
   and unsure decisions. This makes missed-neuron cleanup closer to the ROI and
   event review flow.
-- Advanced reviewer tools can stamp the current `Reviewer` onto selected
+- Expert reviewer tools can stamp the current `Reviewer` onto selected
   reviewed labels or all reviewed labels missing reviewer provenance. These
   backfill actions use the same in-session undo stack as label changes.
 - `Next Missing Reviewer` jumps directly to the next reviewed ROI, event,
@@ -368,7 +468,7 @@ The reorganization should not change the saved scientific meaning of
 `annotations.json`; it only makes the same review operations easier to scan and
 use during long labeling sessions.
 
-Advanced mode includes an Autosave Recovery panel. The browser keeps a small
+Expert mode includes an Autosave Recovery panel. The browser keeps a small
 local recovery history of recent annotation states before autosave writes. A
 recovery point can be restored back into the current browser/server state or
 downloaded as a standalone JSON snapshot.
@@ -526,10 +626,10 @@ suggestions: priority score, local correlation, event support, trace SNR,
 background correlation, compactness, and artifact risk. The queue can sort by
 these fields, but the scores are only review guidance, not ground truth.
 
-## Architecture Lab
+## Pipelines
 
-The same generated app now includes an Architecture Lab page at
-`#architecture`. It displays standardized architecture-run metadata: run ID,
+The same generated app now includes a Pipelines page at `#pipelines`
+(`#architecture` remains a compatibility alias). It displays standardized architecture-run metadata: run ID,
 parameters, ROI/event/suggestion counts, evidence maps, and artifact paths.
 
 The current review output is automatically represented as a baseline run. To
@@ -541,23 +641,23 @@ python3 tools/build_architecture_run.py \
   --out Outputs/ArchitectureRuns/calcium_video_2/architecture_runs.json
 ```
 
-When two or more runs are attached, Architecture Lab provides Run A / Run B
+When two or more runs are attached, Pipelines provides Run A / Run B
 selectors and a comparison table for candidate totals, accepted/control-ready
 counts, and review-burden metrics.
 
-Architecture Lab also provides a synchronized A/B Review viewer. It loads two
+Pipelines also provides a synchronized A/B Review viewer. It loads two
 generated run `review_data.json` files into a browser cache and shows the same
 frame from each run side-by-side, including ROI outlines and current-frame
 event highlights. This is meant for quick visual comparison of parameter
-settings without disturbing the active Review page. The main Review and Process
-Lab context changes only when `Use A In Review/QC` or `Use B In Review/QC` is
+settings without disturbing the active Review page. The main Review and Data
+context changes only when `Use A In Review/Data` or `Use B In Review/Data` is
 pressed. `Next Difference` and `Prev Difference` jump to frames where the two
 loaded runs have different candidate event counts.
 
 Use `tools/merge_architecture_runs.py` to combine separate method outputs into
 one manifest for comparison.
 
-Architecture Lab also includes a Build mode for configuring planned run
+Pipelines also includes a Build mode for configuring planned run
 manifests. Build mode is a planning/export surface: it captures dataset
 references, proposed pipeline options, output locations, and run metadata so the
 configuration can be saved or handed to command-line tooling. In v1 it does not
@@ -569,7 +669,7 @@ template, and send that template directly to Experiment Lab.
 Planned pipeline manifests should be treated as requested or proposed work
 until a real run artifact exists. Once a pipeline has actually executed, attach
 its produced architecture-run manifest to compare it with the current baseline.
-Review, Architecture Lab, and Process Lab share the active run selection. If a
+Review, Pipelines, and Data share the active run selection. If a
 selected run has reachable `review_data.json`, Review can load it; if it is
 only planned, the app can start a local Generate View job through the server.
 Generation is still local and whitelisted: the browser can choose the run and
@@ -578,10 +678,19 @@ uses the existing Fiji/Groovy pipeline and exports QC intermediate frame tiles;
 the Python GPU option is shown only as an explicit backend choice and reports
 CUDA readiness before starting.
 
-Architecture Lab includes a Parameter Experiments table. Use it to label
+LLM-assisted architecture planning is also local and file-based. Use
+`neurobench llm context` to create a provider-neutral context and prompt, then
+import LLM-returned JSON with `neurobench llm import-proposals`. Imported
+proposals become normal saved architectures and planned runs in
+`architecture_runs.json`. The importer enforces known stages, parameter ranges,
+concrete sweep step IDs, and a default limit of `4096` parameter combinations
+per architecture. Use `neurobench llm run-proposals` for local executable smoke
+tests before generating full Review views.
+
+Pipelines includes a Parameter Experiments table. Use it to label
 generated runs or sweep outputs as `looks best`, `too noisy`, `too strict`,
 `artifact heavy`, or `needs review`, then open the same active run in Review or
-Process Lab. These labels are workflow notes stored with dashboard settings,
+Data. These labels are workflow notes stored with dashboard settings,
 not scientific ground truth.
 
 ## Experiment Lab
@@ -601,14 +710,75 @@ planning surface for parameter studies:
   `architecture_runs.json` through the local server; static mode downloads the
   JSON.
 - `Generate First Preview` saves the plan, activates the first planned run, and
-  calls the same local generation endpoint used by Architecture Lab.
+  calls the same local generation endpoint used by Pipelines.
+
+The top of Experiment Lab is an `Experiment Command Center`. It summarizes
+generated/planned/failed runs, the draft sweep budget, imported LLM proposal
+sets, annotation-aware recommendations, the active run's utility score, and the
+active run's delta against the current baseline. Use this section first when
+deciding whether to label more examples, try high-recall discovery, add artifact
+suppression, or generate a preview.
+
+The command center includes an `Evaluation Checklist`, `Decision Matrix`,
+`Session Recipe`, `Prioritized Action Queue`, `Parameter Sensitivity` panel,
+`Follow-up Planner`, and `Parameter Coverage Map`. The session recipe stores a
+short objective, highlights the highest-priority next action, summarizes the
+first runs and parameter moves to try, and can be copied or downloaded as
+Markdown/JSON for lab discussion or external LLM planning. `LLM Architecture
+Request` turns the same state into a provider-neutral prompt with a request
+type, extra constraints, current stack, available stage IDs, and the expected
+proposal JSON shape. `LLM Proposal Intake` lets you paste returned proposal JSON
+for browser-side sanity checks, proposal/sweep summaries, and a copyable local
+import command before running the authoritative CLI importer. If the pasted JSON
+has errors or warnings, the intake panel can also copy or download a repair
+prompt that lists the exact issues, known stage IDs, and expected schema shape
+for the next LLM round. The same panel includes proposal triage: a sorted review
+table that marks proposals as import candidates, budget-review items, or
+repair-first items and can export a short Markdown triage note. Candidate-only
+proposal-pack export drops repair-first and budget-review proposals into a
+normalized JSON pack for the first local import attempt, plus a Markdown note
+showing what was kept and dropped. Import Readiness then shows whether full or
+candidate import is the safer next step and exposes copyable commands for both
+the full returned pack and the candidate-only pack. Post-Import Plan gives the
+follow-up sequence for saving the JSON, importing proposals, reloading the
+dashboard, generating a preview, and optionally running the local executable
+proposal experiment summary. LLM Proposal Lifecycle tracks each proposal from
+pasted/imported to generated, promising, rejected, repair-needed, or discussed,
+then converts review outcomes and failure signals into a follow-up LLM prompt.
+The action queue merges readiness blockers,
+recommendations, sensitivity, follow-up suggestions, and coverage gaps into a
+ranked list of concrete next steps with direct actions. Queue items can be
+marked `Done`, `Snoozed`, or reopened so stale advice does not dominate the
+view. The `Focus` selector switches between `Guided`, `Diagnostics`, and `All`
+views so the page can stay compact during routine use. Recent queue state
+changes are shown in `Action History` and can be exported as TSV for handoff.
+The checklist turns common blockers into visible gates: enough review seed
+labels, at least one generated preview, a shortlist, an active-run note,
+Data outputs, and a manageable sweep budget. The decision matrix ranks
+runs by shortlist state, utility score, and generated readiness, then lets you
+label runs directly and export a TSV summary for spreadsheets or meeting notes.
+The sensitivity panel groups explicit sweep/named-set parameter changes and
+reports the best run, average utility, score spread, and a suggested next move
+for each parameter. The follow-up planner converts those signals into small
+local refinements that can be added as named sets or a sweep axis. The coverage
+map finds tunable numeric parameters in the current stack that have not been
+tested yet and can add small probe sets or a sweep axis.
+
+The command center also includes `Lab Share And LLM Handoff`. Use it to add a
+short note to the active run, shortlist promising runs, download a concise
+Markdown brief for lab discussion, or download a provider-neutral JSON context
+for external LLM feedback. The JSON context includes dataset metadata, active
+run parameters, utility-score components, baseline deltas, annotation summary,
+session recipe, LLM prompt request, recommendations, planned-run budget,
+shortlist entries, proposal-intake status, and imported proposal set summaries.
 
 Experiment Lab schedules planned runs for the local, whitelisted generation
 backend. It does not execute arbitrary browser-side code.
 
-## Metrics/Audit
+## Progress
 
-The generated app also includes a Metrics/Audit page at `#metrics`. It
+The generated app also includes a Progress page at `#progress`
+(`#metrics` remains a compatibility alias). It
 summarizes live annotation progress from the current browser/server state:
 
 - ROI, event, and discovery suggestion labels
@@ -619,7 +789,7 @@ summarizes live annotation progress from the current browser/server state:
 Use this page during review sessions to see whether labeling is converging or
 whether the candidate generator is creating too much review burden.
 
-Metrics/Audit also includes three workflow panels:
+Progress also includes three workflow panels:
 
 - `Robustness Example Gallery` jumps to representative strong, uncertain,
   artifact-like, merged-cluster, event-supported, and missed-neuron examples.
@@ -661,21 +831,34 @@ Add `--require-reviewer-provenance` when you want the command to write the
 reports but exit nonzero if either input has reviewed labels missing
 `reviewer_id`.
 
-## Process Lab
+## Data
 
-The generated app includes a Process Lab page at `#process`. It audits lightweight
+The generated app includes a Data page at `#data`
+(`#process` remains a compatibility alias). It audits lightweight
 video and candidate-set properties such as ROI size, trace noise, event density,
 discovery burden, artifact cues, and evidence-map thumbnails.
 
-Process Lab uses one synchronized frame slider for the raw video and any
+Data uses one synchronized frame slider for the raw video and any
 generated intermediate stage frames declared in `artifacts.intermediates`.
 Stages without exported browser-readable frames remain visible as missing-output
 tiles.
 
-Process Lab also includes a Discovery and Artifact Triage section. It surfaces
+The Data page also includes `#data-compare`, a two-column comparison view for
+inspecting the raw video beside one selected synchronized stage output. It can
+switch to an overlap mode for alignment inspection. Gamma CFAR contrast maps are
+exposed as `cfar_contrast_map` frame-sequence intermediates and default to the
+large-reference CFAR contrast view when available.
+
+Data also includes a Discovery and Artifact Triage section. It surfaces
 high-priority missed-neuron candidates and ROI artifact-risk reasons such as
 large/merged footprints, low local coherence, background correlation,
 elongation, near-border location, and existing artifact labels.
+
+It also includes `Process Decision Support`, which mirrors the active run from
+Architecture/Experiment Lab. This card reports readiness, utility score,
+missing browser-readable intermediate outputs, and the same annotation-aware
+recommendations used in Experiment Lab so that process inspection stays tied to
+the architecture being tested.
 
 When available, that triage table is loaded from
 `analysis/proposal_analysis.json`, which is produced by:
@@ -725,12 +908,15 @@ Selected ROIs can be assigned the same `identity_group`, marked with a shared
 `needs_action`, or saved as a virtual merge. Virtual merges are stored only in
 `annotations.json`; the source `review_data.json` footprints remain unchanged.
 
-Advanced mode also includes manual ROI creation tools:
+Expert mode also includes manual ROI creation tools:
 
 - `Center`: click a neuron center to create a circular manual ROI using the
   current manual radius.
 - `Circle`: click-drag to define a circular manual ROI.
 - `Lasso`: draw a freeform footprint on the video overlay.
+- `Missed Neuron Workflow`: draw/select a candidate and store rough or precise
+  event windows with `start_frame`, `end_frame`, `precision`, `state`,
+  reviewer provenance, and timestamp metadata.
 
 Manual ROIs are saved as annotation-layer `virtualRois`; they do not rewrite
 `review_data.json`. They can be selected, labeled, annotated with confidence
@@ -739,7 +925,7 @@ extracts raw, background, dF/F, baseline, event, and z traces from the raw
 video for unmaterialized manual or edited virtual ROIs, then saves those trace
 fields back into `annotations.json`.
 
-Advanced mode also includes ROI brush editing. `Brush add` and `Brush erase`
+Expert mode also includes ROI brush editing. `Brush add` and `Brush erase`
 create or update an annotation-layer edited copy of the selected ROI with
 `roi_kind: manual_edit` and `provenance: roi_brush_edit`. The original detector
 footprint remains unchanged, so mask refinement stays auditable. Brush edits
@@ -756,6 +942,11 @@ mistakenly reused after footprint edits.
   `generate_neuron_review_app.groovy`.
 - If the ROI list is empty, check queue filters such as minimum area, minimum
   events, or hidden/deleted view.
+- If smaller neurons appear under-detected, rerun the high-recall Gamma CFAR
+  grid or lower `component_min_area_px`, `support_min_frames`, and `seed_z` for
+  the component stage before rebuilding review data.
+- If you cannot find the candidate overlay, use the `Candidate Overlay` subtab
+  under Review or go directly to `#candidate-overlay`.
 - If discovery suggestions look too broad, treat them as audit regions rather
   than final ROIs; mark artifacts and promote only visually plausible neurons.
 - If annotations appear stale, inspect

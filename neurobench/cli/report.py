@@ -6,12 +6,6 @@ import sys
 from pathlib import Path
 
 from neurobench.manifests import write_json
-from neurobench.reports import (
-    build_metrics_report_from_pipeline_runs,
-    build_run_comparison_report,
-    render_run_comparison_markdown,
-    write_metrics_report_markdown,
-)
 from neurobench.validation.schemas import validation_error_summary
 
 
@@ -38,6 +32,8 @@ def add_report_subcommands(subparsers) -> argparse.ArgumentParser:
 
 def generate_report_command(args: argparse.Namespace) -> int:
     try:
+        from neurobench.reports import build_metrics_report_from_pipeline_runs, write_metrics_report_markdown
+
         report = build_metrics_report_from_pipeline_runs(
             args.runs,
             metrics_report_id=args.metrics_report_id,
@@ -63,6 +59,8 @@ def compare_report_command(args: argparse.Namespace) -> int:
         print("Run comparison requires at least two pipeline_run.json files.", file=sys.stderr)
         return 1
     try:
+        from neurobench.reports import build_metrics_report_from_pipeline_runs, build_run_comparison_report, render_run_comparison_markdown
+
         reports = [build_metrics_report_from_pipeline_runs([path]) for path in args.runs]
         comparison = build_run_comparison_report(reports)
         out_dir = Path(args.output)

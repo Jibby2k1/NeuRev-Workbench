@@ -164,7 +164,58 @@ Outputs:
 - `sweep_report.md`
 - one run folder per parameter combination
 
-## 7. Optional Comparison Report
+## 7. Gamma CFAR Cascade Screen
+
+For a small adaptive-background screen on the cropped resting video, use the
+example cascaded Gamma CFAR sweep:
+
+```bash
+python -m neurobench.cli.main run validate examples/gamma_cfar_cascade_sweep.example.json
+
+python -m neurobench.cli.main run dry-run \
+  --validate-artifacts \
+  examples/gamma_cfar_cascade_sweep.example.json
+
+python -m neurobench.cli.main run sweep \
+  examples/gamma_cfar_cascade_sweep.example.json \
+  --run-root Outputs/GammaCFAR/calcium_rest_cropped/gamma_cfar_cascade_grid_v1
+```
+
+The architecture is:
+
+```text
+source -> temporal high-pass -> spatial Gaussian + robust local-z evidence
+       -> small-reference Gamma CFAR -> large-reference Gamma CFAR intersection
+       -> component extraction -> local background traces
+       -> Kalman event scoring -> heuristic ranking
+```
+
+The 12-run grid varies:
+
+- small-reference CFAR `pfa`: `[0.03, 0.06, 0.10]`
+- large-reference CFAR `training_radius_px`: `[12, 18]`
+- component temporal support: `[20, 25]` frames
+
+The component minimum area is fixed at `20 px` for this pass. This keeps the
+screen from being dominated by single-frame impulse speckles while still
+allowing active compact footprints that may be smaller than full soma masks.
+
+After execution, create a concise review brief:
+
+```bash
+python tools/summarize_gamma_cfar_sweep.py \
+  Outputs/GammaCFAR/calcium_rest_cropped/gamma_cfar_cascade_grid_v1 \
+  --output Outputs/GammaCFAR/calcium_rest_cropped/gamma_cfar_cascade_grid_v1/gamma_cfar_grid_brief.md \
+  --pixel-size-um 0.5
+```
+
+The brief reports observable burden and plausibility signals rather than
+claiming accuracy: CFAR active fraction, candidate count, temporal support,
+median equivalent ROI diameter, fraction of candidates in the expected
+`5-10 um` diameter range, Kalman event count, and recommended runs for manual
+inspection.
+
+## 8. Optional Comparison Report
 
 After at least two run folders exist:
 

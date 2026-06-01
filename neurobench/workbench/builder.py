@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 from importlib import resources
 from pathlib import Path
 from typing import Any, Mapping
@@ -76,12 +77,19 @@ def resolve_build_inputs(
         resolved_app_dir = resolved_app_dir or manifest_path(manifest, "app_dir")
         resolved_review_data = resolved_review_data or manifest_path(manifest, "review_data")
         resolved_architecture_runs = resolved_architecture_runs or manifest_path(manifest, "architecture_runs")
+    review_data_path = (resolved_review_data or Path(default_review_data)).resolve()
+    review_dataset_id = None
+    if review_data_path.exists():
+        review_payload = load_json(review_data_path)
+        if isinstance(review_payload.get("dataset"), Mapping):
+            review_dataset_id = review_payload["dataset"].get("dataset_id")
+        review_dataset_id = review_dataset_id or review_payload.get("dataset_id")
     return {
         "dataset_manifest": manifest,
         "app_dir": (resolved_app_dir or Path(default_app_dir)).resolve(),
-        "review_data_path": (resolved_review_data or Path(default_review_data)).resolve(),
+        "review_data_path": review_data_path,
         "architecture_runs_path": resolved_architecture_runs.resolve() if resolved_architecture_runs else None,
-        "dataset_id": (manifest or {}).get("dataset_id") or default_dataset_id,
+        "dataset_id": (manifest or {}).get("dataset_id") or review_dataset_id or default_dataset_id,
     }
 
 
@@ -101,7 +109,11 @@ def build_workbench(
     review_path = Path(review_data_path)
     manifest_payload = dict(dataset_manifest or {})
     data = load_json(review_path)
-    data["dataset"] = {key: value for key, value in manifest_payload.items() if not str(key).startswith("_")}
+    review_dataset = data.get("dataset") if isinstance(data.get("dataset"), Mapping) else {}
+    data["dataset"] = {
+        **review_dataset,
+        **{key: value for key, value in manifest_payload.items() if not str(key).startswith("_")},
+    }
     data["dataset"].setdefault("dataset_id", dataset_id)
     data["pipelineCatalog"] = catalog_as_dict()
     if architecture_runs_path and Path(architecture_runs_path).exists():
@@ -118,11 +130,15 @@ def build_workbench(
         "architecture_runs": app_path / "architecture_runs.json",
     }
     paths["architecture_runs"].write_text(json.dumps(data["architectureRuns"], indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    paths["css"].write_text(load_workbench_asset("workbench.css", css_fallback) + "\n", encoding="utf-8")
-    paths["js"].write_text(load_workbench_asset("workbench.js", js_fallback) + "\n", encoding="utf-8")
+    css_text = load_workbench_asset("workbench.css", css_fallback)
+    js_text = load_workbench_asset("workbench.js", js_fallback)
+    asset_version = hashlib.sha256((css_text + js_text).encode("utf-8")).hexdigest()[:12]
+    paths["css"].write_text(css_text + "\n", encoding="utf-8")
+    paths["js"].write_text(js_text + "\n", encoding="utf-8")
     html = html_template.format(
         dataset_id=dataset_id,
         frames=data["video"]["frames"],
+        asset_version=asset_version,
         data_json=json.dumps(data, separators=(",", ":")).replace("</script>", "<\\/script>"),
     )
     paths["index"].write_text(html, encoding="utf-8")

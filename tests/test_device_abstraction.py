@@ -81,6 +81,51 @@ class DeviceAbstractionTests(unittest.TestCase):
         self.assertEqual(manifest["environment"]["device_backend"], "numpy")
         self.assertIn("fallback", manifest["environment"]["device_reason"])
 
+    def test_execute_pipeline_supports_multi_stage_cfar_cascade(self):
+        require_numpy()
+        from neurobench.pipelines.executor import execute_pipeline
+
+        video = np.zeros((4, 24, 24), dtype=np.float32)
+        video[:, 8, 8] = 8.0
+        video[:, 16, 16] = 4.0
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "raw.npy"
+            np.save(source, video)
+            spec = {
+                "schema_version": 1,
+                "dataset_id": "cfar_cascade",
+                "run_id": "cfar_cascade_pipeline",
+                "pipeline": [
+                    {"id": "source", "stage_id": "source_video_import", "params": {"source": source}},
+                    {"id": "highpass", "stage_id": "temporal_highpass_gaussian", "params": {"sigma_frames": 0.1}},
+                    {"id": "smooth", "stage_id": "spatial_gaussian", "params": {"sigma_px": 0.0}},
+                    {"id": "score", "stage_id": "robust_positive_local_z", "params": {"epsilon": 0.05}},
+                    {"id": "cfar_small_ref", "stage_id": "gamma_cfar", "params": {"pfa": 0.2, "guard_px": 1, "training_radius_px": 4}},
+                    {
+                        "id": "cfar_large_ref",
+                        "stage_id": "gamma_cfar",
+                        "params": {"pfa": 0.2, "guard_px": 2, "training_radius_px": 7},
+                        "metadata": {"previous_mask_step": "cfar_small_ref", "combine_mode": "intersection"},
+                    },
+                    {
+                        "id": "components",
+                        "stage_id": "component_filter",
+                        "params": {"seed_z": 0.5, "min_area_px": 1, "max_area_px": 50, "support_min_frames": 1},
+                    },
+                ],
+            }
+            result = execute_pipeline(spec, run_root=root / "run")
+            manifest = json.loads((root / "run" / "pipeline_run.json").read_text(encoding="utf-8"))
+
+        self.assertEqual(result["status"], "completed")
+        cfar_artifacts = [item for item in manifest["artifacts"] if item["kind"] == "candidate_mask"]
+        self.assertEqual(len(cfar_artifacts), 2)
+        cascade_artifact = next(item for item in cfar_artifacts if item["summary"].get("previous_mask_step"))
+        self.assertEqual(cascade_artifact["summary"]["previous_mask_step"], "cfar_small_ref")
+        roi_artifact = next(item for item in manifest["artifacts"] if item["kind"] == "roi_candidates")
+        self.assertEqual(roi_artifact["summary"]["evidence_source"], "candidate_mask")
+
 
 if __name__ == "__main__":
     unittest.main()

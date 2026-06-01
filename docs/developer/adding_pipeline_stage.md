@@ -201,6 +201,9 @@ the catalog entry includes:
 - complete `parameter_docs`
 - realistic `real_time_profile`
 - `expected_qc_outputs` when the stage can produce previewable intermediate data
+  or a diagnostic summary. Locally runnable stages are expected to declare at
+  least one Process Lab output so dry-run plans and the dashboard can show a
+  complete inspection checklist.
 
 The Review page should only depend on stable run artifacts, not private runner
 state.

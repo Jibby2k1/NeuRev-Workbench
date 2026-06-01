@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from dataclasses import dataclass
+from collections.abc import Iterable
 from numbers import Real
 from typing import Any, Mapping, Sequence
 
@@ -85,6 +86,27 @@ _DEFAULT_REALTIME = {
 
 _DEFAULT_EXPECTED_QC_OUTPUTS: tuple[str, ...] = ()
 
+LOCAL_RUNNER_STAGE_IDS = frozenset(
+    {
+        "source_video_import",
+        "temporal_highpass_gaussian",
+        "event_preserving_noise_suppression",
+        "spatial_gaussian",
+        "rigid_shift_estimate",
+        "robust_positive_local_z",
+        "adaptive_ewma_z",
+        "gamma_cfar",
+        "adaptive_gamma_cfar",
+        "candidate_event_pipeline",
+        "component_filter",
+        "local_background_ring",
+        "trace_event_scoring",
+        "robust_kalman_positive_innovation",
+        "heuristic_priority_v1",
+        "generate_neuron_review_app",
+    }
+)
+
 
 _STAGE_METADATA: dict[str, dict[str, Any]] = {
     "source_video_import": {
@@ -112,6 +134,7 @@ _STAGE_METADATA: dict[str, dict[str, Any]] = {
         "type": "temporal_smoothing",
         "input": "raw_video",
         "output": "highpass_video",
+        "expected_qc_outputs": ("highpass_frame", "temporal_baseline_trace"),
         "why_use_it": "Penalizes slow baseline drift while preserving fast calcium transients.",
         "real_time_profile": {"mode": "streaming", "latency_budget_ms": 2.0, "stateful": True, "adaptive": True, "closed_loop_candidate": True},
     },
@@ -121,6 +144,7 @@ _STAGE_METADATA: dict[str, dict[str, Any]] = {
         "type": "denoising",
         "input": "highpass_video",
         "output": "denoised_video",
+        "expected_qc_outputs": ("denoised_frame", "impulse_rejection_summary"),
         "why_use_it": "Reduces impulse-like noise before candidate extraction without intentionally blurring events away.",
         "real_time_profile": {"mode": "streaming", "latency_budget_ms": 2.0, "stateful": True, "adaptive": True, "closed_loop_candidate": True},
     },
@@ -130,6 +154,7 @@ _STAGE_METADATA: dict[str, dict[str, Any]] = {
         "type": "spatial_smoothing",
         "input": "highpass_video",
         "output": "smoothed_video",
+        "expected_qc_outputs": ("smoothed_frame", "smoothing_residual_frame"),
         "why_use_it": "Suppresses pixel-scale noise before CFAR or local-z scoring.",
         "real_time_profile": {"mode": "streaming", "latency_budget_ms": 1.0, "closed_loop_candidate": True},
     },
@@ -139,6 +164,7 @@ _STAGE_METADATA: dict[str, dict[str, Any]] = {
         "type": "motion_correction",
         "input": "raw_video",
         "output": "registered_video",
+        "expected_qc_outputs": ("registered_frame", "rigid_shift_trace"),
         "why_use_it": "Flags or corrects frame drift that can masquerade as neural activity.",
         "real_time_profile": {"mode": "streaming", "latency_budget_ms": 3.0, "stateful": True, "closed_loop_candidate": True},
     },
@@ -184,6 +210,7 @@ _STAGE_METADATA: dict[str, dict[str, Any]] = {
         "type": "filtering",
         "input": "highpass_video",
         "output": "z_stack",
+        "expected_qc_outputs": ("positive_z_frame", "max_z_projection"),
         "why_use_it": "Highlights positive local excursions using robust local scale estimates.",
         "real_time_profile": {"mode": "streaming", "latency_budget_ms": 2.0, "stateful": True, "adaptive": True, "closed_loop_candidate": True},
     },
@@ -193,6 +220,7 @@ _STAGE_METADATA: dict[str, dict[str, Any]] = {
         "type": "filtering",
         "input": "raw_video",
         "output": "z_stack",
+        "expected_qc_outputs": ("adaptive_z_frame", "active_fraction_trace"),
         "why_use_it": "Maintains streaming per-pixel baseline and variance estimates for 100 Hz candidate screening.",
         "real_time_profile": {"mode": "streaming", "latency_budget_ms": 2.0, "stateful": True, "adaptive": True, "closed_loop_candidate": True},
     },
@@ -202,6 +230,7 @@ _STAGE_METADATA: dict[str, dict[str, Any]] = {
         "type": "filtering",
         "input": "smoothed_video",
         "output": "candidate_mask",
+        "expected_qc_outputs": ("candidate_mask", "threshold_summary"),
         "why_use_it": "Adapts thresholds to local background so bright and dim regions are treated more fairly.",
         "real_time_profile": {"mode": "streaming", "latency_budget_ms": 2.0, "adaptive": True, "closed_loop_candidate": True},
     },
@@ -221,6 +250,7 @@ _STAGE_METADATA: dict[str, dict[str, Any]] = {
         "type": "filtering",
         "input": "z_stack",
         "output": "candidate_events",
+        "expected_qc_outputs": ("event_component_overlay", "event_count_trace"),
         "why_use_it": "Produces permissive event and discovery candidates for human triage.",
         "real_time_profile": {"mode": "offline", "latency_budget_ms": None},
     },
@@ -230,7 +260,8 @@ _STAGE_METADATA: dict[str, dict[str, Any]] = {
         "type": "trace_extraction",
         "input": "z_stack",
         "output": "roi_candidates",
-        "why_use_it": "Turns pixel evidence into object-level neuron candidates with size constraints.",
+        "expected_qc_outputs": ("roi_candidate_overlay", "roi_size_distribution"),
+        "why_use_it": "Turns pixel evidence into object-level neuron candidates with size and temporal-support constraints.",
         "real_time_profile": {"mode": "streaming", "latency_budget_ms": 2.0, "closed_loop_candidate": True},
     },
     "local_background_ring": {
@@ -239,6 +270,7 @@ _STAGE_METADATA: dict[str, dict[str, Any]] = {
         "type": "background_correction",
         "input": "roi_candidates",
         "output": "roi_traces",
+        "expected_qc_outputs": ("raw_roi_trace", "background_trace", "corrected_trace"),
         "why_use_it": "Subtracts nearby background/neuropil signal before event scoring.",
         "real_time_profile": {"mode": "streaming", "latency_budget_ms": 1.0, "closed_loop_candidate": True},
     },
@@ -248,6 +280,7 @@ _STAGE_METADATA: dict[str, dict[str, Any]] = {
         "type": "event_model",
         "input": "roi_traces",
         "output": "candidate_events",
+        "expected_qc_outputs": ("event_score_trace", "candidate_event_markers"),
         "why_use_it": "Provides a simple thresholded trace event baseline.",
         "real_time_profile": {"mode": "streaming", "latency_budget_ms": 1.0, "closed_loop_candidate": True},
     },
@@ -257,6 +290,7 @@ _STAGE_METADATA: dict[str, dict[str, Any]] = {
         "type": "event_model",
         "input": "roi_traces",
         "output": "candidate_events",
+        "expected_qc_outputs": ("kalman_baseline_trace", "innovation_trace", "candidate_event_markers"),
         "why_use_it": "Tracks a robust baseline and calls positive innovations as candidate transients.",
         "real_time_profile": {"mode": "streaming", "latency_budget_ms": 1.0, "stateful": True, "adaptive": True, "closed_loop_candidate": True},
     },
@@ -275,6 +309,7 @@ _STAGE_METADATA: dict[str, dict[str, Any]] = {
         "type": "candidate_ranking",
         "input": "roi_candidates",
         "output": "ranked_candidates",
+        "expected_qc_outputs": ("priority_score_distribution", "review_queue_preview"),
         "why_use_it": "Orders candidates for review using transparent feature weights rather than hidden labels.",
         "real_time_profile": {"mode": "streaming", "latency_budget_ms": 1.0, "adaptive": False, "closed_loop_candidate": True},
     },
@@ -467,6 +502,10 @@ _PARAMETER_DOCS: dict[str, dict[str, str]] = {
     "max_area_px": "Largest accepted component area in pixels. Helps flag merged clusters and broad artifacts.",
     "seed_z": "Higher threshold used to seed connected components from strong evidence peaks.",
     "grow_z": "Lower threshold used to grow components around seeds without swallowing background.",
+    "projection_blob_z": "Threshold for persistent green projection evidence unioned into ROI candidates.",
+    "sustained_z": "Trace-relative z-score threshold for marking sustained non-peak fluorescence intervals.",
+    "tonic_z": "Trace-level tonic fluorescence score used to mark persistently active green ROIs.",
+    "peak_window_frames": "Number of neighboring frames around event peaks excluded from sustained-activity intervals.",
     "outer_radius_px": "Outer radius of the local background/neuropil ring around an ROI.",
     "neuropil_weight": "Fraction of local background ring signal subtracted from the ROI trace.",
     "kalman_gain": "How quickly the baseline follows slow trace changes. Too high can absorb real calcium events.",
@@ -533,7 +572,7 @@ STAGE_CATALOG: dict[str, PipelineStage] = {
         label="Temporal high-pass Gaussian",
         order=20,
         default_params={"sigma_frames": 6.0},
-        param_ranges={"sigma_frames": ParameterRange(minimum=0.1, maximum=120.0)},
+        param_ranges={"sigma_frames": ParameterRange(minimum=0.0, maximum=120.0)},
         description="Remove slow temporal baseline drift with a Gaussian high-pass filter.",
     ),
     "event_preserving_noise_suppression": PipelineStage(
@@ -655,14 +694,23 @@ STAGE_CATALOG: dict[str, PipelineStage] = {
         stage_id="component_filter",
         label="Component extraction",
         order=55,
-        default_params={"seed_z": 2.0, "grow_z": 1.1, "min_area_px": 8, "max_area_px": 260},
+        default_params={
+            "seed_z": 2.0,
+            "grow_z": 1.1,
+            "min_area_px": 4,
+            "max_area_px": 260,
+            "support_min_frames": 1,
+            "projection_blob_z": 0.0,
+        },
         param_ranges={
             "seed_z": ParameterRange(minimum=0.0, maximum=20.0),
             "grow_z": ParameterRange(minimum=0.0, maximum=20.0),
             "min_area_px": ParameterRange(minimum=1, maximum=100000),
             "max_area_px": ParameterRange(minimum=1, maximum=100000),
+            "support_min_frames": ParameterRange(minimum=1, maximum=100000),
+            "projection_blob_z": ParameterRange(minimum=0.0, maximum=20.0),
         },
-        description="Extract connected component ROI candidates from evidence maps.",
+        description="Extract connected component ROI candidates from evidence maps, persistent green projections, or temporally supported candidate masks.",
     ),
     "local_background_ring": PipelineStage(
         stage_id="local_background_ring",
@@ -680,8 +728,14 @@ STAGE_CATALOG: dict[str, PipelineStage] = {
         label="Trace event scoring",
         order=60,
         required_params=("event_threshold_z",),
-        param_ranges={"event_threshold_z": ParameterRange(minimum=0.0, maximum=20.0)},
-        description="Score candidate trace events with a z-threshold.",
+        default_params={"sustained_z": 1.2, "tonic_z": 2.0, "peak_window_frames": 1},
+        param_ranges={
+            "event_threshold_z": ParameterRange(minimum=0.0, maximum=20.0),
+            "sustained_z": ParameterRange(minimum=0.0, maximum=20.0),
+            "tonic_z": ParameterRange(minimum=0.0, maximum=20.0),
+            "peak_window_frames": ParameterRange(minimum=0, maximum=1000),
+        },
+        description="Score candidate trace events and optional sustained or tonic activity states.",
     ),
     "robust_kalman_positive_innovation": PipelineStage(
         stage_id="robust_kalman_positive_innovation",
@@ -869,10 +923,15 @@ STAGE_CATALOG: dict[str, PipelineStage] = {
 }
 
 
-def catalog_as_dict() -> dict[str, dict[str, Any]]:
+def catalog_as_dict(*, runner_stage_ids: Iterable[str] | None = None) -> dict[str, dict[str, Any]]:
     """Return a JSON-serializable copy of the stage catalog."""
 
-    return {stage_id: stage.as_dict() for stage_id, stage in STAGE_CATALOG.items()}
+    runners = set(LOCAL_RUNNER_STAGE_IDS if runner_stage_ids is None else runner_stage_ids)
+    catalog = {stage_id: stage.as_dict() for stage_id, stage in STAGE_CATALOG.items()}
+    for stage_id, entry in catalog.items():
+        entry["runner_available"] = stage_id in runners
+        entry["locally_runnable"] = entry["availability"] == "implemented" and entry["runner_available"]
+    return catalog
 
 
 def stage_ids() -> tuple[str, ...]:

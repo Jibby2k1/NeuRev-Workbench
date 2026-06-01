@@ -249,4 +249,3 @@ dependencies:
       - pytz==2025.2
       - tifffile==2025.5.10
       - tqdm==4.67.1
-prefix: /home/jibby2k1/miniconda3/envs/gpu_pipeline

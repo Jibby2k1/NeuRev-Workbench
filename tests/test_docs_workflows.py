@@ -59,8 +59,8 @@ class DocsWorkflowTests(unittest.TestCase):
             "What To Use When",
             "Suggested Review Workflow",
             "Experiment Lab",
-            "Process Lab",
-            "Metrics/Audit",
+            "Data",
+            "Progress",
             "Review Session",
         ]:
             self.assertIn(expected, text)

@@ -20,6 +20,7 @@ class SchemaValidationTests(unittest.TestCase):
         self.assertEqual(schema_path("architecture_run").name, "architecture_run.schema.json")
         self.assertEqual(schema_path("pipeline_spec").name, "pipeline_spec.schema.json")
         self.assertEqual(schema_path("pipeline_run").name, "pipeline_run.schema.json")
+        self.assertEqual(schema_path("llm_architecture_proposal").name, "llm_architecture_proposal.schema.json")
         self.assertEqual(schema_path("artifact_record").name, "artifact_record.schema.json")
         self.assertEqual(schema_path("review_data").name, "review_data.schema.json")
         self.assertEqual(schema_path("export_bundle").name, "export_bundle.schema.json")

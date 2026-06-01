@@ -15,7 +15,7 @@ def as_run_manifest(data: Mapping[str, Any]) -> dict[str, Any]:
         runs = [_validated_run(run) for run in list(data.get("runs") or [])]
         dataset_id = data.get("dataset_id") or (runs[0].get("dataset_id") if runs else "")
         manifest: dict[str, Any] = {"schema_version": 1, "dataset_id": dataset_id, "runs": runs}
-        for key in ("sweep", "experiments", "saved_pipelines", "optimization_studies"):
+        for key in ("sweep", "experiments", "saved_pipelines", "optimization_studies", "llm_proposal_sets"):
             if key in data:
                 manifest[key] = deepcopy(data[key])
         return manifest

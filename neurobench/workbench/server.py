@@ -19,6 +19,7 @@ from typing import Any
 from urllib.parse import unquote, urlparse
 
 from neurobench.architecture_runs import as_run_manifest
+from neurobench.llm_planning import proposal_set_to_architecture_manifest, validate_proposal_set
 from neurobench.pipeline_catalog import normalize_pipeline
 from neurobench.workbench.materialize import materialize_virtual_roi_traces
 
@@ -324,6 +325,47 @@ def ensure_run_record(
     atomic_write_json(path, manifest)
 
 
+def import_llm_proposals_into_app(app_dir: Path, payload: dict[str, Any]) -> dict[str, Any]:
+    """Validate and merge an LLM proposal set into a workbench architecture manifest."""
+
+    proposal = payload.get("proposal") or payload.get("proposal_set") or payload
+    if not isinstance(proposal, dict):
+        raise ValueError("LLM proposal import payload must be an object or contain a proposal object.")
+    max_combinations = payload.get("max_combinations")
+    max_combinations_int = int(max_combinations) if max_combinations is not None else None
+    try:
+        validated = validate_proposal_set(proposal, max_combinations=max_combinations_int)
+    except Exception as exc:
+        raise ValueError(f"Invalid LLM proposal set: {exc}") from exc
+    path = app_dir / "architecture_runs.json"
+    base = as_run_manifest(load_json(path)) if path.exists() else None
+    manifest = proposal_set_to_architecture_manifest(
+        validated,
+        base_manifest=base,
+        max_combinations=max_combinations_int,
+    )
+    atomic_write_json(path, manifest)
+    proposal_set_id = str(validated.get("proposal_set_id") or "")
+    proposal_run_ids = [
+        str(run.get("run_id"))
+        for run in manifest.get("runs", [])
+        if (run.get("artifacts") or {}).get("proposal_set_id") == proposal_set_id
+    ]
+    template_ids = [
+        str(template.get("id"))
+        for template in manifest.get("saved_pipelines", [])
+        if template.get("proposal_set_id") == proposal_set_id
+    ]
+    return {
+        "ok": True,
+        "architecture_runs": str(path),
+        "proposal_set_id": proposal_set_id,
+        "run_ids": proposal_run_ids,
+        "saved_pipeline_ids": template_ids,
+        "validation_report": validated.get("validation_report", {}),
+    }
+
+
 def run_process(job: GenerationJob, command: list[str], *, stage: str, env: dict[str, str] | None = None) -> int:
     job.stage = stage
     job.append_log("+ " + " ".join(shlex.quote(str(part)) for part in command))
@@ -450,6 +492,12 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
 
     app_dir: Path
     root_dir: Path | None = None
+    POST_HANDLERS = {
+        ("jobs", "generate-view"): "_handle_generation_post",
+        ("jobs", "generate-preview"): "_handle_generation_post",
+        ("materialize-traces",): "_handle_materialize_traces_post",
+        ("llm-proposals", "import"): "_handle_llm_proposal_import_post",
+    }
 
     def log_message(self, fmt: str, *args: Any) -> None:
         print(f"{self.address_string()} - {fmt % args}")
@@ -507,6 +555,28 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
             if root in candidate.parents and candidate.exists():
                 return candidate
         return None
+
+    def _api_tail(self, parsed_path: str) -> tuple[str, ...] | None:
+        rel = unquote(parsed_path).lstrip("/")
+        parts = list(Path(rel).parts)
+        if "api" not in parts:
+            return None
+        return tuple(parts[parts.index("api") + 1 :])
+
+    def _read_post_payload(self) -> dict[str, Any] | None:
+        length = int(self.headers.get("Content-Length", "0"))
+        if length <= 0 or length > 2_000_000:
+            self._send_json(413, {"error": "invalid request size"})
+            return None
+        try:
+            payload = json.loads(self.rfile.read(length).decode("utf-8"))
+        except Exception as exc:
+            self._send_json(400, {"error": f"invalid json: {exc}"})
+            return None
+        if not isinstance(payload, dict):
+            self._send_json(400, {"error": "payload must be an object"})
+            return None
+        return payload
 
     def do_OPTIONS(self) -> None:
         self._send(204, b"", "text/plain")
@@ -636,31 +706,30 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
         if app_dir is None:
             self._send_json(404, {"error": "unknown api endpoint"})
             return
-        rel = unquote(parsed.path).lstrip("/")
-        parts = list(Path(rel).parts)
-        tail = parts[parts.index("api") + 1 :]
-        if tail not in (["jobs", "generate-view"], ["jobs", "generate-preview"], ["materialize-traces"]):
+        tail = self._api_tail(parsed.path)
+        handler_name = self.POST_HANDLERS.get(tail or ())
+        if handler_name is None:
             self._send_json(404, {"error": "unknown api endpoint"})
             return
         if not owner_token_matches(self.headers.get("X-Neurobench-Owner-Token")):
             self._send_json(401, {"error": "owner token required"})
             return
-        length = int(self.headers.get("Content-Length", "0"))
-        if length <= 0 or length > 2_000_000:
-            self._send_json(413, {"error": "invalid request size"})
+        payload = self._read_post_payload()
+        if payload is None:
             return
+        getattr(self, handler_name)(app_dir, payload, tail or ())
+
+    def _handle_materialize_traces_post(self, app_dir: Path, payload: dict[str, Any], tail: tuple[str, ...]) -> None:
+        self._materialize_traces(app_dir, payload)
+
+    def _handle_llm_proposal_import_post(self, app_dir: Path, payload: dict[str, Any], tail: tuple[str, ...]) -> None:
         try:
-            payload = json.loads(self.rfile.read(length).decode("utf-8"))
+            self._send_json(200, import_llm_proposals_into_app(app_dir, payload))
         except Exception as exc:
-            self._send_json(400, {"error": f"invalid json: {exc}"})
-            return
-        if not isinstance(payload, dict):
-            self._send_json(400, {"error": "payload must be an object"})
-            return
-        if tail == ["materialize-traces"]:
-            self._materialize_traces(app_dir, payload)
-            return
-        if tail == ["jobs", "generate-preview"]:
+            self._send_json(400, {"error": str(exc)})
+
+    def _handle_generation_post(self, app_dir: Path, payload: dict[str, Any], tail: tuple[str, ...]) -> None:
+        if tail == ("jobs", "generate-preview"):
             payload["preview"] = True
             payload.setdefault("stages", "high-pass,event-denoise,candidates,temporal-scoring,review-data,workbench")
         backend = str(payload.get("backend") or "auto")

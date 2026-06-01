@@ -44,14 +44,16 @@ final Path outputDir = resolvePath(projectRoot, setting("app_dir", outputRoot.re
 final Path frameDir = outputDir.resolve("frames")
 final Path evidenceDir = outputDir.resolve("evidence")
 
-final int minRoiArea = Integer.parseInt(setting("component_min_area_px", "8"))
+final int minRoiArea = Integer.parseInt(setting("component_min_area_px", "4"))
 final int maxRoiArea = Integer.parseInt(setting("component_max_area_px", "260"))
-final int maxRois = Integer.parseInt(setting("max_rois", "90"))
-final int nonMaxRadius = 4
-final int minPeakDistance = 9
-final int footprintRadius = 9
+final int maxRois = Integer.parseInt(setting("max_rois", "160"))
+final int nonMaxRadius = Integer.parseInt(setting("nonmax_radius_px", "3"))
+final int minPeakDistance = Integer.parseInt(setting("min_peak_distance_px", "6"))
+final int footprintRadius = Integer.parseInt(setting("footprint_radius_px", "8"))
 final int backgroundOuterRadius = Integer.parseInt(setting("background_outer_radius_px", "15"))
-final double zActiveThreshold = 2.0d
+final double zActiveThreshold = Double.parseDouble(setting("active_z_threshold", "1.8"))
+final double roiPeakPercentile = Double.parseDouble(setting("roi_peak_percentile", "0.975"))
+final double roiGrowFloorPercentile = Double.parseDouble(setting("roi_grow_floor_percentile", "0.920"))
 final double eventZThreshold = Double.parseDouble(setting("event_threshold_z", "2.4"))
 final double neuropilWeight = Double.parseDouble(setting("neuropil_weight", "0.7"))
 final double kalmanGain = Double.parseDouble(setting("kalman_gain", "0.060"))
@@ -516,9 +518,9 @@ for (int i = 0; i < pixelsPerFrame; i++) {
 }
 score = boxSmooth3x3(boxSmooth3x3(score, width, height), width, height)
 
-double peakThreshold = percentile(score, 0.985d)
-double growFloor = percentile(score, 0.940d)
-println(String.format("ROI projection thresholds: peak >= %.3f, grow floor >= %.3f", peakThreshold, growFloor))
+double peakThreshold = percentile(score, roiPeakPercentile)
+double growFloor = percentile(score, roiGrowFloorPercentile)
+println(String.format("ROI projection thresholds: peak >= %.3f (p%.3f), grow floor >= %.3f (p%.3f)", peakThreshold, roiPeakPercentile, growFloor, roiGrowFloorPercentile))
 
 List<Integer> peakCandidates = []
 for (int y = nonMaxRadius; y < height - nonMaxRadius; y++) {
@@ -883,6 +885,12 @@ Map<String, Object> reviewData = [
         minRoiArea: minRoiArea,
         maxRoiArea: maxRoiArea,
         maxRois: maxRois,
+        nonMaxRadius: nonMaxRadius,
+        minPeakDistance: minPeakDistance,
+        footprintRadius: footprintRadius,
+        zActiveThreshold: zActiveThreshold,
+        roiPeakPercentile: roiPeakPercentile,
+        roiGrowFloorPercentile: roiGrowFloorPercentile,
         peakThreshold: Math.round(peakThreshold * 1000.0d) / 1000.0d,
         growFloor: Math.round(growFloor * 1000.0d) / 1000.0d,
         eventZThreshold: eventZThreshold,

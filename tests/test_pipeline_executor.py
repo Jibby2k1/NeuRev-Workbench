@@ -39,8 +39,12 @@ class PipelineExecutorTests(unittest.TestCase):
 
         self.assertIn("source_video_import", executable_ids)
         self.assertIn("gamma_cfar", executable_ids)
+        self.assertIn("event_preserving_noise_suppression", executable_ids)
         self.assertNotIn("flat_field_background", executable_ids)
+        self.assertNotIn("review_data_import", executable_ids)
         self.assertTrue(registry.get("source_video_import").executable)
+        self.assertTrue(registry.get("event_preserving_noise_suppression").runner_available)
+        self.assertFalse(registry.get("review_data_import").runner_available)
         self.assertFalse(registry.get("flat_field_background").executable)
 
     def test_pipeline_executor_dry_run_returns_normalized_plan(self):
@@ -63,6 +67,9 @@ class PipelineExecutorTests(unittest.TestCase):
         )
         self.assertEqual(plan["steps"][1]["params"]["sigma_frames"], 4.0)
         self.assertEqual(plan["steps"][2]["params"]["local_radius_px"], 11)
+        self.assertIn("highpass_frame", plan["steps"][1]["metadata"]["expected_qc_outputs"])
+        self.assertIn("positive_z_frame", plan["steps"][2]["metadata"]["expected_qc_outputs"])
+        self.assertIn("roi_candidate_overlay", plan["steps"][3]["metadata"]["expected_qc_outputs"])
         self.assertIn("roi_candidates", plan["available_artifacts"])
 
     def test_pipeline_executor_missing_artifact_error(self):
@@ -105,6 +112,7 @@ class PipelineExecutorTests(unittest.TestCase):
         )
 
         self.assertEqual(plan["steps"][1]["stage_id"], "flat_field_background")
+        self.assertIn("corrected_frame", plan["steps"][1]["metadata"]["expected_qc_outputs"])
         self.assertFalse(plan["require_executable"])
 
     def test_synthetic_pipeline_e2e_writes_manifest_and_artifacts(self):
@@ -229,6 +237,51 @@ class PipelineExecutorTests(unittest.TestCase):
             self.assertGreater(int(np.count_nonzero(candidate_mask)), 0)
             self.assertLess(manifest["artifacts"][-1]["summary"]["active_fraction"], 0.25)
 
+    def test_component_filter_uses_z_seed_when_reducing_candidate_mask(self):
+        require_numpy()
+        from neurobench.models.pipeline import PipelineRun
+        from neurobench.pipelines.artifacts import ArtifactStore
+        from neurobench.pipelines.executor import _run_component_filter
+
+        candidate_mask = np.zeros((6, 20, 24), dtype=np.uint8)
+        candidate_mask[:, 1:5, 1:5] = 1
+        candidate_mask[:, 12:16, 14:18] = 1
+        z_stack = np.zeros((6, 20, 24), dtype=np.float32)
+        z_stack[:, 1:5, 1:5] = 2.0
+        z_stack[:, 12:16, 14:18] = 5.0
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            mask_path = root / "candidate_mask.npy"
+            z_path = root / "z_stack.npy"
+            np.save(mask_path, candidate_mask)
+            np.save(z_path, z_stack)
+            store = ArtifactStore(
+                root / "run",
+                PipelineRun(
+                    schema_version=1,
+                    run_id="component_seed",
+                    dataset_id="synthetic",
+                    pipeline_spec_id="component_seed",
+                    status="running",
+                    created_at="2026-01-01T00:00:00+00:00",
+                    parameter_hash="0" * 64,
+                    artifacts=[],
+                ),
+            )
+            _, out = _run_component_filter(
+                {
+                    "step_id": "components",
+                    "stage_id": "component_filter",
+                    "params": {"seed_z": 4.0, "min_area_px": 3, "max_area_px": 100, "support_min_frames": 1},
+                },
+                {"candidate_mask": mask_path, "z_stack": z_path},
+                store,
+            )
+            candidates = json.loads(out.read_text())
+
+            self.assertEqual(len(candidates["candidates"]), 1)
+            self.assertGreater(candidates["candidates"][0]["y"], 10)
+
     def test_synthetic_pipeline_executes_rigid_shift_estimate(self):
         require_numpy()
         from neurobench.algorithms.motion import shift_frame_integer
@@ -267,7 +320,7 @@ class PipelineExecutorTests(unittest.TestCase):
             self.assertLess(float(np.mean(np.abs(registered[0] - registered[1]))), 0.03)
             self.assertEqual(manifest["artifacts"][-1]["summary"]["max_abs_l1_shift_px"], 3)
 
-    def test_execute_pipeline_rejects_unwired_implemented_stage(self):
+    def test_execute_pipeline_rejects_implemented_stage_without_local_runner(self):
         require_numpy()
         from neurobench.data.synthetic import generate_synthetic_calcium_dataset
         from neurobench.pipelines.executor import execute_pipeline
@@ -275,18 +328,60 @@ class PipelineExecutorTests(unittest.TestCase):
         dataset = generate_synthetic_calcium_dataset(frames=4, height=8, width=8)
         with tempfile.TemporaryDirectory() as tmp:
             paths = dataset.write(Path(tmp) / "fixture")
-            with self.assertRaisesRegex(NotImplementedError, "not wired"):
+            with self.assertRaisesRegex(ValueError, "no local runner"):
                 execute_pipeline(
                     {
                         "dataset_id": "synthetic",
                         "run_id": "unwired",
                         "pipeline": [
                             {"id": "source", "stage_id": "source_video_import", "params": {"source": paths["video"]}},
-                            {"id": "denoise", "stage_id": "event_preserving_noise_suppression"},
+                            {"id": "import_review", "stage_id": "review_data_import", "params": {"review_data": "review_data.json"}},
                         ],
                     },
                     run_root=Path(tmp) / "run",
                 )
+
+    def test_synthetic_pipeline_executes_trace_event_stages(self):
+        require_numpy()
+        from neurobench.data.synthetic import generate_synthetic_calcium_dataset
+        from neurobench.pipelines.executor import dry_run_pipeline, execute_pipeline
+
+        dataset = generate_synthetic_calcium_dataset(include_impulse_artifact=False)
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = dataset.write(Path(tmp) / "fixture", dataset_id="synthetic_trace_events")
+            spec = {
+                "schema_version": 1,
+                "dataset_id": "synthetic_trace_events",
+                "run_id": "synthetic_trace_events",
+                "pipeline": [
+                    {"id": "source", "stage_id": "source_video_import", "params": {"source": paths["video"]}},
+                    {"id": "highpass", "stage_id": "temporal_highpass_gaussian", "params": {"sigma_frames": 2.0}},
+                    {"id": "denoise", "stage_id": "event_preserving_noise_suppression", "params": {"spatial_sigma_px": 0.2}},
+                    {"id": "score", "stage_id": "adaptive_ewma_z", "params": {"alpha": 0.15, "threshold_z": 1.5, "epsilon": 0.05}},
+                    {
+                        "id": "components",
+                        "stage_id": "component_filter",
+                        "params": {"seed_z": 1.2, "min_area_px": 3, "max_area_px": 120},
+                    },
+                    {"id": "traces", "stage_id": "local_background_ring", "params": {"outer_radius_px": 8, "neuropil_weight": 0.2}},
+                    {"id": "events", "stage_id": "robust_kalman_positive_innovation", "params": {"event_threshold_z": 1.2}},
+                ],
+            }
+
+            plan = dry_run_pipeline(spec, validate_artifacts=True)
+            result = execute_pipeline(spec, run_root=Path(tmp) / "run")
+            run_root = Path(result["run_root"])
+            manifest = json.loads((run_root / "pipeline_run.json").read_text(encoding="utf-8"))
+            traces = json.loads((run_root / "artifacts" / "traces" / "roi_traces.json").read_text(encoding="utf-8"))
+            events = json.loads((run_root / "artifacts" / "events" / "kalman_candidate_events.json").read_text(encoding="utf-8"))
+
+            self.assertIn("roi_traces", plan["available_artifacts"])
+            self.assertIn("candidate_events", plan["available_artifacts"])
+            self.assertEqual(result["status"], "completed")
+            self.assertIn("roi_traces", [item["kind"] for item in manifest["artifacts"]])
+            self.assertIn("candidate_events", [item["kind"] for item in manifest["artifacts"]])
+            self.assertGreater(len(traces["traces"]), 0)
+            self.assertGreater(len(events["events"]), 0)
 
 
 if __name__ == "__main__":

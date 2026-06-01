@@ -19,6 +19,8 @@ SCHEMA_ALIASES = {
     "run": "architecture_run.schema.json",
     "pipeline_run": "pipeline_run.schema.json",
     "pipeline_spec": "pipeline_spec.schema.json",
+    "llm_architecture_proposal": "llm_architecture_proposal.schema.json",
+    "llm_proposal": "llm_architecture_proposal.schema.json",
     "artifact_record": "artifact_record.schema.json",
     "artifact": "artifact_record.schema.json",
     "annotations": "annotations.schema.json",
