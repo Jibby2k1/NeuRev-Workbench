@@ -1,0 +1,37 @@
+{
+  "bounds": "full_template_image",
+  "cell_policy": "rectangular_image_coordinates",
+  "cols": 32,
+  "coordinate_system": {
+    "height": 512,
+    "origin": "top_left",
+    "units": "px",
+    "width": 512
+  },
+  "extras": {},
+  "grid_id": "grid_32x32_template_from_1_neutral_v1",
+  "region_count": 1024,
+  "regions": [
+    {
+      "anatomy_fraction": null,
+      "anatomy_status": "unknown",
+      "bbox": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "center": [
+        8.0,
+        8.0
+      ],
+      "col": 0,
+      "pixel_count": 256,
+      "region_id": "R00C00",
+      "row": 0
+    }
+  ],
+  "rows": 32,
+  "schema_version": 1,
+  "template_id": "template_from_1_neutral_v1"
+}

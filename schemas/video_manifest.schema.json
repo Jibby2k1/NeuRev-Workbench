@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "created_at": {
+      "type": "string"
+    },
+    "dataset_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "extras": {
+      "type": "object"
+    },
+    "label_counts": {
+      "type": "object"
+    },
+    "label_set": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "root": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "split_policy": {
+      "const": "by_video",
+      "type": "string"
+    },
+    "videos": {
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "condition": {
+            "type": "string"
+          },
+          "dtype": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "fish_id": {
+            "type": "string"
+          },
+          "frame_count": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "frame_rate_hz": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "height": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "index": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "label": {
+            "enum": [
+              "left",
+              "right",
+              "neutral"
+            ],
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "video_id": {
+            "type": "string"
+          },
+          "width": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "video_id",
+          "path",
+          "label",
+          "fish_id"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "dataset_id",
+    "root",
+    "videos",
+    "label_set",
+    "split_policy"
+  ],
+  "title": "Neurobench Video Manifest",
+  "type": "object"
+}

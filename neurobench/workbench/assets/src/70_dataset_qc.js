@@ -73,6 +73,170 @@ function renderSweepEvidencePanel(run){
     </section>`;
 }
 
+
+function templateGridArtifactsForRun(run){
+  const payload = typeof templateGridPayload === 'function' ? templateGridPayload() : {};
+  const groups = [run?.artifacts, run?.outputs, run?.intermediates, run?.intermediate_artifacts, payload.artifacts, payload.outputs, payload.files, data.architectureRuns?.artifacts];
+  return groups.flatMap(group => Array.isArray(group) ? group : []).filter(Boolean);
+}
+function findTemplateGridArtifact(run, needles){
+  const wanted = needles.map(value => String(value).toLowerCase());
+  return templateGridArtifactsForRun(run).find(item => {
+    const text = [item.artifact_kind, item.kind, item.type, item.id, item.stage_id, item.step_id, item.label, item.name, item.file, item.path].map(v => String(v || '').toLowerCase()).join(' ');
+    return wanted.some(needle => text.includes(needle));
+  }) || null;
+}
+function templateGridArtifactPath(item){
+  if(!item) return '';
+  const raw = item.file || item.path || item.url || item.href || '';
+  return raw && typeof artifactUrl === 'function' ? artifactUrl(raw) : raw;
+}
+function templateGridCountsHtml(counts){
+  const entries = Object.entries(counts || {});
+  if(!entries.length) return '<span class="hint">label counts not recorded</span>';
+  return entries.map(([label, count]) => `<span class="utilityPill">${escapeHtml(label)}: ${escapeHtml(count)}</span>`).join('');
+}
+function templateGridMetric(source, keys){
+  if(!source) return 'n/a';
+  for(const key of keys) {
+    const value = source[key] ?? source.metrics?.[key] ?? source.summary?.[key];
+    if(value !== undefined && value !== null && value !== '') return typeof value === 'number' ? fmt(value, Math.abs(value) >= 10 ? 2 : 5) : escapeHtml(String(value));
+  }
+  return 'n/a';
+}
+function templateGridPreviewCard(label, artifact){
+  const path = templateGridArtifactPath(artifact);
+  if(!path) return `<article><div class="qcStageMissing">${escapeHtml(label)} not linked</div><span>${escapeHtml(label)}</span></article>`;
+  const options = artifact?.input_options || artifact?.inputOptions || artifact?.video_options || artifact?.videoOptions || [];
+  const optionCount = Array.isArray(options) ? options.length : 0;
+  const isSelector = optionCount > 0;
+  const isImage = /\.(png|jpg|jpeg|gif|webp|svg)(\?|$)/i.test(path);
+  const action = isSelector ? 'Open input selector' : 'Open artifact';
+  const meta = isSelector ? `<small>${escapeHtml(optionCount)} inputs</small>` : '';
+  return `<article>${isImage ? `<img src="${escapeHtml(path)}" alt="${escapeHtml(label)}">` : `<a class="buttonLink" href="${escapeHtml(path)}" target="_blank" rel="noreferrer">${action}</a>${meta}`}<span>${escapeHtml(label)}</span></article>`;
+}
+
+function templateGridSweepPayload(){
+  const payload = typeof templateGridPayload === 'function' ? templateGridPayload() : {};
+  return payload.overnight_sweep || payload.overnightSweep || payload.sweep_visuals || payload.sweepVisuals || payload.dynamics_sweep || payload.dynamicsSweep || {};
+}
+function renderTemplateGridSweepPanel(run, options={}){
+  const sweep = templateGridSweepPayload();
+  const artifacts = Array.isArray(sweep.artifacts) ? sweep.artifacts : [];
+  if(!sweep.experiment_count && !artifacts.length) return '';
+  const best = sweep.best_validation_and_test?.experiment_id ? sweep.best_validation_and_test : sweep.best_validation || {};
+  const topRows = (sweep.top_experiments || []).slice(0, options.compact ? 5 : 8).map(row => `
+    <tr>
+      <td>${escapeHtml(row.rank ?? '')}</td>
+      <td>${escapeHtml(row.dataset_key || '')}</td>
+      <td>${escapeHtml(row.kind || '')}</td>
+      <td>${escapeHtml(row.seed ?? '')}</td>
+      <td>${fmt(Number(row.val_improvement_over_persistence_mse || 0), 7)}</td>
+      <td>${fmt(Number(row.test_improvement_over_persistence_mse || 0), 7)}</td>
+    </tr>`).join('');
+  const chartCards = artifacts.map(item => templateGridPreviewCard(item.label || item.id || 'sweep chart', item)).join('');
+  const content = `
+      <div class="runCardHeader">
+        <h3>Overnight Dynamics Sweep</h3>
+        <span class="runStatus">${escapeHtml(sweep.experiment_count || 0)} experiments</span>
+      </div>
+      <p class="hint">Cross-validated dynamics sweep against split-aware persistence. Positive improvement means lower MSE than persistence on that split.</p>
+      <div class="metricGrid">
+        <div class="metric"><b>${escapeHtml(sweep.positive_validation_count ?? 'n/a')}</b><span>positive validation</span></div>
+        <div class="metric"><b>${escapeHtml(sweep.positive_test_count ?? 'n/a')}</b><span>positive test</span></div>
+        <div class="metric"><b>${escapeHtml(sweep.positive_validation_and_test_count ?? 'n/a')}</b><span>positive both</span></div>
+        <div class="metric"><b>${escapeHtml(best.dataset_key || 'n/a')}</b><span>best dataset</span></div>
+        <div class="metric"><b>${fmt(Number(best.val_improvement_over_persistence_mse || 0), 7)}</b><span>best val improvement</span></div>
+        <div class="metric"><b>${fmt(Number(best.test_improvement_over_persistence_mse || 0), 7)}</b><span>best test improvement</span></div>
+      </div>
+      <div class="templateGridPreviewStrip sweepVisualStrip">${chartCards || '<p class="hint">No sweep visual artifacts linked.</p>'}</div>
+      <details class="sweepTopTable">
+        <summary>Top sweep experiments</summary>
+        <table class="smallTable"><tr><th>Rank</th><th>Dataset</th><th>Kind</th><th>Seed</th><th>Val improvement</th><th>Test improvement</th></tr>${topRows || '<tr><td colspan="6">No sweep rows available.</td></tr>'}</table>
+      </details>`;
+  return options.standalone ? `<section class="archCard templateGridSweepPanel">${content}</section>` : `<div class="templateGridSweepPanel">${content}</div>`;
+}
+
+function renderTemplateGridPanel(run){
+  const payload = typeof templateGridPayload === 'function' ? templateGridPayload() : {};
+  const spec = typeof templateGridSpec === 'function' ? templateGridSpec() : {};
+  const dims = typeof templateGridDimensions === 'function' ? templateGridDimensions() : {rows: 32, cols: 32};
+  const manifest = payload.video_manifest || payload.videoManifest || payload.manifest || {};
+  const labelCounts = manifest.label_counts || manifest.labelCounts || payload.label_counts || payload.labelCounts || {};
+  const registrationWarnings = payload.registration_warnings || payload.registrationWarnings || payload.registration?.warnings || [];
+  const baseline = payload.persistence_baseline || payload.persistenceBaseline || payload.baseline_metrics || payload.baseline || {};
+  const autoencoder = payload.autoencoder_run || payload.autoencoderRun || payload.autoencoder || payload.ae || {};
+  const rnn = payload.latent_rnn_run || payload.latentRnnRun || payload.latent_rnn || payload.rnn || {};
+  const classifier = payload.latent_classifier_run || payload.latentClassifierRun || payload.latent_classifier || payload.classifier || {};
+  const dataset = payload.dynamics_dataset || payload.dynamicsDataset || {};
+  const splitUnit = dataset.split_unit || dataset.splitUnit || payload.split_unit || payload.splitUnit || 'video';
+  const stateCount = payload.grid_state_count ?? payload.gridStateCount ?? payload.grid_states?.length ?? payload.gridStates?.length ?? 'n/a';
+  const templateProjection = findTemplateGridArtifact(run, ['template_projection', 'template projection', 'template_preview']);
+  const registeredProjection = findTemplateGridArtifact(run, ['registered_projection', 'registration_overlay', 'registered preview']);
+  const gridPreview = findTemplateGridArtifact(run, ['grid_preview', 'grid overlay', 'grid_spec']);
+  return `
+    <section class="archCard templateGridPanel" id="templateGridPanel">
+      <div class="runCardHeader">
+        <h3>Template / Registration / Grid</h3>
+        <span class="runStatus">${escapeHtml(dims.rows)}x${escapeHtml(dims.cols)} grid</span>
+      </div>
+      <p class="hint">Template-aligned grid dynamics workflow: video manifest, per-video rigid registration, grid states, video-level splits, autoencoder, latent RNN, and latent classifier.</p>
+      <div class="metricGrid">
+        <div class="metric"><b>${escapeHtml(manifest.video_count ?? manifest.videos?.length ?? 'n/a')}</b><span>video manifest</span></div>
+        <div class="metric"><b>${escapeHtml(Object.values(labelCounts || {}).reduce((a,b) => a + Number(b || 0), 0) || 'n/a')}</b><span>label counts</span></div>
+        <div class="metric"><b>${escapeHtml(registrationWarnings.length || 0)}</b><span>registration warnings</span></div>
+        <div class="metric"><b>${escapeHtml(stateCount)}</b><span>grid states</span></div>
+        <div class="metric"><b>${escapeHtml(splitUnit)}</b><span>split unit: video</span></div>
+        <div class="metric"><b>${templateGridMetric(baseline, ['mse','test_mse','mean_squared_error'])}</b><span>Persistence baseline</span></div>
+        <div class="metric"><b>${templateGridMetric(autoencoder, ['reconstruction_mse','valid_reconstruction_mse','valid_loss','test_mse'])}</b><span>Autoencoder</span></div>
+        <div class="metric"><b>${templateGridMetric(rnn, ['prediction_mse','valid_mse','test_mse','baseline_ratio'])}</b><span>Latent RNN</span></div>
+        <div class="metric"><b>${templateGridMetric(classifier, ['accuracy','test_accuracy','balanced_accuracy'])}</b><span>Latent classifier</span></div>
+      </div>
+      <div class="miniChipRow">${templateGridCountsHtml(labelCounts)}</div>
+      <div class="templateGridPreviewStrip">
+        ${templateGridPreviewCard('template projection', templateProjection)}
+        ${templateGridPreviewCard('registered projection', registeredProjection)}
+        ${templateGridPreviewCard('grid specification', gridPreview)}
+      </div>
+      ${renderTemplateGridSweepPanel(run)}
+    </section>`;
+}
+function templateGridReportRows(){
+  const payload = typeof templateGridPayload === 'function' ? templateGridPayload() : {};
+  const spec = typeof templateGridSpec === 'function' ? templateGridSpec() : {};
+  const dims = typeof templateGridDimensions === 'function' ? templateGridDimensions() : {rows: spec.rows || 32, cols: spec.cols || 32};
+  const manifest = payload.video_manifest || payload.videoManifest || payload.manifest || {};
+  const dataset = payload.dynamics_dataset || payload.dynamicsDataset || {};
+  const baseline = payload.persistence_baseline || payload.persistenceBaseline || payload.baseline_metrics || payload.baseline || {};
+  const autoencoder = payload.autoencoder_run || payload.autoencoderRun || payload.autoencoder || {};
+  const rnn = payload.latent_rnn_run || payload.latentRnnRun || payload.latent_rnn || {};
+  const classifier = payload.latent_classifier_run || payload.latentClassifierRun || payload.latent_classifier || {};
+  return [
+    ['Dataset manifest', `${manifest.video_count ?? manifest.videos?.length ?? 'n/a'} videos; labels ${Object.keys(manifest.label_counts || manifest.labelCounts || payload.label_counts || {}).join(', ') || 'n/a'}`],
+    ['Template construction', `${dims.rows || 32}x${dims.cols || 32} grid aligned to a reference projection`],
+    ['Registration summary', `${(payload.registration_warnings || payload.registrationWarnings || []).length || 0} warnings recorded`],
+    ['Grid extraction summary', `${payload.grid_state_count ?? payload.gridStateCount ?? payload.grid_states?.length ?? payload.gridStates?.length ?? 'n/a'} grid-state artifacts`],
+    ['Autoencoder reconstruction metrics', templateGridMetric(autoencoder, ['reconstruction_mse','valid_reconstruction_mse','valid_loss','test_mse'])],
+    ['Latent RNN prediction metrics', templateGridMetric(rnn, ['prediction_mse','valid_mse','test_mse','baseline_ratio'])],
+    ['Persistence baseline comparison', templateGridMetric(baseline, ['mse','test_mse','mean_squared_error'])],
+    ['Latent classifier metrics', templateGridMetric(classifier, ['accuracy','test_accuracy','balanced_accuracy'])],
+    ['Known limitations', `Template-aligned grid dynamics only; split unit: ${dataset.split_unit || dataset.splitUnit || payload.split_unit || 'video'}; no inverse control/stimulation or transformer modeling.`]
+  ];
+}
+function renderTemplateGridReportSummary(){
+  const rows = templateGridReportRows();
+  return `
+    <section class="archCard templateGridReportSummary" id="templateGridReportSummary">
+      <div class="runCardHeader"><h3>Template / Registration / Grid Summary</h3><span class="runStatus">experiment handoff</span></div>
+      <table class="smallTable"><tbody>${rows.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`).join('')}</tbody></table>
+    </section>`;
+}
+function templateGridReportMarkdownLines(){
+  const lines = ['', '## Template / Registration / Grid Experiment', ''];
+  for(const [label, value] of templateGridReportRows()) lines.push(`- ${label}: ${value}`);
+  return lines;
+}
+
 function renderDatasetQc(){
   const root = document.getElementById('datasetQc');
   if(!root) return;
@@ -116,6 +280,7 @@ function renderDatasetQc(){
     ${renderRunSummaryCards(run)}
     ${gammaCfarQuickPickHtml(runs, run)}
     ${renderSweepEvidencePanel(run)}
+    ${renderTemplateGridPanel(run)}
     <div class="qcWorkbench">
       <section class="qcViewerPanel">
         <div class="toolbar">
@@ -662,6 +827,7 @@ function reviewReportMarkdown(){
     `- Accepted ROIs: ${s.roi_states.accepted}`,
     `- Accepted events: ${s.event_states.accepted}`,
     `- Control-ready yes/maybe: ${s.control_ready.yes} / ${s.control_ready.maybe}`,
+    ...templateGridReportMarkdownLines(),
     '',
     '## Reviewer Contributions',
     ''
@@ -716,6 +882,8 @@ function renderReviewReport(){
       <div class="metric"><b>${Object.values(s.reviewer_missing || {}).reduce((a,b) => a + b, 0)}</b><span>labels missing reviewer</span></div>
       <div class="metric"><b>${Math.round(100 * audit.coverage_fraction)}%</b><span>reviewer coverage</span></div>
     </div>
+    ${renderTemplateGridReportSummary()}
+    ${renderTemplateGridSweepPanel(activeRun(), {standalone:true, compact:true})}
     <details class="archCard">
       <summary>Reviewer audit details</summary>
       ${auditRows('Reviewer contributions', Object.keys(s.reviewer_counts || {}).length ? s.reviewer_counts : {unassigned: 0})}

@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "artifacts": {
+      "type": "object"
+    },
+    "extras": {
+      "type": "object"
+    },
+    "qc": {
+      "additionalProperties": true,
+      "properties": {
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "warnings"
+      ],
+      "type": "object"
+    },
+    "registration_scope": {
+      "const": "per_video",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "score": {
+      "type": "object"
+    },
+    "source_projection": {
+      "type": "object"
+    },
+    "template_id": {
+      "type": "string"
+    },
+    "transform": {
+      "additionalProperties": true,
+      "properties": {
+        "matrix_3x3": {
+          "maxItems": 3,
+          "minItems": 3,
+          "type": "array"
+        },
+        "model": {
+          "enum": [
+            "translation",
+            "rigid",
+            "similarity"
+          ],
+          "type": "string"
+        },
+        "rotation_deg": {
+          "type": "number"
+        },
+        "scale": {
+          "type": "number"
+        },
+        "translation_px": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array"
+        }
+      },
+      "required": [
+        "model",
+        "matrix_3x3",
+        "rotation_deg",
+        "translation_px",
+        "scale"
+      ],
+      "type": "object"
+    },
+    "video_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "video_id",
+    "template_id",
+    "registration_scope",
+    "source_projection",
+    "transform",
+    "score",
+    "qc",
+    "artifacts",
+    "extras"
+  ],
+  "title": "Neurobench Registration Result",
+  "type": "object"
+}

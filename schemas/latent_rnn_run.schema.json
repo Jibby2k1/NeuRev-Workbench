@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "model_kind": {
+      "const": "latent_gru_predictor",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "model_kind",
+    "latent_dim",
+    "window_frames",
+    "prediction_horizon_frames",
+    "recurrent_unit",
+    "hidden_dim",
+    "source_autoencoder_run",
+    "source_dataset",
+    "checkpoint_path",
+    "metrics_path",
+    "prediction_examples_path",
+    "baseline_metrics_path",
+    "seed",
+    "device",
+    "warnings",
+    "extras"
+  ],
+  "title": "Neurobench Latent RNN Run",
+  "type": "object"
+}

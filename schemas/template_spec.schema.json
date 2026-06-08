@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "coordinate_system": {
+      "additionalProperties": true,
+      "properties": {
+        "height": {
+          "type": "integer"
+        },
+        "origin": {
+          "type": "string"
+        },
+        "units": {
+          "type": "string"
+        },
+        "width": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "height",
+        "width",
+        "origin",
+        "units"
+      ],
+      "type": "object"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "extras": {
+      "type": "object"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "outlier_rejection": {
+      "additionalProperties": true,
+      "required": [
+        "enabled",
+        "method",
+        "max_outlier_fraction",
+        "removed_frame_indices",
+        "removed_fraction"
+      ],
+      "type": "object"
+    },
+    "projection": {
+      "additionalProperties": true,
+      "required": [
+        "kind",
+        "path",
+        "preview_png",
+        "dtype"
+      ],
+      "type": "object"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "source_video_id": {
+      "type": "string"
+    },
+    "source_video_path": {
+      "type": "string"
+    },
+    "template_id": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "template_id",
+    "source_video_id",
+    "coordinate_system",
+    "projection",
+    "outlier_rejection",
+    "extras"
+  ],
+  "title": "Neurobench Template Spec",
+  "type": "object"
+}

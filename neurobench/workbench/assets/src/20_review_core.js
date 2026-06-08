@@ -472,6 +472,11 @@ function applySettingsToControls() {
   if(showLabelsCheckbox) showLabelsCheckbox.checked = labelMode !== 'off';
   const showStencilOverlay = document.getElementById('showStencilOverlay');
   if(showStencilOverlay) showStencilOverlay.checked = setting('showStencilOverlay') !== false;
+  for(const id of ['showTemplateOverlay','showRegisteredProjectionOverlay','showGridOverlay','showGridIntensityOverlay','showPredictionErrorOverlay']) {
+    const el = document.getElementById(id);
+    if(el) el.checked = Boolean(setting(id));
+  }
+  updateGridCellStatus();
   const overlayPresetSelect = document.getElementById('overlayPresetSelect');
   if(overlayPresetSelect) overlayPresetSelect.value = setting('overlayPreset') || 'validate';
   const selectedOverlayMode = document.getElementById('selectedOverlayMode');
@@ -939,6 +944,8 @@ function drawOverlay(){
   const showSuggestions = document.getElementById('showSuggestions').checked;
   const showStencil = setting('showStencilOverlay') !== false;
   if(showStencil) drawReviewStencilOverlay();
+  if(setting('showTemplateOverlay') || setting('showRegisteredProjectionOverlay')) drawTemplateReferenceOverlay();
+  if(setting('showGridOverlay') || setting('showGridIntensityOverlay') || setting('showPredictionErrorOverlay')) drawTemplateGridOverlay();
   if(!showRois && !showSuggestions) {
     drawReviewFocusBox();
     updateOverlayViewButtons();
@@ -1019,6 +1026,145 @@ function drawReviewStencilOverlay(){
   const points = typeof savedStencilPoints === 'function' ? savedStencilPoints() : [];
   if(!points.length || points.length < 3) return;
   if(typeof drawStencilPolygon === 'function') drawStencilPolygon(ctx, points, {fill:'rgba(250, 204, 21, 0.08)', stroke:'#facc15', pointsVisible:false});
+}
+
+
+function templateGridPayload(){
+  return data.templateGrid || data.template_grid || data.gridDynamics || data.grid_dynamics || data.architectureRuns?.templateGrid || data.architectureRuns?.template_grid || {};
+}
+function templateGridSpec(){
+  const payload = templateGridPayload() || {};
+  return payload.grid_spec || payload.gridSpec || payload.grid || payload.grid_32x32 || payload.spec || {};
+}
+function templateGridRegions(){
+  const spec = templateGridSpec() || {};
+  const regions = spec.regions || spec.cells || spec.region_specs || spec.regionSpecs || [];
+  if(Array.isArray(regions)) return regions;
+  if(regions && typeof regions === 'object') return Object.values(regions);
+  return [];
+}
+function templateGridDimensions(){
+  const spec = templateGridSpec() || {};
+  const shape = spec.shape || spec.grid_shape || spec.gridShape || [];
+  const imageShape = spec.image_shape || spec.imageShape || spec.template_shape || spec.templateShape || [];
+  const rows = Math.max(1, Number(spec.rows ?? spec.grid_rows ?? spec.gridRows ?? spec.n_rows ?? shape[0] ?? 32) || 32);
+  const cols = Math.max(1, Number(spec.cols ?? spec.columns ?? spec.grid_cols ?? spec.gridCols ?? spec.n_cols ?? shape[1] ?? 32) || 32);
+  const width = Math.max(1, Number(spec.width ?? spec.image_width ?? spec.imageWidth ?? spec.template_width ?? spec.templateWidth ?? imageShape[1] ?? data.video?.width ?? overlay?.width ?? 1) || 1);
+  const height = Math.max(1, Number(spec.height ?? spec.image_height ?? spec.imageHeight ?? spec.template_height ?? spec.templateHeight ?? imageShape[0] ?? data.video?.height ?? overlay?.height ?? 1) || 1);
+  return {rows, cols, width, height};
+}
+function templateGridRegion(row, col){
+  return templateGridRegions().find(region => {
+    const r = Number(region.row ?? region.grid_row ?? region.gridRow ?? region.i);
+    const c = Number(region.col ?? region.column ?? region.grid_col ?? region.gridCol ?? region.j);
+    return (r === row || r === row + 1) && (c === col || c === col + 1);
+  }) || null;
+}
+function templateGridRegionId(row, col){
+  const region = templateGridRegion(row, col);
+  return region?.region_id || region?.regionId || region?.id || `R${String(row).padStart(2, '0')}C${String(col).padStart(2, '0')}`;
+}
+function templateGridCellBbox(row, col){
+  const dims = templateGridDimensions();
+  const region = templateGridRegion(row, col);
+  const bbox = region?.bbox || region?.bounding_box || region?.boundingBox;
+  if(Array.isArray(bbox) && bbox.length >= 4) return bbox.slice(0, 4).map(Number);
+  if(bbox && typeof bbox === 'object') {
+    const x0 = Number(bbox.x0 ?? bbox.left ?? bbox.x ?? 0);
+    const y0 = Number(bbox.y0 ?? bbox.top ?? bbox.y ?? 0);
+    const x1 = Number(bbox.x1 ?? bbox.right ?? (x0 + Number(bbox.width ?? 0)));
+    const y1 = Number(bbox.y1 ?? bbox.bottom ?? (y0 + Number(bbox.height ?? 0)));
+    if([x0, y0, x1, y1].every(Number.isFinite)) return [x0, y0, x1, y1];
+  }
+  const x0 = col * dims.width / dims.cols;
+  const y0 = row * dims.height / dims.rows;
+  const x1 = (col + 1) * dims.width / dims.cols;
+  const y1 = (row + 1) * dims.height / dims.rows;
+  return [x0, y0, x1, y1];
+}
+function templateGridCellFromPoint(x, y){
+  const dims = templateGridDimensions();
+  if(!Number.isFinite(x) || !Number.isFinite(y) || dims.width <= 0 || dims.height <= 0) return null;
+  const col = Math.max(0, Math.min(dims.cols - 1, Math.floor(x / dims.width * dims.cols)));
+  const row = Math.max(0, Math.min(dims.rows - 1, Math.floor(y / dims.height * dims.rows)));
+  return {row, col, region_id: templateGridRegionId(row, col), bbox: templateGridCellBbox(row, col)};
+}
+function drawTemplateReferenceOverlay(){
+  const dims = templateGridDimensions();
+  if(!ctx || !dims.width || !dims.height) return;
+  ctx.save();
+  if(setting('showTemplateOverlay')) {
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([7, 5]);
+    ctx.strokeRect(0.5, 0.5, Math.max(1, dims.width - 1), Math.max(1, dims.height - 1));
+    drawOverlayLabel('template', 8, 14, '#bae6fd');
+  }
+  if(setting('showRegisteredProjectionOverlay')) {
+    ctx.strokeStyle = '#a78bfa';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([3, 4]);
+    ctx.strokeRect(4.5, 4.5, Math.max(1, dims.width - 9), Math.max(1, dims.height - 9));
+    drawOverlayLabel('registered projection', 8, 30, '#ddd6fe');
+  }
+  ctx.restore();
+}
+function drawTemplateGridOverlay(){
+  const dims = templateGridDimensions();
+  if(!ctx || !dims.width || !dims.height) return;
+  const selected = setting('selectedGridCell') || null;
+  ctx.save();
+  if(setting('showGridIntensityOverlay') || setting('showPredictionErrorOverlay')) {
+    const base = setting('showPredictionErrorOverlay') ? [244, 63, 94] : [14, 165, 233];
+    for(let row = 0; row < dims.rows; row++) for(let col = 0; col < dims.cols; col++) {
+      const [x0, y0, x1, y1] = templateGridCellBbox(row, col);
+      const isSelected = selected && Number(selected.row) === row && Number(selected.col) === col;
+      const alpha = isSelected ? 0.28 : 0.035 + ((row + col) % 2) * 0.018;
+      ctx.fillStyle = `rgba(${base[0]}, ${base[1]}, ${base[2]}, ${alpha})`;
+      ctx.fillRect(x0, y0, Math.max(0.5, x1 - x0), Math.max(0.5, y1 - y0));
+    }
+  }
+  ctx.strokeStyle = setting('showPredictionErrorOverlay') ? 'rgba(244, 63, 94, 0.70)' : 'rgba(14, 165, 233, 0.68)';
+  ctx.lineWidth = 0.75;
+  ctx.setLineDash([]);
+  for(let r = 0; r <= dims.rows; r++) {
+    const y = r * dims.height / dims.rows;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(dims.width, y); ctx.stroke();
+  }
+  for(let c = 0; c <= dims.cols; c++) {
+    const x = c * dims.width / dims.cols;
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, dims.height); ctx.stroke();
+  }
+  if(selected && Number.isFinite(Number(selected.row)) && Number.isFinite(Number(selected.col))) {
+    const [x0, y0, x1, y1] = selected.bbox || templateGridCellBbox(Number(selected.row), Number(selected.col));
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = '#facc15';
+    ctx.fillStyle = 'rgba(250, 204, 21, 0.18)';
+    ctx.fillRect(x0, y0, Math.max(1, x1 - x0), Math.max(1, y1 - y0));
+    ctx.strokeRect(x0, y0, Math.max(1, x1 - x0), Math.max(1, y1 - y0));
+    drawOverlayLabel(selected.region_id || templateGridRegionId(Number(selected.row), Number(selected.col)), x0 + 4, Math.max(12, y0 - 5), '#fde68a');
+  }
+  ctx.restore();
+}
+function handleGridCellClick(x, y){
+  if(!setting('showGridOverlay') && !setting('showGridIntensityOverlay') && !setting('showPredictionErrorOverlay')) return false;
+  const cell = templateGridCellFromPoint(x, y);
+  if(!cell) return false;
+  setSetting('selectedGridCell', cell);
+  updateGridCellStatus();
+  drawOverlay();
+  return true;
+}
+function updateGridCellStatus(){
+  const el = document.getElementById('gridCellStatus');
+  if(!el) return;
+  const cell = setting('selectedGridCell');
+  if(!cell || cell.row === undefined || cell.col === undefined) {
+    el.textContent = 'Grid cell: none';
+    return;
+  }
+  const label = cell.region_id || templateGridRegionId(Number(cell.row), Number(cell.col));
+  el.textContent = `Grid cell: ${label} (r${Number(cell.row) + 1}, c${Number(cell.col) + 1})`;
 }
 
 function drawReviewFocusBox(){
@@ -3182,7 +3328,7 @@ function activateMissedNeuronMode(){
 }
 
 function snapshotFields(){
-  return ['eventThreshold','kalmanGain','spikeGain','overlayOpacity','overlayPreset','selectedOverlayMode','selectedFillOpacity','selectedOutlineWidth','roiFocusMode','overlayScope','neighborRadiusPx','queue','eventQueue','discoveryQueue','evidenceMap','showEvidence','showSuggestions','showStencilOverlay','showPotentialRois','showAnnotatedNeuronRois','showAnnotatedNonNeuronRois','minArea','minEvents','activeRunId'];
+  return ['eventThreshold','kalmanGain','spikeGain','overlayOpacity','overlayPreset','selectedOverlayMode','selectedFillOpacity','selectedOutlineWidth','roiFocusMode','overlayScope','neighborRadiusPx','queue','eventQueue','discoveryQueue','evidenceMap','showEvidence','showSuggestions','showStencilOverlay','showTemplateOverlay','showRegisteredProjectionOverlay','showGridOverlay','showGridIntensityOverlay','showPredictionErrorOverlay','selectedGridCell','showPotentialRois','showAnnotatedNeuronRois','showAnnotatedNonNeuronRois','minArea','minEvents','activeRunId'];
 }
 
 function parameterSnapshots(){

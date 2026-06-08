@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from neurobench.data.checksums import checksum_file
+from neurobench.data.video import load_video_array
 from neurobench.models.pipeline import PipelineRun
 from neurobench.pipeline_catalog import normalize_pipeline
 from neurobench.pipelines.artifacts import ArtifactStore
@@ -179,9 +180,11 @@ def _load_numpy():
 
 def _load_npy(path: Path):
     np = _load_numpy()
-    if path.suffix != ".npy":
-        raise ValueError(f"Local executor currently supports .npy video artifacts, got: {path}")
-    return np.load(path)
+    if path.suffix == ".npy":
+        return np.load(path)
+    if path.suffix.lower() in {".tif", ".tiff"}:
+        return load_video_array(path)
+    raise ValueError(f"Local executor supports .npy/.tif/.tiff video artifacts, got: {path}")
 
 
 def _run_source_video_import(step: Mapping[str, Any], artifacts: Mapping[str, Path], store: ArtifactStore) -> tuple[str, Path]:
@@ -191,7 +194,7 @@ def _run_source_video_import(step: Mapping[str, Any], artifacts: Mapping[str, Pa
     if not source.is_file():
         raise FileNotFoundError(f"Source video does not exist: {source}")
     summary: dict[str, Any] = {}
-    if source.suffix == ".npy":
+    if source.suffix.lower() in {".npy", ".tif", ".tiff"}:
         video = _load_npy(source)
         summary.update({"shape": [int(value) for value in video.shape], "dtype": str(video.dtype)})
     _record_input_checksum(store, checksum_file(source, path_id="raw_video"))
@@ -888,6 +891,156 @@ def _run_generate_neuron_review_app(
     return "review_app", out
 
 
+def _run_video_manifest_build(step: Mapping[str, Any], artifacts: Mapping[str, Path], store: ArtifactStore) -> tuple[str, Path]:
+    from neurobench.data.video_manifest import build_video_manifest
+
+    params = step["params"]
+    out = store.artifact_path("manifest", "video_manifest.json")
+    manifest = build_video_manifest(
+        input_dir=params.get("input_dir"),
+        dataset_id=str(params.get("dataset_id") or store.pipeline_run.dataset_id),
+        filename_regex=str(params.get("filename_regex")),
+        strict=bool(params.get("strict", False)),
+    )
+    out.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    label_counts = store.artifact_path("manifest", "label_counts.json")
+    label_counts.write_text(json.dumps(manifest.get("label_counts") or {}, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    store.register_file(out, artifact_id="video_manifest.v1", kind="video_manifest", producer_stage=str(step["stage_id"]), schema="video_manifest", summary={"video_count": len(manifest.get("videos") or []), "label_counts": manifest.get("label_counts") or {}})
+    return "video_manifest", out
+
+
+def _run_template_build_from_video(step: Mapping[str, Any], artifacts: Mapping[str, Path], store: ArtifactStore) -> tuple[str, Path]:
+    from neurobench.algorithms.template_matching import write_template_artifacts
+    from neurobench.data.video_manifest import video_by_id
+    from neurobench.manifests import load_json
+
+    manifest_path = artifacts.get("video_manifest") or Path(str(step["params"].get("manifest")))
+    manifest = load_json(manifest_path)
+    params = step["params"]
+    ref = str(params.get("reference_video_id") or "1_neutral")
+    video = video_by_id(manifest, ref)
+    out_dir = store.artifact_path("template", "template_spec.json").parent
+    write_template_artifacts(video_path=video["path"], source_video_id=ref, out_dir=out_dir, outlier_rejection=bool(params.get("outlier_rejection", True)), max_outlier_fraction=float(params.get("max_outlier_fraction", 0.05)), z_threshold=float(params.get("z_threshold", 3.5)), chunk_size_frames=int(params.get("chunk_size_frames", 64)))
+    out = out_dir / "template_spec.json"
+    spec = json.loads(out.read_text(encoding="utf-8"))
+    store.register_file(out, artifact_id="template_spec.v1", kind="template_spec", producer_stage=str(step["stage_id"]), schema="template_spec", summary={"template_id": spec.get("template_id"), "removed_frames": len(spec.get("outlier_rejection", {}).get("removed_frame_indices") or [])})
+    return "template_spec", out
+
+
+def _run_template_register_video(step: Mapping[str, Any], artifacts: Mapping[str, Path], store: ArtifactStore) -> tuple[str, Path]:
+    from neurobench.algorithms.template_matching import write_registration_artifacts
+    from neurobench.manifests import load_json
+
+    manifest = load_json(_require_artifact(artifacts, "video_manifest", step))
+    template = load_json(_require_artifact(artifacts, "template_spec", step))
+    params = step["params"]
+    out_dir = store.artifact_path("registration", "registration_summary.json").parent
+    results = []
+    rot = params.get("rotation_range_deg") or [-10.0, 10.0]
+    for video in manifest.get("videos", []) or []:
+        results.append(write_registration_artifacts(video_path=video["path"], video_id=str(video["video_id"]), template_spec=template, out_dir=out_dir, transform_model=str(params.get("transform_model", "rigid")), rotation_range_deg=(float(rot[0]), float(rot[1])), rotation_step_deg=float(params.get("rotation_step_deg", 0.5)), allow_uniform_scale=bool(params.get("allow_uniform_scale", False)), chunk_size_frames=int(params.get("chunk_size_frames", 64))))
+    summary = {"schema_version": 1, "registration_dir": str(out_dir), "video_count": len(results), "warnings": sum(len(r.get("qc", {}).get("warnings") or []) for r in results), "results": [{"video_id": r["video_id"], "result": str(out_dir / r["video_id"] / "registration_result.json"), "score": r.get("score"), "qc": r.get("qc")} for r in results]}
+    out = out_dir / "registration_summary.json"
+    out.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    store.register_file(out, artifact_id="registration_results.v1", kind="registration_results", producer_stage=str(step["stage_id"]), schema="registration_result", summary={"video_count": len(results), "warnings": summary["warnings"]})
+    return "registration_results", out
+
+
+def _run_apply_video_registration(step: Mapping[str, Any], artifacts: Mapping[str, Path], store: ArtifactStore) -> tuple[str, Path]:
+    from neurobench.algorithms.template_matching import write_registered_video_artifacts
+    from neurobench.manifests import load_json
+
+    manifest = load_json(_require_artifact(artifacts, "video_manifest", step))
+    template = load_json(_require_artifact(artifacts, "template_spec", step))
+    registration_dir = _require_artifact(artifacts, "registration_results", step).parent
+    out_dir = store.artifact_path("registered", "registered_summary.json").parent
+    summaries = []
+    for video in manifest.get("videos", []) or []:
+        result = load_json(registration_dir / str(video["video_id"]) / "registration_result.json")
+        summaries.append(write_registered_video_artifacts(video_path=video["path"], registration_result=result, template_spec=template, out_dir=out_dir, output_dtype=str(step["params"].get("output_dtype", "float32")), chunk_size_frames=int(step["params"].get("chunk_size_frames", 64))))
+    summary = {"schema_version": 1, "registered_dir": str(out_dir), "video_count": len(summaries), "videos": summaries}
+    out = out_dir / "registered_summary.json"
+    out.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    store.register_file(out, artifact_id="registered_videos.v1", kind="registered_videos", producer_stage=str(step["stage_id"]), summary={"video_count": len(summaries)})
+    return "registered_videos", out
+
+
+def _run_grid_32x32_generate(step: Mapping[str, Any], artifacts: Mapping[str, Path], store: ArtifactStore) -> tuple[str, Path]:
+    from neurobench.algorithms.grid_regions import write_grid_spec_artifacts
+    from neurobench.manifests import load_json
+
+    out = store.artifact_path("grid", "grid_spec_32x32.json")
+    spec = write_grid_spec_artifacts(template_spec=load_json(_require_artifact(artifacts, "template_spec", step)), out_path=out, rows=int(step["params"].get("rows", 32)), cols=int(step["params"].get("cols", 32)))
+    store.register_file(out, artifact_id="grid_spec.v1", kind="grid_spec", producer_stage=str(step["stage_id"]), schema="grid_spec", summary={"rows": spec["rows"], "cols": spec["cols"], "region_count": spec["region_count"]})
+    return "grid_spec", out
+
+
+def _run_grid_state_extract(step: Mapping[str, Any], artifacts: Mapping[str, Path], store: ArtifactStore) -> tuple[str, Path]:
+    from neurobench.algorithms.grid_regions import write_grid_state_artifacts
+    from neurobench.manifests import load_json
+
+    manifest = load_json(_require_artifact(artifacts, "video_manifest", step))
+    grid = load_json(_require_artifact(artifacts, "grid_spec", step))
+    registered_dir = _require_artifact(artifacts, "registered_videos", step).parent
+    out_dir = store.artifact_path("grid_states", "grid_states_summary.json").parent
+    summaries = []
+    for video in manifest.get("videos", []) or []:
+        vid = str(video["video_id"])
+        summaries.append(write_grid_state_artifacts(registered_video_path=registered_dir / vid / "registered_video.npy", grid_spec=grid, out_dir=out_dir, video_id=vid, label=str(video.get("label") or ""), features=step["params"].get("features") or ["mean_intensity"], normalization=str(step["params"].get("normalization", "per_video_robust_percentile")), frame_rate_hz=video.get("frame_rate_hz"), chunk_size_frames=int(step["params"].get("chunk_size_frames", 64)), max_grid_state_bytes=step["params"].get("max_grid_state_bytes", 1_000_000_000)))
+    summary = {"schema_version": 1, "grid_states_dir": str(out_dir), "video_count": len(summaries), "videos": summaries}
+    out = out_dir / "grid_states_summary.json"
+    out.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    store.register_file(out, artifact_id="grid_states.v1", kind="grid_states", producer_stage=str(step["stage_id"]), summary={"video_count": len(summaries), "shape": summaries[0].get("shape") if summaries else []})
+    return "grid_states", out
+
+
+def _run_grid_dynamics_dataset_build(step: Mapping[str, Any], artifacts: Mapping[str, Path], store: ArtifactStore) -> tuple[str, Path]:
+    from neurobench.dynamics.datasets import build_dynamics_dataset
+    from neurobench.manifests import load_json
+
+    out_dir = store.artifact_path("dynamics", "dynamics_dataset.json").parent
+    dataset = build_dynamics_dataset(manifest=load_json(_require_artifact(artifacts, "video_manifest", step)), grid_states_dir=_require_artifact(artifacts, "grid_states", step).parent, out_dir=out_dir, window_frames=int(step["params"].get("window_frames", 8)), prediction_horizon_frames=int(step["params"].get("prediction_horizon_frames", 1)), split_method=str(step["params"].get("split_method", "stratified_by_label")))
+    out = out_dir / "dynamics_dataset.json"
+    store.register_file(out, artifact_id="dynamics_dataset.v1", kind="dynamics_dataset", producer_stage=str(step["stage_id"]), schema="dynamics_dataset", summary={"window_count": dataset.get("extras", {}).get("window_count", 0), "split_unit": "video"})
+    return "dynamics_dataset", out
+
+
+def _run_grid_autoencoder_train(step: Mapping[str, Any], artifacts: Mapping[str, Path], store: ArtifactStore) -> tuple[str, Path]:
+    from neurobench.dynamics.train import train_autoencoder
+    from neurobench.manifests import load_json
+
+    params = step["params"]
+    out_dir = store.artifact_path("models", "autoencoder", "autoencoder_run.json").parent
+    train_autoencoder(dataset=load_json(_require_artifact(artifacts, "dynamics_dataset", step)), out_dir=out_dir, latent_dim=int(params.get("latent_dim", 32)), epochs=int(params.get("epochs", 10)), batch_size=int(params.get("batch_size", 32)), learning_rate=float(params.get("learning_rate", 0.001)), seed=int(params.get("seed", 7)), device=str(params.get("device", "cpu")))
+    out = out_dir / "autoencoder_run.json"
+    store.register_file(out, artifact_id="autoencoder_run.v1", kind="autoencoder_run", producer_stage=str(step["stage_id"]), schema="autoencoder_run", summary={"latent_dim": int(params.get("latent_dim", 32)), "epochs": int(params.get("epochs", 10))})
+    return "autoencoder_run", out
+
+
+def _run_latent_rnn_train(step: Mapping[str, Any], artifacts: Mapping[str, Path], store: ArtifactStore) -> tuple[str, Path]:
+    from neurobench.dynamics.train import train_latent_rnn
+    from neurobench.manifests import load_json
+
+    params = step["params"]
+    out_dir = store.artifact_path("models", "latent_rnn", "latent_rnn_run.json").parent
+    train_latent_rnn(dataset=load_json(_require_artifact(artifacts, "dynamics_dataset", step)), autoencoder_run=load_json(_require_artifact(artifacts, "autoencoder_run", step)), out_dir=out_dir, window_frames=int(params.get("window_frames", 8)), hidden_dim=int(params.get("hidden_dim", 64)), epochs=int(params.get("epochs", 10)), batch_size=int(params.get("batch_size", 32)), learning_rate=float(params.get("learning_rate", 0.001)), seed=int(params.get("seed", 7)), device=str(params.get("device", "cpu")))
+    out = out_dir / "latent_rnn_run.json"
+    store.register_file(out, artifact_id="latent_rnn_run.v1", kind="latent_rnn_run", producer_stage=str(step["stage_id"]), schema="latent_rnn_run", summary={"hidden_dim": int(params.get("hidden_dim", 64)), "epochs": int(params.get("epochs", 10))})
+    return "latent_rnn_run", out
+
+
+def _run_latent_classifier_train(step: Mapping[str, Any], artifacts: Mapping[str, Path], store: ArtifactStore) -> tuple[str, Path]:
+    from neurobench.dynamics.classifier import train_latent_classifier
+    from neurobench.manifests import load_json
+
+    out_dir = store.artifact_path("classifier", "latent_classifier_run.json").parent
+    train_latent_classifier(dataset=load_json(_require_artifact(artifacts, "dynamics_dataset", step)), autoencoder_run=load_json(_require_artifact(artifacts, "autoencoder_run", step)), out_dir=out_dir, classifier=str(step["params"].get("classifier", "logistic_regression")), split_method=str(step["params"].get("evaluation", "stratified_kfold")))
+    out = out_dir / "latent_classifier_run.json"
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    store.register_file(out, artifact_id="latent_classifier_run.v1", kind="latent_classifier_run", producer_stage=str(step["stage_id"]), schema="latent_classifier_run", summary={"accuracy": payload.get("metrics", {}).get("accuracy")})
+    return "latent_classifier_run", out
+
+
 def _require_artifact(artifacts: Mapping[str, Path], key: str, step: Mapping[str, Any]) -> Path:
     if key not in artifacts:
         raise ValueError(f"Pipeline step '{step['step_id']}' requires missing artifact '{key}'.")
@@ -908,6 +1061,17 @@ def _record_input_checksum(store: ArtifactStore, record: Mapping[str, Any]) -> N
 
 
 _STAGE_RUNNERS = {
+
+    "video_manifest_build": _run_video_manifest_build,
+    "template_build_from_video": _run_template_build_from_video,
+    "template_register_video": _run_template_register_video,
+    "apply_video_registration": _run_apply_video_registration,
+    "grid_32x32_generate": _run_grid_32x32_generate,
+    "grid_state_extract": _run_grid_state_extract,
+    "grid_dynamics_dataset_build": _run_grid_dynamics_dataset_build,
+    "grid_autoencoder_train": _run_grid_autoencoder_train,
+    "latent_rnn_train": _run_latent_rnn_train,
+    "latent_classifier_train": _run_latent_classifier_train,
     "source_video_import": _run_source_video_import,
     "temporal_highpass_gaussian": _run_temporal_highpass_gaussian,
     "event_preserving_noise_suppression": _run_event_preserving_noise_suppression,

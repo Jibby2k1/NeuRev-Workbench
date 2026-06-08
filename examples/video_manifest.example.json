@@ -1,0 +1,35 @@
+{
+  "created_at": "2026-06-01T00:00:00Z",
+  "dataset_id": "zebrafish_left_right_neutral_v1",
+  "extras": {},
+  "label_counts": {
+    "left": 1,
+    "neutral": 0,
+    "right": 0
+  },
+  "label_set": [
+    "left",
+    "right",
+    "neutral"
+  ],
+  "root": "Inputs/ZebrafishVideos",
+  "schema_version": 1,
+  "split_policy": "by_video",
+  "videos": [
+    {
+      "condition": "left",
+      "dtype": null,
+      "fish_id": "1_left",
+      "frame_count": null,
+      "frame_rate_hz": null,
+      "height": null,
+      "index": 1,
+      "label": "left",
+      "notes": "Each video is treated as a different fish.",
+      "path": "Inputs/ZebrafishVideos/1_left.tif",
+      "video_id": "1_left",
+      "width": null
+    }
+  ],
+  "warnings": []
+}

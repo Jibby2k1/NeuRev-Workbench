@@ -1,0 +1,71 @@
+{
+  "artifacts": {
+    "input_dir": "Inputs/ZebrafishVideos"
+  },
+  "dataset_id": "zebrafish_grid32_v1",
+  "pipeline": [
+    {
+      "id": "manifest",
+      "params": {
+        "filename_regex": "^(?P<index>[1-9])_(?P<label>left|right|neutral)\\.(?:tif|tiff|npy)$",
+        "input_dir": "Inputs/ZebrafishVideos"
+      },
+      "stage_id": "video_manifest_build"
+    },
+    {
+      "id": "template",
+      "params": {
+        "chunk_size_frames": 64,
+        "max_outlier_fraction": 0.05,
+        "projection_kind": "mean_after_outlier_rejection",
+        "reference_video_id": "1_neutral"
+      },
+      "stage_id": "template_build_from_video"
+    },
+    {
+      "id": "registration",
+      "params": {
+        "allow_uniform_scale": false,
+        "chunk_size_frames": 64,
+        "rotation_range_deg": [
+          -10.0,
+          10.0
+        ],
+        "rotation_step_deg": 0.5,
+        "transform_model": "rigid"
+      },
+      "stage_id": "template_register_video"
+    },
+    {
+      "id": "registered_video",
+      "params": {
+        "chunk_size_frames": 64,
+        "output_dtype": "float32"
+      },
+      "stage_id": "apply_video_registration"
+    },
+    {
+      "id": "grid",
+      "params": {
+        "cols": 32,
+        "rows": 32
+      },
+      "stage_id": "grid_32x32_generate"
+    },
+    {
+      "id": "grid_states",
+      "params": {
+        "chunk_size_frames": 64,
+        "features": [
+          "mean_intensity"
+        ],
+        "max_grid_state_bytes": 1000000000,
+        "normalization": "per_video_robust_percentile",
+        "pooling": "area"
+      },
+      "stage_id": "grid_state_extract"
+    }
+  ],
+  "run_id": "template_grid32_preprocess",
+  "schema_version": 1
+}

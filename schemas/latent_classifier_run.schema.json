@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "split_unit": {
+      "const": "video",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "label_set",
+    "feature_source",
+    "split_unit",
+    "split_method",
+    "metrics",
+    "confusion_matrix_path",
+    "per_video_predictions_path",
+    "embedding_preview_path",
+    "warnings",
+    "extras"
+  ],
+  "title": "Neurobench Latent Classifier Run",
+  "type": "object"
+}

@@ -97,6 +97,13 @@ Data helpers for Neurobench.
 - Signature: `build_dataset_intake_manifest(*, dataset_id: str, raw_video: str | Path, app_dir: str | Path | None=None, frame_rate_hz: float | None=None, pixel_size_microns: float | None=None, source_template: str='local', name: str | None=None, modality: str='light_sheet_calcium', indicator: str='GCaMP') -> dict[str, Any]`
 - Summary: Create a manifest stub for a dataset before heavy processing runs.
 
+### `build_video_manifest`
+
+- Kind: `function`
+- Source: `neurobench.data.video_manifest`
+- Signature: `build_video_manifest(*, input_dir: str | Path | None=None, files: Iterable[str | Path] | None=None, dataset_id: str='zebrafish_left_right_neutral_v1', filename_regex: str=DEFAULT_VIDEO_PATTERN, labels: Iterable[str]=DEFAULT_LABELS, frame_rate_hz: float | None=None, strict: bool=False) -> dict[str, Any]`
+- Summary: Build a metadata manifest from filename-compatible videos.
+
 ### `checksum_file`
 
 - Kind: `function`
@@ -153,6 +160,13 @@ Data helpers for Neurobench.
 - Signature: `intake_checks(manifest: Mapping[str, Any], *, base_dir: str | Path | None=None) -> list[IntakeCheck]`
 - Summary: Return conservative readiness checks for a dataset manifest stub.
 
+### `load_video_array`
+
+- Kind: `function`
+- Source: `neurobench.data.video`
+- Signature: `load_video_array(path: str | Path, *, mmap: bool=False) -> Any`
+- Summary: Return a frame-first ``[T, H, W]`` video array from ``.npy`` or TIFF.
+
 ### `open_video`
 
 - Kind: `function`
@@ -194,6 +208,13 @@ Data helpers for Neurobench.
 - Source: `neurobench.data.synthetic`
 - Signature: `class SyntheticEvent`
 - Summary: Known synthetic event location and timing.
+
+### `video_metadata`
+
+- Kind: `function`
+- Source: `neurobench.data.video`
+- Signature: `video_metadata(path: str | Path) -> dict[str, Any]`
+- Summary: Return lightweight metadata for a supported video path.
 
 ### `VideoChunk`
 

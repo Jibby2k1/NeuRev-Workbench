@@ -5,8 +5,12 @@ import argparse
 from collections.abc import Sequence
 
 from neurobench.cli.dataset import add_dataset_subcommands, add_validate_subcommands
+from neurobench.cli.dynamics import add_dynamics_subcommands
 from neurobench.cli.llm import add_llm_subcommands
 from neurobench.cli.report import add_report_subcommands
+from neurobench.cli.video import add_video_subcommands
+from neurobench.cli.template import add_template_subcommands
+from neurobench.cli.grid import add_grid_subcommands
 from neurobench.cli.run import add_run_subcommands
 from neurobench.cli.workbench import add_workbench_subcommands
 
@@ -29,6 +33,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version="neurobench 0.1.0")
     subparsers = parser.add_subparsers(dest="command", metavar="command")
     add_dataset_subcommands(subparsers)
+    add_video_subcommands(subparsers)
+    add_template_subcommands(subparsers)
+    add_grid_subcommands(subparsers)
+    add_dynamics_subcommands(subparsers)
     add_run_subcommands(subparsers)
     add_workbench_subcommands(subparsers)
     add_llm_subcommands(subparsers)

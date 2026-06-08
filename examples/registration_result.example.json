@@ -1,0 +1,52 @@
+{
+  "artifacts": {
+    "overlay_before_after_png": "registration/3_right/overlay_before_after.png",
+    "registered_projection_png": "registration/3_right/registered_projection.png",
+    "residual_png": "registration/3_right/residual.png"
+  },
+  "extras": {},
+  "qc": {
+    "best_angle_at_boundary": false,
+    "blank_fraction_after_warp": 0.03,
+    "warnings": []
+  },
+  "registration_scope": "per_video",
+  "schema_version": 1,
+  "score": {
+    "confidence": "ok",
+    "normalized_cross_correlation": 0.82
+  },
+  "source_projection": {
+    "kind": "mean_after_outlier_rejection",
+    "path": "registration/3_right/source_projection.npy",
+    "preview_png": "registration/3_right/source_projection.png"
+  },
+  "template_id": "template_from_1_neutral_v1",
+  "transform": {
+    "matrix_3x3": [
+      [
+        0.9994,
+        -0.0349,
+        2.1
+      ],
+      [
+        0.0349,
+        0.9994,
+        -1.7
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "model": "rigid",
+    "rotation_deg": 2.0,
+    "scale": 1.0,
+    "translation_px": [
+      2.1,
+      -1.7
+    ]
+  },
+  "video_id": "3_right"
+}

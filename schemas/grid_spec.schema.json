@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "bounds": {
+      "type": "string"
+    },
+    "cell_policy": {
+      "type": "string"
+    },
+    "cols": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "coordinate_system": {
+      "required": [
+        "height",
+        "width"
+      ],
+      "type": "object"
+    },
+    "extras": {
+      "type": "object"
+    },
+    "grid_id": {
+      "type": "string"
+    },
+    "region_count": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "regions": {
+      "items": {
+        "additionalProperties": true,
+        "required": [
+          "region_id",
+          "row",
+          "col",
+          "bbox",
+          "center",
+          "pixel_count"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "rows": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "template_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "grid_id",
+    "template_id",
+    "rows",
+    "cols",
+    "region_count",
+    "coordinate_system",
+    "bounds",
+    "cell_policy",
+    "regions",
+    "extras"
+  ],
+  "title": "Neurobench Grid Spec",
+  "type": "object"
+}

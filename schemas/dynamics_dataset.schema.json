@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "array_path": {
+      "type": "string"
+    },
+    "dataset_id": {
+      "type": "string"
+    },
+    "extras": {
+      "type": "object"
+    },
+    "grid_id": {
+      "type": "string"
+    },
+    "input_shape": {
+      "type": "array"
+    },
+    "latent_shape": {
+      "type": "array"
+    },
+    "normalization": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "source_videos": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "splits": {
+      "additionalProperties": true,
+      "properties": {
+        "split_unit": {
+          "const": "video",
+          "type": "string"
+        }
+      },
+      "required": [
+        "split_unit"
+      ],
+      "type": "object"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "windowing": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "dataset_id",
+    "grid_id",
+    "source_videos",
+    "array_path",
+    "input_shape",
+    "windowing",
+    "splits",
+    "warnings",
+    "extras"
+  ],
+  "title": "Neurobench Grid Dynamics Dataset",
+  "type": "object"
+}

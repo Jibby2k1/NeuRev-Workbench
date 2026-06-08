@@ -158,6 +158,36 @@ function auditRows(title, counts){
   return html + '</div>';
 }
 
+
+function renderTemplateGridProgressGates(){
+  const payload = typeof templateGridPayload === 'function' ? templateGridPayload() : {};
+  const text = JSON.stringify(payload || {}).toLowerCase();
+  const gates = [
+    ['TG-005', 'Dataset video manifest parsed', ['video_manifest', 'videomanifest', 'label_counts']],
+    ['TG-016', 'Template projection built', ['template_spec', 'template projection', 'template_projection']],
+    ['TG-026', 'Per-video rigid registration completed', ['registration', 'registered_videos', 'registered video']],
+    ['TG-034', '32x32 grid specification generated', ['grid_spec', 'grid 32', '32x32']],
+    ['TG-043', 'Grid states extracted', ['grid_state', 'grid_states']],
+    ['TG-050', 'Video-level dynamics dataset split', ['split_unit', 'split manifest', 'split_manifest']],
+    ['TG-058', 'Persistence baseline evaluated', ['persistence', 'baseline']],
+    ['TG-064', 'Autoencoder reconstruction trained', ['autoencoder', 'reconstruction']],
+    ['TG-072', 'Latent RNN prediction trained', ['latent_rnn', 'latent rnn', 'gru']],
+    ['TG-078', 'Latent classifier evaluated', ['latent_classifier', 'latent classifier', 'confusion']],
+    ['TG-081', 'Dashboard/report artifacts available', ['report', 'templategridpanel', 'template / registration / grid']]
+  ];
+  return `
+    <section class="archCard templateGridGates" id="templateGridProgressGates">
+      <div class="runCardHeader"><h3>Template Grid Dynamics Gates</h3><span class="runStatus">goal.md</span></div>
+      <p class="hint">Progress gates for the template-aligned 32x32 grid workflow. These gates exclude inverse control/stimulation and transformer modeling.</p>
+      <div class="templateGridGateList">
+        ${gates.map(([id, label, needles]) => {
+          const done = needles.some(needle => text.includes(needle));
+          return `<div class="templateGridGate ${done ? 'done' : 'pending'}"><b>${escapeHtml(id)}</b><span>${escapeHtml(label)}</span><i>${done ? 'detected' : 'not recorded'}</i></div>`;
+        }).join('')}
+      </div>
+    </section>`;
+}
+
 function renderMetricsAudit(){
   const root = document.getElementById('metricsAudit');
   if(!root) return;
@@ -192,6 +222,8 @@ function renderMetricsAudit(){
       <div class="metric"><b>${Object.values(s.reviewer_missing || {}).reduce((a,b) => a + b, 0)}</b><span>missing reviewer IDs</span></div>
       <div class="metric"><b>${s.triage_queue_counts.artifact_like || 0}</b><span>artifact-like queue</span></div>
     </div>
+    ${renderTemplateGridProgressGates()}
+    ${typeof renderTemplateGridSweepPanel === 'function' ? renderTemplateGridSweepPanel(activeRun(), {standalone:true}) : ''}
     <details class="progressMetrics">
       <summary>Detailed metrics</summary>
       <div class="metricGrid">

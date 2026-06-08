@@ -7,6 +7,9 @@ two complementary workflows:
   and report generation
 - a Fiji/Groovy plus browser workbench workflow for neuron ROI review, trace
   denoising, event annotation, and user-guided parameter iteration
+- a template-aligned 32x32 grid workflow for zebrafish left/right/neutral
+  activity modeling with video-level splits, a grid autoencoder, latent GRU
+  prediction, and latent-code classification
 
 ---
 
@@ -230,6 +233,12 @@ For the full documentation map, start with
 - [docs/workflows/raw_video_to_report.md](docs/workflows/raw_video_to_report.md)
   for a CPU-only end-to-end path from a synthetic raw video to QC, pipeline
   runs, reports, sweeps, and exports.
+- [docs/TEMPLATE_GRID_WORKFLOW.md](docs/TEMPLATE_GRID_WORKFLOW.md) for the
+  new manifest, template, per-video registration, and 32x32 grid-state
+  preprocessing path.
+- [docs/GRID_LATENT_DYNAMICS.md](docs/GRID_LATENT_DYNAMICS.md) for the
+  video-split dynamics dataset, persistence baseline, autoencoder, latent GRU,
+  and latent classifier commands.
 - [docs/developer/adding_pipeline_stage.md](docs/developer/adding_pipeline_stage.md)
   for the developer path to add or wire a new Architecture Lab stage.
 - [docs/API_REFERENCE.md](docs/API_REFERENCE.md) for the generated Python API

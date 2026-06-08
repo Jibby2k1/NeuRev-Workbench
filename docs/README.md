@@ -14,6 +14,12 @@ the project.
 - [Raw Video To Report Workflow](workflows/raw_video_to_report.md): CPU-only
   end-to-end command path from a raw video through QC, pipeline execution,
   reports, sweeps, and exports.
+- [Template Grid Workflow](TEMPLATE_GRID_WORKFLOW.md): manifest, one-reference
+  template construction, per-video rigid registration, and 32x32 grid-state
+  extraction for the zebrafish left/right/neutral videos.
+- [Grid Latent Dynamics](GRID_LATENT_DYNAMICS.md): video-split dynamics arrays,
+  persistence baselines, grid autoencoder, latent GRU predictor, and latent-code
+  classifier commands.
 - Dataset intake starts with `neurobench dataset intake`, which creates a
   metadata-only manifest and readiness report for local files or future public
   sources such as DANDI/NWB and Figshare-style datasets.
@@ -38,6 +44,9 @@ the project.
   external-tool attachment paths.
 - [Inverse Dynamics Export](INVERSE_DYNAMICS_EXPORT.md): downstream export
   contract for accepted ROIs/events and behavior alignment.
+- [Grid32 Real Data Pilot](case_studies/grid32_real_data_pilot.md): lightweight
+  pilot note template for recording real-data template, registration, grid,
+  dynamics, and classifier decisions without committing raw videos.
 
 ## Developer References
 
@@ -58,3 +67,6 @@ the project.
    reviewed data.
 5. Use [Adding A Pipeline Stage](developer/adding_pipeline_stage.md) when a new
    algorithm needs to become a first-class dashboard component.
+6. Use [Template Grid Workflow](TEMPLATE_GRID_WORKFLOW.md) and
+   [Grid Latent Dynamics](GRID_LATENT_DYNAMICS.md) for the current
+   template-aligned 32x32 grid experiments.

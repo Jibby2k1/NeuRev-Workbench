@@ -236,27 +236,10 @@ function runHasCandidateRois(run){
   if(run.artifacts?.review_rois_summary_file || run.artifacts?.review_rois_file) return true;
   return Number(run.summary?.roi_count || 0) > 0;
 }
-function runIsLargeBlobSplit(run){
-  return Boolean(run?.summary?.large_blob_split)
-    || String(run?.execution?.run_root || '').includes('large_blob_split')
-    || String(run?.artifacts?.sweep_summary || '').includes('large_blob_split');
-}
-function runIsRecommendedDefault(run){
-  return Boolean(run?.summary?.recommended_default || run?.recommended_default);
-}
-function recommendedReviewRuns(runs=architectureRuns()){
-  return runs.filter(run => runHasCandidateRois(run) && runIsRecommendedDefault(run)).sort((a, b) =>
-    Number(runIsLargeBlobSplit(b)) - Number(runIsLargeBlobSplit(a))
-    || Number(b.summary?.roi_count || 0) - Number(a.summary?.roi_count || 0)
-    || String(runLabel(a)).localeCompare(String(runLabel(b)), undefined, {numeric:true})
-  );
-}
 function preferredReviewRun(){
   const runs = architectureRuns();
   if(!runs.length) return null;
   const embeddedHasRois = Array.isArray(data.rois) && data.rois.length > 0;
-  const recommended = recommendedReviewRuns(runs);
-  if(recommended.length) return recommended[0];
   if(embeddedHasRois) return runs[0];
   return runs.find(runHasCandidateRois) || runs[0];
 }
@@ -269,8 +252,6 @@ function isExternalTestDataset(){
     || architectureRuns().some(run => String(run.run_id || '').includes('green_excess_single_cfar_v1'));
 }
 function defaultDataCompareRunId(){
-  const recommended = recommendedReviewRuns(architectureRuns());
-  if(recommended.length) return recommended[0].run_id;
   if(isExternalTestDataset()) {
     const greenRun = architectureRuns().find(run => String(run.run_id || '').startsWith('green_excess_single_cfar_v1__sweep_') && runHasCandidateRois(run));
     if(greenRun) return greenRun.run_id;
@@ -333,6 +314,12 @@ function defaultAnnotations() {
       showEvidence: false,
       showSuggestions: true,
       showStencilOverlay: true,
+      showTemplateOverlay: false,
+      showRegisteredProjectionOverlay: false,
+      showGridOverlay: false,
+      showGridIntensityOverlay: false,
+      showPredictionErrorOverlay: false,
+      selectedGridCell: null,
       showPotentialRois: true,
       showAnnotatedNeuronRois: true,
       showAnnotatedNonNeuronRois: true,
@@ -1783,6 +1770,11 @@ function applySettingsToControls() {
   if(showLabelsCheckbox) showLabelsCheckbox.checked = labelMode !== 'off';
   const showStencilOverlay = document.getElementById('showStencilOverlay');
   if(showStencilOverlay) showStencilOverlay.checked = setting('showStencilOverlay') !== false;
+  for(const id of ['showTemplateOverlay','showRegisteredProjectionOverlay','showGridOverlay','showGridIntensityOverlay','showPredictionErrorOverlay']) {
+    const el = document.getElementById(id);
+    if(el) el.checked = Boolean(setting(id));
+  }
+  updateGridCellStatus();
   const overlayPresetSelect = document.getElementById('overlayPresetSelect');
   if(overlayPresetSelect) overlayPresetSelect.value = setting('overlayPreset') || 'validate';
   const selectedOverlayMode = document.getElementById('selectedOverlayMode');
@@ -2250,6 +2242,8 @@ function drawOverlay(){
   const showSuggestions = document.getElementById('showSuggestions').checked;
   const showStencil = setting('showStencilOverlay') !== false;
   if(showStencil) drawReviewStencilOverlay();
+  if(setting('showTemplateOverlay') || setting('showRegisteredProjectionOverlay')) drawTemplateReferenceOverlay();
+  if(setting('showGridOverlay') || setting('showGridIntensityOverlay') || setting('showPredictionErrorOverlay')) drawTemplateGridOverlay();
   if(!showRois && !showSuggestions) {
     drawReviewFocusBox();
     updateOverlayViewButtons();
@@ -2330,6 +2324,145 @@ function drawReviewStencilOverlay(){
   const points = typeof savedStencilPoints === 'function' ? savedStencilPoints() : [];
   if(!points.length || points.length < 3) return;
   if(typeof drawStencilPolygon === 'function') drawStencilPolygon(ctx, points, {fill:'rgba(250, 204, 21, 0.08)', stroke:'#facc15', pointsVisible:false});
+}
+
+
+function templateGridPayload(){
+  return data.templateGrid || data.template_grid || data.gridDynamics || data.grid_dynamics || data.architectureRuns?.templateGrid || data.architectureRuns?.template_grid || {};
+}
+function templateGridSpec(){
+  const payload = templateGridPayload() || {};
+  return payload.grid_spec || payload.gridSpec || payload.grid || payload.grid_32x32 || payload.spec || {};
+}
+function templateGridRegions(){
+  const spec = templateGridSpec() || {};
+  const regions = spec.regions || spec.cells || spec.region_specs || spec.regionSpecs || [];
+  if(Array.isArray(regions)) return regions;
+  if(regions && typeof regions === 'object') return Object.values(regions);
+  return [];
+}
+function templateGridDimensions(){
+  const spec = templateGridSpec() || {};
+  const shape = spec.shape || spec.grid_shape || spec.gridShape || [];
+  const imageShape = spec.image_shape || spec.imageShape || spec.template_shape || spec.templateShape || [];
+  const rows = Math.max(1, Number(spec.rows ?? spec.grid_rows ?? spec.gridRows ?? spec.n_rows ?? shape[0] ?? 32) || 32);
+  const cols = Math.max(1, Number(spec.cols ?? spec.columns ?? spec.grid_cols ?? spec.gridCols ?? spec.n_cols ?? shape[1] ?? 32) || 32);
+  const width = Math.max(1, Number(spec.width ?? spec.image_width ?? spec.imageWidth ?? spec.template_width ?? spec.templateWidth ?? imageShape[1] ?? data.video?.width ?? overlay?.width ?? 1) || 1);
+  const height = Math.max(1, Number(spec.height ?? spec.image_height ?? spec.imageHeight ?? spec.template_height ?? spec.templateHeight ?? imageShape[0] ?? data.video?.height ?? overlay?.height ?? 1) || 1);
+  return {rows, cols, width, height};
+}
+function templateGridRegion(row, col){
+  return templateGridRegions().find(region => {
+    const r = Number(region.row ?? region.grid_row ?? region.gridRow ?? region.i);
+    const c = Number(region.col ?? region.column ?? region.grid_col ?? region.gridCol ?? region.j);
+    return (r === row || r === row + 1) && (c === col || c === col + 1);
+  }) || null;
+}
+function templateGridRegionId(row, col){
+  const region = templateGridRegion(row, col);
+  return region?.region_id || region?.regionId || region?.id || `R${String(row).padStart(2, '0')}C${String(col).padStart(2, '0')}`;
+}
+function templateGridCellBbox(row, col){
+  const dims = templateGridDimensions();
+  const region = templateGridRegion(row, col);
+  const bbox = region?.bbox || region?.bounding_box || region?.boundingBox;
+  if(Array.isArray(bbox) && bbox.length >= 4) return bbox.slice(0, 4).map(Number);
+  if(bbox && typeof bbox === 'object') {
+    const x0 = Number(bbox.x0 ?? bbox.left ?? bbox.x ?? 0);
+    const y0 = Number(bbox.y0 ?? bbox.top ?? bbox.y ?? 0);
+    const x1 = Number(bbox.x1 ?? bbox.right ?? (x0 + Number(bbox.width ?? 0)));
+    const y1 = Number(bbox.y1 ?? bbox.bottom ?? (y0 + Number(bbox.height ?? 0)));
+    if([x0, y0, x1, y1].every(Number.isFinite)) return [x0, y0, x1, y1];
+  }
+  const x0 = col * dims.width / dims.cols;
+  const y0 = row * dims.height / dims.rows;
+  const x1 = (col + 1) * dims.width / dims.cols;
+  const y1 = (row + 1) * dims.height / dims.rows;
+  return [x0, y0, x1, y1];
+}
+function templateGridCellFromPoint(x, y){
+  const dims = templateGridDimensions();
+  if(!Number.isFinite(x) || !Number.isFinite(y) || dims.width <= 0 || dims.height <= 0) return null;
+  const col = Math.max(0, Math.min(dims.cols - 1, Math.floor(x / dims.width * dims.cols)));
+  const row = Math.max(0, Math.min(dims.rows - 1, Math.floor(y / dims.height * dims.rows)));
+  return {row, col, region_id: templateGridRegionId(row, col), bbox: templateGridCellBbox(row, col)};
+}
+function drawTemplateReferenceOverlay(){
+  const dims = templateGridDimensions();
+  if(!ctx || !dims.width || !dims.height) return;
+  ctx.save();
+  if(setting('showTemplateOverlay')) {
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([7, 5]);
+    ctx.strokeRect(0.5, 0.5, Math.max(1, dims.width - 1), Math.max(1, dims.height - 1));
+    drawOverlayLabel('template', 8, 14, '#bae6fd');
+  }
+  if(setting('showRegisteredProjectionOverlay')) {
+    ctx.strokeStyle = '#a78bfa';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([3, 4]);
+    ctx.strokeRect(4.5, 4.5, Math.max(1, dims.width - 9), Math.max(1, dims.height - 9));
+    drawOverlayLabel('registered projection', 8, 30, '#ddd6fe');
+  }
+  ctx.restore();
+}
+function drawTemplateGridOverlay(){
+  const dims = templateGridDimensions();
+  if(!ctx || !dims.width || !dims.height) return;
+  const selected = setting('selectedGridCell') || null;
+  ctx.save();
+  if(setting('showGridIntensityOverlay') || setting('showPredictionErrorOverlay')) {
+    const base = setting('showPredictionErrorOverlay') ? [244, 63, 94] : [14, 165, 233];
+    for(let row = 0; row < dims.rows; row++) for(let col = 0; col < dims.cols; col++) {
+      const [x0, y0, x1, y1] = templateGridCellBbox(row, col);
+      const isSelected = selected && Number(selected.row) === row && Number(selected.col) === col;
+      const alpha = isSelected ? 0.28 : 0.035 + ((row + col) % 2) * 0.018;
+      ctx.fillStyle = `rgba(${base[0]}, ${base[1]}, ${base[2]}, ${alpha})`;
+      ctx.fillRect(x0, y0, Math.max(0.5, x1 - x0), Math.max(0.5, y1 - y0));
+    }
+  }
+  ctx.strokeStyle = setting('showPredictionErrorOverlay') ? 'rgba(244, 63, 94, 0.70)' : 'rgba(14, 165, 233, 0.68)';
+  ctx.lineWidth = 0.75;
+  ctx.setLineDash([]);
+  for(let r = 0; r <= dims.rows; r++) {
+    const y = r * dims.height / dims.rows;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(dims.width, y); ctx.stroke();
+  }
+  for(let c = 0; c <= dims.cols; c++) {
+    const x = c * dims.width / dims.cols;
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, dims.height); ctx.stroke();
+  }
+  if(selected && Number.isFinite(Number(selected.row)) && Number.isFinite(Number(selected.col))) {
+    const [x0, y0, x1, y1] = selected.bbox || templateGridCellBbox(Number(selected.row), Number(selected.col));
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = '#facc15';
+    ctx.fillStyle = 'rgba(250, 204, 21, 0.18)';
+    ctx.fillRect(x0, y0, Math.max(1, x1 - x0), Math.max(1, y1 - y0));
+    ctx.strokeRect(x0, y0, Math.max(1, x1 - x0), Math.max(1, y1 - y0));
+    drawOverlayLabel(selected.region_id || templateGridRegionId(Number(selected.row), Number(selected.col)), x0 + 4, Math.max(12, y0 - 5), '#fde68a');
+  }
+  ctx.restore();
+}
+function handleGridCellClick(x, y){
+  if(!setting('showGridOverlay') && !setting('showGridIntensityOverlay') && !setting('showPredictionErrorOverlay')) return false;
+  const cell = templateGridCellFromPoint(x, y);
+  if(!cell) return false;
+  setSetting('selectedGridCell', cell);
+  updateGridCellStatus();
+  drawOverlay();
+  return true;
+}
+function updateGridCellStatus(){
+  const el = document.getElementById('gridCellStatus');
+  if(!el) return;
+  const cell = setting('selectedGridCell');
+  if(!cell || cell.row === undefined || cell.col === undefined) {
+    el.textContent = 'Grid cell: none';
+    return;
+  }
+  const label = cell.region_id || templateGridRegionId(Number(cell.row), Number(cell.col));
+  el.textContent = `Grid cell: ${label} (r${Number(cell.row) + 1}, c${Number(cell.col) + 1})`;
 }
 
 function drawReviewFocusBox(){
@@ -4493,7 +4626,7 @@ function activateMissedNeuronMode(){
 }
 
 function snapshotFields(){
-  return ['eventThreshold','kalmanGain','spikeGain','overlayOpacity','overlayPreset','selectedOverlayMode','selectedFillOpacity','selectedOutlineWidth','roiFocusMode','overlayScope','neighborRadiusPx','queue','eventQueue','discoveryQueue','evidenceMap','showEvidence','showSuggestions','showStencilOverlay','showPotentialRois','showAnnotatedNeuronRois','showAnnotatedNonNeuronRois','minArea','minEvents','activeRunId'];
+  return ['eventThreshold','kalmanGain','spikeGain','overlayOpacity','overlayPreset','selectedOverlayMode','selectedFillOpacity','selectedOutlineWidth','roiFocusMode','overlayScope','neighborRadiusPx','queue','eventQueue','discoveryQueue','evidenceMap','showEvidence','showSuggestions','showStencilOverlay','showTemplateOverlay','showRegisteredProjectionOverlay','showGridOverlay','showGridIntensityOverlay','showPredictionErrorOverlay','selectedGridCell','showPotentialRois','showAnnotatedNeuronRois','showAnnotatedNonNeuronRois','minArea','minEvents','activeRunId'];
 }
 
 function parameterSnapshots(){
@@ -4791,6 +4924,9 @@ function initControls(){
   document.getElementById('roiLabelMode')?.addEventListener('change', e => { setSetting('roiLabelMode', normalizeRoiLabelMode(e.target.value)); applySettingsToControls(); drawOverlay(); });
   document.getElementById('showSuggestions').onchange = e => { setSetting('showSuggestions', e.target.checked); drawOverlay(); };
   document.getElementById('showStencilOverlay')?.addEventListener('change', e => { setSetting('showStencilOverlay', e.target.checked); drawOverlay(); });
+  for(const id of ['showTemplateOverlay','showRegisteredProjectionOverlay','showGridOverlay','showGridIntensityOverlay','showPredictionErrorOverlay']) {
+    document.getElementById(id)?.addEventListener('change', e => { setSetting(id, e.target.checked); updateGridCellStatus(); drawOverlay(); });
+  }
   document.getElementById('showEvidence').onchange = e => { setSetting('showEvidence', e.target.checked); applyDisplaySettings(); };
   document.getElementById('evidenceSelect').onchange = e => { setSetting('evidenceMap', e.target.value); applyDisplaySettings(); };
   document.getElementById('togglePotentialRoisBtn').onclick = () => toggleOverlayRoiGroup('showPotentialRois');
@@ -5149,6 +5285,7 @@ function initControls(){
     const rect = overlay.getBoundingClientRect();
     const x = (e.clientX - rect.left) * data.video.width / rect.width;
     const y = (e.clientY - rect.top) * data.video.height / rect.height;
+    if(handleGridCellClick(x, y)) return;
     let best = null, bestD = Infinity, bestType = 'roi';
     for(const roi of visibleRois()){
       const dx = x - roi.centroidX, dy = y - roi.centroidY, d = dx*dx + dy*dy;
@@ -5551,20 +5688,17 @@ function parameterProvenanceSummary(run){
 
 function runLabel(run){
   if(!run) return '';
-  const label = run.label || run.run_id;
   if(isGammaCfarRun(run)) {
     const params = run.parameters || {};
     const summary = run.summary || {};
-    const namedGreenRun = String(run.run_id || '').startsWith('green_roi_mscfar_v3') || String(run.run_id || '').startsWith('green_excess_single_cfar_v1');
     const sweep = String(run.run_id).split('__').pop()?.replace('sweep_', '') || '';
     const pfa = params['cfar_small_ref.pfa'] ?? summary['cfar_small_ref.pfa'];
     const ref = params['cfar_large_ref.training_radius_px'] ?? summary['cfar_large_ref.training_radius_px'];
     const support = params['components.support_min_frames'] ?? summary['components.support_min_frames'] ?? summary.component_support_min_frames;
     const rois = summary.roi_count ?? 'n/a';
-    if(namedGreenRun) return `${label} · ${rois} ROIs`;
     return `Gamma CFAR ${sweep} · ${rois} ROIs · pfa ${pfa ?? 'n/a'} · ref ${ref ?? 'n/a'} · support ${support ?? 'n/a'}`;
   }
-  return `${label}`;
+  return `${run.label || run.run_id}`;
 }
 
 function runMetric(run, path, fallback=0){
@@ -10100,6 +10234,36 @@ function auditRows(title, counts){
   return html + '</div>';
 }
 
+
+function renderTemplateGridProgressGates(){
+  const payload = typeof templateGridPayload === 'function' ? templateGridPayload() : {};
+  const text = JSON.stringify(payload || {}).toLowerCase();
+  const gates = [
+    ['TG-005', 'Dataset video manifest parsed', ['video_manifest', 'videomanifest', 'label_counts']],
+    ['TG-016', 'Template projection built', ['template_spec', 'template projection', 'template_projection']],
+    ['TG-026', 'Per-video rigid registration completed', ['registration', 'registered_videos', 'registered video']],
+    ['TG-034', '32x32 grid specification generated', ['grid_spec', 'grid 32', '32x32']],
+    ['TG-043', 'Grid states extracted', ['grid_state', 'grid_states']],
+    ['TG-050', 'Video-level dynamics dataset split', ['split_unit', 'split manifest', 'split_manifest']],
+    ['TG-058', 'Persistence baseline evaluated', ['persistence', 'baseline']],
+    ['TG-064', 'Autoencoder reconstruction trained', ['autoencoder', 'reconstruction']],
+    ['TG-072', 'Latent RNN prediction trained', ['latent_rnn', 'latent rnn', 'gru']],
+    ['TG-078', 'Latent classifier evaluated', ['latent_classifier', 'latent classifier', 'confusion']],
+    ['TG-081', 'Dashboard/report artifacts available', ['report', 'templategridpanel', 'template / registration / grid']]
+  ];
+  return `
+    <section class="archCard templateGridGates" id="templateGridProgressGates">
+      <div class="runCardHeader"><h3>Template Grid Dynamics Gates</h3><span class="runStatus">goal.md</span></div>
+      <p class="hint">Progress gates for the template-aligned 32x32 grid workflow. These gates exclude inverse control/stimulation and transformer modeling.</p>
+      <div class="templateGridGateList">
+        ${gates.map(([id, label, needles]) => {
+          const done = needles.some(needle => text.includes(needle));
+          return `<div class="templateGridGate ${done ? 'done' : 'pending'}"><b>${escapeHtml(id)}</b><span>${escapeHtml(label)}</span><i>${done ? 'detected' : 'not recorded'}</i></div>`;
+        }).join('')}
+      </div>
+    </section>`;
+}
+
 function renderMetricsAudit(){
   const root = document.getElementById('metricsAudit');
   if(!root) return;
@@ -10134,6 +10298,8 @@ function renderMetricsAudit(){
       <div class="metric"><b>${Object.values(s.reviewer_missing || {}).reduce((a,b) => a + b, 0)}</b><span>missing reviewer IDs</span></div>
       <div class="metric"><b>${s.triage_queue_counts.artifact_like || 0}</b><span>artifact-like queue</span></div>
     </div>
+    ${renderTemplateGridProgressGates()}
+    ${typeof renderTemplateGridSweepPanel === 'function' ? renderTemplateGridSweepPanel(activeRun(), {standalone:true}) : ''}
     <details class="progressMetrics">
       <summary>Detailed metrics</summary>
       <div class="metricGrid">
@@ -10462,9 +10628,7 @@ function runHasIntermediates(run){
 }
 function isGammaCfarRun(run){
   const runId = String(run?.run_id || '');
-  if(runId.startsWith('gamma_cfar_cascade_grid_') && runId.includes('__sweep_')) return true;
-  if(runId.startsWith('green_roi_mscfar_v3') || runId.startsWith('green_excess_single_cfar_v1__sweep_')) return true;
-  return Array.isArray(run?.pipeline) && run.pipeline.some(stage => stage?.stage_id === 'gamma_cfar' || String(stage?.id || '').includes('cfar'));
+  return runId.startsWith('gamma_cfar_cascade_grid_') && runId.includes('__sweep_');
 }
 function processRunOptionsHtml(runs, selectedRun){
   const selectedId = selectedRun?.run_id || '';
@@ -10847,6 +11011,170 @@ function renderSweepEvidencePanel(run){
     </section>`;
 }
 
+
+function templateGridArtifactsForRun(run){
+  const payload = typeof templateGridPayload === 'function' ? templateGridPayload() : {};
+  const groups = [run?.artifacts, run?.outputs, run?.intermediates, run?.intermediate_artifacts, payload.artifacts, payload.outputs, payload.files, data.architectureRuns?.artifacts];
+  return groups.flatMap(group => Array.isArray(group) ? group : []).filter(Boolean);
+}
+function findTemplateGridArtifact(run, needles){
+  const wanted = needles.map(value => String(value).toLowerCase());
+  return templateGridArtifactsForRun(run).find(item => {
+    const text = [item.artifact_kind, item.kind, item.type, item.id, item.stage_id, item.step_id, item.label, item.name, item.file, item.path].map(v => String(v || '').toLowerCase()).join(' ');
+    return wanted.some(needle => text.includes(needle));
+  }) || null;
+}
+function templateGridArtifactPath(item){
+  if(!item) return '';
+  const raw = item.file || item.path || item.url || item.href || '';
+  return raw && typeof artifactUrl === 'function' ? artifactUrl(raw) : raw;
+}
+function templateGridCountsHtml(counts){
+  const entries = Object.entries(counts || {});
+  if(!entries.length) return '<span class="hint">label counts not recorded</span>';
+  return entries.map(([label, count]) => `<span class="utilityPill">${escapeHtml(label)}: ${escapeHtml(count)}</span>`).join('');
+}
+function templateGridMetric(source, keys){
+  if(!source) return 'n/a';
+  for(const key of keys) {
+    const value = source[key] ?? source.metrics?.[key] ?? source.summary?.[key];
+    if(value !== undefined && value !== null && value !== '') return typeof value === 'number' ? fmt(value, Math.abs(value) >= 10 ? 2 : 5) : escapeHtml(String(value));
+  }
+  return 'n/a';
+}
+function templateGridPreviewCard(label, artifact){
+  const path = templateGridArtifactPath(artifact);
+  if(!path) return `<article><div class="qcStageMissing">${escapeHtml(label)} not linked</div><span>${escapeHtml(label)}</span></article>`;
+  const options = artifact?.input_options || artifact?.inputOptions || artifact?.video_options || artifact?.videoOptions || [];
+  const optionCount = Array.isArray(options) ? options.length : 0;
+  const isSelector = optionCount > 0;
+  const isImage = /\.(png|jpg|jpeg|gif|webp|svg)(\?|$)/i.test(path);
+  const action = isSelector ? 'Open input selector' : 'Open artifact';
+  const meta = isSelector ? `<small>${escapeHtml(optionCount)} inputs</small>` : '';
+  return `<article>${isImage ? `<img src="${escapeHtml(path)}" alt="${escapeHtml(label)}">` : `<a class="buttonLink" href="${escapeHtml(path)}" target="_blank" rel="noreferrer">${action}</a>${meta}`}<span>${escapeHtml(label)}</span></article>`;
+}
+
+function templateGridSweepPayload(){
+  const payload = typeof templateGridPayload === 'function' ? templateGridPayload() : {};
+  return payload.overnight_sweep || payload.overnightSweep || payload.sweep_visuals || payload.sweepVisuals || payload.dynamics_sweep || payload.dynamicsSweep || {};
+}
+function renderTemplateGridSweepPanel(run, options={}){
+  const sweep = templateGridSweepPayload();
+  const artifacts = Array.isArray(sweep.artifacts) ? sweep.artifacts : [];
+  if(!sweep.experiment_count && !artifacts.length) return '';
+  const best = sweep.best_validation_and_test?.experiment_id ? sweep.best_validation_and_test : sweep.best_validation || {};
+  const topRows = (sweep.top_experiments || []).slice(0, options.compact ? 5 : 8).map(row => `
+    <tr>
+      <td>${escapeHtml(row.rank ?? '')}</td>
+      <td>${escapeHtml(row.dataset_key || '')}</td>
+      <td>${escapeHtml(row.kind || '')}</td>
+      <td>${escapeHtml(row.seed ?? '')}</td>
+      <td>${fmt(Number(row.val_improvement_over_persistence_mse || 0), 7)}</td>
+      <td>${fmt(Number(row.test_improvement_over_persistence_mse || 0), 7)}</td>
+    </tr>`).join('');
+  const chartCards = artifacts.map(item => templateGridPreviewCard(item.label || item.id || 'sweep chart', item)).join('');
+  const content = `
+      <div class="runCardHeader">
+        <h3>Overnight Dynamics Sweep</h3>
+        <span class="runStatus">${escapeHtml(sweep.experiment_count || 0)} experiments</span>
+      </div>
+      <p class="hint">Cross-validated dynamics sweep against split-aware persistence. Positive improvement means lower MSE than persistence on that split.</p>
+      <div class="metricGrid">
+        <div class="metric"><b>${escapeHtml(sweep.positive_validation_count ?? 'n/a')}</b><span>positive validation</span></div>
+        <div class="metric"><b>${escapeHtml(sweep.positive_test_count ?? 'n/a')}</b><span>positive test</span></div>
+        <div class="metric"><b>${escapeHtml(sweep.positive_validation_and_test_count ?? 'n/a')}</b><span>positive both</span></div>
+        <div class="metric"><b>${escapeHtml(best.dataset_key || 'n/a')}</b><span>best dataset</span></div>
+        <div class="metric"><b>${fmt(Number(best.val_improvement_over_persistence_mse || 0), 7)}</b><span>best val improvement</span></div>
+        <div class="metric"><b>${fmt(Number(best.test_improvement_over_persistence_mse || 0), 7)}</b><span>best test improvement</span></div>
+      </div>
+      <div class="templateGridPreviewStrip sweepVisualStrip">${chartCards || '<p class="hint">No sweep visual artifacts linked.</p>'}</div>
+      <details class="sweepTopTable">
+        <summary>Top sweep experiments</summary>
+        <table class="smallTable"><tr><th>Rank</th><th>Dataset</th><th>Kind</th><th>Seed</th><th>Val improvement</th><th>Test improvement</th></tr>${topRows || '<tr><td colspan="6">No sweep rows available.</td></tr>'}</table>
+      </details>`;
+  return options.standalone ? `<section class="archCard templateGridSweepPanel">${content}</section>` : `<div class="templateGridSweepPanel">${content}</div>`;
+}
+
+function renderTemplateGridPanel(run){
+  const payload = typeof templateGridPayload === 'function' ? templateGridPayload() : {};
+  const spec = typeof templateGridSpec === 'function' ? templateGridSpec() : {};
+  const dims = typeof templateGridDimensions === 'function' ? templateGridDimensions() : {rows: 32, cols: 32};
+  const manifest = payload.video_manifest || payload.videoManifest || payload.manifest || {};
+  const labelCounts = manifest.label_counts || manifest.labelCounts || payload.label_counts || payload.labelCounts || {};
+  const registrationWarnings = payload.registration_warnings || payload.registrationWarnings || payload.registration?.warnings || [];
+  const baseline = payload.persistence_baseline || payload.persistenceBaseline || payload.baseline_metrics || payload.baseline || {};
+  const autoencoder = payload.autoencoder_run || payload.autoencoderRun || payload.autoencoder || payload.ae || {};
+  const rnn = payload.latent_rnn_run || payload.latentRnnRun || payload.latent_rnn || payload.rnn || {};
+  const classifier = payload.latent_classifier_run || payload.latentClassifierRun || payload.latent_classifier || payload.classifier || {};
+  const dataset = payload.dynamics_dataset || payload.dynamicsDataset || {};
+  const splitUnit = dataset.split_unit || dataset.splitUnit || payload.split_unit || payload.splitUnit || 'video';
+  const stateCount = payload.grid_state_count ?? payload.gridStateCount ?? payload.grid_states?.length ?? payload.gridStates?.length ?? 'n/a';
+  const templateProjection = findTemplateGridArtifact(run, ['template_projection', 'template projection', 'template_preview']);
+  const registeredProjection = findTemplateGridArtifact(run, ['registered_projection', 'registration_overlay', 'registered preview']);
+  const gridPreview = findTemplateGridArtifact(run, ['grid_preview', 'grid overlay', 'grid_spec']);
+  return `
+    <section class="archCard templateGridPanel" id="templateGridPanel">
+      <div class="runCardHeader">
+        <h3>Template / Registration / Grid</h3>
+        <span class="runStatus">${escapeHtml(dims.rows)}x${escapeHtml(dims.cols)} grid</span>
+      </div>
+      <p class="hint">Template-aligned grid dynamics workflow: video manifest, per-video rigid registration, grid states, video-level splits, autoencoder, latent RNN, and latent classifier.</p>
+      <div class="metricGrid">
+        <div class="metric"><b>${escapeHtml(manifest.video_count ?? manifest.videos?.length ?? 'n/a')}</b><span>video manifest</span></div>
+        <div class="metric"><b>${escapeHtml(Object.values(labelCounts || {}).reduce((a,b) => a + Number(b || 0), 0) || 'n/a')}</b><span>label counts</span></div>
+        <div class="metric"><b>${escapeHtml(registrationWarnings.length || 0)}</b><span>registration warnings</span></div>
+        <div class="metric"><b>${escapeHtml(stateCount)}</b><span>grid states</span></div>
+        <div class="metric"><b>${escapeHtml(splitUnit)}</b><span>split unit: video</span></div>
+        <div class="metric"><b>${templateGridMetric(baseline, ['mse','test_mse','mean_squared_error'])}</b><span>Persistence baseline</span></div>
+        <div class="metric"><b>${templateGridMetric(autoencoder, ['reconstruction_mse','valid_reconstruction_mse','valid_loss','test_mse'])}</b><span>Autoencoder</span></div>
+        <div class="metric"><b>${templateGridMetric(rnn, ['prediction_mse','valid_mse','test_mse','baseline_ratio'])}</b><span>Latent RNN</span></div>
+        <div class="metric"><b>${templateGridMetric(classifier, ['accuracy','test_accuracy','balanced_accuracy'])}</b><span>Latent classifier</span></div>
+      </div>
+      <div class="miniChipRow">${templateGridCountsHtml(labelCounts)}</div>
+      <div class="templateGridPreviewStrip">
+        ${templateGridPreviewCard('template projection', templateProjection)}
+        ${templateGridPreviewCard('registered projection', registeredProjection)}
+        ${templateGridPreviewCard('grid specification', gridPreview)}
+      </div>
+      ${renderTemplateGridSweepPanel(run)}
+    </section>`;
+}
+function templateGridReportRows(){
+  const payload = typeof templateGridPayload === 'function' ? templateGridPayload() : {};
+  const spec = typeof templateGridSpec === 'function' ? templateGridSpec() : {};
+  const dims = typeof templateGridDimensions === 'function' ? templateGridDimensions() : {rows: spec.rows || 32, cols: spec.cols || 32};
+  const manifest = payload.video_manifest || payload.videoManifest || payload.manifest || {};
+  const dataset = payload.dynamics_dataset || payload.dynamicsDataset || {};
+  const baseline = payload.persistence_baseline || payload.persistenceBaseline || payload.baseline_metrics || payload.baseline || {};
+  const autoencoder = payload.autoencoder_run || payload.autoencoderRun || payload.autoencoder || {};
+  const rnn = payload.latent_rnn_run || payload.latentRnnRun || payload.latent_rnn || {};
+  const classifier = payload.latent_classifier_run || payload.latentClassifierRun || payload.latent_classifier || {};
+  return [
+    ['Dataset manifest', `${manifest.video_count ?? manifest.videos?.length ?? 'n/a'} videos; labels ${Object.keys(manifest.label_counts || manifest.labelCounts || payload.label_counts || {}).join(', ') || 'n/a'}`],
+    ['Template construction', `${dims.rows || 32}x${dims.cols || 32} grid aligned to a reference projection`],
+    ['Registration summary', `${(payload.registration_warnings || payload.registrationWarnings || []).length || 0} warnings recorded`],
+    ['Grid extraction summary', `${payload.grid_state_count ?? payload.gridStateCount ?? payload.grid_states?.length ?? payload.gridStates?.length ?? 'n/a'} grid-state artifacts`],
+    ['Autoencoder reconstruction metrics', templateGridMetric(autoencoder, ['reconstruction_mse','valid_reconstruction_mse','valid_loss','test_mse'])],
+    ['Latent RNN prediction metrics', templateGridMetric(rnn, ['prediction_mse','valid_mse','test_mse','baseline_ratio'])],
+    ['Persistence baseline comparison', templateGridMetric(baseline, ['mse','test_mse','mean_squared_error'])],
+    ['Latent classifier metrics', templateGridMetric(classifier, ['accuracy','test_accuracy','balanced_accuracy'])],
+    ['Known limitations', `Template-aligned grid dynamics only; split unit: ${dataset.split_unit || dataset.splitUnit || payload.split_unit || 'video'}; no inverse control/stimulation or transformer modeling.`]
+  ];
+}
+function renderTemplateGridReportSummary(){
+  const rows = templateGridReportRows();
+  return `
+    <section class="archCard templateGridReportSummary" id="templateGridReportSummary">
+      <div class="runCardHeader"><h3>Template / Registration / Grid Summary</h3><span class="runStatus">experiment handoff</span></div>
+      <table class="smallTable"><tbody>${rows.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`).join('')}</tbody></table>
+    </section>`;
+}
+function templateGridReportMarkdownLines(){
+  const lines = ['', '## Template / Registration / Grid Experiment', ''];
+  for(const [label, value] of templateGridReportRows()) lines.push(`- ${label}: ${value}`);
+  return lines;
+}
+
 function renderDatasetQc(){
   const root = document.getElementById('datasetQc');
   if(!root) return;
@@ -10890,6 +11218,7 @@ function renderDatasetQc(){
     ${renderRunSummaryCards(run)}
     ${gammaCfarQuickPickHtml(runs, run)}
     ${renderSweepEvidencePanel(run)}
+    ${renderTemplateGridPanel(run)}
     <div class="qcWorkbench">
       <section class="qcViewerPanel">
         <div class="toolbar">
@@ -11436,6 +11765,7 @@ function reviewReportMarkdown(){
     `- Accepted ROIs: ${s.roi_states.accepted}`,
     `- Accepted events: ${s.event_states.accepted}`,
     `- Control-ready yes/maybe: ${s.control_ready.yes} / ${s.control_ready.maybe}`,
+    ...templateGridReportMarkdownLines(),
     '',
     '## Reviewer Contributions',
     ''
@@ -11490,6 +11820,8 @@ function renderReviewReport(){
       <div class="metric"><b>${Object.values(s.reviewer_missing || {}).reduce((a,b) => a + b, 0)}</b><span>labels missing reviewer</span></div>
       <div class="metric"><b>${Math.round(100 * audit.coverage_fraction)}%</b><span>reviewer coverage</span></div>
     </div>
+    ${renderTemplateGridReportSummary()}
+    ${renderTemplateGridSweepPanel(activeRun(), {standalone:true, compact:true})}
     <details class="archCard">
       <summary>Reviewer audit details</summary>
       ${auditRows('Reviewer contributions', Object.keys(s.reviewer_counts || {}).length ? s.reviewer_counts : {unassigned: 0})}
@@ -11785,8 +12117,6 @@ function gammaReviewRuns(){ return architectureRuns().filter(run => isGammaCfarR
 function defaultOverlapRunIds(){
   const preferred = ['gamma_cfar_cascade_grid_50hz_v2__sweep_036', 'gamma_cfar_cascade_grid_50hz_v2__sweep_033', 'gamma_cfar_cascade_grid_50hz_v2__sweep_017', 'gamma_cfar_cascade_grid_50hz_v2__sweep_020'];
   const runs = gammaReviewRuns();
-  const recommended = recommendedReviewRuns(runs);
-  if(recommended.length) return recommended.slice(0, 4).map(run => run.run_id);
   const exact = preferred.filter(id => runs.some(run => run.run_id === id));
   if(exact.length) return exact;
   return runs.slice().sort((a,b) => Number(b.summary?.roi_count || 0) - Number(a.summary?.roi_count || 0)).slice(0, 4).map(run => run.run_id);

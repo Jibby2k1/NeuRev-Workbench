@@ -132,6 +132,9 @@ function initControls(){
   document.getElementById('roiLabelMode')?.addEventListener('change', e => { setSetting('roiLabelMode', normalizeRoiLabelMode(e.target.value)); applySettingsToControls(); drawOverlay(); });
   document.getElementById('showSuggestions').onchange = e => { setSetting('showSuggestions', e.target.checked); drawOverlay(); };
   document.getElementById('showStencilOverlay')?.addEventListener('change', e => { setSetting('showStencilOverlay', e.target.checked); drawOverlay(); });
+  for(const id of ['showTemplateOverlay','showRegisteredProjectionOverlay','showGridOverlay','showGridIntensityOverlay','showPredictionErrorOverlay']) {
+    document.getElementById(id)?.addEventListener('change', e => { setSetting(id, e.target.checked); updateGridCellStatus(); drawOverlay(); });
+  }
   document.getElementById('showEvidence').onchange = e => { setSetting('showEvidence', e.target.checked); applyDisplaySettings(); };
   document.getElementById('evidenceSelect').onchange = e => { setSetting('evidenceMap', e.target.value); applyDisplaySettings(); };
   document.getElementById('togglePotentialRoisBtn').onclick = () => toggleOverlayRoiGroup('showPotentialRois');
@@ -490,6 +493,7 @@ function initControls(){
     const rect = overlay.getBoundingClientRect();
     const x = (e.clientX - rect.left) * data.video.width / rect.width;
     const y = (e.clientY - rect.top) * data.video.height / rect.height;
+    if(handleGridCellClick(x, y)) return;
     let best = null, bestD = Infinity, bestType = 'roi';
     for(const roi of visibleRois()){
       const dx = x - roi.centroidX, dy = y - roi.centroidY, d = dx*dx + dy*dy;

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "model_kind": {
+      "const": "grid_autoencoder",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "model_kind",
+    "input_shape",
+    "latent_dim",
+    "training_config",
+    "source_dataset",
+    "checkpoint_path",
+    "metrics_path",
+    "reconstruction_examples_path",
+    "seed",
+    "device",
+    "warnings",
+    "extras"
+  ],
+  "title": "Neurobench Autoencoder Run",
+  "type": "object"
+}

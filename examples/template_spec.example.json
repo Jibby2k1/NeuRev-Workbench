@@ -1,0 +1,32 @@
+{
+  "coordinate_system": {
+    "height": 512,
+    "origin": "top_left",
+    "units": "px",
+    "width": 512
+  },
+  "created_at": "2026-06-01T00:00:00Z",
+  "extras": {},
+  "notes": "Initial anatomical template from one reference video mean projection.",
+  "outlier_rejection": {
+    "enabled": true,
+    "max_outlier_fraction": 0.05,
+    "method": "projection_residual_zscore",
+    "removed_fraction": 0.004,
+    "removed_frame_indices": [
+      12,
+      58
+    ]
+  },
+  "projection": {
+    "dtype": "float32",
+    "kind": "mean_after_outlier_rejection",
+    "path": "template/template_projection.npy",
+    "preview_png": "template/template_projection.png",
+    "sha256": "example"
+  },
+  "schema_version": 1,
+  "source_video_id": "1_neutral",
+  "source_video_path": "Inputs/ZebrafishVideos/1_neutral.tif",
+  "template_id": "template_from_1_neutral_v1"
+}
