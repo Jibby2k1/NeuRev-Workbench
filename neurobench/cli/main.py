@@ -3,16 +3,8 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Sequence
-
-from neurobench.cli.dataset import add_dataset_subcommands, add_validate_subcommands
-from neurobench.cli.dynamics import add_dynamics_subcommands
-from neurobench.cli.llm import add_llm_subcommands
-from neurobench.cli.report import add_report_subcommands
-from neurobench.cli.video import add_video_subcommands
-from neurobench.cli.template import add_template_subcommands
-from neurobench.cli.grid import add_grid_subcommands
-from neurobench.cli.run import add_run_subcommands
-from neurobench.cli.workbench import add_workbench_subcommands
+import importlib
+import sys
 
 
 COMMAND_GROUPS = {
@@ -25,23 +17,38 @@ COMMAND_GROUPS = {
 }
 
 
-def build_parser() -> argparse.ArgumentParser:
+COMMAND_REGISTRARS = (
+    ("dataset", "neurobench.cli.dataset", "add_dataset_subcommands"),
+    ("video", "neurobench.cli.video", "add_video_subcommands"),
+    ("template", "neurobench.cli.template", "add_template_subcommands"),
+    ("grid", "neurobench.cli.grid", "add_grid_subcommands"),
+    ("dynamics", "neurobench.cli.dynamics", "add_dynamics_subcommands"),
+    ("experiment", "neurobench.cli.experiment", "add_experiment_subcommands"),
+    ("run", "neurobench.cli.run", "add_run_subcommands"),
+    ("workbench", "neurobench.cli.workbench", "add_workbench_subcommands"),
+    ("llm", "neurobench.cli.llm", "add_llm_subcommands"),
+    ("report", "neurobench.cli.report", "add_report_subcommands"),
+    ("validate", "neurobench.cli.dataset", "add_validate_subcommands"),
+)
+_SELECTIVE_COMMANDS = {"experiment"}
+
+
+def build_parser(active_command: str | None = None) -> argparse.ArgumentParser:
+    """Build the full CLI, or only one explicitly selected lightweight command."""
     parser = argparse.ArgumentParser(
         prog="neurobench",
         description="Neurobench command-line tools for neuroimaging discovery, review, and reporting.",
     )
     parser.add_argument("--version", action="version", version="neurobench 0.1.0")
     subparsers = parser.add_subparsers(dest="command", metavar="command")
-    add_dataset_subcommands(subparsers)
-    add_video_subcommands(subparsers)
-    add_template_subcommands(subparsers)
-    add_grid_subcommands(subparsers)
-    add_dynamics_subcommands(subparsers)
-    add_run_subcommands(subparsers)
-    add_workbench_subcommands(subparsers)
-    add_llm_subcommands(subparsers)
-    add_report_subcommands(subparsers)
-    add_validate_subcommands(subparsers)
+    registrations = (
+        COMMAND_REGISTRARS
+        if active_command is None
+        else tuple(item for item in COMMAND_REGISTRARS if item[0] == active_command)
+    )
+    for _, module_name, function_name in registrations:
+        module = importlib.import_module(module_name)
+        getattr(module, function_name)(subparsers)
     for name, help_text in COMMAND_GROUPS.items():
         if name in {"report"}:
             continue
@@ -51,8 +58,14 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    parser = build_parser()
-    args = parser.parse_args(argv)
+    arguments = list(sys.argv[1:] if argv is None else argv)
+    active_command = (
+        arguments[0]
+        if arguments and arguments[0] in _SELECTIVE_COMMANDS
+        else None
+    )
+    parser = build_parser(active_command=active_command)
+    args = parser.parse_args(arguments)
     if not getattr(args, "command", None):
         parser.print_help()
         return 0

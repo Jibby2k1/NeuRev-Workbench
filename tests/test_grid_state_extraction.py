@@ -30,3 +30,17 @@ class GridStateExtractionTests(unittest.TestCase):
         states = extract_grid_states(video, grid, normalization="none")
         row, col = np.unravel_index(np.argmax(states["grid_state"][0, :, :, 0]), (32, 32))
         self.assertEqual((row, col), (5, 7))
+
+    def test_128_grid_max_pools_512_frame_cells(self):
+        from neurobench.algorithms.grid_regions import extract_grid_states, generate_grid_spec
+
+        grid = generate_grid_spec(template_id="t", height=512, width=512, rows=128, cols=128)
+        video = np.zeros((1, 512, 512), dtype=np.float32)
+        video[:, 40:44, 80:84] = 1.0
+        video[:, 41, 81] = 7.0
+        states = extract_grid_states(video, grid, features=("max_intensity",), normalization="none")
+
+        self.assertEqual(grid["region_count"], 16384)
+        self.assertEqual(states["grid_state"].shape, (1, 128, 128, 1))
+        self.assertEqual(float(states["grid_state"][0, 10, 20, 0]), 7.0)
+        self.assertEqual(states["feature_names"].tolist(), ["max_intensity"])

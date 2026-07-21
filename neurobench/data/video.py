@@ -125,12 +125,19 @@ class VideoStore:
             raise IndexError(f"Frame index {index} is outside [0, {self.frame_count}).")
         return self._array[index]
 
-    def iter_chunks(self, chunk_size: int) -> Iterator[VideoChunk]:
-        """Yield contiguous frame chunks with half-open frame bounds."""
+    def iter_chunks(
+        self,
+        chunk_size: int,
+        *,
+        start_frame: int = 0,
+        end_frame: int | None = None,
+    ) -> Iterator[VideoChunk]:
+        """Yield bounded contiguous chunks with absolute half-open bounds."""
         if chunk_size <= 0:
             raise ValueError("chunk_size must be positive.")
-        for start in range(0, self.frame_count, int(chunk_size)):
-            end = min(self.frame_count, start + int(chunk_size))
+        range_start, range_end = _normalize_frame_range(self.frame_count, start_frame, end_frame)
+        for start in range(range_start, range_end, int(chunk_size)):
+            end = min(range_end, start + int(chunk_size))
             yield VideoChunk(start_frame=start, end_frame=end, data=self._array[start:end])
 
     def as_array(self) -> Any:
@@ -153,6 +160,8 @@ def iter_video_chunks(
     path: str | Path,
     *,
     chunk_size: int = 64,
+    start_frame: int = 0,
+    end_frame: int | None = None,
     mmap: bool = True,
     max_eager_bytes: int | None = None,
 ) -> Iterator[VideoChunk]:
@@ -174,17 +183,31 @@ def iter_video_chunks(
             guard_eager_load_size(source, max_eager_bytes=max_eager_bytes)
         array = np.load(source, mmap_mode="r" if mmap else None)
         video = coerce_frame_first_video(array, allow_single_frame=False)
-        for start in range(0, int(video.shape[0]), int(chunk_size)):
-            end = min(int(video.shape[0]), start + int(chunk_size))
+        range_start, range_end = _normalize_frame_range(int(video.shape[0]), start_frame, end_frame)
+        for start in range(range_start, range_end, int(chunk_size)):
+            end = min(range_end, start + int(chunk_size))
             yield VideoChunk(start_frame=start, end_frame=end, data=video[start:end])
         return
     if suffix in {".tif", ".tiff"}:
-        yield from _iter_tiff_chunks(source, chunk_size=int(chunk_size), max_eager_bytes=max_eager_bytes)
+        yield from _iter_tiff_chunks(
+            source,
+            chunk_size=int(chunk_size),
+            start_frame=start_frame,
+            end_frame=end_frame,
+            max_eager_bytes=max_eager_bytes,
+        )
         return
     raise ValueError(f"Unsupported video format: {source.suffix}. Expected .npy, .tif, or .tiff.")
 
 
-def _iter_tiff_chunks(path: Path, *, chunk_size: int, max_eager_bytes: int | None) -> Iterator[VideoChunk]:
+def _iter_tiff_chunks(
+    path: Path,
+    *,
+    chunk_size: int,
+    start_frame: int,
+    end_frame: int | None,
+    max_eager_bytes: int | None,
+) -> Iterator[VideoChunk]:
     np = _load_numpy()
     try:
         import tifffile  # type: ignore
@@ -192,25 +215,44 @@ def _iter_tiff_chunks(path: Path, *, chunk_size: int, max_eager_bytes: int | Non
         raise RuntimeError("TIFF video chunking requires tifffile.") from exc
     meta = video_metadata(path)
     frames = int(meta["frames"])
+    range_start, range_end = _normalize_frame_range(frames, start_frame, end_frame)
     height = int(meta["height"])
     width = int(meta["width"])
     with tifffile.TiffFile(path) as tif:
         if frames == 1:
+            if range_start == range_end:
+                return
             data = coerce_frame_first_video(tif.asarray())
             yield VideoChunk(start_frame=0, end_frame=1, data=data.astype(np.float32, copy=False))
             return
         page_count = len(tif.pages)
         if page_count >= frames and tuple(int(v) for v in tif.pages[0].shape) == (height, width):
-            for start in range(0, frames, chunk_size):
-                end = min(frames, start + chunk_size)
+            for start in range(range_start, range_end, chunk_size):
+                end = min(range_end, start + chunk_size)
                 chunk = np.stack([tif.pages[index].asarray() for index in range(start, end)], axis=0)
                 yield VideoChunk(start_frame=start, end_frame=end, data=coerce_frame_first_video(chunk, allow_single_frame=False))
             return
         guard_eager_load_size(path, max_eager_bytes=max_eager_bytes)
         video = coerce_frame_first_video(tif.asarray(), allow_single_frame=False)
-        for start in range(0, int(video.shape[0]), int(chunk_size)):
-            end = min(int(video.shape[0]), start + int(chunk_size))
+        for start in range(range_start, range_end, int(chunk_size)):
+            end = min(range_end, start + int(chunk_size))
             yield VideoChunk(start_frame=start, end_frame=end, data=video[start:end])
+
+
+def _normalize_frame_range(
+    frame_count: int,
+    start_frame: int = 0,
+    end_frame: int | None = None,
+) -> tuple[int, int]:
+    """Validate and normalize a zero-based half-open frame range."""
+    start = int(start_frame)
+    end = int(frame_count if end_frame is None else end_frame)
+    if start < 0 or start > frame_count:
+        raise ValueError(f"start_frame must be inside [0, {frame_count}], got {start}.")
+    if end < start or end > frame_count:
+        raise ValueError(f"end_frame must be inside [{start}, {frame_count}], got {end}.")
+    return start, end
+
 
 def load_video_array(path: str | Path, *, mmap: bool = False, max_eager_bytes: int | None = None) -> Any:
     """Return a frame-first ``[T, H, W]`` video array from ``.npy`` or TIFF.

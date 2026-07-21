@@ -347,6 +347,10 @@ function renderDatasetQc(){
 function dataSubPageFromHash(hashText=location.hash){
   const hash = (hashText || '#data').replace(/^#\/?/, '');
   if(hash === 'data-compare' || hash === 'compare' || hash === 'process-compare') return 'compare';
+  if(hash === 'data') {
+    const run = selectedQcRun();
+    if(run && runHasCandidateRois(run) && !runHasIntermediates(run)) return 'compare';
+  }
   return 'inspect';
 }
 function dataPageLabel(subpage){ return subpage === 'compare' ? 'Data Compare' : 'Data Inspect'; }

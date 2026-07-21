@@ -969,8 +969,17 @@ def _run_grid_32x32_generate(step: Mapping[str, Any], artifacts: Mapping[str, Pa
     from neurobench.algorithms.grid_regions import write_grid_spec_artifacts
     from neurobench.manifests import load_json
 
-    out = store.artifact_path("grid", "grid_spec_32x32.json")
-    spec = write_grid_spec_artifacts(template_spec=load_json(_require_artifact(artifacts, "template_spec", step)), out_path=out, rows=int(step["params"].get("rows", 32)), cols=int(step["params"].get("cols", 32)))
+    params = step["params"]
+    default_size = 128 if str(step["stage_id"]) == "grid_128x128_generate" else 32
+    rows = int(params.get("rows", default_size))
+    cols = int(params.get("cols", default_size))
+    out = store.artifact_path("grid", f"grid_spec_{rows}x{cols}.json")
+    spec = write_grid_spec_artifacts(
+        template_spec=load_json(_require_artifact(artifacts, "template_spec", step)),
+        out_path=out,
+        rows=rows,
+        cols=cols,
+    )
     store.register_file(out, artifact_id="grid_spec.v1", kind="grid_spec", producer_stage=str(step["stage_id"]), schema="grid_spec", summary={"rows": spec["rows"], "cols": spec["cols"], "region_count": spec["region_count"]})
     return "grid_spec", out
 
@@ -984,9 +993,10 @@ def _run_grid_state_extract(step: Mapping[str, Any], artifacts: Mapping[str, Pat
     registered_dir = _require_artifact(artifacts, "registered_videos", step).parent
     out_dir = store.artifact_path("grid_states", "grid_states_summary.json").parent
     summaries = []
+    features = _grid_features_from_params(step["params"])
     for video in manifest.get("videos", []) or []:
         vid = str(video["video_id"])
-        summaries.append(write_grid_state_artifacts(registered_video_path=registered_dir / vid / "registered_video.npy", grid_spec=grid, out_dir=out_dir, video_id=vid, label=str(video.get("label") or ""), features=step["params"].get("features") or ["mean_intensity"], normalization=str(step["params"].get("normalization", "per_video_robust_percentile")), frame_rate_hz=video.get("frame_rate_hz"), chunk_size_frames=int(step["params"].get("chunk_size_frames", 64)), max_grid_state_bytes=step["params"].get("max_grid_state_bytes", 1_000_000_000)))
+        summaries.append(write_grid_state_artifacts(registered_video_path=registered_dir / vid / "registered_video.npy", grid_spec=grid, out_dir=out_dir, video_id=vid, label=str(video.get("label") or ""), features=features, normalization=str(step["params"].get("normalization", "per_video_robust_percentile")), frame_rate_hz=video.get("frame_rate_hz"), chunk_size_frames=int(step["params"].get("chunk_size_frames", 64)), max_grid_state_bytes=step["params"].get("max_grid_state_bytes", 1_000_000_000)))
     summary = {"schema_version": 1, "grid_states_dir": str(out_dir), "video_count": len(summaries), "videos": summaries}
     out = out_dir / "grid_states_summary.json"
     out.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -994,12 +1004,36 @@ def _run_grid_state_extract(step: Mapping[str, Any], artifacts: Mapping[str, Pat
     return "grid_states", out
 
 
+def _grid_features_from_params(params: Mapping[str, Any]) -> list[str]:
+    features = [str(value) for value in (params.get("features") or [])]
+    pooling = str(params.get("pooling") or "").strip().lower()
+    if not features:
+        if pooling in {"max", "max_pool", "max-pool", "max_pooling", "max-pooling"}:
+            return ["max_intensity"]
+        return ["mean_intensity"]
+    if features == ["mean_intensity"] and pooling in {"max", "max_pool", "max-pool", "max_pooling", "max-pooling"}:
+        return ["max_intensity"]
+    return features
+
+
 def _run_grid_dynamics_dataset_build(step: Mapping[str, Any], artifacts: Mapping[str, Path], store: ArtifactStore) -> tuple[str, Path]:
     from neurobench.dynamics.datasets import build_dynamics_dataset
     from neurobench.manifests import load_json
 
     out_dir = store.artifact_path("dynamics", "dynamics_dataset.json").parent
-    dataset = build_dynamics_dataset(manifest=load_json(_require_artifact(artifacts, "video_manifest", step)), grid_states_dir=_require_artifact(artifacts, "grid_states", step).parent, out_dir=out_dir, window_frames=int(step["params"].get("window_frames", 8)), prediction_horizon_frames=int(step["params"].get("prediction_horizon_frames", 1)), split_method=str(step["params"].get("split_method", "stratified_by_label")))
+    params = step["params"]
+    dataset = build_dynamics_dataset(
+        manifest=load_json(_require_artifact(artifacts, "video_manifest", step)),
+        grid_states_dir=_require_artifact(artifacts, "grid_states", step).parent,
+        out_dir=out_dir,
+        window_frames=int(params.get("window_frames", 8)),
+        prediction_horizon_frames=int(params.get("prediction_horizon_frames", 1)),
+        temporal_stride_frames=int(params.get("temporal_stride_frames", 1)),
+        split_method=str(params.get("split_method", "stratified_by_label")),
+        train_fraction=float(params.get("train_fraction", 0.7)),
+        val_fraction=float(params.get("val_fraction", 0.15)),
+        test_fraction=float(params.get("test_fraction", 0.15)),
+    )
     out = out_dir / "dynamics_dataset.json"
     store.register_file(out, artifact_id="dynamics_dataset.v1", kind="dynamics_dataset", producer_stage=str(step["stage_id"]), schema="dynamics_dataset", summary={"window_count": dataset.get("extras", {}).get("window_count", 0), "split_unit": "video"})
     return "dynamics_dataset", out
@@ -1011,9 +1045,9 @@ def _run_grid_autoencoder_train(step: Mapping[str, Any], artifacts: Mapping[str,
 
     params = step["params"]
     out_dir = store.artifact_path("models", "autoencoder", "autoencoder_run.json").parent
-    train_autoencoder(dataset=load_json(_require_artifact(artifacts, "dynamics_dataset", step)), out_dir=out_dir, latent_dim=int(params.get("latent_dim", 32)), epochs=int(params.get("epochs", 10)), batch_size=int(params.get("batch_size", 32)), learning_rate=float(params.get("learning_rate", 0.001)), seed=int(params.get("seed", 7)), device=str(params.get("device", "cpu")))
+    train_autoencoder(dataset=load_json(_require_artifact(artifacts, "dynamics_dataset", step)), out_dir=out_dir, latent_dim=int(params.get("latent_dim", 32)), base_channels=int(params.get("base_channels", 16)), epochs=int(params.get("epochs", 10)), batch_size=int(params.get("batch_size", 32)), learning_rate=float(params.get("learning_rate", 0.001)), seed=int(params.get("seed", 7)), device=str(params.get("device", "cpu")))
     out = out_dir / "autoencoder_run.json"
-    store.register_file(out, artifact_id="autoencoder_run.v1", kind="autoencoder_run", producer_stage=str(step["stage_id"]), schema="autoencoder_run", summary={"latent_dim": int(params.get("latent_dim", 32)), "epochs": int(params.get("epochs", 10))})
+    store.register_file(out, artifact_id="autoencoder_run.v1", kind="autoencoder_run", producer_stage=str(step["stage_id"]), schema="autoencoder_run", summary={"latent_dim": int(params.get("latent_dim", 32)), "base_channels": int(params.get("base_channels", 16)), "epochs": int(params.get("epochs", 10))})
     return "autoencoder_run", out
 
 
@@ -1023,7 +1057,7 @@ def _run_latent_rnn_train(step: Mapping[str, Any], artifacts: Mapping[str, Path]
 
     params = step["params"]
     out_dir = store.artifact_path("models", "latent_rnn", "latent_rnn_run.json").parent
-    train_latent_rnn(dataset=load_json(_require_artifact(artifacts, "dynamics_dataset", step)), autoencoder_run=load_json(_require_artifact(artifacts, "autoencoder_run", step)), out_dir=out_dir, window_frames=int(params.get("window_frames", 8)), hidden_dim=int(params.get("hidden_dim", 64)), epochs=int(params.get("epochs", 10)), batch_size=int(params.get("batch_size", 32)), learning_rate=float(params.get("learning_rate", 0.001)), seed=int(params.get("seed", 7)), device=str(params.get("device", "cpu")))
+    train_latent_rnn(dataset=load_json(_require_artifact(artifacts, "dynamics_dataset", step)), autoencoder_run=load_json(_require_artifact(artifacts, "autoencoder_run", step)), out_dir=out_dir, window_frames=int(params.get("window_frames", 8)), hidden_dim=int(params.get("hidden_dim", 64)), epochs=int(params.get("epochs", 10)), batch_size=int(params.get("batch_size", 32)), learning_rate=float(params.get("learning_rate", 0.001)), prediction_target=str(params.get("prediction_target", "absolute")), seed=int(params.get("seed", 7)), device=str(params.get("device", "cpu")))
     out = out_dir / "latent_rnn_run.json"
     store.register_file(out, artifact_id="latent_rnn_run.v1", kind="latent_rnn_run", producer_stage=str(step["stage_id"]), schema="latent_rnn_run", summary={"hidden_dim": int(params.get("hidden_dim", 64)), "epochs": int(params.get("epochs", 10))})
     return "latent_rnn_run", out
@@ -1067,6 +1101,7 @@ _STAGE_RUNNERS = {
     "template_register_video": _run_template_register_video,
     "apply_video_registration": _run_apply_video_registration,
     "grid_32x32_generate": _run_grid_32x32_generate,
+    "grid_128x128_generate": _run_grid_32x32_generate,
     "grid_state_extract": _run_grid_state_extract,
     "grid_dynamics_dataset_build": _run_grid_dynamics_dataset_build,
     "grid_autoencoder_train": _run_grid_autoencoder_train,

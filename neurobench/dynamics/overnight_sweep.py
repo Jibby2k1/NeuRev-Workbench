@@ -14,6 +14,7 @@ from typing import Any, Mapping
 import numpy as np
 
 from neurobench.dynamics.baselines import baseline_prediction, evaluate_baselines_from_arrays
+from neurobench.dynamics.error_analysis import promote_structured_error_metrics, structured_prediction_error_metrics
 from neurobench.dynamics.concept_tests import run_concept_tests
 from neurobench.dynamics.linear import evaluate_linear_latent_baseline
 from neurobench.dynamics.models import GridAutoencoder, LatentTransformerPredictor
@@ -50,6 +51,28 @@ DEFAULT_DATASETS = {
 }
 
 
+DEFAULT_GRID128_DATASETS = {
+    "w8_s1_h2": {
+        "dataset": "Outputs/GridModel/060126_crop512_grid128_max_v1/datasets/w8_s1_h2/dynamics_dataset.json",
+        "autoencoder_run": "Outputs/GridModel/060126_crop512_grid128_max_v1/models/autoencoder128_s1_ld64_bc16_e60_lr0p0010_v1/autoencoder_run.json",
+        "window_frames": 8,
+        "grid_size": 128,
+        "grid_features": ["max_intensity"],
+        "prediction_horizon_frames": 2,
+        "rnn_prediction_target": "delta",
+    },
+    "w8_s1_h5": {
+        "dataset": "Outputs/GridModel/060126_crop512_grid128_max_v1/datasets/w8_s1_h5/dynamics_dataset.json",
+        "autoencoder_run": "Outputs/GridModel/060126_crop512_grid128_max_v1/models/autoencoder128_s1_ld64_bc16_e60_lr0p0010_v1/autoencoder_run.json",
+        "window_frames": 8,
+        "grid_size": 128,
+        "grid_features": ["max_intensity"],
+        "prediction_horizon_frames": 5,
+        "rnn_prediction_target": "delta",
+    },
+}
+
+
 @dataclass(frozen=True)
 class ExperimentSpec:
     experiment_id: str
@@ -79,6 +102,7 @@ def run_overnight_sweep(
     max_runs: int | None = None,
     time_limit_hours: float | None = None,
     datasets: Mapping[str, Mapping[str, Any]] | None = None,
+    manifest_path: str | Path | None = None,
     dry_run: bool = False,
     resume: bool = True,
     stop_on_error: bool = False,
@@ -86,15 +110,24 @@ def run_overnight_sweep(
     _set_conservative_env()
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
-    dataset_map = {str(key): dict(value) for key, value in (datasets or DEFAULT_DATASETS).items()}
-    specs = build_specs(profile=profile, seeds=seeds, epochs=epochs, batch_size=batch_size, dataset_keys=tuple(dataset_map.keys()))
+    source_manifest = _load_json(manifest_path) if manifest_path is not None else None
+    source_profile = str((source_manifest or {}).get("source_profile") or (source_manifest or {}).get("profile") or profile)
+    default_datasets = DEFAULT_GRID128_DATASETS if source_profile.startswith("grid128_") else DEFAULT_DATASETS
+    dataset_source = datasets or (source_manifest or {}).get("datasets") or default_datasets
+    dataset_map = {str(key): dict(value) for key, value in dataset_source.items()}
+    if source_manifest is not None:
+        specs = _specs_from_manifest(source_manifest)
+        run_profile = source_profile
+    else:
+        specs = build_specs(profile=profile, seeds=seeds, epochs=epochs, batch_size=batch_size, dataset_keys=tuple(dataset_map.keys()))
+        run_profile = profile
     if max_runs is not None:
         specs = specs[: int(max_runs)]
     _validate_inputs(dataset_map)
     manifest = {
         "schema_version": 1,
         "created_at": datetime.now(timezone.utc).isoformat(),
-        "profile": profile,
+        "profile": run_profile,
         "device": device,
         "seeds": [int(s) for s in seeds],
         "batch_size": int(batch_size),
@@ -106,6 +139,16 @@ def run_overnight_sweep(
         "datasets": dataset_map,
         "experiments": [spec.to_json() for spec in specs],
     }
+    if manifest_path is not None:
+        manifest.update(
+            {
+                "manifest_source_path": str(manifest_path),
+                "manifest_source_kind": (source_manifest or {}).get("manifest_kind"),
+                "source_sweep_dir": (source_manifest or {}).get("source_sweep_dir"),
+                "source_experiment_count": (source_manifest or {}).get("source_experiment_count"),
+                "selection_notes": (source_manifest or {}).get("selection_notes", []),
+            }
+        )
     (out / "sweep_manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if dry_run:
         write_summary(out)
@@ -113,6 +156,7 @@ def run_overnight_sweep(
 
     start_time = time.monotonic()
     progress_path = out / "sweep_progress.jsonl"
+    active_path = out / "sweep_active.json"
     completed = 0
     skipped = 0
     failed = 0
@@ -136,8 +180,10 @@ def run_overnight_sweep(
             skipped += 1
             status_record.update({"status": "skipped", "metrics_path": str(metrics_path)})
             _append_jsonl(progress_path, status_record)
+            _write_active_status(active_path, status_record)
             continue
         try:
+            _write_active_status(active_path, {**status_record, "status": "running"})
             exp_start = time.monotonic()
             metrics_path = run_one(spec=spec, out_dir=exp_out, device=device, datasets=dataset_map)
             metrics = _load_json(metrics_path)
@@ -157,14 +203,17 @@ def run_overnight_sweep(
             completed += 1
         except Exception as exc:  # noqa: BLE001 - this is a long-running batch runner.
             failed += 1
-            status_record.update({"status": "failed", "error": repr(exc)})
+            status_record.update({"status": "failed", "error": repr(exc), "finished_at": datetime.now(timezone.utc).isoformat()})
             _append_jsonl(progress_path, status_record)
+            _write_active_status(active_path, status_record)
             _cleanup_torch()
             write_summary(out)
             if stop_on_error:
                 raise
             continue
+        status_record["finished_at"] = datetime.now(timezone.utc).isoformat()
         _append_jsonl(progress_path, status_record)
+        _write_active_status(active_path, status_record)
         _cleanup_torch()
         write_summary(out)
     write_summary(out)
@@ -179,8 +228,37 @@ def run_overnight_sweep(
     }
 
 
+def _specs_from_manifest(manifest: Mapping[str, Any]) -> list[ExperimentSpec]:
+    specs: list[ExperimentSpec] = []
+    seen: set[str] = set()
+    for item in manifest.get("experiments", []) or []:
+        if not isinstance(item, Mapping):
+            continue
+        exp_id = str(item.get("experiment_id") or "").strip()
+        if not exp_id:
+            raise ValueError("Manifest experiment is missing experiment_id.")
+        if exp_id in seen:
+            raise ValueError(f"Duplicate manifest experiment_id: {exp_id}")
+        seen.add(exp_id)
+        params = item.get("params", {})
+        if not isinstance(params, Mapping):
+            raise ValueError(f"Manifest experiment {exp_id} has non-object params.")
+        specs.append(
+            ExperimentSpec(
+                experiment_id=exp_id,
+                kind=str(item.get("kind") or ""),
+                dataset_key=str(item.get("dataset_key") or ""),
+                seed=int(item.get("seed") or 0),
+                params=dict(params),
+            )
+        )
+    if not specs:
+        raise ValueError("Manifest does not contain any experiments.")
+    return specs
+
+
 def build_specs(*, profile: str, seeds: tuple[int, ...], epochs: int, batch_size: int, dataset_keys: tuple[str, ...] = tuple(DEFAULT_DATASETS)) -> list[ExperimentSpec]:
-    allowed_profiles = {"smoke", "overnight", "upgrade", "advanced", "advanced_big", "advanced_overnight", "cropped32_restricted", "cropped32_large", "highres_temporal_cnn_scalable"}
+    allowed_profiles = {"smoke", "overnight", "upgrade", "advanced", "advanced_big", "advanced_overnight", "cropped32_restricted", "cropped32_large", "highres_temporal_cnn_scalable", "grid128_sequence_1day"}
     if profile not in allowed_profiles:
         raise ValueError("profile must be one of: " + ", ".join(sorted(allowed_profiles)) + ".")
     if profile == "smoke":
@@ -204,6 +282,8 @@ def build_specs(*, profile: str, seeds: tuple[int, ...], epochs: int, batch_size
         return _cropped32_large_specs(seeds=seeds, epochs=epochs, batch_size=batch_size, dataset_keys=dataset_keys)
     if profile == "highres_temporal_cnn_scalable":
         return _highres_temporal_cnn_scalable_specs(seeds=seeds, epochs=epochs, batch_size=batch_size, dataset_keys=dataset_keys)
+    if profile == "grid128_sequence_1day":
+        return _grid128_sequence_1day_specs(seeds=seeds, epochs=epochs, batch_size=batch_size, dataset_keys=dataset_keys)
 
     specs: list[ExperimentSpec] = []
     for dataset_key in dataset_keys:
@@ -928,6 +1008,94 @@ def _highres_temporal_cnn_scalable_specs(*, seeds: tuple[int, ...], epochs: int,
     return specs
 
 
+def _grid128_sequence_1day_specs(*, seeds: tuple[int, ...], epochs: int, batch_size: int, dataset_keys: tuple[str, ...]) -> list[ExperimentSpec]:
+    specs: list[ExperimentSpec] = []
+    seen: set[str] = set()
+
+    def add(spec: ExperimentSpec) -> None:
+        if spec.experiment_id in seen:
+            return
+        seen.add(spec.experiment_id)
+        specs.append(spec)
+
+    pixel_architectures = (
+        ("convgru_pixel", 1),
+        ("convgru_pixel", 2),
+        ("convlstm_pixel", 1),
+        ("convlstm_pixel", 2),
+        ("temporal_cnn_pixel", 2),
+        ("temporal_cnn_pixel", 4),
+        ("temporal_cnn_pixel", 6),
+    )
+
+    for dataset_key in dataset_keys:
+        for baseline_name in ("persistence", "moving_average", "linear_extrapolation", "mean_delta"):
+            add(_grid128_array_baseline_spec(dataset_key, baseline_name=baseline_name))
+        for prediction_target in ("absolute", "delta"):
+            add(_grid128_linear_latent_spec(dataset_key, prediction_target=prediction_target, batch_size=max(256, int(batch_size))))
+
+    for dataset_key in dataset_keys:
+        for seed in seeds:
+            for hidden_dim in (64, 128, 256):
+                for learning_rate in (1e-3, 3e-4, 1e-4, 3e-5):
+                    for prediction_target in ("delta", "absolute"):
+                        add(
+                            _grid128_gru_spec(
+                                dataset_key,
+                                seed=seed,
+                                hidden_dim=hidden_dim,
+                                learning_rate=learning_rate,
+                                prediction_target=prediction_target,
+                                epochs=epochs,
+                                batch_size=batch_size,
+                            )
+                        )
+
+    for dataset_key in dataset_keys:
+        for seed in seeds:
+            for model_dim in (64, 128):
+                for num_heads in (2, 4):
+                    for num_layers in (1, 2):
+                        for learning_rate in (3e-4, 1e-4, 3e-5):
+                            for prediction_target in ("delta", "absolute"):
+                                add(
+                                    _grid128_transformer_spec(
+                                        dataset_key,
+                                        seed=seed,
+                                        model_dim=model_dim,
+                                        num_heads=num_heads,
+                                        num_layers=num_layers,
+                                        learning_rate=learning_rate,
+                                        prediction_target=prediction_target,
+                                        epochs=epochs,
+                                        batch_size=batch_size,
+                                    )
+                                )
+
+    for dataset_key in dataset_keys:
+        for seed in seeds:
+            for architecture, num_layers in pixel_architectures:
+                for loss_suffix in ("residual_mse", "motion_weighted_huber"):
+                    for hidden_channels in (16, 32, 64):
+                        for learning_rate in (3e-4, 1e-4):
+                            for residual_scale in (0.05, 0.10):
+                                add(
+                                    _grid128_advanced_pixel_spec(
+                                        dataset_key,
+                                        architecture=architecture,
+                                        variant=f"{architecture}_{loss_suffix}",
+                                        seed=seed,
+                                        hidden_channels=hidden_channels,
+                                        num_layers=num_layers,
+                                        learning_rate=learning_rate,
+                                        residual_scale=residual_scale,
+                                        epochs=epochs,
+                                        batch_size=batch_size,
+                                    )
+                                )
+    return specs
+
+
 def _scalable_temporal_cnn_spec(
     dataset_key: str,
     *,
@@ -1105,10 +1273,124 @@ def _transformer_spec(
     return ExperimentSpec(exp_id, "latent_transformer", dataset_key, int(seed), params)
 
 
+def _grid128_array_baseline_spec(dataset_key: str, *, baseline_name: str) -> ExperimentSpec:
+    spec = _array_baseline_spec(dataset_key, baseline_name=baseline_name)
+    params = _with_grid128_metadata(spec.params, model_label="array baseline", hyperparameter_group="array_baseline")
+    exp_id = f"g128_baseline_{dataset_key}_{_slug_token(baseline_name)}"
+    return ExperimentSpec(exp_id, spec.kind, dataset_key, spec.seed, params)
+
+
+def _grid128_linear_latent_spec(dataset_key: str, *, prediction_target: str, batch_size: int) -> ExperimentSpec:
+    spec = _linear_latent_spec(dataset_key, prediction_target=prediction_target, batch_size=batch_size)
+    params = _with_grid128_metadata(spec.params, model_label="linear latent", hyperparameter_group="latent_baseline")
+    exp_id = f"g128_linear_{dataset_key}_{prediction_target}"
+    return ExperimentSpec(exp_id, spec.kind, dataset_key, spec.seed, params)
+
+
+def _grid128_gru_spec(dataset_key: str, *, seed: int, hidden_dim: int, learning_rate: float, prediction_target: str, epochs: int, batch_size: int) -> ExperimentSpec:
+    params = _with_grid128_metadata(
+        {
+            "hidden_dim": int(hidden_dim),
+            "learning_rate": float(learning_rate),
+            "prediction_target": prediction_target,
+            "epochs": int(epochs),
+            "batch_size": int(batch_size),
+        },
+        model_label="latent GRU",
+        hyperparameter_group="latent_recurrent",
+    )
+    exp_id = f"g128_gru_{dataset_key}_{prediction_target}_hd{hidden_dim}_lr{_slug_float(learning_rate)}_e{epochs}_s{seed}"
+    return ExperimentSpec(exp_id, "latent_gru", dataset_key, int(seed), params)
+
+
+def _grid128_transformer_spec(
+    dataset_key: str,
+    *,
+    seed: int,
+    model_dim: int,
+    num_heads: int,
+    num_layers: int,
+    learning_rate: float,
+    prediction_target: str,
+    epochs: int,
+    batch_size: int,
+) -> ExperimentSpec:
+    params = _with_grid128_metadata(
+        {
+            "model_dim": int(model_dim),
+            "num_heads": int(num_heads),
+            "num_layers": int(num_layers),
+            "dropout": 0.1,
+            "learning_rate": float(learning_rate),
+            "prediction_target": prediction_target,
+            "epochs": int(epochs),
+            "batch_size": int(batch_size),
+        },
+        model_label="latent Transformer",
+        hyperparameter_group="latent_attention",
+    )
+    exp_id = (
+        f"g128_xfmr_{dataset_key}_{prediction_target}_md{model_dim}_h{num_heads}_l{num_layers}"
+        f"_lr{_slug_float(learning_rate)}_e{epochs}_s{seed}"
+    )
+    return ExperimentSpec(exp_id, "latent_transformer", dataset_key, int(seed), params)
+
+
+def _grid128_advanced_pixel_spec(
+    dataset_key: str,
+    *,
+    architecture: str,
+    variant: str,
+    seed: int,
+    hidden_channels: int,
+    num_layers: int,
+    learning_rate: float,
+    residual_scale: float,
+    epochs: int,
+    batch_size: int,
+) -> ExperimentSpec:
+    loss_mode = _loss_mode_for_variant(variant)
+    params = _with_grid128_metadata(
+        {
+            "architecture": str(architecture),
+            "variant": str(variant),
+            "hidden_channels": int(hidden_channels),
+            "num_layers": int(num_layers),
+            "learning_rate": float(learning_rate),
+            "residual_scale": float(residual_scale),
+            "epochs": int(epochs),
+            "batch_size": int(batch_size),
+            "loss_mode": loss_mode,
+        },
+        model_label=str(architecture).replace("_", " "),
+        hyperparameter_group="pixel_sequence",
+    )
+    arch_slug = _slug_token(str(architecture).removesuffix("_pixel"))
+    loss_slug = _slug_token(str(variant).removeprefix(str(architecture) + "_"))
+    exp_id = f"g128_{arch_slug}_{dataset_key}_{loss_slug}_hc{hidden_channels}_l{num_layers}_lr{_slug_float(learning_rate)}_rs{_slug_float(residual_scale)}_e{epochs}_s{seed}"
+    return ExperimentSpec(exp_id, str(architecture), dataset_key, int(seed), params)
+
+
+def _with_grid128_metadata(params: Mapping[str, Any], *, model_label: str, hyperparameter_group: str) -> dict[str, Any]:
+    out = dict(params)
+    out.update(
+        {
+            "grid_size": 128,
+            "grid_pooling": "max_intensity",
+            "input_resolution": "128x128",
+            "model_label": str(model_label),
+            "hyperparameter_group": str(hyperparameter_group),
+        }
+    )
+    out["hyperparameter_summary"] = _hyperparameter_summary(out)
+    return out
+
+
 def run_one(*, spec: ExperimentSpec, out_dir: Path, device: str, datasets: Mapping[str, Mapping[str, Any]] | None = None) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "experiment_config.json").write_text(json.dumps(spec.to_json(), indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    cfg = (datasets or DEFAULT_DATASETS)[spec.dataset_key]
+    default_datasets = DEFAULT_GRID128_DATASETS if spec.dataset_key in DEFAULT_GRID128_DATASETS else DEFAULT_DATASETS
+    cfg = (datasets or default_datasets)[spec.dataset_key]
     dataset = _load_json(cfg["dataset"])
     autoencoder_run_cache: dict[str, Any] | None = None
 
@@ -1253,6 +1535,14 @@ def _write_array_baseline_metrics(*, dataset: Mapping[str, Any], out_dir: Path, 
     persistence_diff = persistence - targets
     zero_latent = np.zeros((int(windows.shape[0]), 1), dtype=np.float32)
     split_metrics = _prediction_split_metrics(diff, zero_latent, zero_latent, persistence_diff, video_ids, dataset.get("splits"))
+    structured_error_metrics = structured_prediction_error_metrics(
+        pred_diff=diff,
+        persistence_diff=persistence_diff,
+        targets=targets,
+        last_frames=windows[:, -1],
+        video_ids=video_ids,
+        splits=dataset.get("splits"),
+    )
     metrics = {
         "schema_version": 1,
         "objective": f"array_{baseline_name}_baseline",
@@ -1269,12 +1559,14 @@ def _write_array_baseline_metrics(*, dataset: Mapping[str, Any], out_dir: Path, 
             "count": int(windows.shape[0]),
         },
         "split_metrics": split_metrics,
+        "structured_error_metrics": structured_error_metrics,
         "training_window_count": 0,
         "evaluation_window_count": int(windows.shape[0]),
         "input_normalization": "finite_clipped_unit_interval",
         "decoded_output_normalization": "clipped_unit_interval",
     }
     _promote_split_metrics(metrics, split_metrics, ["decoded_prediction_mse", "decoded_prediction_mae", "persistence_mse", "window_count"])
+    promote_structured_error_metrics(metrics, structured_error_metrics)
     metrics["improvement_over_persistence_mse"] = float(metrics["persistence_mse"] - metrics["decoded_prediction_mse"])
     for split_name in ("train", "val", "test"):
         split = split_metrics.get(split_name, {})
@@ -1407,6 +1699,14 @@ def train_latent_transformer(
     latent_raw_diff = pred_z_raw_np - target_z_raw_np
     persistence_diff = windows[:, -1] - targets
     split_metrics = _prediction_split_metrics(diff, latent_diff, latent_raw_diff, persistence_diff, window_video_ids, dataset.get("splits"))
+    structured_error_metrics = structured_prediction_error_metrics(
+        pred_diff=diff,
+        persistence_diff=persistence_diff,
+        targets=targets,
+        last_frames=windows[:, -1],
+        video_ids=window_video_ids,
+        splits=dataset.get("splits"),
+    )
     metrics = {
         "schema_version": 1,
         "objective": "transformer_next_delta_code_mse" if prediction_target == "delta" else "transformer_next_code_mse",
@@ -1433,6 +1733,7 @@ def train_latent_transformer(
         "prediction_mae": float(np.mean(np.abs(diff))),
         "persistence_baseline": baseline["persistence"],
         "split_metrics": split_metrics,
+        "structured_error_metrics": structured_error_metrics,
     }
     _promote_split_metrics(
         metrics,
@@ -1448,6 +1749,7 @@ def train_latent_transformer(
             "window_count",
         ],
     )
+    promote_structured_error_metrics(metrics, structured_error_metrics)
     metrics["improvement_over_persistence_mse"] = float(metrics["persistence_baseline"]["mse"] - metrics["decoded_prediction_mse"])
     for split_name in ("train", "val", "test"):
         split = split_metrics.get(split_name, {})
@@ -1532,6 +1834,23 @@ def write_summary(out_dir: str | Path) -> None:
         "kind",
         "dataset_key",
         "seed",
+        "model_family",
+        "objective",
+        "loss_mode",
+        "prediction_target",
+        "hyperparameter_group",
+        "hyperparameter_summary",
+        "hidden_dim",
+        "hidden_channels",
+        "model_dim",
+        "num_heads",
+        "num_layers",
+        "learning_rate",
+        "residual_scale",
+        "epochs",
+        "batch_size",
+        "grid_size",
+        "grid_pooling",
         "val_decoded_prediction_mse",
         "val_persistence_mse",
         "val_improvement_over_persistence_mse",
@@ -1583,6 +1902,7 @@ def write_summary(out_dir: str | Path) -> None:
 def collect_metric_rows(out_dir: str | Path) -> list[dict[str, Any]]:
     out = Path(out_dir)
     rows: list[dict[str, Any]] = []
+    progress_by_experiment = _completed_progress_index(out)
     for config_path in sorted(out.glob("*/experiment_config.json")):
         config = _load_json(config_path)
         spec = ExperimentSpec(
@@ -1596,27 +1916,68 @@ def collect_metric_rows(out_dir: str | Path) -> list[dict[str, Any]]:
         if not metrics_path.exists():
             continue
         metrics = _load_json(metrics_path)
-        rows.append(
-            {
-                "experiment_id": spec.experiment_id,
-                "kind": spec.kind,
-                "dataset_key": spec.dataset_key,
-                "seed": spec.seed,
-                "params": dict(spec.params),
-                "objective": metrics.get("objective"),
-                "model_kind": metrics.get("model_kind"),
-                "model_family": metrics.get("model_family") or spec.kind,
-                "loss_mode": metrics.get("loss_mode") or spec.params.get("loss_mode"),
-                "val_decoded_prediction_mse": metrics.get("val_decoded_prediction_mse"),
-                "val_persistence_mse": metrics.get("val_persistence_mse"),
-                "val_improvement_over_persistence_mse": metrics.get("val_improvement_over_persistence_mse"),
-                "test_decoded_prediction_mse": metrics.get("test_decoded_prediction_mse"),
-                "test_persistence_mse": metrics.get("test_persistence_mse"),
-                "test_improvement_over_persistence_mse": metrics.get("test_improvement_over_persistence_mse"),
-                "metrics_path": str(metrics_path),
-            }
-        )
+        item = {
+            "experiment_id": spec.experiment_id,
+            "kind": spec.kind,
+            "dataset_key": spec.dataset_key,
+            "seed": spec.seed,
+            "params": dict(spec.params),
+            "objective": metrics.get("objective"),
+            "model_kind": metrics.get("model_kind"),
+            "model_family": metrics.get("model_family") or spec.kind,
+            "loss_mode": metrics.get("loss_mode") or spec.params.get("loss_mode"),
+            "prediction_target": metrics.get("prediction_target") or spec.params.get("prediction_target"),
+            "hyperparameter_group": spec.params.get("hyperparameter_group"),
+            "hyperparameter_summary": spec.params.get("hyperparameter_summary") or _hyperparameter_summary(spec.params),
+            "hidden_dim": _summary_param(spec.params, "hidden_dim"),
+            "hidden_channels": _summary_param(spec.params, "hidden_channels"),
+            "model_dim": _summary_param(spec.params, "model_dim"),
+            "num_heads": _summary_param(spec.params, "num_heads"),
+            "num_layers": _summary_param(spec.params, "num_layers"),
+            "learning_rate": _summary_param(spec.params, "learning_rate"),
+            "residual_scale": _summary_param(spec.params, "residual_scale"),
+            "epochs": _summary_param(spec.params, "epochs"),
+            "batch_size": _summary_param(spec.params, "batch_size"),
+            "grid_size": _summary_param(spec.params, "grid_size"),
+            "grid_pooling": _summary_param(spec.params, "grid_pooling"),
+            "val_decoded_prediction_mse": metrics.get("val_decoded_prediction_mse"),
+            "val_persistence_mse": metrics.get("val_persistence_mse"),
+            "val_improvement_over_persistence_mse": metrics.get("val_improvement_over_persistence_mse"),
+            "test_decoded_prediction_mse": metrics.get("test_decoded_prediction_mse"),
+            "test_persistence_mse": metrics.get("test_persistence_mse"),
+            "test_improvement_over_persistence_mse": metrics.get("test_improvement_over_persistence_mse"),
+            "metrics_path": str(metrics_path),
+        }
+        progress = progress_by_experiment.get(spec.experiment_id)
+        if progress:
+            item.update(
+                {
+                    "progress_index": progress.get("index"),
+                    "started_at": progress.get("started_at"),
+                    "finished_at": progress.get("finished_at"),
+                    "elapsed_seconds": progress.get("elapsed_seconds"),
+                }
+            )
+        rows.append(item)
     return rows
+
+
+def _completed_progress_index(out_dir: Path) -> dict[str, dict[str, Any]]:
+    progress_path = out_dir / "sweep_progress.jsonl"
+    if not progress_path.exists():
+        return {}
+    records: dict[str, dict[str, Any]] = {}
+    for line in progress_path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if record.get("status") != "completed" or not record.get("experiment_id"):
+            continue
+        records[str(record.get("experiment_id"))] = dict(record)
+    return records
 
 
 def _cleanup_torch() -> None:
@@ -1649,6 +2010,60 @@ def _load_json(path: str | Path) -> dict[str, Any]:
 def _append_jsonl(path: Path, record: Mapping[str, Any]) -> None:
     with path.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(record, sort_keys=True) + "\n")
+
+
+def _write_active_status(path: Path, record: Mapping[str, Any]) -> None:
+    payload = dict(record)
+    payload["updated_at"] = datetime.now(timezone.utc).isoformat()
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def _hyperparameter_summary(params: Mapping[str, Any]) -> str:
+    labels = (
+        ("model_label", "model"),
+        ("baseline_name", "baseline"),
+        ("architecture", "arch"),
+        ("loss_mode", "loss"),
+        ("prediction_target", "target"),
+        ("hidden_dim", "hd"),
+        ("hidden_channels", "hc"),
+        ("model_dim", "md"),
+        ("num_heads", "heads"),
+        ("num_layers", "layers"),
+        ("learning_rate", "lr"),
+        ("residual_scale", "rs"),
+        ("dropout", "dropout"),
+        ("epochs", "epochs"),
+        ("batch_size", "batch"),
+        ("grid_size", "grid"),
+        ("grid_pooling", "pool"),
+    )
+    parts: list[str] = []
+    for key, label in labels:
+        value = params.get(key)
+        if value is None or value == "":
+            continue
+        parts.append(f"{label}={_summary_value(value)}")
+    return ", ".join(parts)
+
+
+def _summary_param(params: Mapping[str, Any], key: str) -> Any:
+    value = params.get(key)
+    if isinstance(value, float):
+        return _summary_value(value)
+    return value
+
+
+def _summary_value(value: Any) -> str:
+    if isinstance(value, float):
+        if value == 0.0:
+            return "0"
+        if abs(value) < 0.001:
+            return f"{value:.0e}"
+        return f"{value:.4g}"
+    if isinstance(value, (list, tuple)):
+        return "[" + ",".join(_summary_value(v) for v in value) + "]"
+    return str(value)
 
 
 def _loss_mode_for_variant(variant: str) -> str:
@@ -1699,7 +2114,7 @@ def _parse_seeds(value: str) -> tuple[int, ...]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run a reproducible overnight grid dynamics sweep.")
     parser.add_argument("--out-dir", default="Outputs/GridModel/060126/overnight_sweep_v1")
-    parser.add_argument("--profile", choices=("smoke", "overnight", "upgrade", "advanced", "advanced_big", "advanced_overnight", "cropped32_restricted", "cropped32_large", "highres_temporal_cnn_scalable"), default="overnight")
+    parser.add_argument("--profile", choices=("smoke", "overnight", "upgrade", "advanced", "advanced_big", "advanced_overnight", "cropped32_restricted", "cropped32_large", "highres_temporal_cnn_scalable", "grid128_sequence_1day"), default="overnight")
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--seeds", type=_parse_seeds, default=(7, 13))
     parser.add_argument("--batch-size", type=int, default=64)
@@ -1707,6 +2122,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--max-runs", type=int, default=None)
     parser.add_argument("--time-limit-hours", type=float, default=None)
     parser.add_argument("--datasets-json", type=Path, default=None, help="Optional dataset mapping JSON with dataset, autoencoder_run, and window_frames per dataset key.")
+    parser.add_argument("--manifest", type=Path, default=None, help="Optional manifest JSON containing an experiments list, such as an adaptive Stage B next_sweep_manifest.json.")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--no-resume", action="store_true")
     parser.add_argument("--stop-on-error", action="store_true")
@@ -1721,6 +2137,7 @@ def main(argv: list[str] | None = None) -> int:
         max_runs=args.max_runs,
         time_limit_hours=args.time_limit_hours,
         datasets=_load_json(args.datasets_json) if args.datasets_json else None,
+        manifest_path=args.manifest,
         dry_run=args.dry_run,
         resume=not args.no_resume,
         stop_on_error=args.stop_on_error,

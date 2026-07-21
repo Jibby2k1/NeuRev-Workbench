@@ -2582,11 +2582,12 @@ def robust_positive_z_map(frame) -> Any:
     import numpy as np
 
     values = np.asarray(frame, dtype=np.float32)
-    center = median_float(values)
-    mad = float(np.median(np.abs(values - center)))
+    flat = values.ravel()
+    center = median_float(flat)
+    mad = float(np.median(np.abs(flat - center)))
     scale = 1.4826 * mad
     if scale < 1e-6:
-        scale = float(np.std(values))
+        scale = float(np.std(flat))
     if scale < 1e-6:
         scale = 1.0
     return np.maximum((values - center) / scale, 0.0).astype(np.float32, copy=False)

@@ -9,6 +9,7 @@ from typing import Any, Mapping, Sequence
 import numpy as np
 
 from neurobench.dynamics.baselines import evaluate_baselines_from_arrays
+from neurobench.dynamics.error_analysis import promote_structured_error_metrics, structured_prediction_error_metrics
 from neurobench.dynamics.models import GridAutoencoder
 from neurobench.dynamics.train import (
     _checkpoint_latent_stats,
@@ -93,6 +94,14 @@ def evaluate_linear_latent_baseline(
     latent_raw_diff = pred_z_raw.astype(np.float32) - (target_z * latent_std_np.reshape(1, -1) + latent_mean_np.reshape(1, -1)).astype(np.float32)
     persistence_diff = windows[:, -1] - targets
     split_metrics = _prediction_split_metrics(decoded_diff, latent_diff, latent_raw_diff, persistence_diff, window_video_ids, dataset.get("splits"))
+    structured_error_metrics = structured_prediction_error_metrics(
+        pred_diff=decoded_diff,
+        persistence_diff=persistence_diff,
+        targets=targets,
+        last_frames=windows[:, -1],
+        video_ids=window_video_ids,
+        splits=dataset.get("splits"),
+    )
     metrics = {
         "objective": "linear_delta_latent_baseline" if prediction_target == "delta" else "linear_absolute_latent_baseline",
         "prediction_target": prediction_target,
@@ -107,6 +116,7 @@ def evaluate_linear_latent_baseline(
         "decoded_prediction_mae": float(np.mean(np.abs(decoded_diff))),
         "persistence_baseline": baseline["persistence"],
         "split_metrics": split_metrics,
+        "structured_error_metrics": structured_error_metrics,
         "training_window_count": int(train_mask.sum()),
         "evaluation_window_count": n,
         "latent_code_normalization": "standard_score_per_dimension",
@@ -126,6 +136,7 @@ def evaluate_linear_latent_baseline(
             "window_count",
         ],
     )
+    promote_structured_error_metrics(metrics, structured_error_metrics)
     metrics["improvement_over_persistence_mse"] = float(metrics["persistence_baseline"]["mse"] - metrics["decoded_prediction_mse"])
     for split_name in ("train", "val", "test"):
         split = split_metrics.get(split_name, {})
@@ -136,7 +147,7 @@ def evaluate_linear_latent_baseline(
     weights_path = out / "linear_latent_weights.npz"
     np.savez(weights_path, weights=np.asarray(best["weights"], dtype=np.float32), best_alpha=np.asarray(float(best["alpha"]), dtype=np.float32))
     examples_path = out / "prediction_examples.json"
-    examples = _prediction_examples(windows, targets, pred_x, max_examples=3)
+    examples = _prediction_examples(windows, targets, pred_x, max_examples=3, video_ids=window_video_ids, splits=dataset.get("splits"), windowing=dataset.get("windowing"))
     examples_path.write_text(json.dumps({"schema_version": 1, "examples": examples}, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if pred_x.shape[0]:
         _write_grid_preview(out / "prediction_examples.png", targets[0, 0], pred_x[0, 0], np.abs(targets[0, 0] - pred_x[0, 0]))

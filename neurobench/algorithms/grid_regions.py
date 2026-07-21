@@ -110,23 +110,48 @@ def extract_grid_states(
     if tuple(arr.shape[1:]) != (int(grid_spec["coordinate_system"]["height"]), int(grid_spec["coordinate_system"]["width"])):
         raise ValueError("registered video shape does not match grid coordinate system")
     work = normalize_video(arr, normalization)
-    feature_names = list(features)
-    if feature_names != ["mean_intensity"]:
-        raise ValueError("MVP grid extraction currently supports only mean_intensity")
-    grid = np.zeros((arr.shape[0], rows, cols, 1), dtype=np.float32)
+    feature_names = [str(name) for name in features]
+    _validate_grid_features(feature_names)
+    grid = np.zeros((arr.shape[0], rows, cols, len(feature_names)), dtype=np.float32)
     region_ids: list[str] = []
     for region in grid_spec["regions"]:
         row = int(region["row"])
         col = int(region["col"])
         x0, y0, x1, y1 = [int(v) for v in region["bbox"]]
         if x1 <= x0 or y1 <= y0:
-            values = np.zeros(arr.shape[0], dtype=np.float32)
+            pooled = {name: np.zeros(arr.shape[0], dtype=np.float32) for name in feature_names}
         else:
-            values = work[:, y0:y1, x0:x1].mean(axis=(1, 2))
-        grid[:, row, col, 0] = values.astype(np.float32)
+            pooled = _pool_grid_features(work[:, y0:y1, x0:x1], feature_names)
+        for feature_index, name in enumerate(feature_names):
+            grid[:, row, col, feature_index] = pooled[name].astype(np.float32)
         region_ids.append(str(region["region_id"]))
-    flat = grid.reshape((arr.shape[0], rows * cols, 1)).astype(np.float32, copy=False)
+    flat = grid.reshape((arr.shape[0], rows * cols, len(feature_names))).astype(np.float32, copy=False)
     return {"grid_state": grid, "flat_state": flat, "region_ids": np.asarray(region_ids), "feature_names": np.asarray(feature_names), "normalization": normalization}
+
+
+def _validate_grid_features(features: Sequence[str]) -> None:
+    supported = {"mean_intensity", "max_intensity"}
+    names = [str(name) for name in features]
+    if not names:
+        raise ValueError("At least one grid feature is required.")
+    invalid = sorted(set(names) - supported)
+    if invalid:
+        raise ValueError(
+            f"Unsupported grid feature(s): {', '.join(invalid)}. "
+            f"Supported features: {', '.join(sorted(supported))}."
+        )
+
+
+def _pool_grid_features(cell: np.ndarray, features: Sequence[str]) -> dict[str, np.ndarray]:
+    pooled: dict[str, np.ndarray] = {}
+    for name in features:
+        if name == "mean_intensity":
+            pooled[name] = cell.mean(axis=(1, 2))
+        elif name == "max_intensity":
+            pooled[name] = cell.max(axis=(1, 2))
+        else:
+            raise ValueError(f"Unsupported grid feature {name!r}.")
+    return pooled
 
 
 def normalize_video(video: np.ndarray, normalization: str) -> np.ndarray:
@@ -225,9 +250,8 @@ def write_grid_state_artifacts(
     frame_count = int(meta["frames"])
     rows = int(grid_spec["rows"])
     cols = int(grid_spec["cols"])
-    feature_names = list(features)
-    if feature_names != ["mean_intensity"]:
-        raise ValueError("MVP grid extraction currently supports only mean_intensity")
+    feature_names = [str(name) for name in features]
+    _validate_grid_features(feature_names)
     if tuple(int(v) for v in meta["shape"][1:]) != (int(grid_spec["coordinate_system"]["height"]), int(grid_spec["coordinate_system"]["width"])):
         raise ValueError("registered video shape does not match grid coordinate system")
     grid_bytes = frame_count * rows * cols * len(feature_names) * np.dtype(np.float32).itemsize
@@ -270,7 +294,7 @@ def write_grid_state_artifacts(
         arrays["time_sec"] = (np.arange(frame_count, dtype=np.float32) / float(frame_rate_hz)).astype(np.float32)
     np.savez(npz_path, **arrays)
     region_features_path = out / "region_features.tsv"
-    write_region_features_tsv(region_features_path, flat_state, region_ids)
+    write_region_features_tsv(region_features_path, flat_state, region_ids, feature_names)
     preview_path = out / "grid_preview.png"
     trace_path = out / "grid_trace_summary.png"
     write_gray_preview(preview_path, grid_state.mean(axis=0)[:, :, 0] if frame_count else np.zeros((rows, cols), dtype=np.float32))
@@ -291,7 +315,11 @@ def write_grid_state_artifacts(
         "normalization": normalization,
         "nonfinite_fraction": float(np.mean(~np.isfinite(grid_state))) if grid_state.size else 0.0,
         "source_registered_video": str(registered_video_path),
-        "extras": {"chunk_size_frames": int(chunk_size_frames), "normalization_bounds": list(bounds) if bounds is not None else None},
+        "extras": {
+            "chunk_size_frames": int(chunk_size_frames),
+            "normalization_bounds": list(bounds) if bounds is not None else None,
+            "pooling": _feature_pooling_summary(feature_names),
+        },
     }
     summary_path = out / "region_summary.json"
     summary_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -320,9 +348,8 @@ def write_registered_grid_state_artifacts(
     frame_count = int(meta["frames"])
     rows = int(grid_spec["rows"])
     cols = int(grid_spec["cols"])
-    feature_names = list(features)
-    if feature_names != ["mean_intensity"]:
-        raise ValueError("MVP grid extraction currently supports only mean_intensity")
+    feature_names = [str(name) for name in features]
+    _validate_grid_features(feature_names)
     coord = grid_spec["coordinate_system"]
     output_shape = (int(coord["height"]), int(coord["width"]))
     grid_bytes = frame_count * rows * cols * len(feature_names) * np.dtype(np.float32).itemsize
@@ -379,7 +406,7 @@ def write_registered_grid_state_artifacts(
         arrays["time_sec"] = (np.arange(frame_count, dtype=np.float32) / float(frame_rate_hz)).astype(np.float32)
     np.savez(npz_path, **arrays)
     region_features_path = out / "region_features.tsv"
-    write_region_features_tsv(region_features_path, flat_state, region_ids)
+    write_region_features_tsv(region_features_path, flat_state, region_ids, feature_names)
     preview_path = out / "grid_preview.png"
     trace_path = out / "grid_trace_summary.png"
     write_gray_preview(preview_path, grid_state.mean(axis=0)[:, :, 0] if frame_count else np.zeros((rows, cols), dtype=np.float32))
@@ -406,6 +433,7 @@ def write_registered_grid_state_artifacts(
         "extras": {
             "chunk_size_frames": int(chunk_size_frames),
             "normalization_bounds": list(bounds) if bounds is not None else None,
+            "pooling": _feature_pooling_summary(feature_names),
             "device": resolved_device,
             "device_requested": str(device),
         },
@@ -413,6 +441,11 @@ def write_registered_grid_state_artifacts(
     summary_path = out / "region_summary.json"
     summary_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return summary
+
+
+def _feature_pooling_summary(features: Sequence[str]) -> dict[str, str]:
+    mapping = {"mean_intensity": "mean", "max_intensity": "max"}
+    return {str(name): mapping.get(str(name), "unknown") for name in features}
 
 
 def estimate_registered_video_normalization_bounds(
@@ -544,12 +577,24 @@ def _apply_registration_transform_torch(
         sampled = F.grid_sample(tensor, grid, mode="bilinear", padding_mode="zeros", align_corners=True)
         return sampled.squeeze(1).detach().cpu().numpy().astype(np.float32, copy=False)
 
-def write_region_features_tsv(path: Path, flat_state: np.ndarray, region_ids: Sequence[str]) -> None:
-    mean = flat_state[:, :, 0].mean(axis=0)
-    std = flat_state[:, :, 0].std(axis=0)
-    lines = ["region_id\tmean_intensity_mean\tmean_intensity_std\n"]
-    for rid, m, s in zip(region_ids, mean, std):
-        lines.append(f"{rid}\t{float(m):.8g}\t{float(s):.8g}\n")
+def write_region_features_tsv(path: Path, flat_state: np.ndarray, region_ids: Sequence[str], feature_names: Sequence[str] | None = None) -> None:
+    names = [str(name) for name in (feature_names or ["mean_intensity"])]
+    arr = np.asarray(flat_state, dtype=np.float32)
+    if arr.ndim != 3:
+        raise ValueError("flat_state must have shape [T, regions, features].")
+    if len(names) != int(arr.shape[2]):
+        names = [f"feature_{index}" for index in range(int(arr.shape[2]))]
+    headers = ["region_id"]
+    for name in names:
+        headers.extend([f"{name}_mean", f"{name}_std"])
+    lines = ["\t".join(headers) + "\n"]
+    means = arr.mean(axis=0) if arr.shape[0] else np.zeros((arr.shape[1], arr.shape[2]), dtype=np.float32)
+    stds = arr.std(axis=0) if arr.shape[0] else np.zeros((arr.shape[1], arr.shape[2]), dtype=np.float32)
+    for region_index, rid in enumerate(region_ids):
+        values = [str(rid)]
+        for feature_index in range(int(arr.shape[2])):
+            values.extend([f"{float(means[region_index, feature_index]):.8g}", f"{float(stds[region_index, feature_index]):.8g}"])
+        lines.append("\t".join(values) + "\n")
     path.write_text("".join(lines), encoding="utf-8")
 
 

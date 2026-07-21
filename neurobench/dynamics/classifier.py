@@ -46,6 +46,7 @@ def train_latent_classifier(
     metrics["majority_class_accuracy"] = float(max(Counter(y).values()) / max(len(y), 1))
     metrics["evaluation"] = evaluation["evaluation"]
     metrics["fold_count"] = int(len(evaluation["folds"]))
+    metrics["gate_summary"] = latent_classifier_gate_summary(metrics)
     pred_tsv = out / "per_video_predictions.tsv"
     lines = ["fold\tvideo_id\ttrue_label\tpredicted_label\tcorrect\n"]
     for fold_id, vid, truth, pred in zip(evaluation["fold_ids"], video_order, y, preds):
@@ -54,6 +55,7 @@ def train_latent_classifier(
     pred_tsv.write_text("".join(lines), encoding="utf-8")
     cm_png = out / "confusion_matrix.png"
     emb_png = out / "latent_embedding_2d.png"
+    report_md = out / "latent_classifier_report.md"
     write_matrix_preview(cm_png, cm.astype(np.float32))
     write_embedding_preview(emb_png, features, y_idx)
     run = {
@@ -68,6 +70,7 @@ def train_latent_classifier(
         "confusion_matrix_path": str(cm_png),
         "per_video_predictions_path": str(pred_tsv),
         "embedding_preview_path": str(emb_png),
+        "markdown_path": str(report_md),
         "warnings": evaluation["warnings"],
         "extras": {
             "classifier": classifier,
@@ -77,7 +80,140 @@ def train_latent_classifier(
         },
     }
     (out / "latent_classifier_run.json").write_text(json.dumps(run, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    report_md.write_text(render_latent_classifier_markdown(run), encoding="utf-8")
     return run
+
+
+def render_latent_classifier_markdown(run: Mapping[str, Any]) -> str:
+    metrics = run.get("metrics") if isinstance(run.get("metrics"), Mapping) else {}
+    extras = run.get("extras") if isinstance(run.get("extras"), Mapping) else {}
+    accuracy = _fmt(metrics.get("accuracy"))
+    chance = _fmt(metrics.get("chance_accuracy"))
+    majority = _fmt(metrics.get("majority_class_accuracy"))
+    gates = _latent_classifier_gates(metrics)
+    lines = [
+        "# Latent Classifier Smoke Test",
+        "",
+        f"Classifier: `{extras.get('classifier')}`",
+        f"Evaluation: `{metrics.get('evaluation')}`",
+        f"Videos: `{metrics.get('video_count')}`; folds: `{metrics.get('fold_count')}`",
+        f"Class counts: `{extras.get('class_counts')}`",
+        "",
+        "## Metrics",
+        "",
+        f"- Accuracy: `{accuracy}`",
+        f"- Balanced accuracy: `{_fmt(metrics.get('balanced_accuracy'))}`",
+        f"- Macro F1: `{_fmt(metrics.get('macro_f1'))}`",
+        f"- Chance accuracy: `{chance}`",
+        f"- Majority-class accuracy: `{majority}`",
+        "",
+        "## Gate Readout",
+        "",
+    ]
+    for item in gates:
+        lines.append(f"- {item}")
+    lines.extend(["", "## Confusion Matrix", "", _latent_classifier_confusion_markdown(run), "", "## Per-Video Predictions", ""])
+    lines.extend(_latent_classifier_prediction_markdown(run.get("per_video_predictions_path")))
+    lines.extend(["", "## Artifacts", "", f"- Predictions: `{run.get('per_video_predictions_path')}`", f"- Confusion matrix PNG: `{run.get('confusion_matrix_path')}`", f"- Embedding PNG: `{run.get('embedding_preview_path')}`"])
+    warnings = run.get("warnings") or []
+    if warnings:
+        lines.extend(["", "## Warnings", ""])
+        for item in warnings:
+            lines.append(f"- {item}")
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def _latent_classifier_confusion_markdown(run: Mapping[str, Any]) -> str:
+    matrix = run.get("confusion_matrix") or []
+    lines = ["| True \\ Pred | " + " | ".join(LABELS) + " |", "|---|" + "---:|" * len(LABELS)]
+    for label, row in zip(LABELS, matrix):
+        values = row if isinstance(row, Sequence) and not isinstance(row, (str, bytes)) else []
+        padded = [int(values[i]) if i < len(values) else 0 for i in range(len(LABELS))]
+        lines.append(f"| {label} | " + " | ".join(str(v) for v in padded) + " |")
+    return "\n".join(lines)
+
+
+def _latent_classifier_prediction_markdown(path_value: Any, *, limit: int = 40) -> list[str]:
+    if not path_value:
+        return ["No per-video prediction TSV was recorded."]
+    path = Path(str(path_value))
+    if not path.is_file():
+        return [f"Prediction TSV is missing: `{path}`"]
+    rows = [line.split("\t") for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    if len(rows) <= 1:
+        return ["No prediction rows were recorded."]
+    lines = ["| Fold | Video | True | Predicted | Correct |", "|---|---|---|---|---:|"]
+    for row in rows[1 : limit + 1]:
+        padded = row + [""] * max(0, 5 - len(row))
+        lines.append(f"| `{padded[0]}` | `{padded[1]}` | {padded[2]} | {padded[3]} | {padded[4]} |")
+    if len(rows) - 1 > limit:
+        lines.append(f"| ... | ... | ... | ... | {len(rows) - 1 - limit} more |")
+    return lines
+
+
+def latent_classifier_gate_summary(metrics: Mapping[str, Any]) -> dict[str, Any]:
+    accuracy = _num(metrics.get("accuracy"))
+    chance = _num(metrics.get("chance_accuracy"))
+    majority = _num(metrics.get("majority_class_accuracy"))
+    chance_delta = (accuracy - chance) if accuracy is not None and chance is not None else None
+    majority_delta = (accuracy - majority) if accuracy is not None and majority is not None else None
+    if accuracy is None:
+        interpretation = "unavailable"
+    elif chance is not None and accuracy <= chance:
+        interpretation = "does_not_support_label_state_claim"
+    elif majority is not None and accuracy <= majority:
+        interpretation = "weak_chance_only_signal"
+    else:
+        interpretation = "candidate_signal_requires_forecast_validation"
+    return {
+        "accuracy": accuracy,
+        "chance_accuracy": chance,
+        "majority_class_accuracy": majority,
+        "accuracy_minus_chance": chance_delta,
+        "accuracy_minus_majority": majority_delta,
+        "passes_chance_gate": bool(chance_delta is not None and chance_delta > 0),
+        "passes_majority_gate": bool(majority_delta is not None and majority_delta > 0),
+        "interpretation": interpretation,
+    }
+
+
+def _latent_classifier_gates(metrics: Mapping[str, Any]) -> list[str]:
+    summary = metrics.get("gate_summary") if isinstance(metrics.get("gate_summary"), Mapping) else latent_classifier_gate_summary(metrics)
+    accuracy = _num(summary.get("accuracy"))
+    chance_delta = _num(summary.get("accuracy_minus_chance"))
+    majority_delta = _num(summary.get("accuracy_minus_majority"))
+    if accuracy is None:
+        return ["Accuracy was unavailable; the smoke test is not interpretable."]
+    gates = []
+    if chance_delta is not None:
+        gates.append(f"Chance gate: accuracy - chance = `{chance_delta:.4g}`; {'passes weakly' if chance_delta > 0 else 'does not pass'}.")
+    if majority_delta is not None:
+        gates.append(f"Majority gate: accuracy - majority = `{majority_delta:.4g}`; {'passes' if majority_delta > 0 else 'does not pass'}.")
+    interpretation = summary.get("interpretation")
+    if interpretation == "weak_chance_only_signal":
+        gates.append("Interpretation: this is not strong evidence of behavior-state separation because it does not beat the majority baseline.")
+    elif interpretation == "does_not_support_label_state_claim":
+        gates.append("Interpretation: this does not support a supervised latent-state claim.")
+    elif interpretation == "candidate_signal_requires_forecast_validation":
+        gates.append("Interpretation: inspect per-video predictions and forecasting metrics before treating this as useful latent supervision.")
+    else:
+        gates.append("Interpretation: this smoke test is not interpretable without stronger metrics.")
+    return gates
+
+
+def _num(value: Any) -> float | None:
+    if value is None or value == "":
+        return None
+    try:
+        out = float(value)
+    except (TypeError, ValueError):
+        return None
+    return out if out == out else None
+
+
+def _fmt(value: Any) -> str:
+    num = _num(value)
+    return "n/a" if num is None else f"{num:.4g}"
 
 
 def video_level_summaries(codes: np.ndarray, video_ids: np.ndarray, labels: np.ndarray) -> tuple[np.ndarray, list[str], list[str]]:
@@ -249,7 +385,8 @@ def _fit_predict_split(x_train: np.ndarray, y_train: np.ndarray, x_test: np.ndar
         probs[:, classes[0]] = 1.0
         warnings.append("classifier fold had one training class; constant-class fallback used")
         return pred, probs, warnings
-    if classifier == "logistic_regression":
+    classifier_name = str(classifier or "logistic_regression")
+    if classifier_name == "logistic_regression":
         try:
             from sklearn.linear_model import LogisticRegression
 
@@ -262,9 +399,12 @@ def _fit_predict_split(x_train: np.ndarray, y_train: np.ndarray, x_test: np.ndar
                 probs[:, label_index] = raw_probs[:, col]
             return pred, probs, warnings
         except Exception as exc:
-            warnings.append(f"logistic regression fallback used: {exc}")
-    elif classifier != "nearest_centroid":
-        warnings.append(f"unsupported classifier '{classifier}'; nearest-centroid fallback used")
+            warnings.append(f"logistic regression unavailable; ridge linear fallback used: {exc}")
+            return _fit_predict_ridge_linear(x_train, y_train, x_test, classes=classes, alpha=1e-3, warnings=warnings)
+    if classifier_name in {"ridge_linear", "linear_ridge", "least_squares"}:
+        return _fit_predict_ridge_linear(x_train, y_train, x_test, classes=classes, alpha=1e-3, warnings=warnings)
+    if classifier_name != "nearest_centroid":
+        warnings.append(f"unsupported classifier '{classifier_name}'; nearest-centroid fallback used")
     centroids = []
     for class_index in classes:
         centroids.append(x_train[y_train == class_index].mean(axis=0))
@@ -275,6 +415,44 @@ def _fit_predict_split(x_train: np.ndarray, y_train: np.ndarray, x_test: np.ndar
     probs = np.zeros((x_test.shape[0], len(LABELS)), dtype=np.float32)
     probs[np.arange(x_test.shape[0]), pred] = 1.0
     return pred.astype(int), probs, warnings
+
+
+def _fit_predict_ridge_linear(
+    x_train: np.ndarray,
+    y_train: np.ndarray,
+    x_test: np.ndarray,
+    *,
+    classes: Sequence[int],
+    alpha: float,
+    warnings: list[str],
+) -> tuple[np.ndarray, np.ndarray, list[str]]:
+    x_train = np.asarray(x_train, dtype=np.float64)
+    x_test = np.asarray(x_test, dtype=np.float64)
+    mean = x_train.mean(axis=0, keepdims=True)
+    scale = x_train.std(axis=0, keepdims=True)
+    scale[scale < 1e-6] = 1.0
+    train = (x_train - mean) / scale
+    test = (x_test - mean) / scale
+    train_aug = np.concatenate([train, np.ones((train.shape[0], 1), dtype=np.float64)], axis=1)
+    test_aug = np.concatenate([test, np.ones((test.shape[0], 1), dtype=np.float64)], axis=1)
+    targets = np.zeros((train_aug.shape[0], len(LABELS)), dtype=np.float64)
+    targets[np.arange(train_aug.shape[0]), y_train.astype(int)] = 1.0
+    penalty = np.eye(train_aug.shape[1], dtype=np.float64) * float(alpha)
+    penalty[-1, -1] = 0.0
+    try:
+        weights = np.linalg.solve(train_aug.T @ train_aug + penalty, train_aug.T @ targets)
+    except np.linalg.LinAlgError:
+        weights = np.linalg.pinv(train_aug.T @ train_aug + penalty) @ train_aug.T @ targets
+        warnings.append("ridge linear classifier used pseudoinverse fallback")
+    scores = test_aug @ weights
+    unavailable = sorted(set(range(len(LABELS))) - set(int(v) for v in classes))
+    if unavailable:
+        scores[:, unavailable] = -1e9
+    pred = np.argmax(scores, axis=1).astype(int)
+    shifted = scores - scores.max(axis=1, keepdims=True)
+    exp = np.exp(np.clip(shifted, -60.0, 60.0))
+    probs = exp / np.maximum(exp.sum(axis=1, keepdims=True), 1e-12)
+    return pred.astype(int), probs.astype(np.float32), warnings
 
 
 def confusion_matrix(y_true: np.ndarray, y_pred: np.ndarray, n: int) -> np.ndarray:

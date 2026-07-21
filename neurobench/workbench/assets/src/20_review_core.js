@@ -493,6 +493,8 @@ function applySettingsToControls() {
   if(roiEditMode) roiEditMode.value = setting('roiEditMode') || 'off';
   const workflowPreset = document.getElementById('reviewWorkflowPreset');
   if(workflowPreset) workflowPreset.value = setting('reviewWorkflowPreset') || 'custom';
+  const showAllSweeps = document.getElementById('showAllSweeps');
+  if(showAllSweeps) showAllSweeps.checked = Boolean(setting('showAllSweeps'));
   updateOverlayViewButtons();
   renderBookmarkControls();
   renderSnapshotControls();
@@ -548,14 +550,51 @@ function populateEvidenceSelect(){
 }
 
 function applyDisplaySettings() {
-  img.style.width = `${data.video.width * Number(setting('zoom'))}px`;
+  const zoom = Math.max(0.05, Number(setting('zoom')) || 1);
+  const videoWidth = Math.max(1, Number(data.video?.width) || img.naturalWidth || 1);
+  const videoHeight = Math.max(1, Number(data.video?.height) || img.naturalHeight || 1);
+  applyReviewViewerMode();
+  viewerWrap.style.width = `${videoWidth * zoom}px`;
+  viewerWrap.style.height = `${videoHeight * zoom}px`;
+  viewerWrap.style.aspectRatio = `${videoWidth} / ${videoHeight}`;
+  img.style.width = '100%';
+  img.style.height = '100%';
   img.style.filter = `brightness(${setting('brightness')}) contrast(${setting('contrast')})`;
-  evidenceImg.style.width = img.style.width;
+  if(reviewRawWrap) {
+    reviewRawWrap.style.width = `${videoWidth * zoom}px`;
+    reviewRawWrap.style.height = `${videoHeight * zoom}px`;
+    reviewRawWrap.style.aspectRatio = `${videoWidth} / ${videoHeight}`;
+  }
+  if(reviewRawImg) {
+    reviewRawImg.style.width = '100%';
+    reviewRawImg.style.height = '100%';
+    reviewRawImg.style.filter = img.style.filter;
+  }
+  evidenceImg.style.width = '100%';
+  evidenceImg.style.height = '100%';
   const evidenceMap = (data.discovery?.evidenceMaps || []).find(m => m.id === setting('evidenceMap'));
   evidenceImg.src = evidenceMap ? evidenceMap.file : '';
   evidenceImg.style.opacity = setting('showEvidence') ? '0.58' : '0';
   ctx.globalAlpha = Number(setting('overlayOpacity'));
   resizeOverlay();
+}
+
+function reviewSideBySideEnabled(){ return Boolean(setting('reviewSideBySide')); }
+function applyReviewViewerMode(){
+  const enabled = reviewSideBySideEnabled();
+  reviewRawPane?.classList.toggle('hidden', !enabled);
+  reviewViewerLayout?.classList.toggle('sideBySide', enabled);
+  const button = document.getElementById('reviewSideBySideBtn');
+  if(button) {
+    button.textContent = enabled ? 'Single view' : 'Raw + outline';
+    button.classList.toggle('active', enabled);
+    button.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+  }
+}
+function toggleReviewSideBySide(){
+  setSetting('reviewSideBySide', !reviewSideBySideEnabled());
+  applyDisplaySettings();
+  queueSave();
 }
 
 function refreshReviewAfterDataChange(){
@@ -790,9 +829,9 @@ async function refreshArchitectureRuns(){
 }
 
 function resizeOverlay(){
-  const rect = img.getBoundingClientRect();
-  overlay.width = data.video.width;
-  overlay.height = data.video.height;
+  const rect = viewerWrap.getBoundingClientRect();
+  overlay.width = Math.max(1, Number(data.video?.width) || img.naturalWidth || 1);
+  overlay.height = Math.max(1, Number(data.video?.height) || img.naturalHeight || 1);
   overlay.style.width = rect.width + 'px';
   overlay.style.height = rect.height + 'px';
   drawOverlay();
@@ -2034,6 +2073,7 @@ function setFrame(frame){
   slider.value = currentFrame;
   frameLabel.textContent = frameLabelText(currentFrame);
   img.src = framePath(currentFrame);
+  if(reviewRawImg) reviewRawImg.src = img.src;
   const runOverlayText = activeRunReviewRois() ? ` | overlay: ${runLabel(activeRun())}` : '';
   statusEl.textContent = `Frame ${frameLabelText(currentFrame)} / ${data.video.frames} (${formatSeconds(data.video.frames / Math.max(1, datasetFrameRateHz()))} total)${runOverlayText}`;
   const roi = selectedRoi();
@@ -3479,7 +3519,8 @@ function togglePlay(){
   else clearInterval(timer);
 }
 function fitWidth(){
-  const width = Math.max(1, viewerScroll.clientWidth - 34);
+  const paneCount = reviewSideBySideEnabled() ? 2 : 1;
+  const width = Math.max(1, (viewerScroll.clientWidth - 34 - (paneCount - 1) * 14) / paneCount);
   setSetting('zoom', Math.max(0.5, width / data.video.width));
   applySettingsToControls();
   applyDisplaySettings();

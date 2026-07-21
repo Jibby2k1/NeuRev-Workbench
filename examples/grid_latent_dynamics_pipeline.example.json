@@ -1,17 +1,18 @@
 {
   "artifacts": {
-    "dynamics_dataset": "Outputs/GridModel/dynamics/dynamics_dataset.json",
-    "grid_states": "Outputs/GridModel/grid_states"
+    "dynamics_dataset": "Outputs/GridModel/060126_crop512_grid128_max_v1/datasets/w8_s1_h2/dynamics_dataset.json",
+    "grid_states": "Outputs/GridModel/060126_crop512_grid128_max_v1/grid_states"
   },
-  "dataset_id": "zebrafish_grid32_v1",
+  "dataset_id": "zebrafish_grid128_v1",
   "pipeline": [
     {
       "id": "dataset",
       "params": {
-        "prediction_horizon_frames": 1,
+        "prediction_horizon_frames": 2,
         "split_method": "stratified_by_label",
         "split_unit": "video",
-        "window_frames": 8
+        "window_frames": 8,
+        "temporal_stride_frames": 1
       },
       "stage_id": "grid_dynamics_dataset_build"
     },
@@ -30,7 +31,8 @@
         "batch_size": 8,
         "epochs": 2,
         "hidden_dim": 64,
-        "window_frames": 8
+        "window_frames": 8,
+        "prediction_target": "delta"
       },
       "stage_id": "latent_rnn_train"
     },
@@ -43,6 +45,6 @@
       "stage_id": "latent_classifier_train"
     }
   ],
-  "run_id": "grid32_latent_dynamics_smoke",
+  "run_id": "grid128_latent_dynamics_smoke_h2",
   "schema_version": 1
 }

@@ -18,10 +18,10 @@ from neurobench.algorithms.grid_regions import write_grid_spec_artifacts, write_
 from neurobench.dynamics.datasets import build_dynamics_dataset
 from neurobench.dynamics.scalable import write_architecture_catalog
 
+FRAME_RATE_HZ = 50.0
 DATASET_SPECS = (
-    {"key": "w8_s1_h25", "window_frames": 8, "prediction_horizon_frames": 25, "temporal_stride_frames": 1},
-    {"key": "w8_s1_h50", "window_frames": 8, "prediction_horizon_frames": 50, "temporal_stride_frames": 1},
-    {"key": "w8_s3_h10", "window_frames": 8, "prediction_horizon_frames": 10, "temporal_stride_frames": 3},
+    {"key": "w8_s1_h2", "window_frames": 8, "prediction_horizon_frames": 2, "temporal_stride_frames": 1},
+    {"key": "w8_s1_h5", "window_frames": 8, "prediction_horizon_frames": 5, "temporal_stride_frames": 1},
 )
 
 
@@ -96,6 +96,9 @@ def prepare_crop512_grid_run(
     registration_summary = _load_json(source / "registration" / "registration_summary.json")
     manifest = dict(manifest)
     manifest["dataset_id"] = f"fish_060126_crop512_grid{grid_size}"
+    manifest.setdefault("frame_rate_hz", FRAME_RATE_HZ)
+    for video in manifest.get("videos", []) or []:
+        video.setdefault("frame_rate_hz", manifest["frame_rate_hz"])
 
     _write_json(manifest_dir / "video_manifest.json", manifest)
     _copy_if_exists(source / "manifest" / "label_counts.json", manifest_dir / "label_counts.json")
@@ -121,7 +124,7 @@ def prepare_crop512_grid_run(
                 out_dir=grid_states_dir,
                 video_id=video_id,
                 label=str(video.get("label") or ""),
-                features=("mean_intensity",),
+                features=("max_intensity",),
                 normalization="per_video_robust_percentile",
                 frame_rate_hz=video.get("frame_rate_hz"),
                 chunk_size_frames=chunk_size_frames,
@@ -133,6 +136,8 @@ def prepare_crop512_grid_run(
         "schema_version": 1,
         "grid_states_dir": str(grid_states_dir),
         "grid_size": int(grid_size),
+        "frame_rate_hz": float(manifest.get("frame_rate_hz", FRAME_RATE_HZ)),
+        "grid_features": ["max_intensity"],
         "video_count": len(grid_summaries),
         "source_registration_summary_path": str(source / "registration" / "registration_summary.json"),
         "videos": grid_summaries,
@@ -159,6 +164,11 @@ def prepare_crop512_grid_run(
             "dataset": str(datasets_dir / key / "dynamics_dataset.json"),
             "window_frames": int(dataset.get("windowing", {}).get("window_frames", 8)),
             "grid_size": int(grid_size),
+            "frame_rate_hz": float(manifest.get("frame_rate_hz", FRAME_RATE_HZ)),
+            "grid_features": ["max_intensity"],
+            "prediction_horizon_frames": int(dataset.get("windowing", {}).get("prediction_horizon_frames", 1)),
+            "prediction_horizon_sec": dataset.get("windowing", {}).get("prediction_horizon_sec"),
+            "rnn_prediction_target": "delta",
         }
     mapping_path = out / f"datasets_crop512_grid{grid_size}_mapping.json"
     _write_json(mapping_path, mapping)
@@ -171,6 +181,8 @@ def prepare_crop512_grid_run(
         "source_summary": source_summary,
         "source_root": str(source),
         "grid_size": int(grid_size),
+        "frame_rate_hz": float(manifest.get("frame_rate_hz", FRAME_RATE_HZ)),
+        "grid_features": ["max_intensity"],
         "video_manifest_path": str(manifest_dir / "video_manifest.json"),
         "template_spec_path": str(template_dir / "template_spec.json"),
         "registration_summary_path": str(registration_dir / "registration_summary.json"),

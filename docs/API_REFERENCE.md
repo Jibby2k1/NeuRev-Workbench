@@ -79,6 +79,59 @@ Command-line entrypoints for Neurobench.
 - Signature: `neurobench.cli.main`
 - Summary: Minimal argparse command surface for Neurobench.
 
+## `neurobench.dashboards`
+
+Dashboard discovery and manifest helpers.
+
+### `DASHBOARD_MANIFEST_NAME`
+
+- Kind: `object`
+- Source: `neurobench.dashboards`
+- Signature: `DASHBOARD_MANIFEST_NAME`
+- Summary: Exported by __all__.
+
+### `dashboard_manifest_path`
+
+- Kind: `function`
+- Source: `neurobench.dashboards.manifest`
+- Signature: `dashboard_manifest_path(root: str | Path) -> Path`
+- Summary: Return the standard dashboard manifest path for an output root.
+
+### `DashboardManifestError`
+
+- Kind: `class`
+- Source: `neurobench.dashboards.manifest`
+- Signature: `class DashboardManifestError`
+- Summary: Raised when a dashboard manifest is missing required structure.
+
+### `discover_dashboard_manifests`
+
+- Kind: `function`
+- Source: `neurobench.dashboards.manifest`
+- Signature: `discover_dashboard_manifests(root: str | Path, *, max_depth: int=4) -> list[Path]`
+- Summary: Find dashboard manifests under `root`, bounded by directory depth.
+
+### `load_dashboard_manifest`
+
+- Kind: `function`
+- Source: `neurobench.dashboards.manifest`
+- Signature: `load_dashboard_manifest(root_or_manifest: str | Path) -> dict[str, Any]`
+- Summary: Load and validate a dashboard manifest from a root or explicit file path.
+
+### `summarize_dashboard_manifest`
+
+- Kind: `function`
+- Source: `neurobench.dashboards.manifest`
+- Signature: `summarize_dashboard_manifest(payload: Mapping[str, Any]) -> dict[str, Any]`
+- Summary: Return a compact, display-oriented summary for an inspected manifest.
+
+### `write_dashboard_manifest`
+
+- Kind: `function`
+- Source: `neurobench.dashboards.manifest`
+- Signature: `write_dashboard_manifest(root: str | Path, payload: Mapping[str, Any]) -> Path`
+- Summary: Atomically write `dashboard_manifest.json` under `root`.
+
 ## `neurobench.data`
 
 Data helpers for Neurobench.
@@ -101,7 +154,7 @@ Data helpers for Neurobench.
 
 - Kind: `function`
 - Source: `neurobench.data.video_manifest`
-- Signature: `build_video_manifest(*, input_dir: str | Path | None=None, files: Iterable[str | Path] | None=None, dataset_id: str='zebrafish_left_right_neutral_v1', filename_regex: str=DEFAULT_VIDEO_PATTERN, labels: Iterable[str]=DEFAULT_LABELS, frame_rate_hz: float | None=None, strict: bool=False) -> dict[str, Any]`
+- Signature: `build_video_manifest(*, input_dir: str | Path | None=None, files: Iterable[str | Path] | None=None, dataset_id: str='zebrafish_left_right_neutral_v1', filename_regex: str=DEFAULT_VIDEO_PATTERN, labels: Iterable[str]=DEFAULT_LABELS, label_aliases: Mapping[str, str] | None=None, frame_rate_hz: float | None=None, strict: bool=False) -> dict[str, Any]`
 - Summary: Build a metadata manifest from filename-compatible videos.
 
 ### `checksum_file`
@@ -164,14 +217,14 @@ Data helpers for Neurobench.
 
 - Kind: `function`
 - Source: `neurobench.data.video`
-- Signature: `load_video_array(path: str | Path, *, mmap: bool=False) -> Any`
+- Signature: `load_video_array(path: str | Path, *, mmap: bool=False, max_eager_bytes: int | None=None) -> Any`
 - Summary: Return a frame-first ``[T, H, W]`` video array from ``.npy`` or TIFF.
 
 ### `open_video`
 
 - Kind: `function`
 - Source: `neurobench.data.video`
-- Signature: `open_video(path: str | Path, *, mmap: bool=True) -> VideoStore`
+- Signature: `open_video(path: str | Path, *, mmap: bool=True, max_eager_bytes: int | None=None) -> VideoStore`
 - Summary: Open a supported video path as a ``VideoStore``.
 
 ### `PUBLIC_DATASET_TEMPLATES`
@@ -282,6 +335,143 @@ Discovery, ranking, and triage helpers for candidate neurons.
 - Source: `neurobench.discovery.ranking`
 - Signature: `validate_candidate_feature_table(rows: Sequence[Mapping[str, Any]]) -> None`
 - Summary: Validate the public candidate feature row contract.
+
+## `neurobench.experiments.soma_excitation`
+
+Memory-safe transfer experiments for dark-soma excitation zones.
+
+### `available_ram_bytes`
+
+- Kind: `function`
+- Source: `neurobench.experiments.soma_excitation.preflight`
+- Signature: `available_ram_bytes() -> tuple[int | None, str]`
+- Summary: Return available RAM without importing optional process packages.
+
+### `build_soma_excitation_preflight`
+
+- Kind: `function`
+- Source: `neurobench.experiments.soma_excitation.preflight`
+- Signature: `build_soma_excitation_preflight(config: SomaExcitationConfig | Mapping[str, Any] | str | Path, *, allow_existing_output: bool=False) -> dict[str, Any]`
+- Summary: Return a side-effect-free plan; reject existing outputs unless explicitly allowed.
+
+### `CFARConfig`
+
+- Kind: `class`
+- Source: `neurobench.experiments.soma_excitation.config`
+- Signature: `class CFARConfig`
+- Summary: CFAR guard/training geometry and threshold controls.
+
+### `ConfigValidationError`
+
+- Kind: `class`
+- Source: `neurobench.experiments.soma_excitation.config`
+- Signature: `class ConfigValidationError`
+- Summary: An unsafe or internally invalid experiment manifest.
+
+### `DarkSomaZone`
+
+- Kind: `class`
+- Source: `neurobench.experiments.soma_excitation.zones`
+- Signature: `class DarkSomaZone`
+- Summary: Metadata for one provisional dark-core anatomical anchor.
+
+### `DarkSomaZoneConfig`
+
+- Kind: `class`
+- Source: `neurobench.experiments.soma_excitation.zones`
+- Signature: `class DarkSomaZoneConfig`
+- Summary: Parameters for quiet-baseline dark-core detection and zone geometry.
+
+### `DarkSomaZones`
+
+- Kind: `class`
+- Source: `neurobench.experiments.soma_excitation.zones`
+- Signature: `class DarkSomaZones`
+- Summary: Detected anatomy and union masks for downstream event association.
+
+### `DarkZoneConfig`
+
+- Kind: `class`
+- Source: `neurobench.experiments.soma_excitation.config`
+- Signature: `class DarkZoneConfig`
+- Summary: JSON-facing parameters for dark soma cores and excitation annuli.
+
+### `detect_dark_soma_zones`
+
+- Kind: `function`
+- Source: `neurobench.experiments.soma_excitation.zones`
+- Signature: `detect_dark_soma_zones(baseline: np.ndarray, config: DarkSomaZoneConfig | None=None) -> DarkSomaZones`
+- Summary: Detect dark-core candidates in one quiet-baseline projection.
+
+### `DynamicsCheckpoint`
+
+- Kind: `class`
+- Source: `neurobench.experiments.soma_excitation.config`
+- Signature: `class DynamicsCheckpoint`
+- Summary: One existing dynamics checkpoint evaluated sequentially.
+
+### `ExperimentConfig`
+
+- Kind: `object`
+- Source: `neurobench.experiments.soma_excitation`
+- Signature: `ExperimentConfig`
+- Summary: Exported by __all__.
+
+### `load_soma_excitation_config`
+
+- Kind: `function`
+- Source: `neurobench.experiments.soma_excitation.config`
+- Signature: `load_soma_excitation_config(path: str | Path) -> SomaExcitationConfig`
+- Summary: Load and validate a soma-excitation JSON manifest.
+
+### `preflight_soma_excitation`
+
+- Kind: `object`
+- Source: `neurobench.experiments.soma_excitation`
+- Signature: `preflight_soma_excitation`
+- Summary: Exported by __all__.
+
+### `PreflightError`
+
+- Kind: `class`
+- Source: `neurobench.experiments.soma_excitation.preflight`
+- Signature: `class PreflightError`
+- Summary: Raised when an experiment cannot safely start.
+
+### `ResourceBudgetError`
+
+- Kind: `class`
+- Source: `neurobench.experiments.soma_excitation.preflight`
+- Signature: `class ResourceBudgetError`
+- Summary: Raised when RAM, output, or available-disk limits cannot be met.
+
+### `ResourceLimits`
+
+- Kind: `class`
+- Source: `neurobench.experiments.soma_excitation.config`
+- Signature: `class ResourceLimits`
+- Summary: Hard limits chosen to keep the workstation responsive.
+
+### `run_preflight`
+
+- Kind: `object`
+- Source: `neurobench.experiments.soma_excitation`
+- Signature: `run_preflight`
+- Summary: Exported by __all__.
+
+### `SomaExcitationConfig`
+
+- Kind: `class`
+- Source: `neurobench.experiments.soma_excitation.config`
+- Signature: `class SomaExcitationConfig`
+- Summary: JSON config: UI frames are one-based; array bounds are zero-based/half-open.
+
+### `SomaExcitationExperimentConfig`
+
+- Kind: `object`
+- Source: `neurobench.experiments.soma_excitation`
+- Signature: `SomaExcitationExperimentConfig`
+- Summary: Exported by __all__.
 
 ## `neurobench.exports`
 

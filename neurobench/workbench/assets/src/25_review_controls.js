@@ -2,6 +2,7 @@ function initControls(){
   slider.max = data.video.frames;
   slider.oninput = () => setFrame(Number(slider.value));
   document.getElementById('playBtn').onclick = togglePlay;
+  document.getElementById('reviewSideBySideBtn').onclick = toggleReviewSideBySide;
   document.getElementById('fitBtn').onclick = fitWidth;
   document.getElementById('fitHeightBtn').onclick = fitHeight;
   document.getElementById('fullscreenBtn').onclick = () => viewerScroll.requestFullscreen?.();
@@ -29,6 +30,8 @@ function initControls(){
     }
   };
   document.getElementById('refreshRunBtn').onclick = refreshArchitectureRuns;
+  const showAllSweeps = document.getElementById('showAllSweeps');
+  if(showAllSweeps) showAllSweeps.onchange = e => { setSetting('showAllSweeps', e.target.checked); renderRunSyncControls(); queueSave(); };
   document.getElementById('generationBackend').onchange = renderRunSyncControls;
   document.getElementById('archRunA').onchange = e => {
     reviewCompareSettings().runAId = e.target.value;

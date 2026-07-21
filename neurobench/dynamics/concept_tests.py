@@ -9,10 +9,15 @@ import argparse
 from datetime import datetime, timezone
 import json
 from pathlib import Path
+import zipfile
 from typing import Any, Iterable, Mapping
 
 import numpy as np
 
+from neurobench.dynamics.error_analysis import (
+    promote_structured_error_metrics,
+    structured_prediction_error_metrics,
+)
 from neurobench.dynamics.models import (
     GridAutoencoder,
     LatentGRUPredictor,
@@ -270,6 +275,17 @@ def _train_residual_pixel_variant(
     metrics["loss_mode"] = loss_mode
     metrics["hidden_dim"] = int(hidden_dim)
     metrics["residual_scale"] = float(residual_scale)
+    metrics["prediction_examples_path"] = str(
+        _write_prediction_examples(
+            out_dir / "prediction_examples.json",
+            windows=windows,
+            targets=targets,
+            pred=pred,
+            video_ids=video_ids,
+            splits=dataset.get("splits"),
+            windowing=dataset.get("windowing"),
+        )
+    )
     (out_dir / "concept_metrics.json").write_text(json.dumps(metrics, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     torch.save(
         {
@@ -366,6 +382,17 @@ def _train_convgru_pixel_variant(
     metrics["hidden_channels"] = int(hidden_channels)
     metrics["num_layers"] = int(num_layers)
     metrics["residual_scale"] = float(residual_scale)
+    metrics["prediction_examples_path"] = str(
+        _write_prediction_examples(
+            out_dir / "prediction_examples.json",
+            windows=windows,
+            targets=targets,
+            pred=pred,
+            video_ids=video_ids,
+            splits=dataset.get("splits"),
+            windowing=dataset.get("windowing"),
+        )
+    )
     (out_dir / "concept_metrics.json").write_text(json.dumps(metrics, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     torch.save(
         {
@@ -474,6 +501,17 @@ def _train_joint_latent_variant(
     metrics["training_prediction_loss"] = pred_losses
     metrics["lambda_latent"] = float(lambda_latent)
     metrics["lambda_reconstruction"] = float(lambda_reconstruction)
+    metrics["prediction_examples_path"] = str(
+        _write_prediction_examples(
+            out_dir / "prediction_examples.json",
+            windows=windows,
+            targets=targets,
+            pred=pred,
+            video_ids=video_ids,
+            splits=dataset.get("splits"),
+            windowing=dataset.get("windowing"),
+        )
+    )
     (out_dir / "concept_metrics.json").write_text(json.dumps(metrics, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     torch.save(
         {
@@ -485,6 +523,309 @@ def _train_joint_latent_variant(
         out_dir / "concept_checkpoint.pt",
     )
     return metrics
+
+
+
+def backfill_spatial_prediction_examples(
+    *,
+    dataset: Mapping[str, Any],
+    run_dir: str | Path,
+    checkpoint_path: str | Path | None = None,
+    metrics_path: str | Path | None = None,
+    out_path: str | Path | None = None,
+    batch_size: int = 16,
+    max_examples: int = 3,
+    device: str = "cpu",
+    update_metrics: bool = True,
+    backfill_metrics: bool = False,
+    dry_run: bool = False,
+) -> dict[str, Any]:
+    """Write prediction examples and optionally full diagnostics for a spatial checkpoint."""
+    torch = _torch()
+    run = Path(run_dir)
+    checkpoint = Path(checkpoint_path) if checkpoint_path is not None else run / "concept_checkpoint.pt"
+    metrics_file = Path(metrics_path) if metrics_path is not None else run / "concept_metrics.json"
+    examples_path = Path(out_path) if out_path is not None else run / "prediction_examples.json"
+    if not checkpoint.exists():
+        raise FileNotFoundError(f"Missing concept checkpoint: {checkpoint}")
+    load_device = "cpu" if dry_run else device
+    ckpt = torch.load(checkpoint, map_location=load_device)
+    architecture = str(ckpt.get("architecture") or "").strip()
+    if not architecture:
+        variant = str(ckpt.get("variant") or ckpt.get("objective") or "")
+        architecture, _model_kind, _model_family = _spatial_architecture_for_variant(variant)
+    if architecture not in {"convgru_pixel", "convlstm_pixel", "temporal_cnn_pixel", "unet_convgru_pixel"}:
+        raise ValueError(f"Checkpoint architecture is not a spatial pixel concept model: {architecture}")
+    array_summary = _prediction_dataset_array_summary(dataset)
+    example_preview = _prediction_example_selection_preview(dataset, max_examples=int(max_examples)) if dry_run else []
+    split_summary = _prediction_window_split_summary(dataset) if dry_run else {}
+    if dry_run:
+        would_write_files = [str(examples_path), str(examples_path.parent / "prediction_examples_backfill.json")]
+        if update_metrics and metrics_file.exists():
+            would_write_files.append(str(metrics_file))
+        return {
+            "schema_version": 1,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "dry_run": True,
+            "run_dir": str(run),
+            "checkpoint_path": str(checkpoint),
+            "metrics_path": str(metrics_file) if metrics_file.exists() else None,
+            "prediction_examples_path": str(examples_path),
+            "architecture": architecture,
+            "dataset_array_path": str(dataset.get("array_path")),
+            "dataset_arrays": array_summary.get("arrays", {}),
+            "dataset_window_count": int(array_summary.get("dataset_window_count") or 0),
+            "example_count": len(example_preview),
+            "example_preview": example_preview,
+            "source_indices": [int(item.get("index", 0)) for item in example_preview],
+            "split_window_counts": split_summary.get("split_window_counts", {}),
+            "split_video_counts": split_summary.get("split_video_counts", {}),
+            "split_label_counts": split_summary.get("split_label_counts", {}),
+            "split_top_videos": split_summary.get("split_top_videos", {}),
+            "estimated_uncompressed_bytes": int(array_summary.get("estimated_uncompressed_bytes") or 0),
+            "estimated_uncompressed_gib": _bytes_to_gib(array_summary.get("estimated_uncompressed_bytes") or 0),
+            "estimated_compressed_bytes": int(array_summary.get("estimated_compressed_bytes") or 0),
+            "estimated_compressed_gib": _bytes_to_gib(array_summary.get("estimated_compressed_bytes") or 0),
+            "requested_batch_size": int(batch_size),
+            "estimated_example_batches": _ceil_div(len(example_preview), int(batch_size)),
+            "estimated_metric_batches": _ceil_div(int(array_summary.get("dataset_window_count") or 0), int(batch_size)) if update_metrics and backfill_metrics else 0,
+            "metrics_updated": False,
+            "prediction_metrics_backfilled": False,
+            "would_update_metrics": bool(update_metrics and metrics_file.exists()),
+            "would_backfill_metrics": bool(update_metrics and backfill_metrics),
+            "would_write_files": would_write_files,
+        }
+    windows, targets, video_ids, source_indices, dataset_window_count = _load_prediction_example_subset(dataset, max_examples=int(max_examples))
+    model = _build_spatial_pixel_model(
+        architecture=architecture,
+        input_channels=int(ckpt.get("input_channels") or windows.shape[2]),
+        window_frames=int(ckpt.get("window_frames") or windows.shape[1]),
+        hidden_channels=int(ckpt.get("hidden_channels") or ckpt.get("hidden_dim") or 32),
+        num_layers=int(ckpt.get("num_layers") or 1),
+        residual_scale=float(ckpt.get("residual_scale") if ckpt.get("residual_scale") is not None else 0.25),
+    ).to(device)
+    model.load_state_dict(ckpt["model_state"])
+    model.eval()
+    xw = torch.from_numpy(windows).to(device)
+    pred = _predict_convgru_pixel(model, xw, batch_size=int(batch_size))
+    examples_path.parent.mkdir(parents=True, exist_ok=True)
+    _write_prediction_examples(
+        examples_path,
+        windows=windows,
+        targets=targets,
+        pred=pred,
+        video_ids=video_ids,
+        splits=dataset.get("splits"),
+        windowing=dataset.get("windowing"),
+        max_examples=int(max_examples),
+        source_indices=source_indices,
+    )
+    summary = {
+        "schema_version": 1,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "run_dir": str(run),
+        "checkpoint_path": str(checkpoint),
+        "metrics_path": str(metrics_file) if metrics_file.exists() else None,
+        "prediction_examples_path": str(examples_path),
+        "architecture": architecture,
+        "example_count": int(targets.shape[0]),
+        "dataset_window_count": int(dataset_window_count),
+        "source_indices": [int(index) for index in source_indices],
+    }
+    metrics = _load_json(metrics_file) if metrics_file.exists() else None
+    if update_metrics and metrics is not None:
+        metrics["prediction_examples_path"] = str(examples_path)
+        metrics["prediction_examples_backfilled_at"] = summary["created_at"]
+        summary["metrics_updated"] = True
+    else:
+        summary["metrics_updated"] = False
+
+    if update_metrics and backfill_metrics:
+        if metrics is None:
+            raise FileNotFoundError(f"Cannot backfill metrics because metrics file is missing: {metrics_file}")
+        metric_windows, metric_targets, metric_video_ids = _load_prediction_metric_arrays(dataset)
+        metric_xw = torch.from_numpy(metric_windows).to(device)
+        metric_pred = _predict_convgru_pixel(model, metric_xw, batch_size=int(batch_size))
+        train_mask = _split_mask(metric_video_ids, dataset.get("splits"), "train", default_all=True)
+        active_threshold = metrics.get("active_threshold")
+        if active_threshold is None:
+            active_threshold = _active_threshold(metric_targets[train_mask], None)
+        active_weight = float(metrics.get("active_weight") or 0.0)
+        diagnostic_metrics = _prediction_metrics(
+            pred=metric_pred,
+            targets=metric_targets,
+            windows=metric_windows,
+            video_ids=metric_video_ids,
+            splits=dataset.get("splits"),
+            objective=str(metrics.get("objective") or ckpt.get("objective") or f"{architecture}_backfill"),
+            training_loss=list(metrics.get("training_loss", [])) if isinstance(metrics.get("training_loss"), list) else [],
+            train_count=int(train_mask.sum()),
+            active_threshold=float(active_threshold),
+            active_weight=float(active_weight),
+        )
+        metrics.update(diagnostic_metrics)
+        metrics["prediction_examples_path"] = str(examples_path)
+        metrics["prediction_metrics_backfilled_at"] = summary["created_at"]
+        split_metrics = metrics.get("split_metrics", {})
+        summary["prediction_metrics_backfilled"] = True
+        summary["metrics_evaluation_window_count"] = int(metric_targets.shape[0])
+        summary["metrics_split_window_counts"] = {
+            str(split): int(payload.get("window_count", 0))
+            for split, payload in split_metrics.items()
+            if isinstance(payload, Mapping)
+        }
+        summary["metrics_per_video_counts"] = {
+            str(split): len(payload.get("per_video", {}))
+            for split, payload in split_metrics.items()
+            if isinstance(payload, Mapping)
+        }
+    else:
+        summary["prediction_metrics_backfilled"] = False
+
+    if update_metrics and metrics is not None:
+        metrics_file.write_text(json.dumps(metrics, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    (examples_path.parent / "prediction_examples_backfill.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return summary
+
+
+
+
+
+def _ceil_div(value: int, divisor: int) -> int:
+    if int(value) <= 0:
+        return 0
+    return int((int(value) + max(int(divisor), 1) - 1) // max(int(divisor), 1))
+
+
+def _bytes_to_gib(value: Any) -> float:
+    return float(round(float(value) / float(1024 ** 3), 3))
+
+
+def _prediction_dataset_array_summary(dataset: Mapping[str, Any]) -> dict[str, Any]:
+    array_path = Path(str(dataset["array_path"]))
+    arrays: dict[str, dict[str, Any]] = {}
+    total_uncompressed = 0
+    total_compressed = 0
+    with zipfile.ZipFile(array_path) as archive:
+        for info in archive.infolist():
+            if not info.filename.endswith(".npy"):
+                continue
+            key = Path(info.filename).stem
+            with archive.open(info) as handle:
+                version = np.lib.format.read_magic(handle)
+                if version == (1, 0):
+                    shape, _fortran_order, dtype = np.lib.format.read_array_header_1_0(handle)
+                elif version == (2, 0):
+                    shape, _fortran_order, dtype = np.lib.format.read_array_header_2_0(handle)
+                else:
+                    shape, _fortran_order, dtype = np.lib.format._read_array_header(handle, version)  # noqa: SLF001
+            uncompressed_bytes = int(np.prod(shape, dtype=np.int64) * np.dtype(dtype).itemsize) if shape else int(np.dtype(dtype).itemsize)
+            arrays[key] = {
+                "shape": [int(dim) for dim in shape],
+                "dtype": str(np.dtype(dtype)),
+                "uncompressed_bytes": uncompressed_bytes,
+                "compressed_bytes": int(info.compress_size),
+            }
+            total_uncompressed += uncompressed_bytes
+            total_compressed += int(info.compress_size)
+    return {
+        "array_path": str(array_path),
+        "arrays": arrays,
+        "dataset_window_count": int((arrays.get("targets") or {}).get("shape", [0])[0]),
+        "estimated_uncompressed_bytes": int(total_uncompressed),
+        "estimated_compressed_bytes": int(total_compressed),
+    }
+
+
+
+def _prediction_window_split_summary(dataset: Mapping[str, Any], *, top_video_limit: int = 3) -> dict[str, Any]:
+    with np.load(dataset["array_path"], allow_pickle=False) as arrays:
+        video_ids = arrays["window_video_ids"].astype(str)
+        labels = arrays["window_labels"].astype(str) if "window_labels" in arrays.files else np.full(video_ids.shape, "unknown", dtype=str)
+    split_window_counts: dict[str, int] = {}
+    split_video_windows: dict[str, dict[str, int]] = {}
+    split_label_counts: dict[str, dict[str, int]] = {}
+    for video_id, label in zip(video_ids, labels):
+        split = _split_name_for_video_id(str(video_id), dataset.get("splits")) or "unknown"
+        video_key = str(video_id)
+        label_key = str(label) if str(label) else "unknown"
+        split_window_counts[split] = split_window_counts.get(split, 0) + 1
+        per_video = split_video_windows.setdefault(split, {})
+        per_video[video_key] = per_video.get(video_key, 0) + 1
+        per_label = split_label_counts.setdefault(split, {})
+        per_label[label_key] = per_label.get(label_key, 0) + 1
+    split_top_videos = {
+        split: [
+            {"video_id": video_id, "window_count": int(count)}
+            for video_id, count in sorted(counts.items(), key=lambda item: (-item[1], item[0]))[: int(top_video_limit)]
+        ]
+        for split, counts in sorted(split_video_windows.items())
+    }
+    return {
+        "split_window_counts": {key: int(split_window_counts[key]) for key in sorted(split_window_counts)},
+        "split_video_counts": {key: int(len(split_video_windows[key])) for key in sorted(split_video_windows)},
+        "split_label_counts": {
+            split: {label: int(count) for label, count in sorted(counts.items(), key=lambda item: (-item[1], item[0]))}
+            for split, counts in sorted(split_label_counts.items())
+        },
+        "split_top_videos": split_top_videos,
+    }
+
+def _prediction_example_selection_preview(dataset: Mapping[str, Any], *, max_examples: int) -> list[dict[str, Any]]:
+    count = max(int(max_examples), 0)
+    if count <= 0:
+        return []
+    with np.load(dataset["array_path"], allow_pickle=False) as arrays:
+        video_ids = arrays["window_video_ids"].astype(str)
+    selected = _prediction_example_indices(video_ids, dataset.get("splits"), max_examples=count)
+    return [
+        {
+            "index": int(index),
+            "video_id": str(video_ids[int(index)]),
+            "split": _split_name_for_video_id(str(video_ids[int(index)]), dataset.get("splits")),
+        }
+        for index in selected
+    ]
+
+def _load_prediction_metric_arrays(dataset: Mapping[str, Any]) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    with np.load(dataset["array_path"], allow_pickle=False) as arrays:
+        windows = _prepare_array(arrays["windows"][:])
+        targets = _prepare_array(arrays["targets"][:])
+        video_ids = arrays["window_video_ids"].astype(str)
+    return windows, targets, video_ids
+
+
+def _load_prediction_example_subset(dataset: Mapping[str, Any], *, max_examples: int) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, int]:
+    count = max(int(max_examples), 0)
+    with np.load(dataset["array_path"], allow_pickle=False) as arrays:
+        dataset_window_count = int(arrays["targets"].shape[0])
+        if count <= 0 or dataset_window_count <= 0:
+            empty_windows = _prepare_array(arrays["windows"][:0])
+            empty_targets = _prepare_array(arrays["targets"][:0])
+            return empty_windows, empty_targets, np.asarray([], dtype=str), np.asarray([], dtype=np.int64), dataset_window_count
+        all_video_ids = arrays["window_video_ids"].astype(str)
+        selected = _prediction_example_indices(all_video_ids, dataset.get("splits"), max_examples=count)
+        windows = _prepare_array(arrays["windows"][selected])
+        targets = _prepare_array(arrays["targets"][selected])
+        video_ids = all_video_ids[selected].astype(str)
+    return windows, targets, video_ids, selected.astype(np.int64), dataset_window_count
+
+
+def _prediction_example_indices(video_ids: np.ndarray, splits: Mapping[str, Any] | None, *, max_examples: int) -> np.ndarray:
+    selected: list[int] = []
+    seen: set[int] = set()
+    priority = ("test", "val", "train", None)
+    for split in priority:
+        for index, video_id in enumerate(video_ids.astype(str)):
+            if index in seen:
+                continue
+            if split is not None and _split_name_for_video_id(str(video_id), splits) != split:
+                continue
+            selected.append(index)
+            seen.add(index)
+            if len(selected) >= int(max_examples):
+                return np.asarray(selected, dtype=np.int64)
+    return np.asarray(selected, dtype=np.int64)
 
 
 def _load_windows(dataset: Mapping[str, Any]) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -696,6 +1037,87 @@ def _weighted_mse(pred, target, last_frame, *, weighted: bool, active_weight: fl
     )
 
 
+def _write_prediction_examples(
+    path: Path,
+    *,
+    windows: np.ndarray,
+    targets: np.ndarray,
+    pred: np.ndarray,
+    video_ids: np.ndarray,
+    splits: Mapping[str, Any] | None,
+    windowing: Mapping[str, Any] | None,
+    max_examples: int = 3,
+    source_indices: np.ndarray | None = None,
+) -> Path:
+    examples = _prediction_examples(
+        windows=windows,
+        targets=targets,
+        pred=pred,
+        video_ids=video_ids,
+        splits=splits,
+        windowing=windowing,
+        max_examples=max_examples,
+        source_indices=source_indices,
+    )
+    path.write_text(json.dumps({"schema_version": 1, "examples": examples}, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return path
+
+
+def _prediction_examples(
+    *,
+    windows: np.ndarray,
+    targets: np.ndarray,
+    pred: np.ndarray,
+    video_ids: np.ndarray | None,
+    splits: Mapping[str, Any] | None,
+    windowing: Mapping[str, Any] | None,
+    max_examples: int,
+    source_indices: np.ndarray | None = None,
+) -> list[dict[str, Any]]:
+    items = []
+    ids = np.asarray(video_ids).astype(str) if video_ids is not None else None
+    for i in range(min(max(int(max_examples), 0), int(targets.shape[0]))):
+        source_index = int(source_indices[i]) if source_indices is not None and i < len(source_indices) else int(i)
+        item = {
+            "index": source_index,
+            "input_last": _json_frame(windows[i, -1, 0]),
+            "target_next": _json_frame(targets[i, 0]),
+            "predicted_next": _json_frame(pred[i, 0]),
+            "abs_error_mean": float(np.mean(np.abs(targets[i] - pred[i]))),
+        }
+        if ids is not None and i < ids.shape[0]:
+            item["video_id"] = str(ids[i])
+            item["split"] = _split_name_for_video_id(str(ids[i]), splits)
+        if isinstance(windowing, Mapping):
+            for key in ("window_frames", "temporal_stride_frames", "prediction_horizon_frames", "prediction_horizon_sec", "effective_frame_rate_hz", "source_frame_rate_hz"):
+                if key in windowing:
+                    item[key] = windowing.get(key)
+        items.append(item)
+    return items
+
+
+def _json_frame(frame: np.ndarray) -> list[list[float]]:
+    return np.round(np.asarray(frame, dtype=np.float64), 5).tolist()
+
+
+def _split_name_for_video_id(video_id: str, splits: Mapping[str, Any] | None) -> str | None:
+    if not isinstance(splits, Mapping):
+        return None
+    assignments = splits.get("assignments")
+    if isinstance(assignments, Mapping) and video_id in assignments:
+        return str(assignments[video_id])
+    for split_name in ("train", "val", "test"):
+        for key in (split_name, f"{split_name}_video_ids", f"{split_name}_videos"):
+            values = splits.get(key)
+            if isinstance(values, Mapping):
+                nested = values.get("video_ids") or values.get("videos") or values.get("ids")
+                if nested is not None and video_id in {str(item) for item in nested}:
+                    return split_name
+            elif isinstance(values, (list, tuple, set)) and video_id in {str(item) for item in values}:
+                return split_name
+    return None
+
+
 def _active_threshold(train_targets: np.ndarray, requested: float | None) -> float:
     if requested is not None:
         return float(requested)
@@ -721,6 +1143,14 @@ def _prediction_metrics(
     diff = pred - targets
     persistence_diff = windows[:, -1] - targets
     split_metrics = _split_prediction_metrics(diff, persistence_diff, video_ids, splits)
+    structured_error_metrics = structured_prediction_error_metrics(
+        pred_diff=diff,
+        persistence_diff=persistence_diff,
+        targets=targets,
+        last_frames=windows[:, -1],
+        video_ids=video_ids,
+        splits=splits,
+    )
     metrics = {
         "schema_version": 1,
         "objective": objective,
@@ -734,7 +1164,9 @@ def _prediction_metrics(
         "persistence_mse": float(np.mean(persistence_diff * persistence_diff)),
         "persistence_mae": float(np.mean(np.abs(persistence_diff))),
         "split_metrics": split_metrics,
+        "structured_error_metrics": structured_error_metrics,
     }
+    promote_structured_error_metrics(metrics, structured_error_metrics)
     metrics["improvement_over_persistence_mse"] = float(metrics["persistence_mse"] - metrics["decoded_prediction_mse"])
     for split_name, split in split_metrics.items():
         prefix = f"{split_name}_"
@@ -763,28 +1195,62 @@ def _split_prediction_metrics(
     persistence_only: bool = False,
 ) -> dict[str, Any]:
     out: dict[str, Any] = {}
+    ids = np.asarray(video_ids).astype(str)
+    pred_diff = persistence_diff if persistence_only else diff
     for split_name in ("train", "val", "test", "all"):
         if split_name == "all":
-            mask = np.ones(video_ids.shape[0], dtype=bool)
+            mask = np.ones(ids.shape[0], dtype=bool)
         else:
-            mask = _split_mask(video_ids, splits, split_name, default_all=False)
-        if not np.any(mask):
-            out[split_name] = {
-                "decoded_prediction_mse": None,
-                "decoded_prediction_mae": None,
-                "persistence_mse": None,
-                "persistence_mae": None,
-                "window_count": 0,
-            }
-            continue
-        pred_diff = persistence_diff if persistence_only else diff
-        out[split_name] = {
-            "decoded_prediction_mse": float(np.mean(pred_diff[mask] * pred_diff[mask])),
-            "decoded_prediction_mae": float(np.mean(np.abs(pred_diff[mask]))),
-            "persistence_mse": float(np.mean(persistence_diff[mask] * persistence_diff[mask])),
-            "persistence_mae": float(np.mean(np.abs(persistence_diff[mask]))),
-            "window_count": int(mask.sum()),
+            mask = _split_mask(ids, splits, split_name, default_all=False)
+        item = _concept_prediction_metric_payload(pred_diff[mask], persistence_diff[mask])
+        item["per_video"] = _concept_prediction_per_video_metrics(
+            pred_diff=pred_diff,
+            persistence_diff=persistence_diff,
+            video_ids=ids,
+            mask=mask,
+        )
+        out[split_name] = item
+    return out
+
+
+def _concept_prediction_metric_payload(pred_diff: np.ndarray, persistence_diff: np.ndarray) -> dict[str, Any]:
+    count = int(pred_diff.shape[0]) if pred_diff.ndim else 0
+    if count == 0:
+        return {
+            "decoded_prediction_mse": None,
+            "decoded_prediction_mae": None,
+            "persistence_mse": None,
+            "persistence_mae": None,
+            "window_count": 0,
+            "improvement_over_persistence_mse": None,
         }
+    decoded_mse = float(np.mean(pred_diff * pred_diff))
+    persistence_mse = float(np.mean(persistence_diff * persistence_diff))
+    return {
+        "decoded_prediction_mse": decoded_mse,
+        "decoded_prediction_mae": float(np.mean(np.abs(pred_diff))),
+        "persistence_mse": persistence_mse,
+        "persistence_mae": float(np.mean(np.abs(persistence_diff))),
+        "window_count": count,
+        "improvement_over_persistence_mse": float(persistence_mse - decoded_mse),
+    }
+
+
+def _concept_prediction_per_video_metrics(
+    *,
+    pred_diff: np.ndarray,
+    persistence_diff: np.ndarray,
+    video_ids: np.ndarray,
+    mask: np.ndarray,
+) -> dict[str, dict[str, Any]]:
+    selected_ids = np.asarray(video_ids)[mask].astype(str)
+    if selected_ids.size == 0:
+        return {}
+    out: dict[str, dict[str, Any]] = {}
+    ids = np.asarray(video_ids).astype(str)
+    for video_id in sorted(set(selected_ids.tolist())):
+        video_mask = mask & (ids == str(video_id))
+        out[str(video_id)] = _concept_prediction_metric_payload(pred_diff[video_mask], persistence_diff[video_mask])
     return out
 
 

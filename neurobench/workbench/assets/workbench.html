@@ -51,7 +51,7 @@
       <label>Sweep <select id="activeRunSelect"></select></label>
       <span id="activeRunStatus" class="runSyncStatus">loading run status</span>
       <span id="activeRunDetail" class="runSyncStatus"></span>
-      <label>Backend
+      <label class="advancedOnly">Backend
         <select id="generationBackend">
           <option value="auto">Auto</option>
           <option value="fiji_groovy">Fiji/Groovy</option>
@@ -59,10 +59,11 @@
         </select>
       </label>
       <button id="loadRunReviewBtn">Load Review</button>
-      <button id="openRunViewBtn">Open View</button>
-      <button id="previewRunViewBtn">Generate Preview</button>
-      <button id="generateRunViewBtn">Generate View</button>
-      <button id="unlockGenerationBtn">Unlock Generation</button>
+      <label class="runSweepToggle"><input id="showAllSweeps" type="checkbox"> All sweeps</label>
+      <button id="openRunViewBtn" class="advancedOnly">Open View</button>
+      <button id="previewRunViewBtn" class="advancedOnly">Generate Preview</button>
+      <button id="generateRunViewBtn" class="advancedOnly">Generate View</button>
+      <button id="unlockGenerationBtn" class="advancedOnly">Unlock Generation</button>
       <button id="refreshRunBtn">Refresh</button>
     </div>
     <div id="runGeneratePanel" class="runGeneratePanel hidden advancedOnly"></div>
@@ -203,6 +204,7 @@
       <button id="playBtn">Play</button>
       <label class="frameControl">Frame <input id="frameSlider" type="range" min="1" max="{frames}" value="1"></label>
       <b id="frameLabel">1</b>
+      <button id="reviewSideBySideBtn" type="button">Raw + outline</button>
       <button id="fitBtn">Fit Width</button>
       <button id="fitHeightBtn">Fit Height</button>
       <button id="fullscreenBtn">Fullscreen</button>
@@ -247,6 +249,15 @@
     </details>
     <details class="toolbarDisclosure">
       <summary>Overlay views</summary>
+      <div class="overlayLegend" id="reviewOverlayLegend" aria-label="Review overlay legend">
+        <div><span class="legendSwatch potential"></span><b>Potential soma</b><span>unreviewed detector candidate</span></div>
+        <div><span class="legendSwatch accepted"></span><b>Accepted</b><span>marked neuron</span></div>
+        <div><span class="legendSwatch rejected"></span><b>Rejected</b><span>artifact or non-neuron</span></div>
+        <div><span class="legendSwatch unsure"></span><b>Unsure</b><span>needs second pass</span></div>
+        <div><span class="legendSwatch event"></span><b>Event frame</b><span>candidate active near current frame</span></div>
+        <div><span class="legendSwatch suggestion"></span><b>Suggestion</b><span>possible missed neuron</span></div>
+        <div><span class="legendSwatch stencil"></span><b>Stencil/grid</b><span>optional anatomy or model overlay</span></div>
+      </div>
       <div class="toolbar compactToolGroup overlayViewControls">
         <button id="togglePotentialRoisBtn" type="button">Hide Potential Neurons</button>
         <button id="toggleAnnotatedNeuronRoisBtn" type="button">Hide Annotated Neurons</button>
@@ -333,10 +344,21 @@
       </div>
     </details>
     <div class="viewerScroll" id="viewerScroll">
-      <div class="viewerWrap" id="viewerWrap">
-        <img id="frameImg" alt="video frame">
-        <img id="evidenceImg" alt="evidence map">
-        <canvas id="overlay"></canvas>
+      <div class="reviewViewerLayout" id="reviewViewerLayout">
+        <figure class="reviewViewerPane reviewRawPane hidden" id="reviewRawPane">
+          <div class="reviewRawWrap" id="reviewRawWrap">
+            <img id="reviewRawFrameImg" alt="raw video frame">
+          </div>
+          <figcaption>Raw video</figcaption>
+        </figure>
+        <figure class="reviewViewerPane reviewOverlayPane">
+          <div class="viewerWrap" id="viewerWrap">
+            <img id="frameImg" alt="video frame">
+            <img id="evidenceImg" alt="evidence map">
+            <canvas id="overlay"></canvas>
+          </div>
+          <figcaption>Candidate / event outline</figcaption>
+        </figure>
       </div>
     </div>
     <div class="status">
@@ -420,7 +442,8 @@
       <div class="metric"><b>{frames}</b><span>frames</span></div>
       </div>
     </details>
-    <h2>ROI Review</h2>
+    <details class="reviewRailSection primary" open>
+      <summary>ROI Review</summary>
     <section class="reviewSessionPanel" id="reviewSessionPanel" aria-label="Review session checklist"></section>
     <section class="guidedPanelShell">
       <div class="topbar">
@@ -510,7 +533,9 @@
       <button id="visualSplitBtn">Visual Split</button>
       <button id="clearMultiSelectBtn">Clear Multi</button>
     </div>
-    <h2>Event Review</h2>
+    </details>
+    <details class="reviewRailSection">
+      <summary>Event Review</summary>
     <div class="buttonRow">
       <button id="eventAcceptBtn" class="accept">Accept Event</button>
       <button id="eventRejectBtn" class="reject">Reject Event</button>
@@ -647,7 +672,9 @@
       </div>
       <div class="suggestionList" id="suggestionList"></div>
     </details>
-    <h2>Review Queue</h2>
+    </details>
+    <details class="reviewRailSection" open>
+      <summary>Review Queue</summary>
     <div class="toolbar advancedOnly">
       <select id="queueSelect">
         <option value="unlabeled">Unlabeled first</option>
@@ -724,7 +751,8 @@
       <summary>Parameters</summary>
       <table class="smallTable" id="paramTable"></table>
     </details>
-    <p class="hint">Run through the local server for autosave to <code>annotations.json</code>. Static file mode still keeps a browser-local backup and supports TSV export.</p>
+    <p class="hint advancedOnly">Run through the local server for autosave to <code>annotations.json</code>. Static file mode still keeps a browser-local backup and supports TSV export.</p>
+    </details>
   </aside>
   <section id="homePage" class="architecturePage homePage hidden">
     <div class="topbar" data-page-chrome="home"></div>
@@ -822,7 +850,7 @@
     <div class="topbar" data-page-chrome="qc"></div>
     <div class="nextBestActionShell" data-next-action></div>
     <nav class="reviewSubnav dataSubnav" aria-label="Data views">
-      <a id="dataInspectSubtab" href="#data">Inspect</a>
+      <a id="dataInspectSubtab" href="#dataset-qc">Inspect</a>
       <a id="dataCompareSubtab" href="#data-compare">Compare</a>
     </nav>
     <p id="dataPageHint" class="hint">This page inspects the active pipeline run in pipeline order, including raw frames, generated intermediates, artifact states, and lightweight process warnings.</p>

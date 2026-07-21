@@ -9,6 +9,7 @@ from typing import Any, Mapping
 import numpy as np
 
 from neurobench.dynamics.baselines import evaluate_baselines_from_arrays, write_baseline_metrics
+from neurobench.dynamics.error_analysis import promote_structured_error_metrics, structured_prediction_error_metrics
 from neurobench.dynamics.models import GridAutoencoder, LatentGRUPredictor
 from neurobench.workbench.intermediates import normalize_array_frame, write_png_gray8
 
@@ -264,6 +265,14 @@ def train_latent_rnn(
     latent_code_raw_mse = float(np.mean(latent_raw_diff * latent_raw_diff))
     latent_code_raw_mae = float(np.mean(np.abs(latent_raw_diff)))
     split_metrics = _prediction_split_metrics(diff, latent_diff, latent_raw_diff, persistence_diff, window_video_ids, dataset.get("splits"))
+    structured_error_metrics = structured_prediction_error_metrics(
+        pred_diff=diff,
+        persistence_diff=persistence_diff,
+        targets=targets,
+        last_frames=windows[:, -1],
+        video_ids=window_video_ids,
+        splits=dataset.get("splits"),
+    )
     metrics = {
         "objective": "next_delta_code_mse" if prediction_target == "delta" else "next_code_mse",
         "prediction_target": prediction_target,
@@ -284,6 +293,7 @@ def train_latent_rnn(
         "prediction_mae": decoded_prediction_mae,
         "persistence_baseline": baseline["persistence"],
         "split_metrics": split_metrics,
+        "structured_error_metrics": structured_error_metrics,
     }
     _promote_split_metrics(
         metrics,
@@ -299,6 +309,7 @@ def train_latent_rnn(
             "window_count",
         ],
     )
+    promote_structured_error_metrics(metrics, structured_error_metrics)
     metrics["improvement_over_persistence_mse"] = float(metrics["persistence_baseline"]["mse"] - metrics["decoded_prediction_mse"])
     for split_name in ("train", "val", "test"):
         split = split_metrics.get(split_name, {})
@@ -322,7 +333,7 @@ def train_latent_rnn(
         checkpoint,
     )
     examples_path = out / "prediction_examples.json"
-    examples = _prediction_examples(windows, targets, pred_x, max_examples=3)
+    examples = _prediction_examples(windows, targets, pred_x, max_examples=3, video_ids=window_video_ids, splits=dataset.get("splits"), windowing=dataset.get("windowing"))
     examples_path.write_text(json.dumps({"schema_version": 1, "examples": examples}, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if pred_x.shape[0]:
         _write_grid_preview(out / "prediction_examples.png", targets[0, 0], pred_x[0, 0], np.abs(targets[0, 0] - pred_x[0, 0]))
@@ -476,37 +487,84 @@ def _prediction_split_metrics(
     splits: Any,
 ) -> dict[str, dict[str, Any]]:
     payload: dict[str, dict[str, Any]] = {}
-    for split_name, mask in _split_masks(video_ids, splits).items():
-        count = int(mask.sum())
-        if count == 0:
-            payload[split_name] = {
-                "window_count": 0,
-                "latent_code_mse": None,
-                "latent_code_mae": None,
-                "latent_code_raw_mse": None,
-                "latent_code_raw_mae": None,
-                "decoded_prediction_mse": None,
-                "decoded_prediction_mae": None,
-                "persistence_mse": None,
-                "persistence_mae": None,
-            }
-            continue
-        dd = decoded_diff[mask]
-        ld = latent_diff[mask]
-        lrd = latent_raw_diff[mask]
-        pd = persistence_diff[mask]
-        payload[split_name] = {
-            "window_count": count,
-            "latent_code_mse": float(np.mean(ld * ld)),
-            "latent_code_mae": float(np.mean(np.abs(ld))),
-            "latent_code_raw_mse": float(np.mean(lrd * lrd)),
-            "latent_code_raw_mae": float(np.mean(np.abs(lrd))),
-            "decoded_prediction_mse": float(np.mean(dd * dd)),
-            "decoded_prediction_mae": float(np.mean(np.abs(dd))),
-            "persistence_mse": float(np.mean(pd * pd)),
-            "persistence_mae": float(np.mean(np.abs(pd))),
-        }
+    ids = np.asarray(video_ids).astype(str)
+    for split_name, mask in _split_masks(ids, splits).items():
+        item = _prediction_metric_payload(
+            decoded_diff[mask],
+            latent_diff[mask],
+            latent_raw_diff[mask],
+            persistence_diff[mask],
+        )
+        item["per_video"] = _prediction_per_video_metrics(
+            decoded_diff=decoded_diff,
+            latent_diff=latent_diff,
+            latent_raw_diff=latent_raw_diff,
+            persistence_diff=persistence_diff,
+            video_ids=ids,
+            mask=mask,
+        )
+        payload[split_name] = item
     return payload
+
+
+def _prediction_metric_payload(
+    decoded_diff: np.ndarray,
+    latent_diff: np.ndarray,
+    latent_raw_diff: np.ndarray,
+    persistence_diff: np.ndarray,
+) -> dict[str, Any]:
+    count = int(decoded_diff.shape[0]) if decoded_diff.ndim else 0
+    if count == 0:
+        return {
+            "window_count": 0,
+            "latent_code_mse": None,
+            "latent_code_mae": None,
+            "latent_code_raw_mse": None,
+            "latent_code_raw_mae": None,
+            "decoded_prediction_mse": None,
+            "decoded_prediction_mae": None,
+            "persistence_mse": None,
+            "persistence_mae": None,
+            "improvement_over_persistence_mse": None,
+        }
+    decoded_mse = float(np.mean(decoded_diff * decoded_diff))
+    persistence_mse = float(np.mean(persistence_diff * persistence_diff))
+    return {
+        "window_count": count,
+        "latent_code_mse": float(np.mean(latent_diff * latent_diff)),
+        "latent_code_mae": float(np.mean(np.abs(latent_diff))),
+        "latent_code_raw_mse": float(np.mean(latent_raw_diff * latent_raw_diff)),
+        "latent_code_raw_mae": float(np.mean(np.abs(latent_raw_diff))),
+        "decoded_prediction_mse": decoded_mse,
+        "decoded_prediction_mae": float(np.mean(np.abs(decoded_diff))),
+        "persistence_mse": persistence_mse,
+        "persistence_mae": float(np.mean(np.abs(persistence_diff))),
+        "improvement_over_persistence_mse": float(persistence_mse - decoded_mse),
+    }
+
+
+def _prediction_per_video_metrics(
+    *,
+    decoded_diff: np.ndarray,
+    latent_diff: np.ndarray,
+    latent_raw_diff: np.ndarray,
+    persistence_diff: np.ndarray,
+    video_ids: np.ndarray,
+    mask: np.ndarray,
+) -> dict[str, dict[str, Any]]:
+    selected_ids = np.asarray(video_ids)[mask].astype(str)
+    if selected_ids.size == 0:
+        return {}
+    out: dict[str, dict[str, Any]] = {}
+    for video_id in sorted(set(selected_ids.tolist())):
+        video_mask = mask & (np.asarray(video_ids).astype(str) == str(video_id))
+        out[str(video_id)] = _prediction_metric_payload(
+            decoded_diff[video_mask],
+            latent_diff[video_mask],
+            latent_raw_diff[video_mask],
+            persistence_diff[video_mask],
+        )
+    return out
 
 
 def _promote_split_metrics(metrics: dict[str, Any], split_metrics: Mapping[str, Mapping[str, Any]], fields: list[str]) -> None:
@@ -540,11 +598,66 @@ def _grid_examples(x: np.ndarray, recon: np.ndarray, *, max_examples: int) -> li
     return items
 
 
-def _prediction_examples(windows: np.ndarray, targets: np.ndarray, pred: np.ndarray, *, max_examples: int) -> list[dict[str, Any]]:
-    items=[]
+def _prediction_examples(
+    windows: np.ndarray,
+    targets: np.ndarray,
+    pred: np.ndarray,
+    *,
+    max_examples: int,
+    video_ids: np.ndarray | None = None,
+    splits: Any = None,
+    windowing: Mapping[str, Any] | None = None,
+    window_start_indices: np.ndarray | None = None,
+    window_end_indices: np.ndarray | None = None,
+    target_frame_indices: np.ndarray | None = None,
+) -> list[dict[str, Any]]:
+    items = []
+    ids = np.asarray(video_ids).astype(str) if video_ids is not None else None
+    starts = np.asarray(window_start_indices) if window_start_indices is not None else None
+    ends = np.asarray(window_end_indices) if window_end_indices is not None else None
+    target_indices = np.asarray(target_frame_indices) if target_frame_indices is not None else None
     for i in range(min(max_examples, targets.shape[0])):
-        items.append({"index": int(i), "input_last": windows[i,-1,0].round(5).tolist(), "target_next": targets[i,0].round(5).tolist(), "predicted_next": pred[i,0].round(5).tolist(), "abs_error_mean": float(np.mean(np.abs(targets[i]-pred[i])))})
+        item = {
+            "index": int(i),
+            "input_last": windows[i, -1, 0].round(5).tolist(),
+            "target_next": targets[i, 0].round(5).tolist(),
+            "predicted_next": pred[i, 0].round(5).tolist(),
+            "abs_error_mean": float(np.mean(np.abs(targets[i] - pred[i]))),
+        }
+        if ids is not None and i < ids.shape[0]:
+            item["video_id"] = str(ids[i])
+            item["split"] = _split_name_for_video_id(str(ids[i]), splits)
+        if starts is not None and i < starts.shape[0]:
+            item["window_start_index"] = int(starts[i])
+        if ends is not None and i < ends.shape[0]:
+            item["window_end_index"] = int(ends[i])
+        if target_indices is not None and i < target_indices.shape[0]:
+            item["target_frame_index"] = int(target_indices[i])
+        if isinstance(windowing, Mapping):
+            for key in ("window_frames", "temporal_stride_frames", "prediction_horizon_frames", "prediction_horizon_sec", "effective_frame_rate_hz", "source_frame_rate_hz"):
+                if key in windowing:
+                    item[key] = windowing.get(key)
+        items.append(item)
     return items
+
+
+def _split_name_for_video_id(video_id: str, splits: Any) -> str | None:
+    if not isinstance(splits, Mapping):
+        return None
+    assignments = splits.get("assignments")
+    if isinstance(assignments, Mapping) and video_id in assignments:
+        return str(assignments[video_id])
+    for split_name in ("train", "val", "test"):
+        keys = (split_name, f"{split_name}_video_ids", f"{split_name}_videos")
+        for key in keys:
+            values = splits.get(key)
+            if isinstance(values, Mapping):
+                nested = values.get("video_ids") or values.get("videos") or values.get("ids")
+                if nested is not None and video_id in {str(item) for item in nested}:
+                    return split_name
+            elif isinstance(values, (list, tuple, set)) and video_id in {str(item) for item in values}:
+                return split_name
+    return None
 
 
 def _write_grid_preview(path: Path, a: np.ndarray, b: np.ndarray, c: np.ndarray) -> None:

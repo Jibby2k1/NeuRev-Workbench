@@ -24,6 +24,10 @@ const roiNotes = document.getElementById('roiNotes');
 const eventNotes = document.getElementById('eventNotes');
 const viewerScroll = document.getElementById('viewerScroll');
 const viewerWrap = document.getElementById('viewerWrap');
+const reviewViewerLayout = document.getElementById('reviewViewerLayout');
+const reviewRawPane = document.getElementById('reviewRawPane');
+const reviewRawWrap = document.getElementById('reviewRawWrap');
+const reviewRawImg = document.getElementById('reviewRawFrameImg');
 const datasetId = data.dataset?.dataset_id || data.video?.name || 'calcium-video';
 const storeKey = `neuron-review-workbench-v3-${datasetId}`;
 const recoveryStoreKey = `${storeKey}-recovery-history`;
@@ -259,8 +263,17 @@ function defaultDataCompareRunId(){
   }
   return baselineRunId();
 }
+function runHasAttachedFrameIntermediates(run){
+  return Array.isArray(run?.artifacts?.intermediates)
+    && run.artifacts.intermediates.some(item => item?.frame_pattern || item?.framePattern);
+}
+function candidateOverlayOnlyRun(runId=defaultDataCompareRunId()){
+  const run = runById(runId);
+  return Boolean(run && runHasCandidateRois(run) && !runHasAttachedFrameIntermediates(run));
+}
 function defaultDataComparePreset(runId=defaultDataCompareRunId()){
-  return isExternalTestDataset() && (String(runId || '').startsWith('green_excess_single_cfar_v1__sweep_') || runId === 'gamma_cfar_cascade_grid_high_recall_v1__sweep_009') ? 'focused_diagnostic' : 'raw_artifact';
+  if(isExternalTestDataset() && (String(runId || '').startsWith('green_excess_single_cfar_v1__sweep_') || runId === 'gamma_cfar_cascade_grid_high_recall_v1__sweep_009')) return 'focused_diagnostic';
+  return candidateOverlayOnlyRun(runId) ? 'raw_roi' : 'raw_artifact';
 }
 function baselineRunId(){ return preferredReviewRun()?.run_id || 'current_review_pipeline'; }
 
@@ -286,12 +299,13 @@ function defaultAnnotations() {
       eventThreshold: 2.4,
       kalmanGain: 0.06,
       spikeGain: 0.008,
-      zoom: 3.0,
+      zoom: 1.5,
+      reviewSideBySide: candidateOverlayOnlyRun(),
       brightness: 1,
       contrast: 1.08,
-      overlayOpacity: 0.72,
+      overlayOpacity: 0.50,
       overlayPreset: 'validate',
-      roiLabelMode: 'all',
+      roiLabelMode: 'selected',
       selectedOverlayMode: 'outline',
       selectedFillOpacity: 0.10,
       selectedOutlineWidth: 2.5,
@@ -312,8 +326,8 @@ function defaultAnnotations() {
       discoveryQueue: 'all',
       evidenceMap: data.discovery?.evidenceMaps?.[0]?.id || '',
       showEvidence: false,
-      showSuggestions: true,
-      showStencilOverlay: true,
+      showSuggestions: false,
+      showStencilOverlay: false,
       showTemplateOverlay: false,
       showRegisteredProjectionOverlay: false,
       showGridOverlay: false,
@@ -324,6 +338,7 @@ function defaultAnnotations() {
       showAnnotatedNeuronRois: true,
       showAnnotatedNonNeuronRois: true,
       overlayScope: 'all',
+      showAllSweeps: false,
       minArea: 0,
       minEvents: 0,
       reviewMode: 'explore',
@@ -370,6 +385,7 @@ function mergeAnnotations(incoming) {
   annotations.reviewStats = Object.assign(defaultAnnotations().reviewStats, incoming?.reviewStats || {});
   annotations.reviewStats.actions = Object.assign({}, incoming?.reviewStats?.actions || {});
   annotations.settings = Object.assign(defaultAnnotations().settings, incoming?.settings || {});
+  if(incoming?.settings?.reviewSideBySide === undefined) annotations.settings.reviewSideBySide = candidateOverlayOnlyRun(annotations.settings.activeRunId);
 }
 
 function migrateRunBucket(bucket) {
@@ -1791,6 +1807,8 @@ function applySettingsToControls() {
   if(roiEditMode) roiEditMode.value = setting('roiEditMode') || 'off';
   const workflowPreset = document.getElementById('reviewWorkflowPreset');
   if(workflowPreset) workflowPreset.value = setting('reviewWorkflowPreset') || 'custom';
+  const showAllSweeps = document.getElementById('showAllSweeps');
+  if(showAllSweeps) showAllSweeps.checked = Boolean(setting('showAllSweeps'));
   updateOverlayViewButtons();
   renderBookmarkControls();
   renderSnapshotControls();
@@ -1846,14 +1864,51 @@ function populateEvidenceSelect(){
 }
 
 function applyDisplaySettings() {
-  img.style.width = `${data.video.width * Number(setting('zoom'))}px`;
+  const zoom = Math.max(0.05, Number(setting('zoom')) || 1);
+  const videoWidth = Math.max(1, Number(data.video?.width) || img.naturalWidth || 1);
+  const videoHeight = Math.max(1, Number(data.video?.height) || img.naturalHeight || 1);
+  applyReviewViewerMode();
+  viewerWrap.style.width = `${videoWidth * zoom}px`;
+  viewerWrap.style.height = `${videoHeight * zoom}px`;
+  viewerWrap.style.aspectRatio = `${videoWidth} / ${videoHeight}`;
+  img.style.width = '100%';
+  img.style.height = '100%';
   img.style.filter = `brightness(${setting('brightness')}) contrast(${setting('contrast')})`;
-  evidenceImg.style.width = img.style.width;
+  if(reviewRawWrap) {
+    reviewRawWrap.style.width = `${videoWidth * zoom}px`;
+    reviewRawWrap.style.height = `${videoHeight * zoom}px`;
+    reviewRawWrap.style.aspectRatio = `${videoWidth} / ${videoHeight}`;
+  }
+  if(reviewRawImg) {
+    reviewRawImg.style.width = '100%';
+    reviewRawImg.style.height = '100%';
+    reviewRawImg.style.filter = img.style.filter;
+  }
+  evidenceImg.style.width = '100%';
+  evidenceImg.style.height = '100%';
   const evidenceMap = (data.discovery?.evidenceMaps || []).find(m => m.id === setting('evidenceMap'));
   evidenceImg.src = evidenceMap ? evidenceMap.file : '';
   evidenceImg.style.opacity = setting('showEvidence') ? '0.58' : '0';
   ctx.globalAlpha = Number(setting('overlayOpacity'));
   resizeOverlay();
+}
+
+function reviewSideBySideEnabled(){ return Boolean(setting('reviewSideBySide')); }
+function applyReviewViewerMode(){
+  const enabled = reviewSideBySideEnabled();
+  reviewRawPane?.classList.toggle('hidden', !enabled);
+  reviewViewerLayout?.classList.toggle('sideBySide', enabled);
+  const button = document.getElementById('reviewSideBySideBtn');
+  if(button) {
+    button.textContent = enabled ? 'Single view' : 'Raw + outline';
+    button.classList.toggle('active', enabled);
+    button.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+  }
+}
+function toggleReviewSideBySide(){
+  setSetting('reviewSideBySide', !reviewSideBySideEnabled());
+  applyDisplaySettings();
+  queueSave();
 }
 
 function refreshReviewAfterDataChange(){
@@ -2088,9 +2143,9 @@ async function refreshArchitectureRuns(){
 }
 
 function resizeOverlay(){
-  const rect = img.getBoundingClientRect();
-  overlay.width = data.video.width;
-  overlay.height = data.video.height;
+  const rect = viewerWrap.getBoundingClientRect();
+  overlay.width = Math.max(1, Number(data.video?.width) || img.naturalWidth || 1);
+  overlay.height = Math.max(1, Number(data.video?.height) || img.naturalHeight || 1);
   overlay.style.width = rect.width + 'px';
   overlay.style.height = rect.height + 'px';
   drawOverlay();
@@ -3332,6 +3387,7 @@ function setFrame(frame){
   slider.value = currentFrame;
   frameLabel.textContent = frameLabelText(currentFrame);
   img.src = framePath(currentFrame);
+  if(reviewRawImg) reviewRawImg.src = img.src;
   const runOverlayText = activeRunReviewRois() ? ` | overlay: ${runLabel(activeRun())}` : '';
   statusEl.textContent = `Frame ${frameLabelText(currentFrame)} / ${data.video.frames} (${formatSeconds(data.video.frames / Math.max(1, datasetFrameRateHz()))} total)${runOverlayText}`;
   const roi = selectedRoi();
@@ -4777,7 +4833,8 @@ function togglePlay(){
   else clearInterval(timer);
 }
 function fitWidth(){
-  const width = Math.max(1, viewerScroll.clientWidth - 34);
+  const paneCount = reviewSideBySideEnabled() ? 2 : 1;
+  const width = Math.max(1, (viewerScroll.clientWidth - 34 - (paneCount - 1) * 14) / paneCount);
   setSetting('zoom', Math.max(0.5, width / data.video.width));
   applySettingsToControls();
   applyDisplaySettings();
@@ -4794,6 +4851,7 @@ function initControls(){
   slider.max = data.video.frames;
   slider.oninput = () => setFrame(Number(slider.value));
   document.getElementById('playBtn').onclick = togglePlay;
+  document.getElementById('reviewSideBySideBtn').onclick = toggleReviewSideBySide;
   document.getElementById('fitBtn').onclick = fitWidth;
   document.getElementById('fitHeightBtn').onclick = fitHeight;
   document.getElementById('fullscreenBtn').onclick = () => viewerScroll.requestFullscreen?.();
@@ -4821,6 +4879,8 @@ function initControls(){
     }
   };
   document.getElementById('refreshRunBtn').onclick = refreshArchitectureRuns;
+  const showAllSweeps = document.getElementById('showAllSweeps');
+  if(showAllSweeps) showAllSweeps.onchange = e => { setSetting('showAllSweeps', e.target.checked); renderRunSyncControls(); queueSave(); };
   document.getElementById('generationBackend').onchange = renderRunSyncControls;
   document.getElementById('archRunA').onchange = e => {
     reviewCompareSettings().runAId = e.target.value;
@@ -10630,17 +10690,43 @@ function isGammaCfarRun(run){
   const runId = String(run?.run_id || '');
   return runId.startsWith('gamma_cfar_cascade_grid_') && runId.includes('__sweep_');
 }
+function runFamily(run){
+  const runId = String(run?.run_id || '');
+  if(runId.startsWith('soma_projection_candidates')) return 'Soma-first review';
+  if(runId.startsWith('kalman_residual_projection_cfar_roi_state')) return 'Kalman residual support';
+  if(runId.startsWith('grayscale_projection_cfar_roi_state')) return 'Raw projection support';
+  if(runId.startsWith('gamma_cfar_cascade_grid')) return 'Raw Gamma CFAR sweep';
+  return 'Other runs';
+}
+function recommendedReviewRun(run){
+  const runId = String(run?.run_id || '');
+  if(runId === 'soma_projection_candidates_v1') return true;
+  return [
+    'grayscale_projection_cfar_roi_state_v1__sweep_004',
+    'grayscale_projection_cfar_roi_state_v1__sweep_010',
+    'kalman_residual_projection_cfar_roi_state_v1__sweep_002',
+    'kalman_residual_projection_cfar_roi_state_v1__sweep_004',
+    'kalman_residual_projection_cfar_roi_state_v1__sweep_006',
+    'kalman_residual_projection_cfar_roi_state_v1__sweep_008'
+  ].includes(runId);
+}
 function processRunOptionsHtml(runs, selectedRun){
   const selectedId = selectedRun?.run_id || '';
-  const recommended = runs.filter(run => isGammaCfarRun(run) && runHasIntermediates(run));
-  const otherGamma = runs.filter(run => isGammaCfarRun(run) && !runHasIntermediates(run));
-  const other = runs.filter(run => !isGammaCfarRun(run));
-  const option = run => `<option value="${escapeHtml(run.run_id)}" ${selectedId === run.run_id ? 'selected' : ''}>${escapeHtml(runLabel(run))}</option>`;
-  const groups = [];
-  if(recommended.length) groups.push(`<optgroup label="Gamma CFAR results">${recommended.map(option).join('')}</optgroup>`);
-  if(otherGamma.length) groups.push(`<optgroup label="Gamma CFAR runs without previews">${otherGamma.map(option).join('')}</optgroup>`);
-  if(other.length) groups.push(`<optgroup label="Current review / other runs">${other.map(option).join('')}</optgroup>`);
-  return groups.join('');
+  const showAll = Boolean(setting('showAllSweeps')) || normalizeUiMode(setting('uiMode')) === 'expert';
+  let visibleRuns = showAll ? runs.slice() : runs.filter(recommendedReviewRun);
+  if(selectedRun && !visibleRuns.some(run => run.run_id === selectedId)) visibleRuns = [selectedRun, ...visibleRuns];
+  const option = run => {
+    const suffix = showAll ? ` · ${runDetailText(run) || runFamily(run)}` : ` · ${runFamily(run)}`;
+    return `<option value="${escapeHtml(run.run_id)}" ${selectedId === run.run_id ? 'selected' : ''}>${escapeHtml(runLabel(run) + suffix)}</option>`;
+  };
+  const families = [];
+  for(const run of visibleRuns){
+    const family = showAll ? runFamily(run) : (recommendedReviewRun(run) ? 'Recommended review runs' : 'Current selected run');
+    let group = families.find(item => item.label === family);
+    if(!group) { group = {label: family, runs: []}; families.push(group); }
+    group.runs.push(run);
+  }
+  return families.map(group => `<optgroup label="${escapeHtml(group.label)}">${group.runs.map(option).join('')}</optgroup>`).join('');
 }
 function gammaCfarQuickPickHtml(runs, selectedRun){
   const recommended = runs.filter(run => isGammaCfarRun(run) && runHasIntermediates(run));
@@ -10755,7 +10841,16 @@ function qcStageTiles(run){
   for(const stage of pipeline){
     const def = stageDef(stage);
     const artifact = findIntermediateForStage(stage, run);
-    const summary = artifact ? null : summaryTileForStage(stage, run);
+    const stageKey = String(stageOp(stage) || stage.id || '').toLowerCase();
+    const liveCandidateOverlay = !artifact && runHasCandidateRois(run) && stageKey.includes('soma_projection');
+    const summary = artifact ? null : liveCandidateOverlay ? {
+      status: 'available',
+      description: 'Synchronized candidate and event outlines are rendered live over the raw frame; no duplicate intermediate frame stack is required.',
+      summaryRows: [
+        {value: String(run.summary?.roi_count || 0), label: 'candidate ROIs'},
+        {value: String(run.summary?.event_count || 0), label: 'candidate events'}
+      ]
+    } : summaryTileForStage(stage, run);
     tiles.push({
       id: stage.id || stageOp(stage),
       label: artifact?.label || def?.label || stage.label || stage.name || stageOp(stage),
@@ -11285,6 +11380,10 @@ function renderDatasetQc(){
 function dataSubPageFromHash(hashText=location.hash){
   const hash = (hashText || '#data').replace(/^#\/?/, '');
   if(hash === 'data-compare' || hash === 'compare' || hash === 'process-compare') return 'compare';
+  if(hash === 'data') {
+    const run = selectedQcRun();
+    if(run && runHasCandidateRois(run) && !runHasIntermediates(run)) return 'compare';
+  }
   return 'inspect';
 }
 function dataPageLabel(subpage){ return subpage === 'compare' ? 'Data Compare' : 'Data Inspect'; }

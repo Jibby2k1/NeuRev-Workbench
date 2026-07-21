@@ -11,6 +11,7 @@ from typing import Any, Iterable, Mapping, Sequence
 import numpy as np
 
 from neurobench.dynamics.overnight_sweep import collect_metric_rows
+from neurobench.dynamics.supervisor import classify_failure
 
 
 SPLIT_ORDER = {"test": 0, "val": 1, "validation": 1, "train": 2, "unknown": 3}
@@ -49,12 +50,14 @@ def build_comparison_dashboard(
     rows_sorted = sorted(rows, key=_row_sort_key)
     selected = [r for r in rows_sorted if r.get("kind") not in {"array_baseline"}][: int(selected_count)]
     videos = _ordered_videos(dataset_index)
+    intelligence = build_results_intelligence(rows=rows_sorted, sweep_dirs=sweeps)
     payload = {
         "schema_version": 1,
         "title": str(title),
         "sweep_dirs": [str(p) for p in sweeps],
         "row_count": len(rows_sorted),
         "rows": rows_sorted,
+        "intelligence": intelligence,
         "selected_models": selected,
         "datasets": dataset_index,
         "input_videos": videos,
@@ -63,7 +66,11 @@ def build_comparison_dashboard(
     }
     manifest_path = out / "comparison_manifest.json"
     html_path = out / "comparison_dashboard.html"
+    intelligence_path = out / "results_intelligence.json"
+    intelligence_md_path = out / "results_intelligence.md"
     manifest_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    intelligence_path.write_text(json.dumps(intelligence, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    intelligence_md_path.write_text(render_results_intelligence_markdown(intelligence), encoding="utf-8")
     html_path.write_text(_comparison_html(payload), encoding="utf-8")
     summary = {
         "schema_version": 1,
@@ -71,12 +78,77 @@ def build_comparison_dashboard(
         "row_count": len(rows_sorted),
         "selected_model_ids": [r["row_id"] for r in selected],
         "video_collection_count": len(video_collections),
+        "failure_count": intelligence.get("failure_summary", {}).get("failure_count", 0),
+        "positive_test_count": intelligence.get("improvement_distribution", {}).get("test", {}).get("positive_count", 0),
         "manifest_path": str(manifest_path),
         "html_path": str(html_path),
+        "intelligence_path": str(intelligence_path),
+        "intelligence_md_path": str(intelligence_md_path),
     }
     (out / "comparison_summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return summary
 
+
+
+def build_results_intelligence(*, rows: Sequence[Mapping[str, Any]], sweep_dirs: Sequence[str | Path]) -> dict[str, Any]:
+    """Summarize completed and failed sweep configurations for dashboard review."""
+    row_list = [dict(row) for row in rows]
+    failures = _collect_failed_progress_records(sweep_dirs)
+    splits = ("test", "val", "all")
+    return {
+        "schema_version": 1,
+        "completed_count": len(row_list),
+        "leaderboards": {split: _leaderboard(row_list, split=split, limit=10) for split in splits},
+        "best_by_family": {split: _best_grouped(row_list, split=split, group_key="model_family") for split in splits},
+        "best_by_horizon": {split: _best_grouped(row_list, split=split, group_key="dataset_key") for split in splits},
+        "best_by_target": {split: _best_grouped(row_list, split=split, group_key="prediction_target") for split in splits},
+        "target_comparison": {split: _group_stats(row_list, split=split, group_key="prediction_target") for split in splits},
+        "family_comparison": {split: _group_stats(row_list, split=split, group_key="model_family") for split in splits},
+        "improvement_distribution": {split: _improvement_distribution(row_list, split=split) for split in splits},
+        "runtime_summary": _runtime_summary(row_list),
+        "failures": failures[:200],
+        "failure_summary": _failure_dashboard_summary(failures),
+    }
+
+
+def render_results_intelligence_markdown(intelligence: Mapping[str, Any]) -> str:
+    """Render a compact professor-facing sweep intelligence report."""
+    lines = [
+        "# Results Intelligence",
+        "",
+        f"Completed metric rows: `{intelligence.get('completed_count', 0)}`",
+        f"Failed configurations represented: `{intelligence.get('failure_summary', {}).get('failure_count', 0)}`",
+        "",
+        "## Top Test Models",
+        "",
+        _markdown_model_table(intelligence.get("leaderboards", {}).get("test", []), split="test"),
+        "",
+        "## Best Test Model Per Family",
+        "",
+        _markdown_model_table(intelligence.get("best_by_family", {}).get("test", {}).values(), split="test"),
+        "",
+        "## Best Test Model Per Horizon",
+        "",
+        _markdown_model_table(intelligence.get("best_by_horizon", {}).get("test", {}).values(), split="test"),
+        "",
+        "## Delta vs Absolute Target",
+        "",
+        _markdown_group_table(intelligence.get("target_comparison", {}).get("test", {}), split="test"),
+        "",
+        "## Runtime Summary",
+        "",
+        _markdown_runtime_summary(intelligence.get("runtime_summary", {})),
+        "",
+        "## Failure Summary",
+        "",
+    ]
+    failure_summary = intelligence.get("failure_summary", {})
+    if failure_summary.get("failure_count"):
+        lines.append(_markdown_count_table("Failure class", failure_summary.get("by_class", {})))
+        lines.extend(["", "By model kind:", "", _markdown_count_table("Kind", failure_summary.get("by_kind", {}))])
+    else:
+        lines.append("No failed configurations were found in current or archived progress logs.")
+    return "\n".join(lines).rstrip() + "\n"
 
 def _video_collection_from_selector(*, sweep_dir: Path, out_dir: Path, sweep_id: str) -> dict[str, Any] | None:
     candidates = [
@@ -143,6 +215,10 @@ def _comparison_row(*, sweep_id: str, sweep_dir: Path, row: Mapping[str, Any], m
         "loss_mode": metrics.get("loss_mode") or row.get("loss_mode") or params.get("loss_mode"),
         "baseline_name": metrics.get("baseline_name") or params.get("baseline_name"),
         "prediction_target": metrics.get("prediction_target") or params.get("prediction_target"),
+        "hyperparameter_group": row.get("hyperparameter_group") or params.get("hyperparameter_group"),
+        "hyperparameter_summary": row.get("hyperparameter_summary") or params.get("hyperparameter_summary") or _compact_params(params),
+        "grid_size": row.get("grid_size") or params.get("grid_size"),
+        "grid_pooling": row.get("grid_pooling") or params.get("grid_pooling"),
         "primary_split": primary_split,
         "primary_improvement_over_persistence_mse": primary_improvement,
         "val_decoded_prediction_mse": _num(metrics.get("val_decoded_prediction_mse")),
@@ -151,12 +227,52 @@ def _comparison_row(*, sweep_id: str, sweep_dir: Path, row: Mapping[str, Any], m
         "test_decoded_prediction_mse": _num(metrics.get("test_decoded_prediction_mse")),
         "test_persistence_mse": _num(metrics.get("test_persistence_mse")),
         "test_improvement_over_persistence_mse": _num(metrics.get("test_improvement_over_persistence_mse")),
+        "test_active_cell_improvement_over_persistence_mse": _num(metrics.get("test_active_cell_improvement_over_persistence_mse")),
+        "test_active_cell_mse": _num(metrics.get("test_active_cell_mse")),
+        "test_active_cell_persistence_mse": _num(metrics.get("test_active_cell_persistence_mse")),
+        "test_top_activity_improvement_over_persistence_mse": _num(metrics.get("test_top_activity_improvement_over_persistence_mse")),
+        "test_high_change_improvement_over_persistence_mse": _num(metrics.get("test_high_change_improvement_over_persistence_mse")),
+        "test_active_cell_fraction": _num(metrics.get("test_active_cell_fraction")),
         "all_decoded_prediction_mse": _num(metrics.get("decoded_prediction_mse")),
         "all_persistence_mse": _num(metrics.get("persistence_mse")),
         "all_improvement_over_persistence_mse": _num(metrics.get("improvement_over_persistence_mse")),
+        "prediction_examples_path": metrics.get("prediction_examples_path"),
+        "prediction_clip_examples_path": metrics.get("prediction_clip_examples_path"),
+        "video_error_summary": _video_error_summary(metrics),
+        "elapsed_seconds": _num(row.get("elapsed_seconds")),
+        "progress_index": row.get("progress_index"),
+        "started_at": row.get("started_at"),
+        "finished_at": row.get("finished_at"),
         "metrics_path": str(row.get("metrics_path", "")),
         "params": params,
     }
+
+
+def _compact_params(params: Mapping[str, Any]) -> str:
+    keys = (
+        "baseline_name",
+        "architecture",
+        "loss_mode",
+        "prediction_target",
+        "hidden_dim",
+        "hidden_channels",
+        "model_dim",
+        "num_heads",
+        "num_layers",
+        "learning_rate",
+        "residual_scale",
+        "epochs",
+        "batch_size",
+        "grid_size",
+        "grid_pooling",
+    )
+    parts: list[str] = []
+    for key in keys:
+        value = params.get(key)
+        if value is None or value == "":
+            continue
+        parts.append(f"{key}={value}")
+    return ", ".join(parts)
 
 
 def _dataset_record(dataset_key: str, cfg: Mapping[str, Any]) -> dict[str, Any]:
@@ -166,13 +282,15 @@ def _dataset_record(dataset_key: str, cfg: Mapping[str, Any]) -> dict[str, Any]:
         "dataset_path": str(dataset_path) if dataset_path else "",
         "autoencoder_run": str(cfg.get("autoencoder_run", "")),
         "window_frames": cfg.get("window_frames"),
+        "windowing": dict(cfg.get("windowing", {})) if isinstance(cfg.get("windowing"), Mapping) else {},
+        "splits": dict(cfg.get("splits", {})) if isinstance(cfg.get("splits"), Mapping) else {},
         "videos": [],
     }
     if not dataset_path or not dataset_path.exists():
         return record
     dataset = _load_json(dataset_path)
-    record["windowing"] = dataset.get("windowing", {})
-    record["splits"] = dataset.get("splits", {})
+    record["windowing"] = dataset.get("windowing", record.get("windowing", {}))
+    record["splits"] = dataset.get("splits", record.get("splits", {}))
     array_path = Path(str(dataset.get("array_path", "")))
     if array_path.exists():
         record["videos"] = _videos_from_arrays(array_path, dataset.get("splits", {}), dataset_key)
@@ -258,6 +376,416 @@ def _num(value: Any) -> float | None:
     return number
 
 
+
+def _runtime_summary(rows: Sequence[Mapping[str, Any]], *, slowest_limit: int = 10) -> dict[str, Any]:
+    timed = [row for row in rows if _num(row.get("elapsed_seconds")) is not None]
+    if not timed:
+        return {"available": False, "row_count": 0, "by_family": {}, "slowest_rows": []}
+    values = [float(_num(row.get("elapsed_seconds"))) for row in timed]
+    by_family: dict[str, list[float]] = {}
+    rows_by_family: dict[str, list[Mapping[str, Any]]] = {}
+    for row in timed:
+        family = str(row.get("model_family") or row.get("kind") or "unknown")
+        elapsed = float(_num(row.get("elapsed_seconds")))
+        by_family.setdefault(family, []).append(elapsed)
+        rows_by_family.setdefault(family, []).append(row)
+    family_summary = {}
+    for family, family_values in sorted(by_family.items()):
+        slowest = sorted(rows_by_family[family], key=lambda row: _finite_or_floor(row.get("elapsed_seconds")), reverse=True)[:3]
+        family_summary[family] = {
+            "count": len(family_values),
+            "mean_seconds": float(np.mean(family_values)),
+            "median_seconds": float(np.median(family_values)),
+            "max_seconds": float(np.max(family_values)),
+            "slowest_rows": [_runtime_row_card(row) for row in slowest],
+        }
+    slowest_rows = sorted(timed, key=lambda row: _finite_or_floor(row.get("elapsed_seconds")), reverse=True)[: int(slowest_limit)]
+    return {
+        "available": True,
+        "row_count": len(timed),
+        "total_seconds": float(np.sum(values)),
+        "mean_seconds": float(np.mean(values)),
+        "median_seconds": float(np.median(values)),
+        "max_seconds": float(np.max(values)),
+        "by_family": family_summary,
+        "slowest_rows": [_runtime_row_card(row) for row in slowest_rows],
+    }
+
+
+def _runtime_row_card(row: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "experiment_id": str(row.get("experiment_id", "")),
+        "model_family": str(row.get("model_family") or row.get("kind") or ""),
+        "dataset_key": str(row.get("dataset_key", "")),
+        "elapsed_seconds": _num(row.get("elapsed_seconds")),
+        "hyperparameter_summary": row.get("hyperparameter_summary"),
+    }
+
+
+def _video_error_summary(metrics: Mapping[str, Any], *, limit: int = 5) -> dict[str, Any]:
+    split_metrics = metrics.get("split_metrics", {})
+    if not isinstance(split_metrics, Mapping):
+        return {}
+    summary: dict[str, Any] = {}
+    for split_name in ("test", "val", "train", "all"):
+        split = split_metrics.get(split_name, {})
+        if not isinstance(split, Mapping):
+            continue
+        per_video = split.get("per_video", {})
+        if not isinstance(per_video, Mapping) or not per_video:
+            continue
+        rows = [_video_metric_card(video_id, record) for video_id, record in per_video.items() if isinstance(record, Mapping)]
+        rows = [row for row in rows if row.get("improvement_over_persistence_mse") is not None]
+        if not rows:
+            continue
+        ranked = sorted(rows, key=lambda row: (-_finite_or_floor(row.get("improvement_over_persistence_mse")), str(row.get("video_id", ""))))
+        summary[split_name] = {
+            "video_count": len(rows),
+            "best_videos": ranked[: int(limit)],
+            "worst_videos": list(reversed(ranked[-int(limit) :])),
+            "label_summary": _video_label_summary(rows),
+        }
+    return summary
+
+
+def _video_metric_card(video_id: Any, record: Mapping[str, Any]) -> dict[str, Any]:
+    video_id_text = str(video_id)
+    return {
+        "video_id": video_id_text,
+        "video_label": _video_label(video_id_text),
+        "window_count": int(record.get("window_count") or 0),
+        "decoded_prediction_mse": _num(record.get("decoded_prediction_mse")),
+        "persistence_mse": _num(record.get("persistence_mse")),
+        "improvement_over_persistence_mse": _num(record.get("improvement_over_persistence_mse")),
+    }
+
+
+def _video_label_summary(rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    groups: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        label = str(row.get("video_label") or "unknown")
+        group = groups.setdefault(label, {"video_count": 0, "window_count": 0, "decoded_prediction_mse": [], "persistence_mse": [], "improvement_over_persistence_mse": []})
+        group["video_count"] += 1
+        windows = max(int(row.get("window_count") or 0), 1)
+        group["window_count"] += int(row.get("window_count") or 0)
+        for key in ("decoded_prediction_mse", "persistence_mse", "improvement_over_persistence_mse"):
+            value = _num(row.get(key))
+            if value is not None:
+                group[key].append((float(value), windows))
+    summary = []
+    for label, group in groups.items():
+        summary.append(
+            {
+                "label": label,
+                "video_count": int(group["video_count"]),
+                "window_count": int(group["window_count"]),
+                "decoded_prediction_mse": _weighted_mean(group["decoded_prediction_mse"]),
+                "persistence_mse": _weighted_mean(group["persistence_mse"]),
+                "improvement_over_persistence_mse": _weighted_mean(group["improvement_over_persistence_mse"]),
+            }
+        )
+    return sorted(summary, key=lambda item: (-_finite_or_floor(item.get("improvement_over_persistence_mse")), str(item.get("label", ""))))
+
+
+def _weighted_mean(values: Sequence[tuple[float, int]]) -> float | None:
+    total_weight = sum(weight for _, weight in values)
+    if total_weight <= 0:
+        return None
+    return float(sum(value * weight for value, weight in values) / total_weight)
+
+
+def _video_label(video_id: str) -> str:
+    tokens = str(video_id).lower().replace("_", " ").replace("-", " ").split()
+    for label in ("left", "right", "neutral"):
+        if label in tokens:
+            return label
+    return "unknown"
+
+
+def _leaderboard(rows: Sequence[Mapping[str, Any]], *, split: str, limit: int) -> list[dict[str, Any]]:
+    ranked = [row for row in rows if _split_improvement(row, split) is not None]
+    ranked.sort(key=lambda row: (-_finite_or_floor(_split_improvement(row, split)), str(row.get("experiment_id", ""))))
+    return [_model_card(row, split=split) for row in ranked[: int(limit)]]
+
+
+def _best_grouped(rows: Sequence[Mapping[str, Any]], *, split: str, group_key: str) -> dict[str, dict[str, Any]]:
+    best: dict[str, Mapping[str, Any]] = {}
+    for row in rows:
+        improve = _split_improvement(row, split)
+        if improve is None:
+            continue
+        group = _group_value(row, group_key)
+        if group not in best or _finite_or_floor(improve) > _finite_or_floor(_split_improvement(best[group], split)):
+            best[group] = row
+    return {group: _model_card(row, split=split) for group, row in sorted(best.items())}
+
+
+def _group_stats(rows: Sequence[Mapping[str, Any]], *, split: str, group_key: str) -> dict[str, dict[str, Any]]:
+    values_by_group: dict[str, list[float]] = {}
+    rows_by_group: dict[str, list[Mapping[str, Any]]] = {}
+    for row in rows:
+        improve = _split_improvement(row, split)
+        if improve is None:
+            continue
+        group = _group_value(row, group_key)
+        values_by_group.setdefault(group, []).append(float(improve))
+        rows_by_group.setdefault(group, []).append(row)
+    stats: dict[str, dict[str, Any]] = {}
+    for group in sorted(values_by_group):
+        values = values_by_group[group]
+        best = _leaderboard(rows_by_group[group], split=split, limit=1)
+        stats[group] = {
+            "count": len(values),
+            "positive_count": sum(1 for value in values if value > 0),
+            "mean_improvement": float(np.mean(values)) if values else None,
+            "median_improvement": float(np.median(values)) if values else None,
+            "best": best[0] if best else None,
+        }
+    return stats
+
+
+def _improvement_distribution(rows: Sequence[Mapping[str, Any]], *, split: str) -> dict[str, Any]:
+    values = [float(value) for row in rows if (value := _split_improvement(row, split)) is not None]
+    if not values:
+        return {"count": 0, "positive_count": 0, "negative_count": 0, "zero_count": 0, "min": None, "median": None, "mean": None, "max": None}
+    return {
+        "count": len(values),
+        "positive_count": sum(1 for value in values if value > 0),
+        "negative_count": sum(1 for value in values if value < 0),
+        "zero_count": sum(1 for value in values if value == 0),
+        "min": float(np.min(values)),
+        "median": float(np.median(values)),
+        "mean": float(np.mean(values)),
+        "max": float(np.max(values)),
+    }
+
+
+def _model_card(row: Mapping[str, Any], *, split: str) -> dict[str, Any]:
+    return {
+        "row_id": str(row.get("row_id", "")),
+        "experiment_id": str(row.get("experiment_id", "")),
+        "sweep_id": str(row.get("sweep_id", "")),
+        "kind": str(row.get("kind", "")),
+        "model_family": str(row.get("model_family", "")),
+        "dataset_key": str(row.get("dataset_key", "")),
+        "seed": row.get("seed"),
+        "split": split,
+        "decoded_prediction_mse": _split_metric(row, split, "decoded_prediction_mse"),
+        "persistence_mse": _split_metric(row, split, "persistence_mse"),
+        "improvement_over_persistence_mse": _split_improvement(row, split),
+        "loss_mode": row.get("loss_mode"),
+        "baseline_name": row.get("baseline_name"),
+        "prediction_target": row.get("prediction_target") or row.get("baseline_name") or "unspecified",
+        "hyperparameter_group": row.get("hyperparameter_group"),
+        "hyperparameter_summary": row.get("hyperparameter_summary"),
+        "video_error_summary": row.get("video_error_summary"),
+        "elapsed_seconds": _num(row.get("elapsed_seconds")),
+        "metrics_path": row.get("metrics_path"),
+    }
+
+
+def _split_metric(row: Mapping[str, Any], split: str, metric_name: str) -> float | None:
+    return _num(row.get(f"{split}_{metric_name}")) if split in {"test", "val", "all"} else None
+
+
+def _split_improvement(row: Mapping[str, Any], split: str) -> float | None:
+    return _split_metric(row, split, "improvement_over_persistence_mse")
+
+
+def _group_value(row: Mapping[str, Any], group_key: str) -> str:
+    value = row.get(group_key)
+    if value is None or value == "":
+        if group_key == "prediction_target":
+            value = row.get("baseline_name") or "unspecified"
+        else:
+            value = "unknown"
+    return str(value)
+
+
+def _collect_failed_progress_records(sweep_dirs: Sequence[str | Path]) -> list[dict[str, Any]]:
+    failures: list[dict[str, Any]] = []
+    for sweep_dir in sweep_dirs:
+        sweep = Path(sweep_dir)
+        manifest = _load_json(sweep / "sweep_manifest.json") if (sweep / "sweep_manifest.json").exists() else {}
+        sweep_id = str(manifest.get("run_id") or manifest.get("profile") or sweep.name)
+        spec_index = _spec_index(manifest)
+        for progress_path in _progress_paths(sweep):
+            source = "current" if progress_path.name == "sweep_progress.jsonl" else "archive"
+            for record in _load_jsonl(progress_path):
+                if record.get("status") != "failed":
+                    continue
+                exp_id = str(record.get("experiment_id", ""))
+                spec = spec_index.get(exp_id, {})
+                params = spec.get("params", {}) if isinstance(spec.get("params"), Mapping) else {}
+                failures.append(
+                    {
+                        "sweep_id": sweep_id,
+                        "source": source,
+                        "progress_file": str(progress_path),
+                        "index": record.get("index"),
+                        "experiment_count": record.get("experiment_count"),
+                        "experiment_id": exp_id,
+                        "kind": str(record.get("kind") or spec.get("kind") or "unknown"),
+                        "dataset_key": str(record.get("dataset_key") or spec.get("dataset_key") or "unknown"),
+                        "seed": record.get("seed") or spec.get("seed"),
+                        "architecture": params.get("architecture") or record.get("kind") or spec.get("kind") or "unknown",
+                        "prediction_target": params.get("prediction_target") or params.get("baseline_name") or "unspecified",
+                        "hyperparameter_group": params.get("hyperparameter_group"),
+                        "hyperparameter_summary": params.get("hyperparameter_summary") or _compact_params(params),
+                        "failure_class": classify_failure(record.get("error", "")),
+                        "error_excerpt": str(record.get("error", ""))[:500],
+                    }
+                )
+    failures.sort(key=lambda item: (str(item.get("source")), str(item.get("progress_file")), int(item.get("index") or 0), str(item.get("experiment_id"))))
+    return failures
+
+
+def _failure_dashboard_summary(failures: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    by_class: dict[str, int] = {}
+    by_kind: dict[str, int] = {}
+    by_dataset: dict[str, int] = {}
+    by_architecture: dict[str, int] = {}
+    examples: dict[str, dict[str, Any]] = {}
+    for failure in failures:
+        for key, bucket in (("failure_class", by_class), ("kind", by_kind), ("dataset_key", by_dataset), ("architecture", by_architecture)):
+            value = str(failure.get(key) or "unknown")
+            bucket[value] = bucket.get(value, 0) + 1
+        cls = str(failure.get("failure_class") or "unknown")
+        examples.setdefault(cls, dict(failure))
+    return {
+        "failure_count": len(failures),
+        "by_class": dict(sorted(by_class.items())),
+        "by_kind": dict(sorted(by_kind.items())),
+        "by_dataset": dict(sorted(by_dataset.items())),
+        "by_architecture": dict(sorted(by_architecture.items())),
+        "examples": examples,
+    }
+
+
+def _progress_paths(sweep: Path) -> list[Path]:
+    paths = []
+    current = sweep / "sweep_progress.jsonl"
+    if current.exists():
+        paths.append(current)
+    paths.extend(sorted(path for path in sweep.glob("sweep_progress_*.jsonl") if path.is_file()))
+    return paths
+
+
+def _load_jsonl(path: Path) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            item = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(item, dict):
+            rows.append(item)
+    return rows
+
+
+def _spec_index(manifest: Mapping[str, Any]) -> dict[str, dict[str, Any]]:
+    experiments = manifest.get("experiments", []) if isinstance(manifest, Mapping) else []
+    if not isinstance(experiments, Sequence):
+        return {}
+    return {str(item.get("experiment_id")): dict(item) for item in experiments if isinstance(item, Mapping) and item.get("experiment_id")}
+
+
+def _markdown_model_table(rows: Iterable[Mapping[str, Any]], *, split: str) -> str:
+    row_list = list(rows)
+    if not row_list:
+        return "No completed metric rows for this split."
+    lines = [
+        "| Experiment | Family | Dataset | Target | Improvement | HParams |",
+        "|---|---|---|---|---:|---|",
+    ]
+    for row in row_list:
+        lines.append(
+            "| "
+            + " | ".join(
+                [
+                    f"`{row.get('experiment_id', '')}`",
+                    str(row.get("model_family", "")),
+                    str(row.get("dataset_key", "")),
+                    str(row.get("prediction_target") or row.get("baseline_name") or ""),
+                    _fmt(row.get("improvement_over_persistence_mse")),
+                    f"`{row.get('hyperparameter_summary') or ''}`",
+                ]
+            )
+            + " |"
+        )
+    return "\n".join(lines)
+
+
+def _markdown_group_table(groups: Mapping[str, Mapping[str, Any]], *, split: str) -> str:
+    if not groups:
+        return "No grouped metric rows for this split."
+    lines = ["| Group | Count | Positive | Mean improve | Best experiment | Best improve |", "|---|---:|---:|---:|---|---:|"]
+    for name, stats in sorted(groups.items()):
+        best = stats.get("best") or {}
+        lines.append(
+            "| "
+            + " | ".join(
+                [
+                    str(name),
+                    str(stats.get("count", 0)),
+                    str(stats.get("positive_count", 0)),
+                    _fmt(stats.get("mean_improvement")),
+                    f"`{best.get('experiment_id', '')}`" if best else "",
+                    _fmt(best.get("improvement_over_persistence_mse")) if best else "n/a",
+                ]
+            )
+            + " |"
+        )
+    return "\n".join(lines)
+
+
+def _markdown_runtime_summary(summary: Mapping[str, Any]) -> str:
+    if not summary.get("available"):
+        return "No completed runtime records found."
+    lines = [
+        f"Timed completed rows: `{summary.get('row_count', 0)}`",
+        f"Median runtime: `{_fmt_duration(summary.get('median_seconds'))}`",
+        f"Total timed runtime: `{_fmt_duration(summary.get('total_seconds'))}`",
+        "",
+        "| Family | Timed rows | Median runtime | Max runtime |",
+        "|---|---:|---:|---:|",
+    ]
+    by_family = summary.get("by_family", {}) if isinstance(summary.get("by_family"), Mapping) else {}
+    for family, item in sorted(by_family.items(), key=lambda pair: _num(pair[1].get("median_seconds")) or 0, reverse=True):
+        lines.append(f"| {family} | {item.get('count', 0)} | {_fmt_duration(item.get('median_seconds'))} | {_fmt_duration(item.get('max_seconds'))} |")
+    slowest = [row for row in summary.get("slowest_rows", []) if isinstance(row, Mapping)]
+    if slowest:
+        lines.extend(["", "Slowest completed rows:", ""])
+        lines.extend(f"- `{row.get('experiment_id')}` ({row.get('model_family')}, {_fmt_duration(row.get('elapsed_seconds'))})" for row in slowest[:5])
+    return "\n".join(lines)
+
+
+def _fmt_duration(seconds: Any) -> str:
+    value = _num(seconds)
+    if value is None:
+        return "n/a"
+    if value < 90:
+        return f"{value:.0f}s"
+    if value < 7200:
+        return f"{value / 60:.1f}m"
+    return f"{value / 3600:.2f}h"
+
+
+def _markdown_count_table(label: str, counts: Mapping[str, Any]) -> str:
+    if not counts:
+        return "No counts."
+    lines = [f"| {label} | Count |", "|---|---:|"]
+    for key, value in sorted(counts.items()):
+        lines.append(f"| {key} | {value} |")
+    return "\n".join(lines)
+
+
+def _fmt(value: Any) -> str:
+    number = _num(value)
+    return "n/a" if number is None else f"{number:.4g}"
+
 def _load_json(path: str | Path) -> dict[str, Any]:
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
@@ -295,6 +823,15 @@ select, input {{ min-height:34px; border:1px solid var(--line); border-radius:6p
 .video-card .meta-line {{ padding:8px 10px; color:var(--muted); font-size:12px; line-height:1.35; }}
 .summary {{ display:grid; grid-template-columns: repeat(4, minmax(120px, 1fr)); gap:10px; margin-bottom:16px; }}
 .metric {{ border:1px solid var(--line); border-radius:8px; padding:10px 12px; background:var(--panel); }}
+.intelligence {{ border:1px solid var(--line); border-radius:8px; padding:14px; margin-bottom:16px; background:#fff; }}
+.intelligence h2 {{ margin:0 0 4px; font-size:18px; }}
+.intel-grid {{ display:grid; grid-template-columns: repeat(6, minmax(170px, 1fr)); gap:10px; margin-top:12px; }}
+.intel-card {{ border:1px solid var(--line); border-radius:8px; padding:10px; background:#fbfcfe; min-width:0; }}
+.intel-card h3 {{ margin:0 0 8px; font-size:13px; color:#344054; }}
+.intel-item {{ border-top:1px solid var(--line); padding:7px 0; }}
+.intel-item:first-child {{ border-top:0; padding-top:0; }}
+.intel-item .title {{ font-size:12px; line-height:1.3; overflow-wrap:anywhere; }}
+.intel-item .meta {{ color:var(--muted); font-size:11px; line-height:1.35; margin-top:2px; }}
 .metric b {{ display:block; font-size:19px; margin-bottom:2px; }}
 .metric span {{ color:var(--muted); font-size:12px; }}
 .compare {{ display:grid; grid-template-columns: minmax(0, 1fr) 340px; gap:16px; align-items:start; }}
@@ -312,7 +849,8 @@ button.primary {{ background:var(--accent); color:#fff; border-color:var(--accen
 .good {{ color:var(--good); font-variant-numeric:tabular-nums; }}
 .bad {{ color:var(--bad); font-variant-numeric:tabular-nums; }}
 .mono {{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }}
-@media (max-width: 980px) {{ .controls, .summary, .compare {{ grid-template-columns:1fr; }} .side {{ position:static; }} .video-head {{ display:block; }} }}
+@media (max-width: 1180px) {{ .intel-grid {{ grid-template-columns: repeat(2, minmax(180px, 1fr)); }} }}
+@media (max-width: 980px) {{ .controls, .summary, .compare, .intel-grid {{ grid-template-columns:1fr; }} .side {{ position:static; }} .video-head {{ display:block; }} }}
 </style>
 </head>
 <body>
@@ -348,10 +886,22 @@ button.primary {{ background:var(--accent); color:#fff; border-color:var(--accen
     <div class="small" id="clipNote"></div>
   </section>
   <div class="summary" id="summary"></div>
+  <section class="intelligence" id="intelligencePanel">
+    <h2>Results Intelligence</h2>
+    <div class="small">Family winners, horizon winners, target-mode comparisons, and failed configurations for the currently selected metric split.</div>
+    <div class="intel-grid">
+      <article class="intel-card"><h3>Top Models</h3><div id="intelTop"></div></article>
+      <article class="intel-card"><h3>Family Winners</h3><div id="intelFamily"></div></article>
+      <article class="intel-card"><h3>Horizon Winners</h3><div id="intelHorizon"></div></article>
+      <article class="intel-card"><h3>Delta vs Absolute</h3><div id="intelTarget"></div></article>
+      <article class="intel-card"><h3>Runtime</h3><div id="intelRuntime"></div></article>
+      <article class="intel-card"><h3>Failure Heatmap</h3><div id="intelFailures"></div></article>
+    </div>
+  </section>
   <div class="compare">
     <div>
       <table>
-        <thead><tr><th style="width:42px"></th><th>Experiment</th><th style="width:130px">Family</th><th style="width:120px">Dataset</th><th style="width:80px">Loss</th><th style="width:95px">Target</th><th style="width:110px">Split MSE</th><th style="width:120px">Improve</th></tr></thead>
+        <thead><tr><th style="width:42px"></th><th>Experiment</th><th style="width:120px">Family</th><th style="width:110px">Dataset</th><th style="width:80px">Loss</th><th style="width:85px">Target</th><th>HParams</th><th style="width:100px">Split MSE</th><th style="width:105px">Improve</th></tr></thead>
         <tbody id="rows"></tbody>
       </table>
     </div>
@@ -364,6 +914,7 @@ button.primary {{ background:var(--accent); color:#fff; border-color:var(--accen
 </main>
 <script>
 const payload = {data};
+const intelligence = payload.intelligence || {{}};
 let selected = new Map(payload.selected_models.map(row => [row.row_id, row]));
 const families = ['All', ...Array.from(new Set(payload.rows.map(r => r.model_family || r.kind))).sort()];
 const datasets = ['All', ...Array.from(new Set(payload.rows.map(r => r.dataset_key))).sort()];
@@ -388,7 +939,7 @@ function visibleRows() {{
     if (dataset !== 'All' && row.dataset_key !== dataset) return false;
     if (metric(row, split, 'decoded_prediction_mse') === null || metric(row, split, 'decoded_prediction_mse') === undefined) return false;
     if (q) {{
-      const haystack = `${{row.experiment_id}} ${{row.kind}} ${{row.model_family}} ${{row.loss_mode || ''}} ${{row.prediction_target || ''}} ${{row.objective || ''}}`.toLowerCase();
+      const haystack = `${{row.experiment_id}} ${{row.kind}} ${{row.model_family}} ${{row.loss_mode || ''}} ${{row.prediction_target || ''}} ${{row.objective || ''}} ${{row.hyperparameter_summary || ''}} ${{JSON.stringify(row.params || {{}})}}`.toLowerCase();
       if (!haystack.includes(q)) return false;
     }}
     return true;
@@ -457,6 +1008,64 @@ function pauseClipVideos() {{
   for (const clip of clipVideos()) clip.pause();
 }}
 
+function renderIntelModelList(rows, groupLabel) {{
+  if (!rows || !rows.length) return '<div class="small">No completed rows for this split.</div>';
+  return rows.slice(0, 5).map(row => {{
+    const label = groupLabel ? `${{groupLabel(row)}} · ${{row.experiment_id}}` : row.experiment_id;
+    return `<div class="intel-item"><div class="title mono">${{escapeHtml(label)}}</div><div class="meta">${{escapeHtml(row.model_family || row.kind || '')}} · ${{escapeHtml(row.dataset_key || '')}} · ${{escapeHtml(row.prediction_target || row.baseline_name || '')}}</div><div class="meta">improve <span class="${{cls(row.improvement_over_persistence_mse)}} mono">${{fmt(row.improvement_over_persistence_mse)}}</span></div><div class="meta">${{escapeHtml(row.hyperparameter_summary || '')}}</div></div>`;
+  }}).join('');
+}}
+function renderIntelGroups(groups) {{
+  const entries = Object.entries(groups || {{}});
+  if (!entries.length) return '<div class="small">No grouped rows for this split.</div>';
+  return entries.slice(0, 8).map(([name, stats]) => {{
+    const best = stats.best || {{}};
+    return `<div class="intel-item"><div class="title">${{escapeHtml(name)}}</div><div class="meta">${{escapeHtml(stats.positive_count || 0)}} / ${{escapeHtml(stats.count || 0)}} positive · mean ${{fmt(stats.mean_improvement)}}</div><div class="meta mono">best ${{escapeHtml(best.experiment_id || '')}} · <span class="${{cls(best.improvement_over_persistence_mse)}}">${{fmt(best.improvement_over_persistence_mse)}}</span></div></div>`;
+  }}).join('');
+}}
+function renderIntelFailures(summary) {{
+  const failureCount = Number(summary?.failure_count || 0);
+  if (!failureCount) return '<div class="small">No failed configurations found in current or archived progress logs.</div>';
+  const byClass = Object.entries(summary.by_class || {{}}).map(([name, count]) => `<div class="intel-item"><div class="title">${{escapeHtml(name)}}</div><div class="meta">${{escapeHtml(count)}} failed configuration${{Number(count) === 1 ? '' : 's'}}</div></div>`).join('');
+  const byKind = Object.entries(summary.by_kind || {{}}).slice(0, 5).map(([name, count]) => `${{escapeHtml(name)}}=${{escapeHtml(count)}}`).join(' · ');
+  return `${{byClass}}<div class="small">By kind: ${{byKind || 'n/a'}}</div>`;
+}}
+function fmtDuration(seconds) {{
+  const value = Number(seconds);
+  if (!Number.isFinite(value)) return 'n/a';
+  if (value < 90) return `${{value.toFixed(0)}}s`;
+  if (value < 7200) return `${{(value / 60).toFixed(1)}}m`;
+  return `${{(value / 3600).toFixed(2)}}h`;
+}}
+function renderIntelRuntime(summary) {{
+  if (!summary?.available) return '<div class="small">No completed runtime records found.</div>';
+  const family = Object.entries(summary.by_family || {{}}).sort((a, b) => Number(b[1].median_seconds || 0) - Number(a[1].median_seconds || 0)).slice(0, 4).map(([name, item]) => `<div class="intel-item"><div class="title">${{escapeHtml(name)}}</div><div class="meta">${{escapeHtml(item.count || 0)}} rows · median ${{fmtDuration(item.median_seconds)}} · max ${{fmtDuration(item.max_seconds)}}</div></div>`).join('');
+  const slowest = (summary.slowest_rows || []).slice(0, 2).map(row => `<div class="meta mono">${{escapeHtml(row.experiment_id)}} · ${{fmtDuration(row.elapsed_seconds)}}</div>`).join('');
+  return `${{family}}<div class="small">Timed rows: ${{escapeHtml(summary.row_count || 0)}} · median ${{fmtDuration(summary.median_seconds)}} · total ${{fmtDuration(summary.total_seconds)}}</div>${{slowest}}`;
+}}
+function renderVideoEvidence(row, split) {{
+  const summary = row.video_error_summary?.[split];
+  if (!summary) return '<div class="small">Per-video prediction metrics are not available for this row.</div>';
+  const line = item => `${{escapeHtml(item.video_id)}} ${{fmt(item.improvement_over_persistence_mse)}}`;
+  const best = (summary.best_videos || []).slice(0, 5).map(line).join(' · ') || 'n/a';
+  const worst = (summary.worst_videos || []).slice(0, 5).map(line).join(' · ') || 'n/a';
+  const labels = (summary.label_summary || []).slice(0, 4).map(item => `${{escapeHtml(item.label)}} ${{fmt(item.improvement_over_persistence_mse)}}`).join(' · ') || 'n/a';
+  return `<div class="small">${{escapeHtml(split)}} videos: ${{escapeHtml(summary.video_count || 0)}} · best ${{best}} · worst ${{worst}} · labels ${{labels}}</div>`;
+}}
+function renderIntelligence() {{
+  const split = document.getElementById('splitFilter').value;
+  const leaders = intelligence.leaderboards?.[split] || [];
+  const family = intelligence.best_by_family?.[split] || {{}};
+  const horizon = intelligence.best_by_horizon?.[split] || {{}};
+  const target = intelligence.target_comparison?.[split] || {{}};
+  document.getElementById('intelTop').innerHTML = renderIntelModelList(leaders);
+  document.getElementById('intelFamily').innerHTML = renderIntelModelList(Object.entries(family).map(([name, row]) => ({{...row, group_name:name}})), row => row.group_name);
+  document.getElementById('intelHorizon').innerHTML = renderIntelModelList(Object.entries(horizon).map(([name, row]) => ({{...row, group_name:name}})), row => row.group_name);
+  document.getElementById('intelTarget').innerHTML = renderIntelGroups(target);
+  document.getElementById('intelRuntime').innerHTML = renderIntelRuntime(intelligence.runtime_summary || {{}});
+  document.getElementById('intelFailures').innerHTML = renderIntelFailures(intelligence.failure_summary || {{}});
+}}
+
 function render() {{
   const split = document.getElementById('splitFilter').value;
   const rows = visibleRows();
@@ -466,11 +1075,12 @@ function render() {{
     ['Families', new Set(rows.map(r => r.model_family)).size],
     ['Input videos', payload.input_videos.length]
   ].map(([label, value]) => `<div class="metric"><b>${{escapeHtml(value)}}</b><span>${{escapeHtml(label)}}</span></div>`).join('');
+  renderIntelligence();
   document.getElementById('rows').innerHTML = rows.slice(0, 500).map(row => {{
     const mse = metric(row, split, 'decoded_prediction_mse');
     const improve = metric(row, split, 'improvement_over_persistence_mse');
     const active = selected.has(row.row_id);
-    return `<tr class="${{active ? 'selected' : ''}}"><td><button data-id="${{escapeHtml(row.row_id)}}" class="${{active ? 'primary' : ''}}">${{active ? 'On' : 'Add'}}</button></td><td><div class="mono">${{escapeHtml(row.experiment_id)}}</div><div class="small">${{escapeHtml(row.objective)}}</div></td><td>${{escapeHtml(row.model_family)}}</td><td>${{escapeHtml(row.dataset_key)}}</td><td>${{escapeHtml(row.loss_mode || row.baseline_name || '')}}</td><td>${{escapeHtml(row.prediction_target || '')}}</td><td class="mono">${{fmt(mse)}}</td><td class="mono ${{cls(improve)}}">${{fmt(improve)}}</td></tr>`;
+    return `<tr class="${{active ? 'selected' : ''}}"><td><button data-id="${{escapeHtml(row.row_id)}}" class="${{active ? 'primary' : ''}}">${{active ? 'On' : 'Add'}}</button></td><td><div class="mono">${{escapeHtml(row.experiment_id)}}</div><div class="small">${{escapeHtml(row.objective)}}</div></td><td>${{escapeHtml(row.model_family)}}</td><td>${{escapeHtml(row.dataset_key)}}</td><td>${{escapeHtml(row.loss_mode || row.baseline_name || '')}}</td><td>${{escapeHtml(row.prediction_target || '')}}</td><td><div class="small">${{escapeHtml(row.hyperparameter_summary || '')}}</div></td><td class="mono">${{fmt(mse)}}</td><td class="mono ${{cls(improve)}}">${{fmt(improve)}}</td></tr>`;
   }}).join('');
   document.querySelectorAll('button[data-id]').forEach(btn => btn.addEventListener('click', () => toggle(btn.dataset.id)));
   renderSelected();
@@ -487,7 +1097,8 @@ function renderSelected() {{
   const video = document.getElementById('inputVideoFilter').value;
   document.getElementById('videoNote').textContent = video === 'All' ? 'Video filter is set to held-out-first ordering.' : `Video focus: ${{video.replace('|', ' / ')}}`;
   const rows = Array.from(selected.values());
-  document.getElementById('selected').innerHTML = rows.length ? rows.map(row => `<div class="slot"><div class="mono">${{escapeHtml(row.experiment_id)}}</div><div class="small">${{escapeHtml(row.model_family)}} · ${{escapeHtml(row.dataset_key)}} · ${{escapeHtml(row.loss_mode || row.prediction_target || row.baseline_name || '')}}</div><div class="small">test improve <span class="${{cls(row.test_improvement_over_persistence_mse)}} mono">${{fmt(row.test_improvement_over_persistence_mse)}}</span>, val improve <span class="${{cls(row.val_improvement_over_persistence_mse)}} mono">${{fmt(row.val_improvement_over_persistence_mse)}}</span></div></div>`).join('') : '<div class="small">Select rows from the table.</div>';
+  const split = document.getElementById('splitFilter').value;
+  document.getElementById('selected').innerHTML = rows.length ? rows.map(row => `<div class="slot"><div class="mono">${{escapeHtml(row.experiment_id)}}</div><div class="small">${{escapeHtml(row.model_family)}} · ${{escapeHtml(row.dataset_key)}} · ${{escapeHtml(row.loss_mode || row.prediction_target || row.baseline_name || '')}}</div><div class="small">${{escapeHtml(row.hyperparameter_summary || '')}}</div><div class="small">test improve <span class="${{cls(row.test_improvement_over_persistence_mse)}} mono">${{fmt(row.test_improvement_over_persistence_mse)}}</span>, val improve <span class="${{cls(row.val_improvement_over_persistence_mse)}} mono">${{fmt(row.val_improvement_over_persistence_mse)}}</span></div>${{renderVideoEvidence(row, split)}}</div>`).join('') : '<div class="small">Select rows from the table.</div>';
 }}
 fillSelect('familyFilter', families);
 fillSelect('datasetFilter', datasets);

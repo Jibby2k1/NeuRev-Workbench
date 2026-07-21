@@ -435,17 +435,41 @@ input[type="range"] {
   justify-content: center;
   box-shadow: var(--shadow);
 }
+.reviewViewerLayout {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 14px;
+  min-width: min-content;
+  padding: 14px;
+}
+.reviewViewerPane {
+  margin: 0;
+  min-width: 0;
+}
+.reviewViewerPane figcaption {
+  padding-top: 7px;
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+}
+.reviewRawWrap,
 .viewerWrap {
   position: relative;
   display: inline-block;
-  margin: 14px;
   line-height: 0;
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.36);
 }
+#reviewRawFrameImg,
 #frameImg {
   display: block;
-  width: min(1120px, 100%);
-  height: auto;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   image-rendering: auto;
   user-select: none;
 }
@@ -462,10 +486,62 @@ input[type="range"] {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: fill;
+  object-fit: contain;
   opacity: 0;
   pointer-events: none;
   mix-blend-mode: screen;
+}
+
+.overlayLegend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 6px 10px;
+  margin: 6px 0 8px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-2);
+}
+.overlayLegend div {
+  display: grid;
+  grid-template-columns: 14px auto;
+  grid-template-rows: auto auto;
+  column-gap: 6px;
+  align-items: center;
+  min-width: 0;
+}
+.overlayLegend b {
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 1.15;
+}
+.overlayLegend span:not(.legendSwatch) {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.2;
+}
+.legendSwatch {
+  grid-row: 1 / span 2;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  background: color-mix(in srgb, currentColor 18%, transparent);
+}
+.legendSwatch.potential { color: #38bdf8; }
+.legendSwatch.accepted { color: #22c55e; }
+.legendSwatch.rejected { color: #ef4444; }
+.legendSwatch.unsure { color: #a855f7; }
+.legendSwatch.event { color: #facc15; }
+.legendSwatch.suggestion { color: #fb7185; border-radius: 4px; }
+.legendSwatch.stencil { color: #facc15; border-radius: 2px; border-style: dashed; }
+.app.basic-ui .reviewProjectionStrip,
+.app.guided-ui .reviewProjectionStrip {
+  display: none;
+}
+.app.guided-ui #reviewOverlayLegend {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
 .status {
   display: flex;
@@ -3125,4 +3201,74 @@ textarea {
 }
 .sweepTopTable {
   margin-top: 10px;
+}
+
+/* Guided review simplification */
+.runSweepToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 29px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--control);
+  padding: 2px 8px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+.reviewRailSection {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 0;
+  margin: 8px 0;
+}
+.reviewRailSection > summary {
+  display: flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 10px;
+  border-radius: 8px;
+  color: var(--ink);
+  background: var(--panel-2);
+  list-style-position: inside;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.reviewRailSection[open] > summary {
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 8px 8px 0 0;
+}
+.reviewRailSection > :not(summary) {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+.reviewRailSection > :last-child {
+  margin-bottom: 8px;
+}
+.app.guided-ui .navTabs #architectureTab,
+.app.guided-ui .navTabs #experimentsTab,
+.app.guided-ui .navTabs #metricsTab,
+.app.guided-ui .navTabs #reportTab,
+.app.guided-ui #reviewStencilSubtab,
+.app.guided-ui #reviewOverlapSubtab,
+.app.guided-ui #reviewTriageSubtab {
+  display: none;
+}
+.app.guided-ui .runSyncBar #activeRunDetail {
+  display: none;
+}
+.app.guided-ui .reviewRailSection:not(.primary) > summary {
+  color: var(--muted);
+}
+.app.guided-ui .manualDiscoveryPanel {
+  display: none;
+}
+.app.guided-ui .side > h2 {
+  display: none;
+}
+.app.guided-ui .summaryGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }

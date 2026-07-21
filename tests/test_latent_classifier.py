@@ -23,13 +23,28 @@ class LatentClassifierTests(unittest.TestCase):
             latent=root/"latent_codes.npz"
             np.savez(latent, latent_codes=np.stack(codes), frame_video_ids=np.asarray(vids), frame_labels=np.asarray(labels))
             run=train_latent_classifier(dataset={"array_path":"arrays.npz"}, autoencoder_run={"latent_codes_path":str(latent),"checkpoint_path":str(root/"dummy.pt")}, out_dir=root/"clf")
+            ridge_run=train_latent_classifier(dataset={"array_path":"arrays.npz"}, autoencoder_run={"latent_codes_path":str(latent),"checkpoint_path":str(root/"dummy.pt")}, out_dir=root/"ridge", classifier="ridge_linear", split_method="leave_one_video_out")
             predictions_exist = Path(run["per_video_predictions_path"]).is_file()
             prediction_rows = Path(run["per_video_predictions_path"]).read_text(encoding="utf-8").splitlines()[1:]
+            ridge_markdown = Path(ridge_run["markdown_path"]).read_text(encoding="utf-8")
 
         self.assertEqual(np.asarray(run["confusion_matrix"]).shape, (3,3))
         self.assertTrue(predictions_exist)
         self.assertEqual(run["metrics"]["evaluation"], "stratified_kfold")
         self.assertEqual(run["metrics"]["fold_count"], 2)
         self.assertTrue(all(not row.startswith("resubstitution") for row in prediction_rows))
+        self.assertEqual(ridge_run["metrics"]["evaluation"], "leave_one_video_out")
+        self.assertEqual(ridge_run["metrics"]["fold_count"], 6)
+        self.assertEqual(ridge_run["extras"]["classifier"], "ridge_linear")
+        self.assertGreaterEqual(ridge_run["metrics"]["accuracy"], ridge_run["metrics"]["chance_accuracy"])
+        self.assertIn("gate_summary", ridge_run["metrics"])
+        self.assertTrue(ridge_run["metrics"]["gate_summary"]["passes_chance_gate"])
+        self.assertIn("Gate Readout", ridge_markdown)
+        self.assertIn("Majority gate", ridge_markdown)
+        self.assertIn("Confusion Matrix", ridge_markdown)
+        self.assertIn("Per-Video Predictions", ridge_markdown)
+        self.assertIn("video_001", ridge_markdown)
         for fold in run["extras"]["folds"]:
+            self.assertFalse(set(fold["train_video_ids"]) & set(fold["test_video_ids"]))
+        for fold in ridge_run["extras"]["folds"]:
             self.assertFalse(set(fold["train_video_ids"]) & set(fold["test_video_ids"]))

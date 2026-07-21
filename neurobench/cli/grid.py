@@ -25,6 +25,7 @@ def add_grid_subcommands(subparsers) -> argparse.ArgumentParser:
     extract.add_argument("--registered-dir", required=True, type=Path)
     extract.add_argument("--grid", required=True, type=Path)
     extract.add_argument("--features", nargs="+", default=["mean_intensity"])
+    extract.add_argument("--pooling", choices=["area", "mean", "max"], default="area")
     extract.add_argument("--normalization", default="per_video_robust_percentile")
     extract.add_argument("--chunk-size-frames", type=int, default=64)
     extract.add_argument("--max-grid-state-bytes", type=int, default=1_000_000_000)
@@ -39,6 +40,7 @@ def add_grid_subcommands(subparsers) -> argparse.ArgumentParser:
     streaming.add_argument("--registration-dir", required=True, type=Path)
     streaming.add_argument("--grid", required=True, type=Path)
     streaming.add_argument("--features", nargs="+", default=["mean_intensity"])
+    streaming.add_argument("--pooling", choices=["area", "mean", "max"], default="area")
     streaming.add_argument("--normalization", default="per_video_robust_percentile")
     streaming.add_argument("--chunk-size-frames", type=int, default=64)
     streaming.add_argument("--max-grid-state-bytes", type=int, default=1_000_000_000)
@@ -47,6 +49,16 @@ def add_grid_subcommands(subparsers) -> argparse.ArgumentParser:
     streaming.add_argument("--out-dir", required=True, type=Path)
     streaming.set_defaults(func=grid_extract_registered_command)
     return parser
+
+
+def _resolve_grid_features(features: list[str], pooling: str) -> list[str]:
+    names = [str(value) for value in (features or [])]
+    mode = str(pooling or "area").strip().lower()
+    if not names:
+        return ["max_intensity"] if mode == "max" else ["mean_intensity"]
+    if names == ["mean_intensity"] and mode == "max":
+        return ["max_intensity"]
+    return names
 
 
 def grid_generate_command(args: argparse.Namespace) -> int:
@@ -66,6 +78,7 @@ def grid_extract_command(args: argparse.Namespace) -> int:
         manifest = load_json(args.manifest)
         grid = load_json(args.grid)
         summaries = []
+        features = _resolve_grid_features(args.features, args.pooling)
         for video in manifest.get("videos", []) or []:
             video_id = str(video["video_id"])
             registered = Path(args.registered_dir) / video_id / "registered_video.npy"
@@ -76,7 +89,7 @@ def grid_extract_command(args: argparse.Namespace) -> int:
                     out_dir=args.out_dir,
                     video_id=video_id,
                     label=str(video.get("label") or ""),
-                    features=args.features,
+                    features=features,
                     normalization=args.normalization,
                     frame_rate_hz=video.get("frame_rate_hz"),
                     chunk_size_frames=args.chunk_size_frames,
@@ -103,6 +116,7 @@ def grid_extract_registered_command(args: argparse.Namespace) -> int:
             missing = sorted(requested - found)
             raise ValueError(f"video_id not found in manifest: {', '.join(missing)}")
         summaries = []
+        features = _resolve_grid_features(args.features, args.pooling)
         for video in videos:
             video_id = str(video["video_id"])
             registration = load_json(Path(args.registration_dir) / video_id / "registration_result.json")
@@ -114,7 +128,7 @@ def grid_extract_registered_command(args: argparse.Namespace) -> int:
                     out_dir=args.out_dir,
                     video_id=video_id,
                     label=str(video.get("label") or ""),
-                    features=args.features,
+                    features=features,
                     normalization=args.normalization,
                     frame_rate_hz=video.get("frame_rate_hz"),
                     chunk_size_frames=args.chunk_size_frames,

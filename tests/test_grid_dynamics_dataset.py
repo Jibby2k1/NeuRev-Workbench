@@ -58,6 +58,38 @@ class GridDynamicsDatasetTests(unittest.TestCase):
         self.assertEqual(ds["windowing"]["temporal_stride_frames"], 2)
         self.assertEqual(arrays["frames"].shape[0], 3)
         self.assertEqual(arrays["windows"].shape[0], 1)
+        self.assertEqual(arrays["window_start_indices"].tolist(), [0])
+        self.assertEqual(arrays["window_end_indices"].tolist(), [1])
+        self.assertEqual(arrays["target_frame_indices"].tolist(), [2])
+
+
+    def test_frame_rate_metadata_records_prediction_seconds(self):
+        from neurobench.dynamics.datasets import build_dynamics_dataset
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _write_grid_state(root / "grid", "v_left", "left")
+            manifest = {
+                "schema_version": 1,
+                "dataset_id": "d",
+                "frame_rate_hz": 50.0,
+                "videos": [{"video_id": "v_left", "label": "left", "frame_rate_hz": 50.0}],
+                "label_set": ["left"],
+            }
+            ds = build_dynamics_dataset(
+                manifest=manifest,
+                grid_states_dir=root / "grid",
+                out_dir=root / "dyn",
+                window_frames=2,
+                prediction_horizon_frames=5,
+                temporal_stride_frames=1,
+                split_method="train_all_smoke",
+            )
+
+        self.assertEqual(ds["windowing"]["source_frame_rate_hz"], 50.0)
+        self.assertEqual(ds["windowing"]["effective_frame_rate_hz"], 50.0)
+        self.assertAlmostEqual(ds["windowing"]["prediction_horizon_sec"], 0.1)
+        self.assertAlmostEqual(ds["windowing"]["window_sec"], 0.04)
 
     def test_train_all_smoke_split_records_warning(self):
         from neurobench.dynamics.datasets import build_dynamics_dataset

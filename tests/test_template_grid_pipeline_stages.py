@@ -29,3 +29,33 @@ class TemplateGridPipelineStageTests(unittest.TestCase):
         self.assertIn("grid_states", plan["available_artifacts"])
         self.assertEqual(result["status"], "completed")
         self.assertEqual(manifest["artifacts"][-1]["kind"], "grid_states")
+
+    def test_grid128_stage_dry_run_exposes_max_pooling_params(self):
+        from neurobench.pipelines.executor import dry_run_pipeline
+
+        spec = {
+            "schema_version": 1,
+            "dataset_id": "synthetic_grid",
+            "run_id": "template_grid128_pipeline",
+            "pipeline": [
+                {"id": "manifest", "stage_id": "video_manifest_build", "params": {"input_dir": "Inputs/ZebrafishVideos"}},
+                {"id": "template", "stage_id": "template_build_from_video"},
+                {"id": "registration", "stage_id": "template_register_video"},
+                {"id": "registered", "stage_id": "apply_video_registration"},
+                {"id": "grid", "stage_id": "grid_128x128_generate"},
+                {"id": "grid_states", "stage_id": "grid_state_extract", "params": {"pooling": "max"}},
+                {"id": "dataset", "stage_id": "grid_dynamics_dataset_build", "params": {"prediction_horizon_frames": 2, "temporal_stride_frames": 1}},
+                {"id": "rnn", "stage_id": "latent_rnn_train", "params": {"prediction_target": "delta"}},
+            ],
+        }
+        plan = dry_run_pipeline(spec, validate_artifacts=False)
+
+        grid_step = next(step for step in plan["steps"] if step["stage_id"] == "grid_128x128_generate")
+        state_step = next(step for step in plan["steps"] if step["stage_id"] == "grid_state_extract")
+        dataset_step = next(step for step in plan["steps"] if step["stage_id"] == "grid_dynamics_dataset_build")
+        rnn_step = next(step for step in plan["steps"] if step["stage_id"] == "latent_rnn_train")
+        self.assertEqual(grid_step["params"]["rows"], 128)
+        self.assertEqual(grid_step["params"]["cols"], 128)
+        self.assertEqual(state_step["params"]["pooling"], "max")
+        self.assertEqual(dataset_step["params"]["prediction_horizon_frames"], 2)
+        self.assertEqual(rnn_step["params"]["prediction_target"], "delta")

@@ -14,6 +14,9 @@ the project.
 - [Raw Video To Report Workflow](workflows/raw_video_to_report.md): CPU-only
   end-to-end command path from a raw video through QC, pipeline execution,
   reports, sweeps, and exports.
+- [Spon Ca Burst Soma Excitation](workflows/spon_ca_burst_soma_excitation.md):
+  bounded CPU experiment for quiet-baseline dark soma zones, positive CFAR
+  excitation, and frozen model transfer after human frame 1900.
 - [Template Grid Workflow](TEMPLATE_GRID_WORKFLOW.md): manifest, one-reference
   template construction, per-video rigid registration, and 32x32 grid-state
   extraction for the zebrafish left/right/neutral videos.
@@ -44,12 +47,23 @@ the project.
   external-tool attachment paths.
 - [Inverse Dynamics Export](INVERSE_DYNAMICS_EXPORT.md): downstream export
   contract for accepted ROIs/events and behavior alignment.
+- [Test And Experiment Report](TEST_AND_EXPERIMENT_REPORT.md): consolidated
+  validation, unit-test, sweep, dashboard, and inverse-control-readiness report.
+- [Inverse-Control Discussion Brief](INVERSE_CONTROL_DISCUSSION_BRIEF.md):
+  concise context and prompts for designing a simulation-first inverse-control
+  solution with ChatGPT or collaborators.
 - [Grid32 Real Data Pilot](case_studies/grid32_real_data_pilot.md): lightweight
   pilot note template for recording real-data template, registration, grid,
   dynamics, and classifier decisions without committing raw videos.
 
 ## Developer References
 
+- [Codebase Navigation](CODEBASE_NAVIGATION.md): current package map, task
+  routes, entry points, hotspots, and agent notes.
+- [Codebase Audit](CODEBASE_AUDIT.md): broader maintainability and
+  LLM/human-navigability audit with staged refactor plan.
+- [Dashboard Code Audit](DASHBOARD_CODE_AUDIT.md): dashboard families,
+  organization risks, and dashboard-specific UX/efficiency plan.
 - [Adding A Pipeline Stage](developer/adding_pipeline_stage.md): catalog,
   executor, tests, artifacts, and real-time metadata needed for a new stage.
 - [API Reference](API_REFERENCE.md): generated Python module/class/function
@@ -70,3 +84,8 @@ the project.
 6. Use [Template Grid Workflow](TEMPLATE_GRID_WORKFLOW.md) and
    [Grid Latent Dynamics](GRID_LATENT_DYNAMICS.md) for the current
    template-aligned 32x32 grid experiments.
+7. Use [Codebase Navigation](CODEBASE_NAVIGATION.md) before broad edits or when
+   handing the repository to another coding agent.
+8. Use [Test And Experiment Report](TEST_AND_EXPERIMENT_REPORT.md) and
+   [Inverse-Control Discussion Brief](INVERSE_CONTROL_DISCUSSION_BRIEF.md)
+   before designing action-conditioned inverse-control experiments.

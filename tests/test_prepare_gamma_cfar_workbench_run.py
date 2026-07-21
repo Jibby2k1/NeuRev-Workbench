@@ -243,6 +243,19 @@ class PrepareGammaCfarWorkbenchRunTests(unittest.TestCase):
         centers = {(round(row["x"]), round(row["y"])) for row in with_split}
         self.assertEqual(centers, {(8, 8), (18, 8), (13, 17)})
 
+
+    def test_projection_blob_evidence_accepts_2d_projection_maps(self):
+        module = load_prepare_module()
+        import numpy as np
+
+        video = np.zeros((3, 6, 7), dtype=np.float32)
+        video[:, 2:4, 3:5] = np.asarray([1.0, 5.0, 9.0], dtype=np.float32)[:, None, None]
+
+        evidence = module.projection_blob_evidence(video)
+
+        self.assertEqual(evidence.shape, (6, 7))
+        self.assertGreater(float(evidence[2:4, 3:5].max()), 0.0)
+
     def test_green_multiscale_commands_are_registered(self):
         module = load_prepare_module()
         parser = module.build_arg_parser()

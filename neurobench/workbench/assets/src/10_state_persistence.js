@@ -20,6 +20,10 @@ const roiNotes = document.getElementById('roiNotes');
 const eventNotes = document.getElementById('eventNotes');
 const viewerScroll = document.getElementById('viewerScroll');
 const viewerWrap = document.getElementById('viewerWrap');
+const reviewViewerLayout = document.getElementById('reviewViewerLayout');
+const reviewRawPane = document.getElementById('reviewRawPane');
+const reviewRawWrap = document.getElementById('reviewRawWrap');
+const reviewRawImg = document.getElementById('reviewRawFrameImg');
 const datasetId = data.dataset?.dataset_id || data.video?.name || 'calcium-video';
 const storeKey = `neuron-review-workbench-v3-${datasetId}`;
 const recoveryStoreKey = `${storeKey}-recovery-history`;
@@ -255,8 +259,17 @@ function defaultDataCompareRunId(){
   }
   return baselineRunId();
 }
+function runHasAttachedFrameIntermediates(run){
+  return Array.isArray(run?.artifacts?.intermediates)
+    && run.artifacts.intermediates.some(item => item?.frame_pattern || item?.framePattern);
+}
+function candidateOverlayOnlyRun(runId=defaultDataCompareRunId()){
+  const run = runById(runId);
+  return Boolean(run && runHasCandidateRois(run) && !runHasAttachedFrameIntermediates(run));
+}
 function defaultDataComparePreset(runId=defaultDataCompareRunId()){
-  return isExternalTestDataset() && (String(runId || '').startsWith('green_excess_single_cfar_v1__sweep_') || runId === 'gamma_cfar_cascade_grid_high_recall_v1__sweep_009') ? 'focused_diagnostic' : 'raw_artifact';
+  if(isExternalTestDataset() && (String(runId || '').startsWith('green_excess_single_cfar_v1__sweep_') || runId === 'gamma_cfar_cascade_grid_high_recall_v1__sweep_009')) return 'focused_diagnostic';
+  return candidateOverlayOnlyRun(runId) ? 'raw_roi' : 'raw_artifact';
 }
 function baselineRunId(){ return preferredReviewRun()?.run_id || 'current_review_pipeline'; }
 
@@ -282,12 +295,13 @@ function defaultAnnotations() {
       eventThreshold: 2.4,
       kalmanGain: 0.06,
       spikeGain: 0.008,
-      zoom: 3.0,
+      zoom: 1.5,
+      reviewSideBySide: candidateOverlayOnlyRun(),
       brightness: 1,
       contrast: 1.08,
-      overlayOpacity: 0.72,
+      overlayOpacity: 0.50,
       overlayPreset: 'validate',
-      roiLabelMode: 'all',
+      roiLabelMode: 'selected',
       selectedOverlayMode: 'outline',
       selectedFillOpacity: 0.10,
       selectedOutlineWidth: 2.5,
@@ -308,8 +322,8 @@ function defaultAnnotations() {
       discoveryQueue: 'all',
       evidenceMap: data.discovery?.evidenceMaps?.[0]?.id || '',
       showEvidence: false,
-      showSuggestions: true,
-      showStencilOverlay: true,
+      showSuggestions: false,
+      showStencilOverlay: false,
       showTemplateOverlay: false,
       showRegisteredProjectionOverlay: false,
       showGridOverlay: false,
@@ -320,6 +334,7 @@ function defaultAnnotations() {
       showAnnotatedNeuronRois: true,
       showAnnotatedNonNeuronRois: true,
       overlayScope: 'all',
+      showAllSweeps: false,
       minArea: 0,
       minEvents: 0,
       reviewMode: 'explore',
@@ -366,6 +381,7 @@ function mergeAnnotations(incoming) {
   annotations.reviewStats = Object.assign(defaultAnnotations().reviewStats, incoming?.reviewStats || {});
   annotations.reviewStats.actions = Object.assign({}, incoming?.reviewStats?.actions || {});
   annotations.settings = Object.assign(defaultAnnotations().settings, incoming?.settings || {});
+  if(incoming?.settings?.reviewSideBySide === undefined) annotations.settings.reviewSideBySide = candidateOverlayOnlyRun(annotations.settings.activeRunId);
 }
 
 function migrateRunBucket(bucket) {

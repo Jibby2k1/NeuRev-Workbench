@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare cropped 512x512, 32x32-grid dynamics inputs for 060126 fish videos."""
+"""Prepare cropped 512x512, 128x128 max-pooled dynamics inputs for 060126 fish videos."""
 from __future__ import annotations
 
 import argparse
@@ -23,10 +23,13 @@ from neurobench.dynamics.train import train_autoencoder
 DEFAULT_CROP = CropBox(x0=81, y0=115, x1=593, y1=627)
 VIDEO_REGEX = r"^(?P<index>[0-9]+)\s+(?P<label>left|right|rest|resting|neutral)\.(?:tif|tiff|npy)$"
 LABEL_ALIASES = {"rest": "neutral", "resting": "neutral"}
+FRAME_RATE_HZ = 50.0
+GRID_ROWS = 128
+GRID_COLS = 128
+GRID_FEATURES = ("max_intensity",)
 DATASET_SPECS = (
-    {"key": "w8_s1_h25", "window_frames": 8, "prediction_horizon_frames": 25, "temporal_stride_frames": 1},
-    {"key": "w8_s1_h50", "window_frames": 8, "prediction_horizon_frames": 50, "temporal_stride_frames": 1},
-    {"key": "w8_s3_h10", "window_frames": 8, "prediction_horizon_frames": 10, "temporal_stride_frames": 3},
+    {"key": "w8_s1_h2", "window_frames": 8, "prediction_horizon_frames": 2, "temporal_stride_frames": 1},
+    {"key": "w8_s1_h5", "window_frames": 8, "prediction_horizon_frames": 5, "temporal_stride_frames": 1},
 )
 
 
@@ -60,7 +63,7 @@ def validate_inputs(*, input_dir: Path, crop: CropBox) -> dict[str, Any]:
     return {"schema_version": 1, "input_dir": str(input_dir), "crop_box": crop.as_dict(), "video_count": len(videos), "videos": videos}
 
 
-def prepare_cropped_grid32_run(
+def prepare_cropped_grid128_run(
     *,
     input_dir: str | Path,
     out_dir: str | Path,
@@ -100,7 +103,8 @@ def prepare_cropped_grid32_run(
 
     manifest = build_video_manifest(
         input_dir=cropped_dir,
-        dataset_id="fish_060126_crop512_grid32",
+        dataset_id="fish_060126_crop512_grid128",
+        frame_rate_hz=FRAME_RATE_HZ,
         filename_regex=VIDEO_REGEX,
         label_aliases=LABEL_ALIASES,
         labels=("left", "right", "neutral"),
@@ -154,8 +158,8 @@ def prepare_cropped_grid32_run(
     }
     _write_json(registration_dir / "registration_summary.json", registration_summary)
 
-    grid_spec_path = grid_dir / "grid_spec_32x32.json"
-    grid_spec = write_grid_spec_artifacts(template_spec=template, out_path=grid_spec_path, rows=32, cols=32)
+    grid_spec_path = grid_dir / "grid_spec_128x128.json"
+    grid_spec = write_grid_spec_artifacts(template_spec=template, out_path=grid_spec_path, rows=GRID_ROWS, cols=GRID_COLS)
 
     grid_summaries = []
     for video in manifest.get("videos", []) or []:
@@ -168,11 +172,11 @@ def prepare_cropped_grid32_run(
                 out_dir=grid_states_dir,
                 video_id=str(video["video_id"]),
                 label=str(video.get("label") or ""),
-                features=("mean_intensity",),
+                features=GRID_FEATURES,
                 normalization="per_video_robust_percentile",
                 frame_rate_hz=video.get("frame_rate_hz"),
                 chunk_size_frames=chunk_size_frames,
-                max_grid_state_bytes=1_000_000_000,
+                max_grid_state_bytes=4_000_000_000,
                 device=registration_device,
             )
         )
@@ -195,10 +199,9 @@ def prepare_cropped_grid32_run(
 
     ae_runs: dict[str, dict[str, Any]] = {}
     if not skip_autoencoders:
-        ae_s1_dir = models_dir / f"autoencoder32_s1_ld64_bc16_e{int(autoencoder_epochs)}_lr{_slug_float(autoencoder_learning_rate)}_v1"
-        ae_s3_dir = models_dir / f"autoencoder32_s3_ld64_bc16_e{int(autoencoder_epochs)}_lr{_slug_float(autoencoder_learning_rate)}_v1"
+        ae_s1_dir = models_dir / f"autoencoder128_s1_ld64_bc16_e{int(autoencoder_epochs)}_lr{_slug_float(autoencoder_learning_rate)}_v1"
         ae_runs["s1"] = train_autoencoder(
-            dataset=datasets["w8_s1_h25"],
+            dataset=datasets["w8_s1_h2"],
             out_dir=ae_s1_dir,
             latent_dim=64,
             base_channels=16,
@@ -208,27 +211,18 @@ def prepare_cropped_grid32_run(
             seed=7,
             device=autoencoder_device,
         )
-        ae_runs["s3"] = train_autoencoder(
-            dataset=datasets["w8_s3_h10"],
-            out_dir=ae_s3_dir,
-            latent_dim=64,
-            base_channels=16,
-            epochs=int(autoencoder_epochs),
-            batch_size=int(autoencoder_batch_size),
-            learning_rate=float(autoencoder_learning_rate),
-            seed=7,
-            device=autoencoder_device,
-        )
-
     mapping = {}
     for key, dataset in datasets.items():
-        ae_key = "s3" if key == "w8_s3_h10" else "s1"
+        ae_key = "s1"
         mapping[key] = {
             "dataset": str(datasets_dir / key / "dynamics_dataset.json"),
-            "autoencoder_run": str(models_dir / (f"autoencoder32_{ae_key}_ld64_bc16_e{int(autoencoder_epochs)}_lr{_slug_float(autoencoder_learning_rate)}_v1") / "autoencoder_run.json"),
+            "autoencoder_run": str(models_dir / (f"autoencoder128_{ae_key}_ld64_bc16_e{int(autoencoder_epochs)}_lr{_slug_float(autoencoder_learning_rate)}_v1") / "autoencoder_run.json"),
             "window_frames": int(dataset.get("windowing", {}).get("window_frames", 8)),
+            "prediction_horizon_frames": int(dataset.get("windowing", {}).get("prediction_horizon_frames", 1)),
+            "prediction_horizon_sec": dataset.get("windowing", {}).get("prediction_horizon_sec"),
+            "rnn_prediction_target": "delta",
         }
-    mapping_path = out / "datasets_cropped32_mapping.json"
+    mapping_path = out / "datasets_cropped128_mapping.json"
     _write_json(mapping_path, mapping)
 
     summary = {
@@ -243,6 +237,9 @@ def prepare_cropped_grid32_run(
         "grid_states_summary_path": str(grid_states_dir / "grid_states_summary.json"),
         "datasets_mapping_path": str(mapping_path),
         "dataset_keys": list(mapping),
+        "frame_rate_hz": FRAME_RATE_HZ,
+        "grid_shape": [GRID_ROWS, GRID_COLS],
+        "grid_features": list(GRID_FEATURES),
         "autoencoder_runs": {key: str(value.get("checkpoint_path")) for key, value in ae_runs.items()},
         "skip_autoencoders": bool(skip_autoencoders),
     }
@@ -250,10 +247,15 @@ def prepare_cropped_grid32_run(
     return summary
 
 
+def prepare_cropped_grid32_run(**kwargs) -> dict[str, Any]:
+    """Backward-compatible alias for the current 128x128 max-pooled prep path."""
+    return prepare_cropped_grid128_run(**kwargs)
+
+
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Prepare cropped 512x512 32x32-grid dynamics artifacts.")
+    parser = argparse.ArgumentParser(description="Prepare cropped 512x512 128x128 max-pooled dynamics artifacts.")
     parser.add_argument("--input-dir", type=Path, default=Path("Inputs/060126"))
-    parser.add_argument("--out-dir", type=Path, default=Path("Outputs/GridModel/060126_crop512_grid32_v1"))
+    parser.add_argument("--out-dir", type=Path, default=Path("Outputs/GridModel/060126_crop512_grid128_max_v1"))
     parser.add_argument("--crop-x0", type=int, default=DEFAULT_CROP.x0)
     parser.add_argument("--crop-y0", type=int, default=DEFAULT_CROP.y0)
     parser.add_argument("--crop-x1", type=int, default=DEFAULT_CROP.x1)
@@ -272,7 +274,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.dry_run:
         print(json.dumps(validate_inputs(input_dir=args.input_dir, crop=crop), indent=2, sort_keys=True))
         return 0
-    summary = prepare_cropped_grid32_run(
+    summary = prepare_cropped_grid128_run(
         input_dir=args.input_dir,
         out_dir=args.out_dir,
         crop=crop,

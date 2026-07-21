@@ -7,9 +7,9 @@ two complementary workflows:
   and report generation
 - a Fiji/Groovy plus browser workbench workflow for neuron ROI review, trace
   denoising, event annotation, and user-guided parameter iteration
-- a template-aligned 32x32 grid workflow for zebrafish left/right/neutral
-  activity modeling with video-level splits, a grid autoencoder, latent GRU
-  prediction, and latent-code classification
+- a template-aligned grid workflow for zebrafish left/right/neutral activity
+  modeling, including 128x128 max-pooled grid states, video-level splits, a
+  grid autoencoder, latent GRU prediction, and latent-code classification
 
 ---
 
@@ -43,36 +43,40 @@ two complementary workflows:
 
 ## Repository Structure
 
+The active, maintained implementation lives primarily under `neurobench/`. Older
+top-level modules remain for compatibility and historical workflows; check
+`docs/CODEBASE_NAVIGATION.md` before extending them.
+
 ```
 .
-├── main.py
-├── config.py
-├── data_loader.py
-├── utils.py
-├── worker.py
-├── core/
-│   ├── filters.py
-|   ├── detection.py
-│   └── pipelines.py
-├── evaluation/
-│   ├── analysis.py
-│   └── metrics.py
-├── reporting/
-│   ├── generators.py
-│   └── plotters.py
-├── tools/
-│   ├── temporal_highpass_gaussian.ijm
-│   ├── candidate_event_pipeline.groovy
-│   ├── temporal_candidate_scoring.groovy
-│   ├── generate_neuron_review_app.groovy
-│   ├── build_neuron_workbench_v2.py
-│   └── serve_neuron_workbench.py
-├── docs/
-│   ├── NEURON_WORKBENCH.md
-│   └── PROCESSING_NOTES.md
-├── Inputs/
-└── Outputs/
+├── neurobench/
+│   ├── algorithms/      # CFAR, motion, template matching, grid extraction
+│   ├── cli/             # `neurobench ...` command groups
+│   ├── data/            # manifests, video loading, QC, synthetic fixtures
+│   ├── discovery/       # candidate ranking, clustering, active learning
+│   ├── dynamics/        # grid/latent dynamics models, sweeps, reports
+│   ├── exports/         # annotation, behavior, inverse-dynamics exports
+│   ├── integrations/    # Suite2p, PMD, OASIS import adapters
+│   ├── metrics/         # detection, event, comparison, summary metrics
+│   ├── models/          # JSON artifact model helpers
+│   ├── pipelines/       # stage catalog execution and sweeps
+│   ├── reports/         # markdown/JSON report builders
+│   ├── review/          # reviewer agreement and provenance
+│   ├── validation/      # JSON schema validation helpers
+│   └── workbench/       # browser dashboard builder, server, assets, sidecars
+├── tools/               # user-facing scripts and compatibility wrappers
+├── scripts/             # experiment-specific research scripts
+├── docs/                # workflow docs, audits, and developer guides
+├── examples/            # small schema/workflow examples
+├── schemas/             # public JSON schemas
+├── tests/               # regression and workflow tests
+├── Inputs/              # local raw data, not committed
+└── Outputs/             # generated results and dashboards, not committed
 ```
+
+For current navigation and ownership guidance, start with
+`docs/CODEBASE_NAVIGATION.md`. For dashboard-specific organization, see
+`docs/DASHBOARD_CODE_AUDIT.md`.
 
 ---
 

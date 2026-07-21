@@ -33,13 +33,20 @@ def build_dynamics_dataset(
     targets: list[np.ndarray] = []
     window_video_ids: list[str] = []
     window_labels: list[str] = []
+    window_start_indices: list[int] = []
+    window_end_indices: list[int] = []
+    target_frame_indices: list[int] = []
     source_videos: list[str] = []
     video_labels: dict[str, str] = {}
+    source_frame_rates: list[float] = []
     grid_id = ""
     normalization = ""
     for video in manifest.get("videos", []) or []:
         video_id = str(video["video_id"])
         label = str(video.get("label") or "")
+        frame_rate = _as_positive_float(video.get("frame_rate_hz") or manifest.get("frame_rate_hz"))
+        if frame_rate is not None:
+            source_frame_rates.append(frame_rate)
         npz_path = grid_root / video_id / "grid_states.npz"
         if not npz_path.is_file():
             raise FileNotFoundError(f"Grid states not found for {video_id}: {npz_path}")
@@ -67,6 +74,9 @@ def build_dynamics_dataset(
             targets.append(chw[target_index])
             window_video_ids.append(video_id)
             window_labels.append(label)
+            window_start_indices.append(int(start))
+            window_end_indices.append(int(end))
+            target_frame_indices.append(int(target_index))
     if not frames_all:
         raise ValueError("No grid states found for dynamics dataset")
     frames = np.concatenate(frames_all, axis=0).astype(np.float32)
@@ -93,11 +103,33 @@ def build_dynamics_dataset(
         targets=target_arr,
         window_video_ids=np.asarray(window_video_ids, dtype="U64"),
         window_labels=np.asarray(window_labels, dtype="U16"),
+        window_start_indices=np.asarray(window_start_indices, dtype=np.int64),
+        window_end_indices=np.asarray(window_end_indices, dtype=np.int64),
+        target_frame_indices=np.asarray(target_frame_indices, dtype=np.int64),
         train_video_ids=np.asarray(splits["train_video_ids"], dtype="U64"),
         val_video_ids=np.asarray(splits["val_video_ids"], dtype="U64"),
         test_video_ids=np.asarray(splits["test_video_ids"], dtype="U64"),
     )
     label_counts = Counter(video_labels.values())
+    source_frame_rate_hz = _common_frame_rate_hz(source_frame_rates)
+    effective_frame_rate_hz = source_frame_rate_hz / temporal_stride_frames if source_frame_rate_hz is not None else None
+    windowing = {
+        "window_frames": int(window_frames),
+        "prediction_horizon_frames": int(prediction_horizon_frames),
+        "stride_frames": 1,
+        "temporal_stride_frames": int(temporal_stride_frames),
+    }
+    if source_frame_rate_hz is not None and effective_frame_rate_hz is not None:
+        windowing.update(
+            {
+                "source_frame_rate_hz": float(source_frame_rate_hz),
+                "effective_frame_rate_hz": float(effective_frame_rate_hz),
+                "window_sec": float(int(window_frames) / effective_frame_rate_hz),
+                "window_span_sec": float(max(0, int(window_frames) - 1) / effective_frame_rate_hz),
+                "prediction_horizon_sec": float(int(prediction_horizon_frames) / effective_frame_rate_hz),
+                "prediction_horizon_source_frames": int(prediction_horizon_frames) * int(temporal_stride_frames),
+            }
+        )
     dataset = {
         "schema_version": 1,
         "dataset_id": str(manifest.get("dataset_id") or "zebrafish_grid32_v1"),
@@ -105,7 +137,7 @@ def build_dynamics_dataset(
         "source_videos": source_videos,
         "array_path": str(array_path),
         "input_shape": [int(v) for v in frames.shape[1:]],
-        "windowing": {"window_frames": int(window_frames), "prediction_horizon_frames": int(prediction_horizon_frames), "stride_frames": 1, "temporal_stride_frames": int(temporal_stride_frames)},
+        "windowing": windowing,
         "splits": {"split_unit": "video", "split_method": split_method_name, **splits},
         "normalization": normalization,
         "label_counts": {k: int(v) for k, v in label_counts.items()},
@@ -115,6 +147,27 @@ def build_dynamics_dataset(
     (out / "dynamics_dataset.json").write_text(json.dumps(dataset, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     (out / "split_manifest.json").write_text(json.dumps(dataset["splits"], indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return dataset
+
+
+def _as_positive_float(value: Any) -> float | None:
+    if value is None or value == "":
+        return None
+    try:
+        out = float(value)
+    except (TypeError, ValueError):
+        return None
+    if out <= 0:
+        return None
+    return out
+
+
+def _common_frame_rate_hz(values: list[float]) -> float | None:
+    if not values:
+        return None
+    first = float(values[0])
+    if all(abs(float(value) - first) <= 1e-6 for value in values):
+        return first
+    return None
 
 
 def split_video_ids(

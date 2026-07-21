@@ -28,6 +28,12 @@ class GridAutoencoderTests(unittest.TestCase):
         self.assertEqual(tuple(recon64.shape), (2, 1, 64, 64))
         self.assertEqual(tuple(z64.shape), (2, 4))
 
+        model128 = GridAutoencoder(input_channels=1, latent_dim=4, base_channels=4, input_shape=(1, 128, 128))
+        x128 = torch.zeros((1, 1, 128, 128), dtype=torch.float32)
+        recon128, z128 = model128(x128)
+        self.assertEqual(tuple(recon128.shape), (1, 1, 128, 128))
+        self.assertEqual(tuple(z128.shape), (1, 4))
+
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
             arrays=root/"arrays.npz"

@@ -45,6 +45,18 @@ class CfarAlgorithmTests(unittest.TestCase):
         self.assertEqual(mask.dtype, np.dtype(bool))
         self.assertTrue(mask[0, 8, 8])
 
+    def test_cfar_rejects_invalid_probability_and_epsilon(self):
+        require_numpy()
+        from neurobench.algorithms.cfar import robust_local_cfar
+
+        video = np.zeros((1, 8, 8), dtype=np.float32)
+        for pfa in (0.0, 1.0, -0.1, 1.1):
+            with self.subTest(pfa=pfa):
+                with self.assertRaisesRegex(ValueError, "pfa"):
+                    robust_local_cfar(video, pfa=pfa)
+        with self.assertRaisesRegex(ValueError, "epsilon"):
+            robust_local_cfar(video, epsilon=0.0)
+
     def test_cfar_rejects_invalid_training_ring(self):
         require_numpy()
         from neurobench.algorithms.cfar import robust_local_cfar

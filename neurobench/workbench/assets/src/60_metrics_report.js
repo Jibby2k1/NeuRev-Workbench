@@ -554,17 +554,43 @@ function isGammaCfarRun(run){
   const runId = String(run?.run_id || '');
   return runId.startsWith('gamma_cfar_cascade_grid_') && runId.includes('__sweep_');
 }
+function runFamily(run){
+  const runId = String(run?.run_id || '');
+  if(runId.startsWith('soma_projection_candidates')) return 'Soma-first review';
+  if(runId.startsWith('kalman_residual_projection_cfar_roi_state')) return 'Kalman residual support';
+  if(runId.startsWith('grayscale_projection_cfar_roi_state')) return 'Raw projection support';
+  if(runId.startsWith('gamma_cfar_cascade_grid')) return 'Raw Gamma CFAR sweep';
+  return 'Other runs';
+}
+function recommendedReviewRun(run){
+  const runId = String(run?.run_id || '');
+  if(runId === 'soma_projection_candidates_v1') return true;
+  return [
+    'grayscale_projection_cfar_roi_state_v1__sweep_004',
+    'grayscale_projection_cfar_roi_state_v1__sweep_010',
+    'kalman_residual_projection_cfar_roi_state_v1__sweep_002',
+    'kalman_residual_projection_cfar_roi_state_v1__sweep_004',
+    'kalman_residual_projection_cfar_roi_state_v1__sweep_006',
+    'kalman_residual_projection_cfar_roi_state_v1__sweep_008'
+  ].includes(runId);
+}
 function processRunOptionsHtml(runs, selectedRun){
   const selectedId = selectedRun?.run_id || '';
-  const recommended = runs.filter(run => isGammaCfarRun(run) && runHasIntermediates(run));
-  const otherGamma = runs.filter(run => isGammaCfarRun(run) && !runHasIntermediates(run));
-  const other = runs.filter(run => !isGammaCfarRun(run));
-  const option = run => `<option value="${escapeHtml(run.run_id)}" ${selectedId === run.run_id ? 'selected' : ''}>${escapeHtml(runLabel(run))}</option>`;
-  const groups = [];
-  if(recommended.length) groups.push(`<optgroup label="Gamma CFAR results">${recommended.map(option).join('')}</optgroup>`);
-  if(otherGamma.length) groups.push(`<optgroup label="Gamma CFAR runs without previews">${otherGamma.map(option).join('')}</optgroup>`);
-  if(other.length) groups.push(`<optgroup label="Current review / other runs">${other.map(option).join('')}</optgroup>`);
-  return groups.join('');
+  const showAll = Boolean(setting('showAllSweeps')) || normalizeUiMode(setting('uiMode')) === 'expert';
+  let visibleRuns = showAll ? runs.slice() : runs.filter(recommendedReviewRun);
+  if(selectedRun && !visibleRuns.some(run => run.run_id === selectedId)) visibleRuns = [selectedRun, ...visibleRuns];
+  const option = run => {
+    const suffix = showAll ? ` · ${runDetailText(run) || runFamily(run)}` : ` · ${runFamily(run)}`;
+    return `<option value="${escapeHtml(run.run_id)}" ${selectedId === run.run_id ? 'selected' : ''}>${escapeHtml(runLabel(run) + suffix)}</option>`;
+  };
+  const families = [];
+  for(const run of visibleRuns){
+    const family = showAll ? runFamily(run) : (recommendedReviewRun(run) ? 'Recommended review runs' : 'Current selected run');
+    let group = families.find(item => item.label === family);
+    if(!group) { group = {label: family, runs: []}; families.push(group); }
+    group.runs.push(run);
+  }
+  return families.map(group => `<optgroup label="${escapeHtml(group.label)}">${group.runs.map(option).join('')}</optgroup>`).join('');
 }
 function gammaCfarQuickPickHtml(runs, selectedRun){
   const recommended = runs.filter(run => isGammaCfarRun(run) && runHasIntermediates(run));
@@ -679,7 +705,16 @@ function qcStageTiles(run){
   for(const stage of pipeline){
     const def = stageDef(stage);
     const artifact = findIntermediateForStage(stage, run);
-    const summary = artifact ? null : summaryTileForStage(stage, run);
+    const stageKey = String(stageOp(stage) || stage.id || '').toLowerCase();
+    const liveCandidateOverlay = !artifact && runHasCandidateRois(run) && stageKey.includes('soma_projection');
+    const summary = artifact ? null : liveCandidateOverlay ? {
+      status: 'available',
+      description: 'Synchronized candidate and event outlines are rendered live over the raw frame; no duplicate intermediate frame stack is required.',
+      summaryRows: [
+        {value: String(run.summary?.roi_count || 0), label: 'candidate ROIs'},
+        {value: String(run.summary?.event_count || 0), label: 'candidate events'}
+      ]
+    } : summaryTileForStage(stage, run);
     tiles.push({
       id: stage.id || stageOp(stage),
       label: artifact?.label || def?.label || stage.label || stage.name || stageOp(stage),

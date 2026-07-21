@@ -1,13 +1,15 @@
 # Grid Latent Dynamics
 
-This document describes the first model path after template registration and
-32x32 grid extraction. The goal is to learn compact grid-frame latents and a
-small recurrent next-state predictor while preserving video-level validation.
+This document describes the model path after template registration and grid
+state extraction. The current high-resolution experiment uses 128x128
+max-pooled grid states from the cropped 512x512 videos. The goal is to learn
+compact grid-frame latents and a small recurrent next-state predictor while
+preserving video-level validation.
 
 The model path is:
 
 ```text
-x_t = 32x32 grid frame
+x_t = 128x128 max-pooled grid frame
 z_t = CNN encoder(x_t)
 recon_t = CNN decoder(z_t)
 z_hat_next = GRU(z_window)
@@ -23,8 +25,9 @@ python -m neurobench.cli.main dynamics build-dataset \
   --split-unit video \
   --split-method stratified_by_label \
   --window-frames 8 \
-  --prediction-horizon-frames 1 \
-  --out-dir Outputs/GridModel/dynamics
+  --prediction-horizon-frames 2 \
+  --temporal-stride-frames 1 \
+  --out-dir Outputs/GridModel/060126_crop512_grid128_max_v1/datasets/w8_s1_h2
 ```
 
 Outputs:
@@ -49,12 +52,25 @@ python -m neurobench.cli.main dynamics evaluate-baselines \
 The MVP baselines are persistence and moving average. The latent RNN report must
 include persistence comparison.
 
+## Timing Defaults
+
+For 50 Hz calcium videos, each frame is 20 ms. The short-horizon experiment
+builds two datasets from the same max-pooled grid states:
+
+- `prediction_horizon_frames=2`, about 40 ms.
+- `prediction_horizon_frames=5`, about 100 ms.
+
+These cover the plausible 30 Hz and 10 Hz calcium-timescale interpretations
+without forcing one biological assumption into the code. The dataset JSON records
+`source_frame_rate_hz`, `effective_frame_rate_hz`, `window_sec`, and
+`prediction_horizon_sec` under `windowing`.
+
 ## Train The Grid Autoencoder
 
 ```bash
 python -m neurobench.cli.main dynamics train-autoencoder \
   --dataset Outputs/GridModel/dynamics/dynamics_dataset.json \
-  --latent-dim 32 \
+  --latent-dim 64 \
   --epochs 10 \
   --batch-size 32 \
   --out-dir Outputs/GridModel/models/autoencoder_v1
@@ -85,7 +101,8 @@ python -m neurobench.cli.main dynamics train-latent-rnn \
   --hidden-dim 64 \
   --epochs 10 \
   --batch-size 32 \
-  --out-dir Outputs/GridModel/models/latent_rnn_v1
+  --prediction-target delta \
+  --out-dir Outputs/GridModel/models/latent_rnn_h2_delta_v1
 ```
 
 Outputs:
@@ -99,6 +116,21 @@ Outputs:
 
 The learned model should not be described as useful unless it beats persistence
 on held-out videos or the report clearly states the subset and limitation.
+
+## Why The GRU/RNN Baseline
+
+A temporal CNN is a reasonable ablation because it can learn fixed-window
+temporal filters from stacked frames. The GRU is the primary baseline because the
+calcium movie is an ordered state sequence: at 50 Hz, the model sees frames every
+20 ms, and the prediction depends on recent temporal context rather than on an
+independent image. A GRU keeps an explicit hidden state over the latent-code
+history, which is easier to justify for short calcium transients and for future
+online use than treating all past frames only as extra image channels.
+
+For the short 2-frame and 5-frame horizons, `prediction_target=delta` is the
+preferred recurrent objective. It asks the GRU to predict the next latent change
+from the last observed state, while decoded outputs are still compared against
+the absolute target frame and against persistence.
 
 ## Sweep Hyperparameters
 
@@ -130,6 +162,31 @@ Outputs:
 The command is deliberately sequential and capped. To sweep `window_frames`,
 rebuild one dynamics dataset per window length; the latent RNN uses the windows
 already stored in the provided dataset.
+
+For the 128x128 max-pooled workflow, use the bounded architecture profile. With
+the default two horizons (`w8_s1_h2`, `w8_s1_h5`) and seeds `7,13`, it creates
+972 experiments across array baselines, linear latent baselines, latent GRUs,
+latent Transformers, ConvGRU/ConvLSTM pixel models, and temporal CNN pixel
+models. Experiment IDs use the `g128_` prefix and each config includes a compact
+`hyperparameter_summary` for the comparison UI.
+
+```bash
+python -m neurobench.dynamics.overnight_sweep \
+  --profile grid128_sequence_1day \
+  --out-dir Outputs/GridModel/060126_crop512_grid128_max_v1/sweeps/grid128_sequence_1day_v1 \
+  --device cuda \
+  --epochs 50 \
+  --batch-size 64 \
+  --seeds 7,13
+```
+
+Build the static comparison dashboard after or during the run:
+
+```bash
+python -m neurobench.dynamics.comparison \
+  --sweep-dir Outputs/GridModel/060126_crop512_grid128_max_v1/sweeps/grid128_sequence_1day_v1 \
+  --out-dir Outputs/GridModel/060126_crop512_grid128_max_v1/comparison_grid128_sequence_1day_v1
+```
 
 ## Train The Latent Classifier
 
@@ -167,6 +224,7 @@ The dynamics model stages are represented in:
 
 ```text
 examples/grid_latent_dynamics_pipeline.example.json
+examples/template_grid_128x128_pipeline.example.json
 ```
 
 Keep example epochs tiny for CI and CPU smoke tests. Real experiments should

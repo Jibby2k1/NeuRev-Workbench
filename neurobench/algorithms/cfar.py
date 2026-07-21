@@ -199,6 +199,9 @@ def robust_local_cfar(
     """
     device_spec = resolve_device(device)
     np, array = _validate_video(video)
+    pfa = float(pfa)
+    if not 0.0 < pfa < 1.0:
+        raise ValueError("pfa must be strictly between 0 and 1.")
     guard_px = int(guard_px)
     training_radius_px = int(training_radius_px)
     if guard_px < 0:
@@ -206,8 +209,8 @@ def robust_local_cfar(
     if training_radius_px <= guard_px:
         raise ValueError("training_radius_px must be larger than guard_px.")
     epsilon = float(epsilon)
-    if epsilon < 0:
-        raise ValueError("epsilon must be non-negative.")
+    if epsilon <= 0:
+        raise ValueError("epsilon must be positive.")
 
     evidence = np.maximum(array, 0.0).astype(np.float32, copy=False)
     if device_spec.resolved == "cuda":

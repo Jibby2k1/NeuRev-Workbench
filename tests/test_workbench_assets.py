@@ -108,5 +108,23 @@ class WorkbenchAssetBuildTests(unittest.TestCase):
         self.assertIn("window.currentWorkbench = true;", bundle)
 
 
+class WorkbenchCandidateOverlayViewTests(unittest.TestCase):
+    def test_review_template_has_raw_and_overlay_panes(self):
+        html = (ROOT / "neurobench" / "workbench" / "assets" / "workbench.html").read_text(encoding="utf-8")
+        self.assertIn('id="reviewSideBySideBtn"', html)
+        self.assertIn('id="reviewRawFrameImg"', html)
+        self.assertIn('Candidate / event outline', html)
+
+    def test_candidate_only_runs_use_live_roi_views(self):
+        source_root = ROOT / "neurobench" / "workbench" / "assets" / "src"
+        state = (source_root / "10_state_persistence.js").read_text(encoding="utf-8")
+        qc = (source_root / "70_dataset_qc.js").read_text(encoding="utf-8")
+        metrics = (source_root / "60_metrics_report.js").read_text(encoding="utf-8")
+        self.assertIn("candidateOverlayOnlyRun(runId) ? 'raw_roi'", state)
+        self.assertIn("candidateOverlayOnlyRun(annotations.settings.activeRunId)", state)
+        self.assertIn("runHasCandidateRois(run) && !runHasIntermediates(run)", qc)
+        self.assertIn("no duplicate intermediate frame stack is required", metrics)
+
+
 if __name__ == "__main__":
     unittest.main()

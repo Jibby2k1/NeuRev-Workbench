@@ -64,6 +64,51 @@ class VideoStoreTests(unittest.TestCase):
         with self.assertRaisesRegex(IndexError, "outside"):
             store.frame(3)
 
+    def test_iter_chunks_supports_bounded_absolute_frame_ranges(self):
+        require_numpy()
+        from neurobench.data.video import VideoStore
+
+        video = np.arange(9 * 2 * 3, dtype=np.float32).reshape(9, 2, 3)
+        store = VideoStore.from_array(video)
+        chunks = list(store.iter_chunks(2, start_frame=3, end_frame=8))
+
+        self.assertEqual(
+            [(chunk.start_frame, chunk.end_frame) for chunk in chunks],
+            [(3, 5), (5, 7), (7, 8)],
+        )
+        np.testing.assert_array_equal(chunks[0].data, video[3:5])
+        self.assertEqual(list(store.iter_chunks(2, start_frame=4, end_frame=4)), [])
+
+    def test_iter_video_chunks_bounds_npy_without_eager_loading(self):
+        require_numpy()
+        from neurobench.data.video import iter_video_chunks
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "video.npy"
+            video = np.arange(10 * 2 * 3, dtype=np.uint16).reshape(10, 2, 3)
+            np.save(path, video)
+
+            chunks = list(
+                iter_video_chunks(path, chunk_size=3, start_frame=2, end_frame=9)
+            )
+
+        self.assertEqual(
+            [(chunk.start_frame, chunk.end_frame) for chunk in chunks],
+            [(2, 5), (5, 8), (8, 9)],
+        )
+        self.assertTrue(all(chunk.frame_count <= 3 for chunk in chunks))
+        np.testing.assert_array_equal(chunks[-1].data, video[8:9])
+
+    def test_iter_chunks_rejects_invalid_frame_ranges(self):
+        require_numpy()
+        from neurobench.data.video import VideoStore
+
+        store = VideoStore.from_array(np.zeros((5, 2, 3), dtype=np.float32))
+        for start, end in [(-1, 2), (2, 6), (4, 3)]:
+            with self.subTest(start=start, end=end):
+                with self.assertRaisesRegex(ValueError, "frame"):
+                    list(store.iter_chunks(2, start_frame=start, end_frame=end))
+
     def test_dataset_qc_accepts_video_store(self):
         require_numpy()
         from neurobench.data.qc import compute_video_qc
