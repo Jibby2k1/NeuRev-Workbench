@@ -1,6 +1,6 @@
 """Workbench package helpers and static assets."""
 
-from neurobench.workbench.builder import architecture_runs_from_review, build_workbench, load_workbench_asset, resolve_build_inputs
+from neurobench.workbench.builder import architecture_runs_from_review, build_workbench, load_workbench_asset, resolve_build_inputs, workbench_asset_version
 from neurobench.workbench.intermediates import attach_pipeline_intermediates, export_intermediate_stack
 from neurobench.workbench.server import (
     GenerationJob,
@@ -36,4 +36,5 @@ __all__ = [
     "resolve_build_inputs",
     "run_generation_params",
     "serve_workbench",
+    "workbench_asset_version",
 ]

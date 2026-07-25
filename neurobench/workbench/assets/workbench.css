@@ -47,7 +47,7 @@ body {
 }
 .app {
   display: grid;
-  grid-template-columns: minmax(1020px, 1fr) 450px;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
   min-height: 100dvh;
   overflow: visible;
 }
@@ -424,6 +424,7 @@ input[type="range"] {
   accent-color: var(--accent);
 }
 .viewerScroll {
+  width: 100%;
   min-height: 260px;
   max-height: min(56vh, 620px);
   overflow: auto;
@@ -440,8 +441,123 @@ input[type="range"] {
   align-items: flex-start;
   justify-content: center;
   gap: 14px;
-  min-width: min-content;
+  width: max-content;
+  min-width: 0;
   padding: 14px;
+}
+
+.annotationWorkspace {
+  display: grid;
+  grid-template-columns: minmax(270px, 310px) minmax(0, 1fr);
+  gap: 10px;
+  min-width: 0;
+  align-items: start;
+}
+.annotationToolDock {
+  position: sticky;
+  top: 8px;
+  z-index: 3;
+  display: grid;
+  gap: 8px;
+  max-height: min(72vh, 760px);
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--panel);
+  padding: 9px;
+  box-shadow: var(--shadow);
+}
+.annotationDockIntro h2 {
+  margin: 0 0 4px;
+}
+.annotationDockIntro p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+.annotationToolPanel {
+  background: var(--panel-2);
+}
+.annotationToolGrid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px !important;
+  padding: 8px !important;
+}
+.annotationToolGrid label {
+  grid-column: 1 / -1;
+  display: grid !important;
+  grid-template-columns: minmax(74px, auto) minmax(0, 1fr) auto;
+  gap: 6px !important;
+  align-items: center;
+  white-space: normal;
+}
+.annotationToolGrid label > select,
+.annotationToolGrid label > input[type="range"] {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+}
+.annotationToolGrid label:has(input[type="checkbox"]) {
+  display: flex !important;
+}
+.annotationToolGrid button {
+  height: auto !important;
+  min-height: 34px;
+  padding: 5px 7px !important;
+  line-height: 1.2 !important;
+  white-space: normal;
+}
+.annotationToolGrid .hint,
+.annotationToolGrid .cfarMaskLegend {
+  grid-column: 1 / -1;
+}
+.annotationViewerColumn {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+#overlay:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (max-width: 980px) {
+  .annotationWorkspace {
+    grid-template-columns: 1fr;
+  }
+  .annotationToolDock {
+    position: static;
+    max-height: none;
+  }
+  .annotationToolDock {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .annotationDockIntro {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .annotationToolDock {
+    grid-template-columns: 1fr;
+  }
+  .annotationToolGrid {
+    grid-template-columns: 1fr;
+  }
+  .annotationToolGrid button,
+  .annotationToolGrid .hint,
+  .annotationToolGrid .cfarMaskLegend {
+    grid-column: 1;
+  }
+}
+
+@media (pointer: coarse) {
+  .annotationToolGrid button,
+  .annotationToolGrid select {
+    min-height: 44px;
+  }
 }
 .reviewViewerPane {
   margin: 0;
@@ -3272,3 +3388,23 @@ textarea {
 .app.guided-ui .summaryGrid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
+
+.cfarMaskToolbar {
+  border-left: 3px solid #a855f7 !important;
+}
+.cfarMaskToolbar #cfarMaskStatus {
+  flex: 1 1 280px;
+}
+.cfarMaskLegend {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 8px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+}
+.cfarForegroundLegend { background: rgba(244, 63, 94, 0.78); }
+.cfarBackgroundLegend { background: rgba(14, 165, 233, 0.78); }

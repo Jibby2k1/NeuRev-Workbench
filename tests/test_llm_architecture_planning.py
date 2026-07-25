@@ -68,8 +68,34 @@ class LlmArchitecturePlanningTests(unittest.TestCase):
 
         self.assertEqual(context["dataset_id"], "d")
         self.assertIn("gamma_cfar", context["stage_catalog"])
+        self.assertEqual(context["stage_catalog_detail"], "compact")
+        self.assertNotIn("parameter_docs", context["stage_catalog"]["gamma_cfar"])
         self.assertIn("Represent multi-stage CFAR", " ".join(context["constraints"]))
         self.assertIn("Return JSON", render_llm_prompt(context))
+
+    def test_context_builder_retains_legacy_run_with_pipeline_warning(self):
+        from neurobench.llm_planning import build_llm_context
+
+        context = build_llm_context(
+            dataset_manifest={"schema_version": 1, "dataset_id": "d"},
+            architecture_runs={
+                "schema_version": 1,
+                "dataset_id": "d",
+                "runs": [
+                    {
+                        "run_id": "legacy_soma",
+                        "pipeline": [{"id": "source", "stage_id": "source_video_import", "params": {}}],
+                        "execution": {"status": "completed"},
+                        "summary": {"roi_count": 300},
+                    }
+                ],
+            },
+        )
+
+        self.assertEqual(context["current_runs"][0]["run_id"], "legacy_soma")
+        self.assertEqual(context["current_runs"][0]["roi_count"], 300)
+        self.assertEqual(context["current_runs"][0]["pipeline_validation"]["status"], "legacy_metadata_warning")
+        self.assertEqual(context["context_warnings"][0]["code"], "legacy_pipeline_metadata")
 
     def test_valid_proposal_imports_saved_pipeline_and_planned_runs(self):
         from neurobench.llm_planning import proposal_set_to_architecture_manifest

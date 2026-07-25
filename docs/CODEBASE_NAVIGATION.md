@@ -1,6 +1,6 @@
 # Codebase Navigation
 
-Last updated: 2026-07-13.
+Last updated: 2026-07-21.
 
 This guide is a fast map for humans and coding agents. It names the stable
 entry points first, then points to the implementation modules behind common
@@ -12,9 +12,12 @@ from this map.
 | Goal | Start Here | Then Read |
 | --- | --- | --- |
 | Run CLI workflows | `neurobench/cli/main.py` | The matching file under `neurobench/cli/` |
-| Build or serve the neuron dashboard | `tools/build_neuron_workbench_v2.py`, `tools/serve_neuron_workbench.py` | `neurobench/workbench/builder.py`, `neurobench/workbench/server.py`, `docs/NEURON_WORKBENCH.md` |
+| Build or serve the neuron dashboard | `neurobench workbench build/status/serve` | `neurobench/workbench/builder.py`, `neurobench/workbench/server.py`, `docs/developer/WORKBENCH_VIDEO_CATALOG_REFACTOR.md` |
+| Query datasets and videos for App/LLM use | `neurobench dataset catalog` | `neurobench/data/catalog.py`, `neurobench llm context --dataset-id ...` |
 | Run Gamma CFAR candidate workflows | `tools/prepare_gamma_cfar_workbench_run.py` | `neurobench/algorithms/cfar.py`, `neurobench/reports/gamma_cfar_sweep.py`, `docs/workflows/raw_video_to_report.md` |
 | Run the Spon dark-soma/excitation case study | `examples/spon_ca_burst_soma_excitation.example.json` | `neurobench/experiments/soma_excitation/`, `docs/workflows/spon_ca_burst_soma_excitation.md` |
+| Run or inspect learnable contrast experiments | `docs/workflows/spon_ca_burst_learnable_contrast.md` | `neurobench/experiments/learnable_contrast/`, `neurobench/cli/experiment.py` |
+| Audit the fish intent/inverse-control program | `docs/programs/fish_inverse_control/README.md` | `examples/fish_control_program.example.json`, `neurobench/programs/fish_control.py` |
 | Add a pipeline stage | `docs/developer/adding_pipeline_stage.md` | `neurobench/pipeline_catalog.py`, `neurobench/pipelines/executor.py`, `tests/test_pipeline_executor.py` |
 | Work on template/grid preprocessing | `docs/TEMPLATE_GRID_WORKFLOW.md` | `neurobench/algorithms/template_matching.py`, `neurobench/algorithms/grid_regions.py`, `neurobench/cli/template.py`, `neurobench/cli/grid.py` |
 | Work on grid dynamics experiments | `docs/GRID_LATENT_DYNAMICS.md` | `neurobench/dynamics/`, `neurobench/cli/dynamics.py` |
@@ -28,14 +31,17 @@ from this map.
 | `neurobench/algorithms/` | Core image/video algorithms such as CFAR, motion, template matching, and grid extraction. |
 | `neurobench/cli/` | Argparse command groups. These should stay thin and delegate to package modules. |
 | `neurobench/data/` | Dataset manifests, video loading/cropping, QC, checksums, preflight estimates, and synthetic fixtures. |
+| `neurobench/dashboards/` | Dashboard manifest and presentation contracts. |
 | `neurobench/discovery/` | Candidate clustering, ranking, and active-learning helpers. |
 | `neurobench/dynamics/` | Grid/latent dynamics datasets, models, training, sweeps, reports, comparisons, and supervisors. |
 | `neurobench/experiments/` | Focused, manifest-driven case studies with explicit resource and artifact contracts. |
 | `neurobench/exports/` | Annotation, behavior-alignment, and inverse-dynamics export contracts. |
 | `neurobench/integrations/` | Import adapters for external tools such as Suite2p, PMD, and OASIS. |
+| `neurobench/logging/` | Atomic run-state and resource logging helpers. |
 | `neurobench/metrics/` | Detection, event-quality, run-comparison, and summary metrics. |
 | `neurobench/models/` | Dataclass-like model validation and serialization for public JSON artifacts. |
 | `neurobench/pipelines/` | Local pipeline execution, artifacts, devices, specs, stages, and sweeps. |
+| `neurobench/programs/` | Stage-gated research-program manifests and read-only readiness audits. |
 | `neurobench/realtime/` | Streaming and latency helpers. |
 | `neurobench/reports/` | Markdown/JSON report builders and renderers. |
 | `neurobench/review/` | Reviewer agreement and provenance utilities. |
@@ -60,15 +66,18 @@ from this map.
 
 1. Find the dataset root, often under `Outputs/GammaCFAR/...` or
    `Outputs/NeuronReview/...`.
-2. Look for `dashboard_manifest.json`; if present, use its `serve_command`.
-3. Otherwise serve the app directly:
+2. Query the canonical catalog with `neurobench dataset catalog --root .`.
+3. Serve the selected app through the canonical command:
 
 ```bash
-.venv-neurobench/bin/python tools/serve_neuron_workbench.py \
+.venv-neurobench/bin/python -m neurobench.cli.main workbench serve \
   --app-dir path/to/app \
   --host 127.0.0.1 \
   --port 8765
 ```
+
+`tools/serve_neuron_workbench.py` remains a compatibility and multi-app-index
+wrapper; do not use it as the canonical single-app route.
 
 ### Build A New Raw-Video Gamma CFAR Result
 
@@ -76,7 +85,7 @@ from this map.
 2. Write the sweep spec with the same script.
 3. Run the fast grid.
 4. Attach the sweep to the workbench app.
-5. Build the static workbench with `tools/build_neuron_workbench_v2.py`.
+5. Build the static workbench with `neurobench workbench build`.
 
 Current refactor target: split that script into `neurobench.gamma_cfar.*`
 modules while preserving the existing CLI.
@@ -127,7 +136,7 @@ preflight and the runner provide estimated and live `VmRSS`/`VmHWM` checks.
 .venv-neurobench/bin/python tools/build_workbench_assets.py --check
 ```
 
-3. Rebuild a fixture app with `tools/build_neuron_workbench_v2.py`.
+3. Rebuild a fixture app with `neurobench workbench build --review-data ... --app-dir ...`.
 4. Run focused tests such as `tests/test_workbench_assets.py` and
    `tests/test_workbench_builder.py`.
 

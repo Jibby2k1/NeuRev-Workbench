@@ -1,0 +1,624 @@
+{
+  "schema_version": 1,
+  "program_id": "fish_inverse_control_v1",
+  "objective": "Progress from trustworthy neural activation measurements to causal pre-movement left/right decoding, action-conditioned system identification, and uncertainty-gated inverse control.",
+  "hardware_profile": {
+    "captured_at": "2026-07-21T15:15:00Z",
+    "cpu_model": "Intel Core i9-14900K",
+    "cpu_logical_count": 32,
+    "ram_total_gib": 78,
+    "gpu_name": "NVIDIA GeForce RTX 4070 SUPER",
+    "gpu_memory_mib": 12282,
+    "gpu_memory_reserve_mib": 2200,
+    "recommended_max_cpu_threads": 16,
+    "recommended_max_ram_gib": 48,
+    "min_free_disk_gib": 200,
+    "max_concurrent_gpu_jobs": 1
+  },
+  "gates": [
+    {
+      "id": "activation_precision",
+      "label": "Activation precision is measurable and robust",
+      "status": "insufficient_evidence",
+      "evidence": [
+        "Learnable-direct v3 tied frozen raw-direct at 0.6056 mean sparse-positive held-out recall.",
+        "Existing labels contain 79 burst rows across 27 unique ROIs."
+      ],
+      "blockers": [
+        "No exhaustively reviewed spatial-temporal evaluation panel exists, so ordinary precision is not identifiable."
+      ],
+      "pass_criteria": [
+        "Exhaustive held-out tiles support object and event PR/FROC metrics.",
+        "The selected detector meets pre-registered recall and false-positive targets across fish/session and artifact strata."
+      ]
+    },
+    {
+      "id": "intent_data",
+      "label": "Causal pre-movement intent data are ready",
+      "status": "insufficient_evidence",
+      "evidence": [
+        "The existing 11-video latent smoke test is video-level and weakly separable.",
+        "Behavior-alignment utilities exist."
+      ],
+      "blockers": [
+        "Frame-synchronized movement onset, direction, uncertainty, and leakage-guarded trial windows are not yet available as a frozen dataset."
+      ],
+      "pass_criteria": [
+        "Aligned trial manifest passes fish/session, class-balance, missingness, and timing-uncertainty checks.",
+        "Every neural feature window ends before the movement-onset uncertainty guard."
+      ]
+    },
+    {
+      "id": "intent_signal",
+      "label": "Left/right intent generalizes",
+      "status": "not_started",
+      "evidence": [
+        "The current ridge latent head reached 0.3636 accuracy, equal to the majority baseline."
+      ],
+      "blockers": [
+        "Intent data gate has not passed."
+      ],
+      "pass_criteria": [
+        "A pre-registered model improves held-out balanced accuracy, macro F1, and calibration over behavior-only and population-only baselines.",
+        "Spatial and temporal leakage controls pass on held-out fish or sessions."
+      ]
+    },
+    {
+      "id": "action_data",
+      "label": "Stimulation actions are identifiable",
+      "status": "blocked",
+      "evidence": [
+        "Inverse-dynamics export and timestamp-alignment utilities exist."
+      ],
+      "blockers": [
+        "Requested and measured stimulation actions, timing, target, amplitude, duration, sham status, and safety interventions are not populated."
+      ],
+      "pass_criteria": [
+        "Safe counterbalanced action coverage and no-action/sham controls exist.",
+        "Requested-versus-measured action and latency residuals meet the acquisition contract."
+      ]
+    },
+    {
+      "id": "system_id",
+      "label": "Action-conditioned transitions are calibrated",
+      "status": "not_started",
+      "evidence": [],
+      "blockers": [
+        "Action-data gate has not passed."
+      ],
+      "pass_criteria": [
+        "Action-conditioned models beat action-free models on held-out sessions and supported stimulation levels.",
+        "Target and off-target outcomes are calibrated and uncertainty rises outside training support."
+      ]
+    },
+    {
+      "id": "simulator_control",
+      "label": "Constrained control works in simulation",
+      "status": "not_started",
+      "evidence": [],
+      "blockers": [
+        "System-identification gate has not passed."
+      ],
+      "pass_criteria": [
+        "Uncertainty-gated MPC beats no-action, fixed-safe, and randomized-safe policies.",
+        "All simulated actions remain inside the approved envelope and unsupported trajectories abstain."
+      ]
+    },
+    {
+      "id": "deployment",
+      "label": "Shadow and closed-loop deployment are safe",
+      "status": "not_started",
+      "evidence": [
+        "Latency p50/p95/p99 instrumentation exists in the repository."
+      ],
+      "blockers": [
+        "No simulator pass, shadow-mode evidence, approved action envelope, or command interlock exists."
+      ],
+      "pass_criteria": [
+        "Shadow-mode latency, drift, abstention, and watchdog tests pass.",
+        "Explicit safety and experimental approvals are recorded before command-capable execution."
+      ]
+    }
+  ],
+  "experiments": [
+    {
+      "id": "fc00_activation_annotation_panel_v1",
+      "title": "Exhaustive activation annotation panel",
+      "stage": "measurement",
+      "status": "planned",
+      "priority": 1,
+      "hypothesis": "A stratified exhaustive panel will reveal that current false-positive burden is concentrated in motion, bright-background, overlap, and detector-disagreement strata.",
+      "decision": "Determine whether detector precision is measurable and which error strata dominate the next model comparison.",
+      "impact": 5,
+      "information_gain": 5,
+      "cost": 2,
+      "risk": 1,
+      "launch_policy": "manual_action",
+      "dependencies": [],
+      "requires_gate": null,
+      "advances_gate": "activation_precision",
+      "resources": {
+        "device": "none",
+        "cpu_threads": 1,
+        "max_ram_gib": 2,
+        "max_wall_hours": 0
+      },
+      "inputs": [
+        {
+          "role": "source_video_cache",
+          "path": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+          "required_for_launch": true
+        },
+        {
+          "role": "sparse_positive_labels",
+          "path": "../Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+          "required_for_launch": true
+        }
+      ],
+      "output_root": "../Outputs/FishControl/activation_annotation_panel_v1",
+      "resume_policy": "refuse_existing",
+      "success_criteria": [
+        "At least 120 stratified spatial-temporal tiles receive explicit exhaustive, candidate-review, or sparse-positive coverage labels.",
+        "A dual-reviewed subset reports agreement and adjudication.",
+        "Every unmatched candidate has a valid known-negative or unknown interpretation."
+      ],
+      "stop_conditions": [
+        "Stop if coordinate/frame overlays reveal a convention mismatch.",
+        "Stop if fewer than three independent sessions or videos can be represented."
+      ]
+    },
+    {
+      "id": "fc01_frozen_detector_tournament_v1",
+      "title": "Frozen detector and structured-background tournament",
+      "stage": "measurement",
+      "status": "planned",
+      "priority": 2,
+      "hypothesis": "Preserving absolute amplitude while modeling spatially structured background and trace kinetics will improve recall at fixed false-positive burden over pure learned contrast.",
+      "decision": "Select the measurement pipeline that supplies intent features; decide whether a learnable refinement is warranted.",
+      "impact": 5,
+      "information_gain": 5,
+      "cost": 2,
+      "risk": 1,
+      "launch_policy": "safe_cpu",
+      "dependencies": [
+        "fc00_activation_annotation_panel_v1"
+      ],
+      "requires_gate": null,
+      "advances_gate": "activation_precision",
+      "resources": {
+        "device": "cpu",
+        "cpu_threads": 16,
+        "max_ram_gib": 32,
+        "max_wall_hours": 6
+      },
+      "inputs": [
+        {
+          "role": "exhaustive_benchmark_manifest",
+          "path": "../Outputs/FishControl/activation_annotation_panel_v1/benchmark_manifest.json",
+          "required_for_launch": true
+        }
+      ],
+      "output_root": "../Outputs/FishControl/frozen_detector_tournament_v1",
+      "resume_policy": "refuse_existing",
+      "design": {
+        "factor_grid": {
+          "method": [
+            "raw_direct",
+            "gamma_cfar",
+            "learned_contrast_v2",
+            "direct_tuned_v3",
+            "caiman_cnmf",
+            "annular_background_plus_deconvolution"
+          ]
+        },
+        "repeats": 1,
+        "expected_jobs": 6,
+        "split_unit": "held-out fish if available, otherwise session/video",
+        "primary_metrics": [
+          "object_average_precision",
+          "event_average_precision",
+          "recall_at_fixed_false_positives_per_megapixel_minute",
+          "event_timing_error_ms",
+          "calibration_error"
+        ],
+        "controls": [
+          "quiet tiles",
+          "motion-corrupted tiles",
+          "bright-background tiles",
+          "overlapping-neuron tiles",
+          "detector-disagreement tiles"
+        ]
+      },
+      "success_criteria": [
+        "A frozen operating point improves both event precision and recall over raw-direct with group-bootstrap uncertainty excluding zero.",
+        "Attribution, duplicate, split, and merge errors are reported separately."
+      ],
+      "stop_conditions": [
+        "Do not tune on the sealed test panel.",
+        "Stop model expansion if no method beats raw-direct across at least two independent groups."
+      ]
+    },
+    {
+      "id": "fc02_structured_background_pu_v1",
+      "title": "Structured-background and PU refinement",
+      "stage": "measurement",
+      "status": "planned",
+      "priority": 3,
+      "hypothesis": "A soma-excluding annular background model plus non-negative positive-unlabeled risk will reduce false detections without sacrificing the raw-direct recall advantage.",
+      "decision": "Decide whether learnable detection adds value after the evaluation target and background model are corrected.",
+      "impact": 4,
+      "information_gain": 4,
+      "cost": 3,
+      "risk": 2,
+      "launch_policy": "explicit_approval",
+      "dependencies": [
+        "fc01_frozen_detector_tournament_v1"
+      ],
+      "requires_gate": "activation_precision",
+      "advances_gate": "activation_precision",
+      "resources": {
+        "device": "cuda",
+        "cpu_threads": 12,
+        "max_ram_gib": 40,
+        "max_wall_hours": 12,
+        "gpu_memory_target_mib": 8500,
+        "gpu_memory_hard_limit_mib": 9600
+      },
+      "inputs": [
+        {
+          "role": "detector_tournament_summary",
+          "path": "../Outputs/FishControl/frozen_detector_tournament_v1/metrics.json",
+          "required_for_launch": true
+        }
+      ],
+      "output_root": "../Outputs/FishControl/structured_background_pu_v1",
+      "resume_policy": "resume_atomic",
+      "design": {
+        "factor_grid": {
+          "architecture": [
+            "amplitude_plus_annular_background",
+            "amplitude_plus_soft_cfar"
+          ],
+          "loss": [
+            "coverage_masked_focal",
+            "non_negative_pu"
+          ]
+        },
+        "repeats": 3,
+        "expected_jobs": 12,
+        "split_unit": "held-out fish if available, otherwise session/video",
+        "primary_metrics": [
+          "event_average_precision",
+          "recall_at_fixed_false_positive_burden",
+          "expected_calibration_error"
+        ],
+        "controls": [
+          "raw-amplitude ablation",
+          "background-annulus shuffle",
+          "class-prior sensitivity",
+          "seed distribution"
+        ]
+      },
+      "success_criteria": [
+        "The confirmatory model improves event average precision and recall at the pre-registered burden over the best frozen pipeline.",
+        "The result persists across seeds and independent groups."
+      ],
+      "stop_conditions": [
+        "Stop after the 12-job screen if no validation-group improvement is observed.",
+        "Abort a job before OOM when GPU memory reaches the 9,600 MiB hard limit."
+      ]
+    },
+    {
+      "id": "fc03_intent_dataset_readiness_v1",
+      "title": "Causal intent dataset and alignment audit",
+      "stage": "intent",
+      "status": "planned",
+      "priority": 4,
+      "hypothesis": "The present video-level left/right/neutral labels obscure trial-level pre-movement signal and contain alignment and annotation risks that must be resolved before modeling.",
+      "decision": "Determine whether the available acquisitions can support held-out causal intent decoding or whether new synchronized data are required.",
+      "impact": 5,
+      "information_gain": 5,
+      "cost": 2,
+      "risk": 1,
+      "launch_policy": "manual_action",
+      "dependencies": [],
+      "requires_gate": null,
+      "advances_gate": "intent_data",
+      "resources": {
+        "device": "cpu",
+        "cpu_threads": 8,
+        "max_ram_gib": 16,
+        "max_wall_hours": 3
+      },
+      "inputs": [
+        {
+          "role": "dataset_manifest",
+          "path": "dataset_manifest.example.json",
+          "required_for_launch": true
+        }
+      ],
+      "output_root": "../Outputs/FishControl/intent_dataset_readiness_v1",
+      "resume_policy": "refuse_existing",
+      "success_criteria": [
+        "Movement onset, direction, uncertainty, fish/session/trial IDs, and pre-onset windows are explicit.",
+        "The 1,118-frame interval, reversed range, and workbook-title mismatch are reviewed.",
+        "A frozen group split and class-balance report are written."
+      ],
+      "stop_conditions": [
+        "Stop modeling if behavior onset cannot be synchronized inside the shortest intended lead window.",
+        "Stop if held-out fish/session groups cannot be formed without leakage."
+      ]
+    },
+    {
+      "id": "fc04_intent_spatiotemporal_ablation_v1",
+      "title": "Spatial, temporal, and spatiotemporal intent ablation",
+      "stage": "intent",
+      "status": "planned",
+      "priority": 5,
+      "hypothesis": "Signed bilateral spatial activity will add predictive information beyond population amount, while slow recent state will add complementary information rather than being safely ignored.",
+      "decision": "Choose the minimal generalizing intent representation and quantify whether spatial laterality or temporal state carries the incremental signal.",
+      "impact": 5,
+      "information_gain": 5,
+      "cost": 3,
+      "risk": 2,
+      "launch_policy": "safe_cpu",
+      "dependencies": [
+        "fc03_intent_dataset_readiness_v1"
+      ],
+      "requires_gate": "intent_data",
+      "advances_gate": "intent_signal",
+      "resources": {
+        "device": "cpu",
+        "cpu_threads": 16,
+        "max_ram_gib": 48,
+        "max_wall_hours": 8
+      },
+      "inputs": [
+        {
+          "role": "aligned_intent_trials",
+          "path": "../Outputs/FishControl/intent_dataset_readiness_v1/intent_trials.parquet",
+          "required_for_launch": true
+        }
+      ],
+      "output_root": "../Outputs/FishControl/intent_spatiotemporal_ablation_v1",
+      "resume_policy": "resume_atomic",
+      "design": {
+        "factor_grid": {
+          "representation": [
+            "behavior_only",
+            "population_amount",
+            "spatial_laterality",
+            "temporal_coordinate_free",
+            "spatiotemporal",
+            "spatiotemporal_plus_behavior"
+          ],
+          "lead_window": [
+            "minus_500_to_250_ms",
+            "minus_250_to_100_ms",
+            "minus_100_to_40_ms",
+            "post_onset_leakage_diagnostic"
+          ]
+        },
+        "repeats": 1,
+        "expected_jobs": 24,
+        "split_unit": "held-out fish; held-out session only when fish count is insufficient",
+        "primary_metrics": [
+          "balanced_accuracy",
+          "macro_f1",
+          "left_right_average_precision",
+          "brier_score",
+          "lead_time_ms"
+        ],
+        "controls": [
+          "coordinate shuffle",
+          "left-right mirror",
+          "time shift",
+          "label permutation",
+          "stimulus-only baseline",
+          "behavior-history-only baseline",
+          "activity-count matching",
+          "post-onset leakage diagnostic"
+        ]
+      },
+      "success_criteria": [
+        "A pre-onset representation beats behavior-only and population-only baselines on held-out groups.",
+        "Spatial gain collapses under coordinate shuffle/mirroring and temporal gain collapses under time shift.",
+        "Calibration and group-bootstrap uncertainty are reported."
+      ],
+      "stop_conditions": [
+        "Do not add nonlinear capacity until a regularized linear representation shows stable above-baseline information.",
+        "Stop if improvement appears only in post-onset windows."
+      ]
+    },
+    {
+      "id": "fc05_action_logging_readiness_v1",
+      "title": "Stimulation action and safety logging audit",
+      "stage": "system_identification",
+      "status": "planned",
+      "priority": 6,
+      "hypothesis": "The current acquisitions lack measured-action and safety fields required to identify a causal stimulation response.",
+      "decision": "Freeze the acquisition contract and determine which fields or experiments must be added before system identification.",
+      "impact": 5,
+      "information_gain": 5,
+      "cost": 1,
+      "risk": 1,
+      "launch_policy": "manual_action",
+      "dependencies": [],
+      "requires_gate": null,
+      "advances_gate": "action_data",
+      "resources": {
+        "device": "none",
+        "cpu_threads": 1,
+        "max_ram_gib": 1,
+        "max_wall_hours": 1
+      },
+      "inputs": [
+        {
+          "role": "dataset_manifest",
+          "path": "dataset_manifest.example.json",
+          "required_for_launch": true
+        }
+      ],
+      "output_root": "../Outputs/FishControl/action_logging_readiness_v1",
+      "resume_policy": "refuse_existing",
+      "success_criteria": [
+        "Requested and measured action, target, amplitude, duration, waveform, command/hardware timestamps, latency, sham, clipping, and interlock fields are frozen.",
+        "Unknown action is distinct from observed no-action."
+      ],
+      "stop_conditions": [
+        "Do not collect policy-driven data until a safe randomized/counterbalanced acquisition plan is approved.",
+        "Do not infer no-stimulation from a missing log."
+      ]
+    },
+    {
+      "id": "fc06_action_conditioned_system_id_v1",
+      "title": "Action-conditioned linear system-identification pilot",
+      "stage": "system_identification",
+      "status": "planned",
+      "priority": 7,
+      "hypothesis": "A controlled linear or preferential-subspace model will predict direction and neural response better than an action-free model within supported state-action regions.",
+      "decision": "Establish whether stimulation has identifiable state-dependent effects before training a nonlinear controller model.",
+      "impact": 5,
+      "information_gain": 5,
+      "cost": 4,
+      "risk": 4,
+      "launch_policy": "explicit_approval",
+      "dependencies": [
+        "fc05_action_logging_readiness_v1"
+      ],
+      "requires_gate": "action_data",
+      "advances_gate": "system_id",
+      "resources": {
+        "device": "cpu",
+        "cpu_threads": 16,
+        "max_ram_gib": 48,
+        "max_wall_hours": 8
+      },
+      "inputs": [
+        {
+          "role": "action_conditioned_transitions",
+          "path": "../Outputs/FishControl/action_logging_readiness_v1/transitions.parquet",
+          "required_for_launch": true
+        }
+      ],
+      "output_root": "../Outputs/FishControl/action_conditioned_system_id_v1",
+      "resume_policy": "resume_atomic",
+      "design": {
+        "factor_grid": {
+          "model": [
+            "action_free_ridge",
+            "state_action_ridge",
+            "controlled_linear_state_space",
+            "input_preferential_subspace"
+          ],
+          "target": [
+            "left_right_response",
+            "neural_next_state"
+          ]
+        },
+        "repeats": 1,
+        "expected_jobs": 8,
+        "split_unit": "held-out fish/session and held-out stimulation level",
+        "primary_metrics": [
+          "direction_log_loss",
+          "direction_brier_score",
+          "next_state_mse",
+          "action_effect_calibration"
+        ],
+        "controls": [
+          "no-action",
+          "sham",
+          "contralateral target",
+          "off-target region",
+          "action-label permutation",
+          "unsupported-state rejection"
+        ]
+      },
+      "success_criteria": [
+        "Action-conditioned prediction beats action-free prediction on held-out groups and stimulation levels.",
+        "Target and off-target effects are calibrated with support diagnostics."
+      ],
+      "stop_conditions": [
+        "Stop if action support is confounded with pre-action state.",
+        "Stop if measured delivery or latency quality fails the acquisition contract."
+      ]
+    },
+    {
+      "id": "fc07_uncertainty_mpc_sim_v1",
+      "title": "Uncertainty-gated MPC simulation",
+      "stage": "control",
+      "status": "planned",
+      "priority": 8,
+      "hypothesis": "A constrained controller using action-conditioned ensemble uncertainty will outperform safe baselines while abstaining outside training support.",
+      "decision": "Determine whether the learned system is ready for shadow-mode control evaluation.",
+      "impact": 5,
+      "information_gain": 4,
+      "cost": 4,
+      "risk": 3,
+      "launch_policy": "explicit_approval",
+      "dependencies": [
+        "fc06_action_conditioned_system_id_v1"
+      ],
+      "requires_gate": "system_id",
+      "advances_gate": "simulator_control",
+      "resources": {
+        "device": "cuda",
+        "cpu_threads": 12,
+        "max_ram_gib": 40,
+        "max_wall_hours": 12,
+        "gpu_memory_target_mib": 8500,
+        "gpu_memory_hard_limit_mib": 9600
+      },
+      "inputs": [
+        {
+          "role": "action_conditioned_model",
+          "path": "../Outputs/FishControl/action_conditioned_system_id_v1/model_manifest.json",
+          "required_for_launch": true
+        }
+      ],
+      "output_root": "../Outputs/FishControl/uncertainty_mpc_sim_v1",
+      "resume_policy": "resume_atomic",
+      "design": {
+        "factor_grid": {
+          "transition_model": [
+            "controlled_linear_ensemble",
+            "probabilistic_neural_ensemble"
+          ],
+          "controller": [
+            "fixed_safe",
+            "randomized_safe",
+            "uncertainty_gated_mpc"
+          ]
+        },
+        "repeats": 3,
+        "expected_jobs": 18,
+        "split_unit": "held-out fish/session scenarios",
+        "primary_metrics": [
+          "desired_direction_probability",
+          "response_latency_ms",
+          "stimulation_energy",
+          "constraint_violation_count",
+          "abstention_rate"
+        ],
+        "controls": [
+          "no-action policy",
+          "distribution shift",
+          "latency perturbation",
+          "sensor dropout",
+          "registration drift",
+          "action saturation"
+        ]
+      },
+      "success_criteria": [
+        "MPC improves desired-direction probability over all safe baselines without a constraint violation.",
+        "Uncertainty gating abstains on unsupported trajectories and degrades safely under perturbations."
+      ],
+      "stop_conditions": [
+        "No command-capable adapter may be enabled by this experiment.",
+        "Stop if any simulated action exceeds the explicit safety envelope.",
+        "Abort a job before OOM when GPU memory reaches the 9,600 MiB hard limit."
+      ]
+    }
+  ]
+}
+

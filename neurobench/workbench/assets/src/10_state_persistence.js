@@ -27,6 +27,8 @@ const reviewRawImg = document.getElementById('reviewRawFrameImg');
 const datasetId = data.dataset?.dataset_id || data.video?.name || 'calcium-video';
 const storeKey = `neuron-review-workbench-v3-${datasetId}`;
 const recoveryStoreKey = `${storeKey}-recovery-history`;
+const RECOVERY_HISTORY_LIMIT = 12;
+const RECOVERY_HISTORY_BYTE_BUDGET = 1_000_000;
 const traceCache = new Map();
 const traceEventCache = new Map();
 const TRACE_CACHE_LIMIT = 512;
@@ -296,7 +298,9 @@ function defaultAnnotations() {
       kalmanGain: 0.06,
       spikeGain: 0.008,
       zoom: 1.5,
-      reviewSideBySide: candidateOverlayOnlyRun(),
+      reviewLayoutVersion: 2,
+      reviewSideBySide: false,
+      activeVideoViewId: '',
       brightness: 1,
       contrast: 1.08,
       overlayOpacity: 0.50,
@@ -314,6 +318,14 @@ function defaultAnnotations() {
       manualRoiRadius: 6,
       roiEditMode: 'off',
       roiEditBrushRadius: 4,
+      cfarMaskTarget: 'foreground',
+      cfarMaskTool: 'off',
+      cfarMaskBrushRadius: 4,
+      cfarFloodTolerance: 12,
+      cfarFloodBound: 'roi_box',
+      cfarFloodPadding: 12,
+      cfarFloodRadius: 32,
+      showCfarMasks: true,
       reviewWorkflowPreset: 'custom',
       activeSnapshotId: '',
       parameterSnapshots: [],
@@ -362,6 +374,7 @@ function defaultAnnotations() {
 }
 
 function mergeAnnotations(incoming) {
+  if(typeof clearCfarMaskUndoHistory === 'function') clearCfarMaskUndoHistory();
   annotations = Object.assign(defaultAnnotations(), incoming || {});
   annotations.version = 3;
   annotations.schema_version = 3;
@@ -381,7 +394,10 @@ function mergeAnnotations(incoming) {
   annotations.reviewStats = Object.assign(defaultAnnotations().reviewStats, incoming?.reviewStats || {});
   annotations.reviewStats.actions = Object.assign({}, incoming?.reviewStats?.actions || {});
   annotations.settings = Object.assign(defaultAnnotations().settings, incoming?.settings || {});
-  if(incoming?.settings?.reviewSideBySide === undefined) annotations.settings.reviewSideBySide = candidateOverlayOnlyRun(annotations.settings.activeRunId);
+  if(Number(incoming?.settings?.reviewLayoutVersion || 0) < 2) {
+    annotations.settings.reviewSideBySide = false;
+  }
+  annotations.settings.reviewLayoutVersion = 2;
 }
 
 function migrateRunBucket(bucket) {
@@ -402,6 +418,10 @@ function migrateRunBucket(bucket) {
 
 function migrateRoiAnn(ann) {
   const out = Object.assign({state:'', notes:'', deleted:false}, ann || {});
+  if(out.cfar_regions && typeof out.cfar_regions === 'object' && !Array.isArray(out.cfar_regions)){
+    out.cfar_regions = Object.assign({}, out.cfar_regions);
+    delete out.cfar_regions.edit_history;
+  }
   if(!out.cell_state) out.cell_state = out.state === 'accept' ? 'accepted' : out.state === 'reject' ? 'rejected' : out.state === 'unsure' ? 'unsure' : '';
   if(out.cell_state && !out.state) out.state = out.cell_state === 'accepted' ? 'accept' : out.cell_state === 'rejected' ? 'reject' : out.cell_state === 'unsure' ? 'unsure' : '';
   out.trace_quality = out.trace_quality || '';
@@ -593,15 +613,25 @@ function pushRecoverySnapshot(reason='autosave', {force=false}={}){
   if(!force && now - lastRecoverySnapshotAt < 60_000) return;
   lastRecoverySnapshotAt = now;
   try {
-    const history = recoveryHistory();
-    history.unshift({
+    const snapshot = {
       id: `recovery_${now.toString(36)}`,
       createdAt: new Date(now).toISOString(),
       reason,
       activeRunId: activeRunId(),
       annotations: JSON.parse(JSON.stringify(annotations))
-    });
-    localStorage.setItem(recoveryStoreKey, JSON.stringify(history.slice(0, 12)));
+    };
+    const snapshotText = JSON.stringify(snapshot);
+    if(snapshotText.length > RECOVERY_HISTORY_BYTE_BUDGET) return;
+    const bounded = [snapshot];
+    let bytes = snapshotText.length + 2;
+    for(const older of recoveryHistory()){
+      if(bounded.length >= RECOVERY_HISTORY_LIMIT) break;
+      const olderText = JSON.stringify(older);
+      if(bytes + olderText.length + 1 > RECOVERY_HISTORY_BYTE_BUDGET) break;
+      bounded.push(older);
+      bytes += olderText.length + 1;
+    }
+    localStorage.setItem(recoveryStoreKey, JSON.stringify(bounded));
     renderRecoveryControls();
   } catch (_) {
     setSaveState('could not write recovery snapshot', 'bad');
@@ -728,17 +758,26 @@ function saveAnnotationsNow() {
   captureActiveRunAnnotations();
   annotations.updatedAt = new Date().toISOString();
   pushRecoverySnapshot('autosave');
-  localStorage.setItem(storeKey, JSON.stringify(annotations));
+  const payload = JSON.stringify(annotations);
+  let browserSaved = true;
+  try {
+    localStorage.setItem(storeKey, payload);
+  } catch (_) {
+    browserSaved = false;
+  }
   if (!serverBacked) {
-    setSaveState('saved in browser', 'ok');
+    setSaveState(browserSaved ? 'saved in browser' : 'browser storage full; export annotations to save', browserSaved ? 'ok' : 'bad');
     return;
   }
   fetch('annotations.json', {
     method: 'PUT',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(annotations, null, 2)
+    body: payload
   }).then(res => {
-    setSaveState(res.ok ? 'autosaved to annotations.json' : 'autosave failed', res.ok ? 'ok' : 'bad');
+    const text = res.ok
+      ? browserSaved ? 'autosaved to annotations.json' : 'autosaved to annotations.json; browser recovery storage full'
+      : 'autosave failed';
+    setSaveState(text, res.ok ? 'ok' : 'bad');
   }).catch(() => setSaveState('autosave failed', 'bad'));
 }
 
@@ -968,8 +1007,12 @@ function artifactUrl(path){
 }
 function framePatternPath(pattern, frame){
   if(!pattern) return '';
-  const frameText = String(frame).padStart(3, '0');
-  return artifactUrl(String(pattern).replace('%03d', frameText).replace('{frame}', String(frame)).replace('{frame03}', frameText));
+  const value = String(pattern)
+    .replace(/%0?(\d*)d/g, (_, width) => String(frame).padStart(Number(width) || 0, '0'))
+    .replace(/\{frame:(\d+)d\}/g, (_, width) => String(frame).padStart(Number(width), '0'))
+    .replace(/\{frame(\d+)\}/g, (_, width) => String(frame).padStart(Number(width), '0'))
+    .replace(/\{frame\}/g, String(frame));
+  return artifactUrl(value);
 }
 function rebaseRelativeAsset(value, base){
   if(!value || !base) return value;

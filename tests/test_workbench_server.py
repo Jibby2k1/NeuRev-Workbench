@@ -3,8 +3,11 @@ from __future__ import annotations
 import json
 import os
 import tempfile
+import threading
 import unittest
 from pathlib import Path
+from urllib.request import urlopen
+from urllib.request import Request
 
 
 def _llm_proposal_set() -> dict:
@@ -198,6 +201,114 @@ class WorkbenchServerTests(unittest.TestCase):
                 self.assertIsNone(WorkbenchHandler.root_dir)
             finally:
                 server.server_close()
+
+    def test_server_exposes_canonical_dataset_record(self):
+        from neurobench.workbench.server import create_workbench_server
+
+        with tempfile.TemporaryDirectory() as tmp:
+            app_dir = Path(tmp) / "Outputs" / "NeuronReview" / "declared" / "app"
+            app_dir.mkdir(parents=True)
+            (app_dir / "index.html").write_text(
+                '<div id="manualRoiMode"></div><div id="cfarMaskAnnotationPanel"></div>',
+                encoding="utf-8",
+            )
+            (app_dir / "review_data.json").write_text(
+                json.dumps(
+                    {
+                        "dataset": {"dataset_id": "declared", "paths": {"raw_video": "Inputs/declared.tif"}},
+                        "video": {"name": "declared.tif", "frames": 3, "width": 5, "height": 4, "framePattern": "frames/frame_%03d.png"},
+                    }
+                ),
+                encoding="utf-8",
+            )
+            server, _ = create_workbench_server(app_dir=app_dir, host="127.0.0.1", port=0)
+            thread = threading.Thread(target=server.serve_forever, daemon=True)
+            thread.start()
+            try:
+                host, port = server.server_address[:2]
+                with urlopen(f"http://{host}:{port}/api/dataset", timeout=5) as response:
+                    payload = json.loads(response.read())
+                with urlopen(f"http://{host}:{port}/api/datasets", timeout=5) as response:
+                    catalog = json.loads(response.read())
+                options_request = Request(
+                    f"http://{host}:{port}/annotations.json",
+                    method="OPTIONS",
+                    headers={"Origin": "https://untrusted.example"},
+                )
+                with urlopen(options_request, timeout=5) as response:
+                    cors_origin = response.headers.get("Access-Control-Allow-Origin")
+            finally:
+                server.shutdown()
+                thread.join(timeout=5)
+                server.server_close()
+
+        self.assertEqual(payload["dataset_id"], "declared")
+        self.assertTrue(payload["capabilities"]["manual_roi_annotation"])
+        self.assertTrue(payload["capabilities"]["cfar_annotation"])
+        self.assertEqual(catalog["kind"], "neurobench_dataset_catalog")
+        self.assertIsNone(cors_origin)
+
+    def test_architecture_update_retains_unchanged_legacy_pipeline_only(self):
+        from neurobench.workbench.server import validated_architecture_runs_update
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "architecture_runs.json"
+            legacy = {
+                "run_id": "legacy_soma",
+                "dataset_id": "demo",
+                "pipeline": [{"id": "source", "stage_id": "source_video_import", "params": {}}],
+                "execution": {"status": "completed"},
+            }
+            path.write_text(
+                json.dumps({"schema_version": 1, "dataset_id": "demo", "runs": [legacy]}),
+                encoding="utf-8",
+            )
+            valid = {
+                "schema_version": 1,
+                "run_id": "new_valid",
+                "dataset_id": "demo",
+                "pipeline": [
+                    {"id": "source", "stage_id": "source_video_import", "params": {"source": "raw.npy"}}
+                ],
+                "execution": {"status": "planned"},
+                "artifacts": {},
+            }
+            updated = validated_architecture_runs_update(
+                path,
+                {"schema_version": 1, "dataset_id": "demo", "runs": [legacy, valid]},
+            )
+            modified = dict(legacy)
+            modified["pipeline"] = [
+                {"id": "source", "stage_id": "source_video_import", "params": {"different": True}}
+            ]
+
+            with self.assertRaisesRegex(ValueError, "invalid new or modified pipeline metadata"):
+                validated_architecture_runs_update(
+                    path,
+                    {"schema_version": 1, "dataset_id": "demo", "runs": [modified]},
+                )
+
+        self.assertEqual([run["run_id"] for run in updated["runs"]], ["legacy_soma", "new_valid"])
+
+    def test_architecture_update_rejects_nested_manifest_as_run(self):
+        from neurobench.workbench.server import validated_architecture_runs_update
+
+        nested_manifest = {
+            "schema_version": 1,
+            "dataset_id": "demo",
+            "runs": [],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "architecture_runs.json"
+            path.write_text(
+                json.dumps({"schema_version": 1, "dataset_id": "demo", "runs": []}),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "missing run_id"):
+                validated_architecture_runs_update(
+                    path,
+                    {"schema_version": 1, "dataset_id": "demo", "runs": [nested_manifest]},
+                )
 
     def test_server_factory_configures_root_index(self):
         from neurobench.workbench.server import WorkbenchHandler, configure_workbench_handler

@@ -950,7 +950,7 @@ function polygonBounds(points){
   if(!xs.length || !ys.length) return null;
   return {x0:Math.min(...xs), y0:Math.min(...ys), x1:Math.max(...xs), y1:Math.max(...ys)};
 }
-function pointInPolygon(point, polygon){
+function qcPointInPolygon(point, polygon){
   if(!point || !Array.isArray(polygon) || polygon.length < 3) return false;
   let inside = false;
   const x = Number(point.x), y = Number(point.y);
@@ -981,7 +981,7 @@ function distanceToPolygonEdge(point, polygon){
 function stencilPointStatus(point, marginPx=12){
   const polygon = savedStencilPoints();
   if(polygon.length < 3) return {status:'unknown', inside:false, edge:false, distance_px:null};
-  const inside = pointInPolygon(point, polygon);
+  const inside = qcPointInPolygon(point, polygon);
   const distance = distanceToPolygonEdge(point, polygon);
   const edge = Number.isFinite(distance) && distance <= marginPx;
   return {status: edge ? 'edge-near' : inside ? 'inside' : 'outside', inside, edge, distance_px:distance};

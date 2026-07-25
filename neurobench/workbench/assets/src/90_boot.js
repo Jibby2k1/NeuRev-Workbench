@@ -88,6 +88,7 @@ async function boot(){
   renderSharedPageChrome();
   populateEvidenceSelect();
   await loadAnnotations();
+  populateVideoViewControls();
   if(serverBacked) {
     try {
       const res = await fetch('architecture_runs.json', {cache:'no-store'});
@@ -101,6 +102,7 @@ async function boot(){
     console.warn('Could not load active run ROI overlays during startup:', err);
   }
   initControls();
+  initCfarMaskAnnotation();
   renderParams();
   const first = visibleRois()[0] || reviewRois()[0];
   selectedId = first?.id || null;

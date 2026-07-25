@@ -1,0 +1,373 @@
+{
+  "experiments": [
+    {
+      "advances_gate": "activation_precision",
+      "blockers": [],
+      "decision_value": 17,
+      "dependencies": [],
+      "expected_jobs": 0,
+      "id": "fc00_activation_annotation_panel_v1",
+      "launch_policy": "manual_action",
+      "missing_inputs": [],
+      "output_collision": false,
+      "priority": 1,
+      "readiness": "manual_action_required",
+      "requires_gate": null,
+      "resume_marker": null,
+      "stage": "measurement",
+      "status": "planned",
+      "title": "Exhaustive activation annotation panel"
+    },
+    {
+      "advances_gate": "activation_precision",
+      "blockers": [
+        {
+          "detail": "fc00_activation_annotation_panel_v1 is planned, not completed",
+          "type": "dependency"
+        },
+        {
+          "detail": "missing required input: ../Outputs/FishControl/activation_annotation_panel_v1/benchmark_manifest.json",
+          "type": "input"
+        }
+      ],
+      "decision_value": 17,
+      "dependencies": [
+        "fc00_activation_annotation_panel_v1"
+      ],
+      "expected_jobs": 6,
+      "id": "fc01_frozen_detector_tournament_v1",
+      "launch_policy": "safe_cpu",
+      "missing_inputs": [
+        "../Outputs/FishControl/activation_annotation_panel_v1/benchmark_manifest.json"
+      ],
+      "output_collision": false,
+      "priority": 2,
+      "readiness": "blocked",
+      "requires_gate": null,
+      "resume_marker": null,
+      "stage": "measurement",
+      "status": "planned",
+      "title": "Frozen detector and structured-background tournament"
+    },
+    {
+      "advances_gate": "activation_precision",
+      "blockers": [
+        {
+          "detail": "fc01_frozen_detector_tournament_v1 is planned, not completed",
+          "type": "dependency"
+        },
+        {
+          "detail": "activation_precision is insufficient_evidence, not passed",
+          "type": "gate"
+        },
+        {
+          "detail": "missing required input: ../Outputs/FishControl/frozen_detector_tournament_v1/metrics.json",
+          "type": "input"
+        }
+      ],
+      "decision_value": 11,
+      "dependencies": [
+        "fc01_frozen_detector_tournament_v1"
+      ],
+      "expected_jobs": 12,
+      "id": "fc02_structured_background_pu_v1",
+      "launch_policy": "explicit_approval",
+      "missing_inputs": [
+        "../Outputs/FishControl/frozen_detector_tournament_v1/metrics.json"
+      ],
+      "output_collision": false,
+      "priority": 3,
+      "readiness": "blocked",
+      "requires_gate": "activation_precision",
+      "resume_marker": null,
+      "stage": "measurement",
+      "status": "planned",
+      "title": "Structured-background and PU refinement"
+    },
+    {
+      "advances_gate": "intent_data",
+      "blockers": [],
+      "decision_value": 17,
+      "dependencies": [],
+      "expected_jobs": 0,
+      "id": "fc03_intent_dataset_readiness_v1",
+      "launch_policy": "manual_action",
+      "missing_inputs": [],
+      "output_collision": false,
+      "priority": 4,
+      "readiness": "manual_action_required",
+      "requires_gate": null,
+      "resume_marker": null,
+      "stage": "intent",
+      "status": "planned",
+      "title": "Causal intent dataset and alignment audit"
+    },
+    {
+      "advances_gate": "intent_signal",
+      "blockers": [
+        {
+          "detail": "fc03_intent_dataset_readiness_v1 is planned, not completed",
+          "type": "dependency"
+        },
+        {
+          "detail": "intent_data is insufficient_evidence, not passed",
+          "type": "gate"
+        },
+        {
+          "detail": "missing required input: ../Outputs/FishControl/intent_dataset_readiness_v1/intent_trials.parquet",
+          "type": "input"
+        }
+      ],
+      "decision_value": 15,
+      "dependencies": [
+        "fc03_intent_dataset_readiness_v1"
+      ],
+      "expected_jobs": 24,
+      "id": "fc04_intent_spatiotemporal_ablation_v1",
+      "launch_policy": "safe_cpu",
+      "missing_inputs": [
+        "../Outputs/FishControl/intent_dataset_readiness_v1/intent_trials.parquet"
+      ],
+      "output_collision": false,
+      "priority": 5,
+      "readiness": "blocked",
+      "requires_gate": "intent_data",
+      "resume_marker": null,
+      "stage": "intent",
+      "status": "planned",
+      "title": "Spatial, temporal, and spatiotemporal intent ablation"
+    },
+    {
+      "advances_gate": "action_data",
+      "blockers": [],
+      "decision_value": 18,
+      "dependencies": [],
+      "expected_jobs": 0,
+      "id": "fc05_action_logging_readiness_v1",
+      "launch_policy": "manual_action",
+      "missing_inputs": [],
+      "output_collision": false,
+      "priority": 6,
+      "readiness": "manual_action_required",
+      "requires_gate": null,
+      "resume_marker": null,
+      "stage": "system_identification",
+      "status": "planned",
+      "title": "Stimulation action and safety logging audit"
+    },
+    {
+      "advances_gate": "system_id",
+      "blockers": [
+        {
+          "detail": "fc05_action_logging_readiness_v1 is planned, not completed",
+          "type": "dependency"
+        },
+        {
+          "detail": "action_data is blocked, not passed",
+          "type": "gate"
+        },
+        {
+          "detail": "missing required input: ../Outputs/FishControl/action_logging_readiness_v1/transitions.parquet",
+          "type": "input"
+        }
+      ],
+      "decision_value": 12,
+      "dependencies": [
+        "fc05_action_logging_readiness_v1"
+      ],
+      "expected_jobs": 8,
+      "id": "fc06_action_conditioned_system_id_v1",
+      "launch_policy": "explicit_approval",
+      "missing_inputs": [
+        "../Outputs/FishControl/action_logging_readiness_v1/transitions.parquet"
+      ],
+      "output_collision": false,
+      "priority": 7,
+      "readiness": "blocked",
+      "requires_gate": "action_data",
+      "resume_marker": null,
+      "stage": "system_identification",
+      "status": "planned",
+      "title": "Action-conditioned linear system-identification pilot"
+    },
+    {
+      "advances_gate": "simulator_control",
+      "blockers": [
+        {
+          "detail": "fc06_action_conditioned_system_id_v1 is planned, not completed",
+          "type": "dependency"
+        },
+        {
+          "detail": "system_id is not_started, not passed",
+          "type": "gate"
+        },
+        {
+          "detail": "missing required input: ../Outputs/FishControl/action_conditioned_system_id_v1/model_manifest.json",
+          "type": "input"
+        }
+      ],
+      "decision_value": 11,
+      "dependencies": [
+        "fc06_action_conditioned_system_id_v1"
+      ],
+      "expected_jobs": 18,
+      "id": "fc07_uncertainty_mpc_sim_v1",
+      "launch_policy": "explicit_approval",
+      "missing_inputs": [
+        "../Outputs/FishControl/action_conditioned_system_id_v1/model_manifest.json"
+      ],
+      "output_collision": false,
+      "priority": 8,
+      "readiness": "blocked",
+      "requires_gate": "system_id",
+      "resume_marker": null,
+      "stage": "control",
+      "status": "planned",
+      "title": "Uncertainty-gated MPC simulation"
+    }
+  ],
+  "gates": [
+    {
+      "blockers": [
+        "No exhaustively reviewed spatial-temporal evaluation panel exists, so ordinary precision is not identifiable."
+      ],
+      "evidence": [
+        "Learnable-direct v3 tied frozen raw-direct at 0.6056 mean sparse-positive held-out recall.",
+        "Existing labels contain 79 burst rows across 27 unique ROIs."
+      ],
+      "id": "activation_precision",
+      "label": "Activation precision is measurable and robust",
+      "pass_criteria": [
+        "Exhaustive held-out tiles support object and event PR/FROC metrics.",
+        "The selected detector meets pre-registered recall and false-positive targets across fish/session and artifact strata."
+      ],
+      "status": "insufficient_evidence"
+    },
+    {
+      "blockers": [
+        "Frame-synchronized movement onset, direction, uncertainty, and leakage-guarded trial windows are not yet available as a frozen dataset."
+      ],
+      "evidence": [
+        "The existing 11-video latent smoke test is video-level and weakly separable.",
+        "Behavior-alignment utilities exist."
+      ],
+      "id": "intent_data",
+      "label": "Causal pre-movement intent data are ready",
+      "pass_criteria": [
+        "Aligned trial manifest passes fish/session, class-balance, missingness, and timing-uncertainty checks.",
+        "Every neural feature window ends before the movement-onset uncertainty guard."
+      ],
+      "status": "insufficient_evidence"
+    },
+    {
+      "blockers": [
+        "Intent data gate has not passed."
+      ],
+      "evidence": [
+        "The current ridge latent head reached 0.3636 accuracy, equal to the majority baseline."
+      ],
+      "id": "intent_signal",
+      "label": "Left/right intent generalizes",
+      "pass_criteria": [
+        "A pre-registered model improves held-out balanced accuracy, macro F1, and calibration over behavior-only and population-only baselines.",
+        "Spatial and temporal leakage controls pass on held-out fish or sessions."
+      ],
+      "status": "not_started"
+    },
+    {
+      "blockers": [
+        "Requested and measured stimulation actions, timing, target, amplitude, duration, sham status, and safety interventions are not populated."
+      ],
+      "evidence": [
+        "Inverse-dynamics export and timestamp-alignment utilities exist."
+      ],
+      "id": "action_data",
+      "label": "Stimulation actions are identifiable",
+      "pass_criteria": [
+        "Safe counterbalanced action coverage and no-action/sham controls exist.",
+        "Requested-versus-measured action and latency residuals meet the acquisition contract."
+      ],
+      "status": "blocked"
+    },
+    {
+      "blockers": [
+        "Action-data gate has not passed."
+      ],
+      "evidence": [],
+      "id": "system_id",
+      "label": "Action-conditioned transitions are calibrated",
+      "pass_criteria": [
+        "Action-conditioned models beat action-free models on held-out sessions and supported stimulation levels.",
+        "Target and off-target outcomes are calibrated and uncertainty rises outside training support."
+      ],
+      "status": "not_started"
+    },
+    {
+      "blockers": [
+        "System-identification gate has not passed."
+      ],
+      "evidence": [],
+      "id": "simulator_control",
+      "label": "Constrained control works in simulation",
+      "pass_criteria": [
+        "Uncertainty-gated MPC beats no-action, fixed-safe, and randomized-safe policies.",
+        "All simulated actions remain inside the approved envelope and unsupported trajectories abstain."
+      ],
+      "status": "not_started"
+    },
+    {
+      "blockers": [
+        "No simulator pass, shadow-mode evidence, approved action envelope, or command interlock exists."
+      ],
+      "evidence": [
+        "Latency p50/p95/p99 instrumentation exists in the repository."
+      ],
+      "id": "deployment",
+      "label": "Shadow and closed-loop deployment are safe",
+      "pass_criteria": [
+        "Shadow-mode latency, drift, abstention, and watchdog tests pass.",
+        "Explicit safety and experimental approvals are recorded before command-capable execution."
+      ],
+      "status": "not_started"
+    }
+  ],
+  "generated_at": "2026-07-21T17:41:06.505004+00:00",
+  "hardware_profile": {
+    "captured_at": "2026-07-21T15:15:00Z",
+    "cpu_logical_count": 32,
+    "cpu_model": "Intel Core i9-14900K",
+    "gpu_memory_mib": 12282,
+    "gpu_memory_reserve_mib": 2200,
+    "gpu_name": "NVIDIA GeForce RTX 4070 SUPER",
+    "max_concurrent_gpu_jobs": 1,
+    "min_free_disk_gib": 200,
+    "ram_total_gib": 78,
+    "recommended_max_cpu_threads": 16,
+    "recommended_max_ram_gib": 48
+  },
+  "local_preflight": {
+    "active_gpu_jobs": 0,
+    "disk_probe_error": null,
+    "free_disk_gib": 2010.761,
+    "gpu_probe_error": null
+  },
+  "manifest": "examples/fish_control_program.example.json",
+  "objective": "Progress from trustworthy neural activation measurements to causal pre-movement left/right decoding, action-conditioned system identification, and uncertainty-gated inverse control.",
+  "path_checks_enabled": true,
+  "program_id": "fish_inverse_control_v1",
+  "schema_version": 1,
+  "summary": {
+    "experiment_count": 8,
+    "gate_counts": {
+      "blocked": 1,
+      "insufficient_evidence": 2,
+      "not_started": 4
+    },
+    "planned_compute_jobs": 68,
+    "readiness_counts": {
+      "blocked": 5,
+      "manual_action_required": 3
+    },
+    "recommended_next_experiment": "fc00_activation_annotation_panel_v1"
+  }
+}

@@ -1,0 +1,245 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Neurobench Fish Intent and Inverse-Control Program",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "program_id",
+    "objective",
+    "hardware_profile",
+    "gates",
+    "experiments"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "program_id": {"type": "string", "minLength": 1},
+    "objective": {"type": "string", "minLength": 1},
+    "hardware_profile": {"$ref": "#/$defs/hardware"},
+    "gates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/gate"}
+    },
+    "experiments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/experiment"}
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "hardware": {
+      "type": "object",
+      "required": [
+        "captured_at",
+        "cpu_model",
+        "cpu_logical_count",
+        "ram_total_gib",
+        "gpu_name",
+        "gpu_memory_mib",
+        "gpu_memory_reserve_mib",
+        "recommended_max_cpu_threads",
+        "recommended_max_ram_gib",
+        "min_free_disk_gib",
+        "max_concurrent_gpu_jobs"
+      ],
+      "properties": {
+        "captured_at": {"type": "string", "minLength": 1},
+        "cpu_model": {"type": "string", "minLength": 1},
+        "cpu_logical_count": {"type": "integer", "minimum": 1},
+        "ram_total_gib": {"type": "number", "exclusiveMinimum": 0},
+        "gpu_name": {"type": "string", "minLength": 1},
+        "gpu_memory_mib": {"type": "integer", "minimum": 1},
+        "gpu_memory_reserve_mib": {"type": "integer", "minimum": 0},
+        "recommended_max_cpu_threads": {"type": "integer", "minimum": 1},
+        "recommended_max_ram_gib": {"type": "number", "exclusiveMinimum": 0},
+        "min_free_disk_gib": {"type": "number", "minimum": 0},
+        "max_concurrent_gpu_jobs": {"type": "integer", "minimum": 1}
+      },
+      "additionalProperties": false
+    },
+    "gate": {
+      "type": "object",
+      "required": ["id", "label", "status", "evidence", "blockers", "pass_criteria"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "label": {"type": "string", "minLength": 1},
+        "status": {
+          "enum": [
+            "passed",
+            "failed",
+            "blocked",
+            "insufficient_evidence",
+            "not_started"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "blockers": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "pass_criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        }
+      },
+      "additionalProperties": false
+    },
+    "input": {
+      "type": "object",
+      "required": ["role", "path", "required_for_launch"],
+      "properties": {
+        "role": {"type": "string", "minLength": 1},
+        "path": {"type": "string", "minLength": 1},
+        "required_for_launch": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "resources": {
+      "type": "object",
+      "required": ["device", "cpu_threads", "max_ram_gib", "max_wall_hours"],
+      "properties": {
+        "device": {"enum": ["none", "cpu", "cuda"]},
+        "cpu_threads": {"type": "integer", "minimum": 1},
+        "max_ram_gib": {"type": "number", "minimum": 0},
+        "max_wall_hours": {"type": "number", "minimum": 0},
+        "gpu_memory_target_mib": {"type": "integer", "minimum": 0},
+        "gpu_memory_hard_limit_mib": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "design": {
+      "type": "object",
+      "required": [
+        "factor_grid",
+        "repeats",
+        "expected_jobs",
+        "split_unit",
+        "primary_metrics",
+        "controls"
+      ],
+      "properties": {
+        "factor_grid": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "array",
+            "minItems": 1
+          }
+        },
+        "repeats": {"type": "integer", "minimum": 1},
+        "expected_jobs": {"type": "integer", "minimum": 1},
+        "split_unit": {"type": "string", "minLength": 1},
+        "primary_metrics": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "controls": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        }
+      },
+      "additionalProperties": false
+    },
+    "experiment": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "stage",
+        "status",
+        "priority",
+        "hypothesis",
+        "decision",
+        "impact",
+        "information_gain",
+        "cost",
+        "risk",
+        "launch_policy",
+        "dependencies",
+        "resources",
+        "inputs",
+        "output_root",
+        "resume_policy",
+        "success_criteria",
+        "stop_conditions"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "title": {"type": "string", "minLength": 1},
+        "stage": {"type": "string", "minLength": 1},
+        "status": {
+          "enum": [
+            "planned",
+            "ready",
+            "running",
+            "completed",
+            "failed",
+            "stopped",
+            "cancelled"
+          ]
+        },
+        "priority": {"type": "integer", "minimum": 1},
+        "hypothesis": {"type": "string", "minLength": 1},
+        "decision": {"type": "string", "minLength": 1},
+        "impact": {"type": "integer", "minimum": 1, "maximum": 5},
+        "information_gain": {"type": "integer", "minimum": 1, "maximum": 5},
+        "cost": {"type": "integer", "minimum": 1, "maximum": 5},
+        "risk": {"type": "integer", "minimum": 1, "maximum": 5},
+        "launch_policy": {
+          "enum": ["safe_cpu", "explicit_approval", "manual_action"]
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "requires_gate": {"type": ["string", "null"]},
+        "advances_gate": {"type": ["string", "null"]},
+        "resources": {"$ref": "#/$defs/resources"},
+        "inputs": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/input"}
+        },
+        "output_root": {"type": ["string", "null"]},
+        "resume_policy": {"enum": ["refuse_existing", "resume_atomic"]},
+        "design": {"$ref": "#/$defs/design"},
+        "success_criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "stop_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "resources": {
+                "properties": {
+                  "device": {"const": "cuda"}
+                },
+                "required": ["device"]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "launch_policy": {"const": "explicit_approval"}
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    }
+  }
+}
+

@@ -192,6 +192,20 @@ Data helpers for Neurobench.
 - Signature: `dataset_intake_report(manifest: Mapping[str, Any], *, base_dir: str | Path | None=None) -> dict[str, Any]`
 - Summary: No docstring summary available.
 
+### `dataset_record_for_app`
+
+- Kind: `function`
+- Source: `neurobench.data.catalog`
+- Signature: `dataset_record_for_app(app_dir: str | Path, *, workspace_root: str | Path | None=None) -> dict[str, Any]`
+- Summary: Build one catalog record for a served app without scanning the workspace.
+
+### `discover_dataset_catalog`
+
+- Kind: `function`
+- Source: `neurobench.data.catalog`
+- Signature: `discover_dataset_catalog(workspace_root: str | Path, *, search_roots: Iterable[str | Path] | None=None, max_depth: int=DEFAULT_MAX_DEPTH) -> list[dict[str, Any]]`
+- Summary: Discover and join canonical dataset records under bounded roots.
+
 ### `generate_synthetic_calcium_dataset`
 
 - Kind: `function`
@@ -213,6 +227,13 @@ Data helpers for Neurobench.
 - Signature: `intake_checks(manifest: Mapping[str, Any], *, base_dir: str | Path | None=None) -> list[IntakeCheck]`
 - Summary: Return conservative readiness checks for a dataset manifest stub.
 
+### `llm_catalog_context`
+
+- Kind: `function`
+- Source: `neurobench.data.catalog`
+- Signature: `llm_catalog_context(records: Iterable[Mapping[str, Any]]) -> dict[str, Any]`
+- Summary: Return a compact, path-grounded catalog suitable for an LLM handoff.
+
 ### `load_video_array`
 
 - Kind: `function`
@@ -233,6 +254,13 @@ Data helpers for Neurobench.
 - Source: `neurobench.data`
 - Signature: `PUBLIC_DATASET_TEMPLATES`
 - Summary: Exported by __all__.
+
+### `query_dataset_catalog`
+
+- Kind: `function`
+- Source: `neurobench.data.catalog`
+- Signature: `query_dataset_catalog(records: Iterable[Mapping[str, Any]], query: str) -> list[dict[str, Any]]`
+- Summary: Rank catalog records by exact, prefix, then token containment matches.
 
 ### `render_dataset_qc_markdown`
 
@@ -335,6 +363,38 @@ Discovery, ranking, and triage helpers for candidate neurons.
 - Source: `neurobench.discovery.ranking`
 - Signature: `validate_candidate_feature_table(rows: Sequence[Mapping[str, Any]]) -> None`
 - Summary: Validate the public candidate feature row contract.
+
+## `neurobench.experiments.learnable_contrast`
+
+No docstring summary available.
+
+### `Config`
+
+- Kind: `class`
+- Source: `neurobench.experiments.learnable_contrast.core`
+- Signature: `class Config`
+- Summary: No docstring summary available.
+
+### `load_labels`
+
+- Kind: `function`
+- Source: `neurobench.experiments.learnable_contrast.core`
+- Signature: `load_labels(path: Path) -> list[dict[str, Any]]`
+- Summary: No docstring summary available.
+
+### `preflight`
+
+- Kind: `function`
+- Source: `neurobench.experiments.learnable_contrast.core`
+- Signature: `preflight(config: Config, *, artifact_dir: Path | None=None) -> dict[str, Any]`
+- Summary: No docstring summary available.
+
+### `run`
+
+- Kind: `function`
+- Source: `neurobench.experiments.learnable_contrast.core`
+- Signature: `run(config: Config) -> dict[str, Any]`
+- Summary: No docstring summary available.
 
 ## `neurobench.experiments.soma_excitation`
 
@@ -826,6 +886,45 @@ Pipeline execution and artifact helpers.
 - Signature: `class StageRegistry(stages: Mapping[str, StageDefinition])`
 - Summary: Lookup and validation surface for pipeline execution stages.
 
+## `neurobench.programs`
+
+Stage-gated research-program planning and audit helpers.
+
+### `audit_program_manifest`
+
+- Kind: `function`
+- Source: `neurobench.programs.fish_control`
+- Signature: `audit_program_manifest(manifest_path: str | Path, *, check_paths: bool=True, generated_at: str | None=None) -> dict[str, Any]`
+- Summary: Return readiness, resource, dependency, and job-count diagnostics.
+
+### `load_program_manifest`
+
+- Kind: `function`
+- Source: `neurobench.programs.fish_control`
+- Signature: `load_program_manifest(path: str | Path) -> dict[str, Any]`
+- Summary: Load and semantically validate a fish-control program manifest.
+
+### `ProgramManifestError`
+
+- Kind: `class`
+- Source: `neurobench.programs.fish_control`
+- Signature: `class ProgramManifestError`
+- Summary: Raised when a program manifest is structurally or semantically invalid.
+
+### `render_program_audit_markdown`
+
+- Kind: `function`
+- Source: `neurobench.programs.fish_control`
+- Signature: `render_program_audit_markdown(audit: Mapping[str, Any]) -> str`
+- Summary: Render a compact, LLM-friendly program readiness report.
+
+### `write_program_audit`
+
+- Kind: `function`
+- Source: `neurobench.programs.fish_control`
+- Signature: `write_program_audit(audit: Mapping[str, Any], output_dir: str | Path) -> dict[str, str]`
+- Summary: Atomically write JSON and Markdown audit artifacts.
+
 ## `neurobench.realtime`
 
 Realtime helpers for online Neurobench experiments.
@@ -1032,7 +1131,7 @@ Workbench package helpers and static assets.
 
 - Kind: `function`
 - Source: `neurobench.workbench.builder`
-- Signature: `build_workbench(*, app_dir: str | Path, review_data_path: str | Path, dataset_id: str, html_template: str, dataset_manifest: Mapping[str, Any] | None=None, architecture_runs_path: str | Path | None=None, css_fallback: str='', js_fallback: str='') -> dict[str, Path]`
+- Signature: `build_workbench(*, app_dir: str | Path, review_data_path: str | Path, dataset_id: str, html_template: str | None=None, dataset_manifest: Mapping[str, Any] | None=None, architecture_runs_path: str | Path | None=None, css_fallback: str='', js_fallback: str='') -> dict[str, Path]`
 - Summary: Build the browser workbench and return generated paths.
 
 ### `configure_workbench_handler`
@@ -1132,6 +1231,13 @@ Workbench package helpers and static assets.
 - Source: `neurobench.workbench.server`
 - Signature: `serve_workbench(*, app_dir: Path=DEFAULT_APP_DIR, root_dir: Path | None=None, host: str='127.0.0.1', port: int=8765) -> None`
 - Summary: No docstring summary available.
+
+### `workbench_asset_version`
+
+- Kind: `function`
+- Source: `neurobench.workbench.builder`
+- Signature: `workbench_asset_version(*, css_text: str | None=None, js_text: str | None=None, html_text: str | None=None) -> str`
+- Summary: Return the stable version shared by built apps and status tooling.
 
 ### `WorkbenchHandler`
 

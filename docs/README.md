@@ -5,6 +5,9 @@ the project.
 
 ## Start Here
 
+- [Fish Intent and Inverse-Control Program](programs/fish_inverse_control/README.md):
+  current authority, evidence history, literature grounding, exact experiment
+  portfolio, machine audit, and implementation routing.
 - [Neuron Workbench](NEURON_WORKBENCH.md): local dashboard setup, autosave,
   workflow home, Data, Pipelines, Experiment Lab, Review, Progress, Report,
   exports, and sharing notes.
@@ -17,6 +20,9 @@ the project.
 - [Spon Ca Burst Soma Excitation](workflows/spon_ca_burst_soma_excitation.md):
   bounded CPU experiment for quiet-baseline dark soma zones, positive CFAR
   excitation, and frozen model transfer after human frame 1900.
+- [Spon Ca Burst Learnable Contrast](workflows/spon_ca_burst_learnable_contrast.md):
+  weakly supervised, quiet-cross-fitted guarded contrast training and masked-ROI
+  discovery evaluation from sparse burst-window point labels.
 - [Template Grid Workflow](TEMPLATE_GRID_WORKFLOW.md): manifest, one-reference
   template construction, per-video rigid registration, and 32x32 grid-state
   extraction for the zebrafish left/right/neutral videos.
@@ -41,6 +47,18 @@ the project.
 
 ## Methods And Integration
 
+- [Fish Inverse-Control Roadmap](research/FISH_INVERSE_CONTROL_ROADMAP.md):
+  authoritative checkpoint map from activation measurement through causal
+  left/right intent, action-conditioned system identification, and constrained
+  control.
+- [Neural Activation Detection Robustness](research/NEURAL_ACTIVATION_DETECTION_ROBUSTNESS.md):
+  coverage-aware precision/recall benchmark and detector experiment plan.
+- [Left/Right Intent And Control Plan](research/LEFT_RIGHT_INTENT_AND_CONTROL_PLAN.md):
+  spatial-versus-temporal intent ablations, leakage controls, action schema,
+  system-identification ladder, and deployment gates.
+- [Portable Fish Control Experiment Program](reports/fish_control_program_v1/report.html):
+  current stage-gated portfolio, historical evidence, primary-research grounding,
+  workstation envelope, and recommended next steps.
 - [Processing Notes](PROCESSING_NOTES.md): current high-pass, local-z, ROI,
   event, discovery, and robustness rationale.
 - [SOTA Integrations](SOTA_INTEGRATIONS.md): Suite2p, PMD, OASIS, and related
@@ -50,8 +68,8 @@ the project.
 - [Test And Experiment Report](TEST_AND_EXPERIMENT_REPORT.md): consolidated
   validation, unit-test, sweep, dashboard, and inverse-control-readiness report.
 - [Inverse-Control Discussion Brief](INVERSE_CONTROL_DISCUSSION_BRIEF.md):
-  concise context and prompts for designing a simulation-first inverse-control
-  solution with ChatGPT or collaborators.
+  historical context and prompts; use the fish-control program hub for current
+  evidence and stage gates.
 - [Grid32 Real Data Pilot](case_studies/grid32_real_data_pilot.md): lightweight
   pilot note template for recording real-data template, registration, grid,
   dynamics, and classifier decisions without committing raw videos.
@@ -64,8 +82,14 @@ the project.
   LLM/human-navigability audit with staged refactor plan.
 - [Dashboard Code Audit](DASHBOARD_CODE_AUDIT.md): dashboard families,
   organization risks, and dashboard-specific UX/efficiency plan.
+- [Workbench Video and Catalog Refactor](developer/WORKBENCH_VIDEO_CATALOG_REFACTOR.md):
+  single-canvas annotation layout, unified App/LLM video lookup, preservation
+  guardrails, and prioritized bloat reduction.
 - [Adding A Pipeline Stage](developer/adding_pipeline_stage.md): catalog,
   executor, tests, artifacts, and real-time metadata needed for a new stage.
+- [Fish Control Tooling Roadmap](developer/FISH_CONTROL_TOOLING_ROADMAP.md):
+  proposed benchmark, intent, action-conditioned dynamics, simulator, MPC, and
+  stage-gate package boundaries.
 - [API Reference](API_REFERENCE.md): generated Python module/class/function
   reference.
 - [Long-Term Plan](plan.md): project roadmap and broader research directions.
@@ -86,6 +110,8 @@ the project.
    template-aligned 32x32 grid experiments.
 7. Use [Codebase Navigation](CODEBASE_NAVIGATION.md) before broad edits or when
    handing the repository to another coding agent.
-8. Use [Test And Experiment Report](TEST_AND_EXPERIMENT_REPORT.md) and
-   [Inverse-Control Discussion Brief](INVERSE_CONTROL_DISCUSSION_BRIEF.md)
-   before designing action-conditioned inverse-control experiments.
+8. Use the [Fish Inverse-Control Roadmap](research/FISH_INVERSE_CONTROL_ROADMAP.md)
+   as the current authority before designing intent or action-conditioned
+   control experiments; use the older
+   [Inverse-Control Discussion Brief](INVERSE_CONTROL_DISCUSSION_BRIEF.md) for
+   historical meeting context.

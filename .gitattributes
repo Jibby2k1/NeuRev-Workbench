@@ -1,0 +1,5 @@
+# Generated artifacts should not dominate language statistics or code review.
+neurobench/workbench/assets/workbench.js linguist-generated=true
+docs/reports/**/report.html linguist-generated=true
+docs/API_REFERENCE.md linguist-generated=true
+

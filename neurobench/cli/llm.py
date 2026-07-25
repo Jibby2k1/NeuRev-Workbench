@@ -6,6 +6,7 @@ import json
 import sys
 from pathlib import Path
 
+from neurobench.data.catalog import discover_dataset_catalog, query_dataset_catalog
 from neurobench.llm_planning import build_llm_context, proposal_set_to_architecture_manifest, render_llm_prompt, validate_proposal_set
 from neurobench.manifests import load_json, write_json
 from neurobench.validation.schemas import validation_error_summary
@@ -21,10 +22,14 @@ def add_llm_subcommands(subparsers) -> argparse.ArgumentParser:
 
     context_parser = llm_subparsers.add_parser("context", help="Build a provider-neutral LLM architecture context.")
     context_parser.add_argument("--dataset-manifest", type=Path, help="Optional dataset manifest JSON.")
+    context_parser.add_argument("--dataset-id", help="Resolve a dataset through the shared workspace catalog.")
+    context_parser.add_argument("--catalog-root", type=Path, default=Path.cwd(), help="Workspace root used with --dataset-id.")
+    context_parser.add_argument("--catalog-depth", type=int, default=4, help="Bounded catalog discovery depth.")
     context_parser.add_argument("--architecture-runs", type=Path, help="Optional architecture_runs.json baseline.")
     context_parser.add_argument("--objective", default="review_efficiency", help="Optimization objective label.")
     context_parser.add_argument("--max-combinations", type=int, default=4096, help="Maximum combinations per proposed architecture.")
     context_parser.add_argument("--lab-notes", default="", help="Extra lab notes to include in the context payload.")
+    context_parser.add_argument("--catalog-detail", choices=["compact", "full"], default="compact", help="Pipeline-stage metadata detail; compact minimizes LLM tokens.")
     context_parser.add_argument("--context-out", type=Path, help="Write context JSON to this path.")
     context_parser.add_argument("--prompt-out", type=Path, help="Write Markdown prompt to this path.")
     context_parser.add_argument("--json", action="store_true", help="Print context JSON instead of the prompt.")
@@ -54,12 +59,36 @@ def add_llm_subcommands(subparsers) -> argparse.ArgumentParser:
 
 def llm_context_command(args: argparse.Namespace) -> int:
     try:
+        dataset_manifest = load_json(args.dataset_manifest) if args.dataset_manifest else None
+        architecture_runs = load_json(args.architecture_runs) if args.architecture_runs else None
+        if args.dataset_id:
+            records = discover_dataset_catalog(args.catalog_root, max_depth=args.catalog_depth)
+            matches = [
+                record
+                for record in query_dataset_catalog(records, args.dataset_id)
+                if str(record.get("dataset_id")) == str(args.dataset_id)
+            ]
+            if not matches:
+                raise ValueError(f"Dataset '{args.dataset_id}' was not found under {args.catalog_root}")
+            catalog_record = matches[0]
+            if dataset_manifest and str(dataset_manifest.get("dataset_id")) != str(args.dataset_id):
+                raise ValueError("--dataset-id and --dataset-manifest identify different datasets")
+            dataset_manifest = dataset_manifest or catalog_record
+            if architecture_runs is None:
+                runs_value = (catalog_record.get("paths") or {}).get("architecture_runs")
+                if runs_value:
+                    runs_path = Path(str(runs_value)).expanduser()
+                    if not runs_path.is_absolute():
+                        runs_path = args.catalog_root / runs_path
+                    if runs_path.is_file():
+                        architecture_runs = load_json(runs_path)
         context = build_llm_context(
-            dataset_manifest=load_json(args.dataset_manifest) if args.dataset_manifest else None,
-            architecture_runs=load_json(args.architecture_runs) if args.architecture_runs else None,
+            dataset_manifest=dataset_manifest,
+            architecture_runs=architecture_runs,
             objective=args.objective,
             max_combinations=args.max_combinations,
             lab_notes=args.lab_notes,
+            catalog_detail=args.catalog_detail,
         )
         prompt = render_llm_prompt(context)
         if args.context_out:

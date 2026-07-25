@@ -24,15 +24,14 @@ python3 tools/run_neuron_review_pipeline.py \
 ```
 
 ```bash
-python3 tools/serve_neuron_workbench.py \
-  --root-dir Outputs/NeuronReview \
-  --port 8765
+.venv-neurobench/bin/python -m neurobench.cli.main workbench serve \
+  --dataset-id calcium_rest_cropped --catalog-root . --port 8765
 ```
 
 Then open:
 
 ```text
-http://127.0.0.1:8765/calcium_rest_cropped/app/index.html
+http://127.0.0.1:8765/
 ```
 
 If the server is already running on another port, use that port instead. The
@@ -48,7 +47,7 @@ server.
 | Build or compare pipeline stacks | `Pipelines` | Configure stages, save reusable named architectures, and compare completed/generated runs. |
 | Plan threshold sweeps or hand-picked variants | `Experiment Lab` | Select a model instance, inspect recommendation cards, plan sweeps/sets/Optuna studies, and launch the first preview locally. |
 | Ask an LLM for architecture ideas | CLI handoff | Generate context/prompt files, validate returned JSON, and import proposals into Pipelines. |
-| Tune overlays, filters, labels, and manual ROIs | `Review` | Use `Guided` for routine review, `Standard` for common controls, and `Expert` for manual/editing tools. |
+| Annotate ROIs and CFAR foreground/background | `Review` | The annotation dock is visible in Guided, Standard, and Expert; Expert adds advanced detector, generation, and export controls. |
 | Inspect intermediate outputs frame-by-frame | `Data` | Synchronized raw/intermediate stage grid. |
 | Validate candidate neurons and events | `Review` | Main annotation page with compact transport controls and collapsible review/display tools. |
 | Track review burden and readiness | `Progress` | Includes tuning gate, robustness examples, validation, and adjudication. |
@@ -97,20 +96,25 @@ This writes:
 
 ## Build The Workbench UI
 
-The v2 workbench builder is stdlib-only Python. It reads the generated
+The canonical workbench builder is package-backed, stdlib-only Python. It reads the generated
 `review_data.json` and writes `index.html`, `workbench.css`, and
 `workbench.js`:
 
 ```bash
-python3 tools/build_neuron_workbench_v2.py
-```
-
-The builder also accepts explicit paths or a dataset manifest:
-
-```bash
-python3 tools/build_neuron_workbench_v2.py \
+.venv-neurobench/bin/python -m neurobench.cli.main workbench build \
   --dataset-manifest examples/dataset_manifest.example.json
 ```
+
+It also accepts explicit review/app paths:
+
+```bash
+.venv-neurobench/bin/python -m neurobench.cli.main workbench build \
+  --review-data path/to/app/review_data.json --app-dir path/to/app
+```
+
+`tools/build_neuron_workbench_v2.py` remains a compatibility wrapper. New
+automation should use `neurobench workbench build` so App, catalog, and LLM
+dataset identity resolution stay aligned.
 
 Useful explicit arguments:
 
@@ -235,7 +239,8 @@ analysis, the v2 workbench build, and the multi-dataset index build. Use
 Use the local server for persistent annotation saving:
 
 ```bash
-python3 tools/serve_neuron_workbench.py --port 8765
+.venv-neurobench/bin/python -m neurobench.cli.main workbench serve \
+  --dataset-id calcium_rest_cropped --catalog-root . --port 8765
 ```
 
 Then open:
@@ -282,7 +287,9 @@ Outputs/NeuronReview/<dataset>/app/generated_runs/<run_id>/
 Each generated run receives its own `review_data.json`, frames, intermediate
 frame exports, status, logs, and app URL in `architecture_runs.json`.
 
-For a multi-dataset workbench index, serve the review root instead:
+The package-backed command above is the canonical App route. If a legacy
+multi-dataset index is specifically required, the compatibility wrapper can
+serve the review root:
 
 ```bash
 python3 tools/serve_neuron_workbench.py \
@@ -294,16 +301,15 @@ Then `/` shows all processed dataset dashboards, and autosave writes only to
 safe per-dataset files under `*/app/annotations.json` or
 `*/app/architecture_runs.json`.
 
-For short-term peer access, run the server locally and expose it with a tunnel.
+For short-term peer access, run one selected dataset locally and expose it with a tunnel.
 Use owner-only generation so peers can inspect dashboards without launching
 jobs on your machine:
 
 ```bash
 export NEUROBENCH_OWNER_TOKEN="choose-a-private-token"
-python3 tools/serve_neuron_workbench.py \
-  --root-dir Outputs/NeuronReview \
-  --host 127.0.0.1 \
-  --port 8765
+.venv-neurobench/bin/python -m neurobench.cli.main workbench serve \
+  --dataset-id calcium_rest_cropped --catalog-root . \
+  --host 127.0.0.1 --port 8765
 ```
 
 Then expose `http://127.0.0.1:8765` with Cloudflare Tunnel, ngrok, Tailscale
@@ -330,9 +336,11 @@ Funnel, or another tunnel tool and share the generated public URL.
 
 ## User Experience Notes
 
-- Expert controls are intentionally hideable. New reviewers should stay in
+- Advanced controls are intentionally hideable. New reviewers should stay in
   `Guided` mode until they need generation, detector, manual ROI, split/merge,
   or export tools.
+- Manual ROI and CFAR foreground/background tools remain in the annotation
+  dock in every mode. Guided mode no longer hides the essential labeling path.
 - `Home` is now a guided launchpad. It prioritizes one next action and the
   four main workflows instead of showing every metric up front.
 - `Experiment Lab` opens as a wizard-first planner: choose a base pipeline,
@@ -376,6 +384,8 @@ The Review page is organized for repeated ROI triage:
 - `Expert` mode reveals generation controls, detector thresholds, Kalman
   trace parameters, overlay tuning, manual ROI tools, split/merge tools,
   parameter snapshots, export controls, and raw parameters.
+  Manual ROI and CFAR mask tools themselves remain visible in all modes;
+  Expert exposes their surrounding advanced analysis controls.
 - The mode setting is a user workflow preference saved in `annotations.json`;
   it is not a scientific annotation label.
 - the `Reviewer` field stores the current reviewer ID in settings and stamps
@@ -908,7 +918,7 @@ Selected ROIs can be assigned the same `identity_group`, marked with a shared
 `needs_action`, or saved as a virtual merge. Virtual merges are stored only in
 `annotations.json`; the source `review_data.json` footprints remain unchanged.
 
-Expert mode also includes manual ROI creation tools:
+The always-visible annotation dock includes manual ROI creation tools:
 
 - `Center`: click a neuron center to create a circular manual ROI using the
   current manual radius.
@@ -925,7 +935,7 @@ extracts raw, background, dF/F, baseline, event, and z traces from the raw
 video for unmaterialized manual or edited virtual ROIs, then saves those trace
 fields back into `annotations.json`.
 
-Expert mode also includes ROI brush editing. `Brush add` and `Brush erase`
+The annotation dock also includes ROI brush editing. `Brush add` and `Brush erase`
 create or update an annotation-layer edited copy of the selected ROI with
 `roi_kind: manual_edit` and `provenance: roi_brush_edit`. The original detector
 footprint remains unchanged, so mask refinement stays auditable. Brush edits
@@ -934,12 +944,42 @@ were copied from detector ROIs can be reset with `Revert To Source`. Any mask
 geometry change clears previously materialized trace fields so traces are not
 mistakenly reused after footprint edits.
 
+## CFAR Foreground/Background Annotation
+
+The annotation dock includes a semantic mask editor for labeling the image evidence
+inside and around a selected ROI. It stores foreground and background masks
+separately from the ROI footprint, making the detector target auditable without
+changing the neuron geometry.
+
+Recommended workflow:
+
+1. Select an existing ROI, or create/refine a freeform ROI with `Lasso`,
+   `Brush add`, and `Brush erase`.
+2. In `CFAR Foreground / Background`, choose the target class.
+3. Use `Brush select` or `Brush deselect` for precise free-form corrections.
+4. Use `Flood select` or `Flood deselect` for connected, similar-intensity
+   regions. Increase tolerance to admit a broader intensity range.
+5. Keep the recommended `ROI box + padding` flood bound for local work, or use
+   `Radius from click` for a circular local limit. `Full frame` is available
+   but capped at 50,000 visited pixels to keep the browser responsive.
+6. Use `Undo` for the last operation, `Clear active` to clear only the selected
+   class, and `Finish` to leave the semantic-mask mode.
+
+Foreground is rendered in pink/red and background in blue. The two masks are
+mutually exclusive, so selecting a pixel for one class removes it from the
+other. The editor records the frames used as visual references, reviewer
+provenance when available, and flood tolerance/bound settings from the latest
+edit. Full masks are preserved in JSON exports; ROI TSV exports include pixel
+counts and reference-frame summaries.
+
 ## Troubleshooting
 
 - If autosave is not active, confirm the page URL starts with
   `http://127.0.0.1:8765/`.
-- If the video does not appear, regenerate the frame PNGs with
-  `generate_neuron_review_app.groovy`.
+- If the video does not appear, regenerate frames with the manifest-driven
+  `tools/run_neuron_review_pipeline.py` workflow. Direct Groovy invocation is
+  a debugging/compatibility path and can leave an older UI if the canonical
+  Python build step is skipped.
 - If the ROI list is empty, check queue filters such as minimum area, minimum
   events, or hidden/deleted view.
 - If smaller neurons appear under-detected, rerun the high-recall Gamma CFAR

@@ -115,13 +115,14 @@ class WorkbenchCandidateOverlayViewTests(unittest.TestCase):
         self.assertIn('id="reviewRawFrameImg"', html)
         self.assertIn('Candidate / event outline', html)
 
-    def test_candidate_only_runs_use_live_roi_views(self):
+    def test_candidate_only_runs_use_single_review_canvas_and_live_data_compare(self):
         source_root = ROOT / "neurobench" / "workbench" / "assets" / "src"
         state = (source_root / "10_state_persistence.js").read_text(encoding="utf-8")
         qc = (source_root / "70_dataset_qc.js").read_text(encoding="utf-8")
         metrics = (source_root / "60_metrics_report.js").read_text(encoding="utf-8")
         self.assertIn("candidateOverlayOnlyRun(runId) ? 'raw_roi'", state)
-        self.assertIn("candidateOverlayOnlyRun(annotations.settings.activeRunId)", state)
+        self.assertIn("reviewSideBySide: false", state)
+        self.assertIn("annotations.settings.reviewSideBySide = false", state)
         self.assertIn("runHasCandidateRois(run) && !runHasIntermediates(run)", qc)
         self.assertIn("no duplicate intermediate frame stack is required", metrics)
 

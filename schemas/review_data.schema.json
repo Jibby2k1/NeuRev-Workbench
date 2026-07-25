@@ -22,7 +22,11 @@
         "width": {"type": "integer", "minimum": 1},
         "height": {"type": "integer", "minimum": 1},
         "frames": {"type": "integer", "minimum": 1},
-        "framePattern": {"type": "string"}
+        "framePattern": {"type": "string"},
+        "views": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/videoView"}
+        }
       },
       "additionalProperties": true
     },
@@ -75,5 +79,29 @@
       "additionalProperties": true
     }
   },
-  "additionalProperties": true
+  "additionalProperties": true,
+  "$defs": {
+    "videoView": {
+      "type": "object",
+      "required": ["view_id", "bounds"],
+      "properties": {
+        "view_id": {"type": "string", "minLength": 1},
+        "label": {"type": "string"},
+        "role": {"type": "string"},
+        "bounds": {
+          "type": "object",
+          "required": ["x", "y", "width", "height"],
+          "properties": {
+            "x": {"type": "integer", "minimum": 0},
+            "y": {"type": "integer", "minimum": 0},
+            "width": {"type": "integer", "minimum": 1},
+            "height": {"type": "integer", "minimum": 1}
+          },
+          "additionalProperties": false
+        },
+        "coordinate_space": {"type": "string", "enum": ["native_full_frame"]}
+      },
+      "additionalProperties": true
+    }
+  }
 }

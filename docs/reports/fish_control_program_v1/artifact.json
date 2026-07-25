@@ -1,0 +1,404 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Fish Inverse-Control Experiment Program",
+    "description": "Evidence-backed, stage-gated experiment plan from robust activation measurement through causal intent decoding and safe inverse control.",
+    "generatedAt": "2026-07-21T17:22:38Z",
+    "cards": [],
+    "charts": [
+      {
+        "id": "stage_workload",
+        "title": "All 68 compute jobs remain behind evidence or data gates",
+        "subtitle": "Planned jobs by scientific stage; zero jobs are currently launch-ready.",
+        "type": "bar",
+        "dataset": "stage_workload",
+        "sourceId": "program_portfolio",
+        "encodings": {
+          "x": {
+            "field": "stage",
+            "type": "nominal",
+            "label": "Program stage"
+          },
+          "y": {
+            "field": "planned_jobs",
+            "type": "quantitative",
+            "label": "Planned compute jobs",
+            "format": "number"
+          },
+          "tooltip": [
+            {
+              "field": "stage",
+              "type": "nominal",
+              "label": "Stage"
+            },
+            {
+              "field": "planned_jobs",
+              "type": "quantitative",
+              "label": "Jobs",
+              "format": "number"
+            },
+            {
+              "field": "manual_checkpoints",
+              "type": "quantitative",
+              "label": "Manual checkpoints",
+              "format": "number"
+            }
+          ]
+        },
+        "yAxisTitle": "Planned compute jobs",
+        "valueFormat": "number",
+        "layout": "full"
+      }
+    ],
+    "tables": [
+      {
+        "id": "experiment_queue",
+        "title": "Exact stage-gated experiment queue",
+        "subtitle": "Zero-job rows are required human/data checkpoints, not omitted experiments.",
+        "dataset": "experiment_queue",
+        "sourceId": "program_portfolio",
+        "defaultSort": {
+          "field": "priority",
+          "direction": "asc"
+        },
+        "columns": [
+          {
+            "field": "priority",
+            "label": "Priority",
+            "format": "number"
+          },
+          {
+            "field": "experiment_id",
+            "label": "Experiment",
+            "type": "text"
+          },
+          {
+            "field": "stage",
+            "label": "Stage",
+            "type": "text"
+          },
+          {
+            "field": "planned_jobs",
+            "label": "Jobs",
+            "format": "number"
+          },
+          {
+            "field": "readiness",
+            "label": "Readiness",
+            "type": "text"
+          },
+          {
+            "field": "decision_value",
+            "label": "Decision value",
+            "format": "number"
+          }
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "history_checkpoint",
+        "title": "What the completed work actually establishes",
+        "subtitle": "Comparable historical checkpoints, with scope limits kept explicit.",
+        "dataset": "history_checkpoint",
+        "sourceId": "history_evidence",
+        "columns": [
+          {
+            "field": "workstream",
+            "label": "Workstream",
+            "type": "text"
+          },
+          {
+            "field": "scale",
+            "label": "Scale",
+            "type": "text"
+          },
+          {
+            "field": "result",
+            "label": "Result",
+            "type": "text"
+          },
+          {
+            "field": "implication",
+            "label": "Implication",
+            "type": "text"
+          }
+        ],
+        "layout": "full"
+      }
+    ],
+    "sources": [
+      {
+        "id": "program_portfolio",
+        "label": "Validated fish-control program portfolio",
+        "path": "program_portfolio.sql"
+      },
+      {
+        "id": "history_evidence",
+        "label": "Reviewed repository experiment checkpoints",
+        "path": "history_evidence.sql"
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# Fish Inverse-Control Experiment Program"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "body": "## Technical summary\n\nThe highest-impact next step is **measurement repair, not another broad neural-network sweep**. The repository now has a single stage-gated program connecting four distinct problems: exhaustive activation measurement, causal pre-movement left/right intent, action-conditioned system identification, and uncertainty-gated control. The validated portfolio contains **8 experiments and 68 compute jobs**, but its audit correctly marks **five blocked and three manual-action-required**; no compute job should launch yet.\n\nThe existing work already answers several useful questions. Passive grid dynamics are learnable, especially in active/high-change regions, but passive forecasting cannot identify a stimulation policy. The current 11-video intent head matches the majority baseline. Learnable CFAR/direct tuning has not improved the sparse-positive recall checkpoint, and the annotations cannot identify ordinary precision. These are dataset/estimand and objective-alignment problems before they are initialization problems."
+      },
+      {
+        "id": "decision",
+        "type": "markdown",
+        "body": "## Decision and rationale\n\nRun three manual/data workstreams in parallel: **FC00 activation annotation**, **FC03 causal intent-data audit**, and **FC05 stimulation/action logging audit**. The first legal compute experiment is FC01, a six-method frozen detector tournament, only after FC00 makes precision measurable. FC02 is a twelve-fit confirmatory screen, not an open-ended architecture search. Intent modeling is a 24-cell matched spatial-versus-temporal ablation after causal trials exist. The control branch begins with eight simple system-identification cells and reaches eighteen simulation-only controller jobs after action support and calibration pass."
+      },
+      {
+        "id": "workload_chart",
+        "type": "chart",
+        "chartId": "stage_workload",
+        "layout": "full"
+      },
+      {
+        "id": "workload_interpretation",
+        "type": "markdown",
+        "body": "## Workload interpretation\n\nIntent ablation and control simulation account for 42 of 68 jobs (61.8%), but both are downstream of missing evidence. Launching them now would spend most of the compute budget on conclusions the current labels and action logs cannot support. Measurement has 18 compute jobs because its first checkpoint is human annotation; system identification has eight because regularized linear and controlled state-space baselines should precede deep transition models."
+      },
+      {
+        "id": "queue_table",
+        "type": "table",
+        "tableId": "experiment_queue",
+        "layout": "full"
+      },
+      {
+        "id": "history_heading",
+        "type": "markdown",
+        "body": "## Historical analysis"
+      },
+      {
+        "id": "history_table",
+        "type": "table",
+        "tableId": "history_checkpoint",
+        "layout": "full"
+      },
+      {
+        "id": "history_interpretation",
+        "type": "markdown",
+        "body": "The stopped Grid128 Stage A sweep reached index 477 of 972. Its append-only progress file includes resume duplicates and retry failures, so unique metric artifacts—not raw progress-line counts—are the right evidence unit. Its best global test improvement (0.0008963) and active-cell improvement (0.0014562) show predictive signal, but every transition is action-free. Stage B's 57 planned experiments remain unlaunched and should not supersede the measurement-first program without a new operator decision.\n\nThe activation series is more diagnostic than its headline recalls suggest. V2 scaling helped modestly, v3 parameters and loss moved, yet v3 tied the raw-direct recall of 0.6056. That pattern argues against weight initialization as the primary explanation. The likely bottlenecks are sparse-positive supervision, loss-to-threshold/NMS mismatch, removal of absolute-amplitude information, and inadequate structured-background modeling."
+      },
+      {
+        "id": "research_grounding",
+        "type": "markdown",
+        "body": "## Primary-research grounding\n\nRobust calcium-imaging pipelines generally model sources, background, and temporal dynamics jointly rather than asking one threshold statistic to absorb every nuisance. [CNMF](https://pmc.ncbi.nlm.nih.gov/articles/PMC4881387/), [CNMF-E](https://elifesciences.org/articles/28728), [CaImAn](https://elifesciences.org/articles/38173), and [OASIS](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005423) motivate the structured-background and deconvolution comparator; [CASCADE](https://www.nature.com/articles/s41593-021-00895-5) motivates supervised event inference with explicit generalization checks. When negatives are unlabeled rather than true negatives, non-negative [positive-unlabeled risk](https://papers.nips.cc/paper_files/paper/2017/hash/7cce53cf90577442771720a370c3c723-Abstract.html) is a principled screen.\n\nZebrafish turning circuitry supports testing both anatomical laterality and persistent temporal state. Bilateral premotor evidence appears in the [ARTR study](https://elifesciences.org/articles/12741), [turn-circuit work](https://pmc.ncbi.nlm.nih.gov/articles/PMC4978520/), and whole-brain [optomotor circuit analysis](https://pmc.ncbi.nlm.nih.gov/articles/PMC5111816/); [evidence-accumulation dynamics](https://www.nature.com/articles/s41593-019-0535-8) argue for causal temporal windows as well. Therefore spatial-only, temporal-only, and joint models must share splits, lead windows, and leakage controls.\n\nFor control, [PSID](https://www.nature.com/articles/s41593-020-00733-0) and [IPSID](https://pmc.ncbi.nlm.nih.gov/articles/PMC10873612/) motivate behavior-relevant controlled latent dynamics, while uncertainty-aware model-based control ([PETS](https://proceedings.neurips.cc/paper_files/paper/2018/hash/3de568f8597b94bda53149c7d7f5958c-Abstract.html)) and safe exploration ([SafeOpt](https://proceedings.mlr.press/v37/sui15.html)) motivate simulation, uncertainty gates, and approved action envelopes before command-capable deployment."
+      },
+      {
+        "id": "measurement_design",
+        "type": "markdown",
+        "body": "## FC00–FC02: robust activation measurement\n\nBuild at least 120 spatial-temporal tiles stratified across active, quiet, motion, structured-background, overlap, edge, low-SNR, and detector-disagreement conditions. Mark coverage as exhaustive, candidate-review, or sparse-positive and double-review a subset. Report object and event precision/recall, PR/FROC, timing error, calibration, split/merge/duplicate errors, group-bootstrap uncertainty, and compute cost.\n\nFC01 freezes raw-direct, Gamma CFAR, learned v2, direct-tuned v3, CaImAn/CNMF, and annular-background-plus-deconvolution methods. FC02 then tests only 2 architectures × 2 losses × 3 seeds: amplitude plus annular background versus amplitude plus soft CFAR; coverage-masked focal versus non-negative PU. Stop if neither improves validation precision/recall."
+      },
+      {
+        "id": "intent_design",
+        "type": "markdown",
+        "body": "## FC03–FC04: causal left/right intent\n\nFirst freeze trial-level movement onset, direction, timing uncertainty, pre-onset windows, group splits, class balance, and missingness. Explicitly resolve the 1,118-frame manual interval, reversed range, and workbook mismatch found in the current annotations.\n\nThen run six representations across four lead windows: behavior only; population amount; spatial laterality; coordinate-free temporal history; spatiotemporal activity; and spatiotemporal plus behavior. Use -500 to -250 ms, -250 to -100 ms, -100 to -40 ms, and a post-onset leakage diagnostic. Required falsification tests are coordinate shuffle/mirroring, temporal circular shift, label permutation, activity-count matching, behavior-only, and stimulus-only controls. Begin with regularized linear models; only confirm nonlinear structure after a reproducible incremental signal exists."
+      },
+      {
+        "id": "control_design",
+        "type": "markdown",
+        "body": "## FC05–FC07: system identification and inverse control\n\nA valid transition row needs current neural/behavioral state, requested and measured action, target, amplitude, duration, waveform, command/hardware timestamps, latency, sham status, clipping/interlock events, recent action, explicit no-action, and next state/outcome. Missing action must never be recoded as no action.\n\nFit action-free ridge, state-action ridge, controlled linear state space, and IPSID-style models against left/right response and next neural state: 4 × 2 = 8 cells. Hold out fish/session and stimulation levels; include sham, no-action, contralateral, off-target, and action-permutation controls. Only then compare fixed-safe, randomized-safe, and uncertainty-gated MPC across two transition models and three repeats: 2 × 3 × 3 = 18 simulation jobs. This stage cannot issue real stimulation commands."
+      },
+      {
+        "id": "hardware",
+        "type": "markdown",
+        "body": "## Workstation execution envelope\n\nThe plan targets the local Intel i9-14900K (32 logical CPUs), 78 GiB RAM, and RTX 4070 SUPER (12,282 MiB). Default caps are 16 CPU threads, 48 GiB RAM, one GPU-heavy job, an 8,500 MiB GPU target, a 9,600 MiB hard ceiling, and 2,200 MiB reserve for the desktop/runtime. Jobs checkpoint atomically and resume by completed IDs. Grid-like recurrent models remain batch 2 or lower because prior larger batches repeatedly OOMed.\n\nNo training or stimulation job was launched during planning: the machine had active desktop/test load, and the current stage gates do not permit compute."
+      },
+      {
+        "id": "workspace",
+        "type": "markdown",
+        "body": "## Workspace organization and tooling\n\nThe repository now routes current work through `docs/programs/fish_inverse_control/`, while historical root plans remain preserved. `.rgignore` excludes generated and bulk experiment trees from default LLM search, `.gitattributes` marks large/generated artifacts, and indexes cover docs, examples, experiments, workflows, research, reports, and developer references. Raw `Inputs/` (~35 GiB) and generated `Outputs/` (~673 GiB) were intentionally not moved.\n\nA new `neurobench program fish-control audit` command validates experiment IDs, dependencies, cycles, gates, exact factor-grid counts, required inputs, output collisions, and hardware envelopes. It is a readiness auditor, not a runner or stimulation authorization surface."
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "body": "## Limitations and robustness\n\nThe existing activation benchmark has only sparse positives, so unmatched detections are not established false positives. The intent checkpoint contains 11 video-level folds and no frozen causal movement-onset trials. The manual ROI subset covers two videos and contains annotation anomalies. Passive forecasting improvements do not estimate stimulation effects, and no populated action-conditioned transition dataset was found. Literature-informed models remain hypotheses until evaluated on held-out fish or sessions.\n\nFuture claims should include validation-selected operating points, sealed test groups, denominator and annotation-coverage metadata, seed distributions, group-bootstrap intervals, calibration, registration perturbations, motion strata, detector-version sensitivity, and explicit leakage/null controls."
+      },
+      {
+        "id": "next_steps",
+        "type": "markdown",
+        "body": "## Immediate implementation order\n\n1. Complete FC00, FC03, and FC05 as parallel annotation/data audits.\n2. Run the program audit and repair every missing input or gate record; do not bypass blockers by creating placeholder files.\n3. Freeze FC01's six detector adapters, thresholds, splits, and sealed test panel, then execute within the workstation envelope.\n4. Decide whether FC02 proceeds from FC01 precision/recall and hard-negative error analysis.\n5. Execute FC04 only after causal intent trials pass readiness.\n6. Execute FC06 only after measured action coverage passes; keep FC07 simulation-only until system ID is calibrated.\n7. Require a separate safety review, shadow mode, abstention logic, and interlocks before any future command-capable controller."
+      },
+      {
+        "id": "questions",
+        "type": "markdown",
+        "body": "## Decisions still needed\n\n- What minimum pre-movement lead time is biologically and operationally useful?\n- Can neuron locations be registered across fish, or must spatial intent models remain fish-specific?\n- Which stimulation fields are measured by hardware versus merely requested?\n- What action envelope and adverse-outcome definitions are approved for system-identification data collection?\n- How many independent fish and sessions can be reserved for sealed intent and control tests?\n- Should the eventual control objective prioritize direction, turn magnitude, latency, energy, or a constrained multi-objective score?"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-07-21T17:22:38Z",
+    "status": "ready",
+    "datasets": {
+      "stage_workload": [
+        {
+          "stage": "Measurement",
+          "planned_jobs": 18,
+          "manual_checkpoints": 1
+        },
+        {
+          "stage": "Intent",
+          "planned_jobs": 24,
+          "manual_checkpoints": 1
+        },
+        {
+          "stage": "System ID",
+          "planned_jobs": 8,
+          "manual_checkpoints": 1
+        },
+        {
+          "stage": "Control",
+          "planned_jobs": 18,
+          "manual_checkpoints": 0
+        }
+      ],
+      "experiment_queue": [
+        {
+          "priority": 1,
+          "experiment_id": "fc00_activation_annotation_panel_v1",
+          "stage": "measurement",
+          "planned_jobs": 0,
+          "readiness": "manual_action_required",
+          "decision_value": 17
+        },
+        {
+          "priority": 2,
+          "experiment_id": "fc01_frozen_detector_tournament_v1",
+          "stage": "measurement",
+          "planned_jobs": 6,
+          "readiness": "blocked",
+          "decision_value": 17
+        },
+        {
+          "priority": 3,
+          "experiment_id": "fc02_structured_background_pu_v1",
+          "stage": "measurement",
+          "planned_jobs": 12,
+          "readiness": "blocked",
+          "decision_value": 11
+        },
+        {
+          "priority": 4,
+          "experiment_id": "fc03_intent_dataset_readiness_v1",
+          "stage": "intent",
+          "planned_jobs": 0,
+          "readiness": "manual_action_required",
+          "decision_value": 17
+        },
+        {
+          "priority": 5,
+          "experiment_id": "fc04_intent_spatiotemporal_ablation_v1",
+          "stage": "intent",
+          "planned_jobs": 24,
+          "readiness": "blocked",
+          "decision_value": 15
+        },
+        {
+          "priority": 6,
+          "experiment_id": "fc05_action_logging_readiness_v1",
+          "stage": "system_identification",
+          "planned_jobs": 0,
+          "readiness": "manual_action_required",
+          "decision_value": 18
+        },
+        {
+          "priority": 7,
+          "experiment_id": "fc06_action_conditioned_system_id_v1",
+          "stage": "system_identification",
+          "planned_jobs": 8,
+          "readiness": "blocked",
+          "decision_value": 12
+        },
+        {
+          "priority": 8,
+          "experiment_id": "fc07_uncertainty_mpc_sim_v1",
+          "stage": "control",
+          "planned_jobs": 18,
+          "readiness": "blocked",
+          "decision_value": 11
+        }
+      ],
+      "history_checkpoint": [
+        {
+          "workstream": "Pre-label CFAR screens",
+          "scale": "36 cascades + two 12-setting ROI sweeps",
+          "result": "Candidate counts varied substantially; no truth labels",
+          "implication": "Diagnostic only; cannot rank detector quality"
+        },
+        {
+          "workstream": "Grid32 passive dynamics",
+          "scale": "1,212 / 1,212 experiments",
+          "result": "Best test MSE improvement 0.0002295",
+          "implication": "Forecasting baseline, not intent or control"
+        },
+        {
+          "workstream": "Grid128 Stage A",
+          "scale": "Stopped at 477 / 972; 467 metric directories reviewed",
+          "result": "Best global improvement 0.0008963; active-cell 0.0014562",
+          "implication": "Useful passive dynamics evidence; Stage B not launched"
+        },
+        {
+          "workstream": "Latent intent smoke test",
+          "scale": "11 video-level folds",
+          "result": "Ridge accuracy 0.3636, equal to majority accuracy",
+          "implication": "No validated intent signal yet"
+        },
+        {
+          "workstream": "Learnable detector v1-v3",
+          "scale": "Four sparse-positive held-out windows",
+          "result": "Best v2 recall 0.2051; v3 tied raw direct at 0.6056",
+          "implication": "Precision remains unidentified; redesign labels and objective"
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "program_portfolio",
+      "label": "Validated fish-control program portfolio",
+      "path": "program_portfolio.sql",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "description": "Program rows transcribed from the validated example manifest and generated readiness audit; stage totals exclude zero-job manual checkpoints.",
+        "executed_at": "2026-07-21T17:22:38Z",
+        "sql": "WITH experiment_queue(priority, experiment_id, stage, planned_jobs, readiness, decision_value) AS (VALUES (1, 'fc00_activation_annotation_panel_v1', 'measurement', 0, 'manual_action_required', 17), (2, 'fc01_frozen_detector_tournament_v1', 'measurement', 6, 'blocked', 17), (3, 'fc02_structured_background_pu_v1', 'measurement', 12, 'blocked', 11), (4, 'fc03_intent_dataset_readiness_v1', 'intent', 0, 'manual_action_required', 17), (5, 'fc04_intent_spatiotemporal_ablation_v1', 'intent', 24, 'blocked', 15), (6, 'fc05_action_logging_readiness_v1', 'system_identification', 0, 'manual_action_required', 18), (7, 'fc06_action_conditioned_system_id_v1', 'system_identification', 8, 'blocked', 12), (8, 'fc07_uncertainty_mpc_sim_v1', 'control', 18, 'blocked', 11)) SELECT * FROM experiment_queue ORDER BY priority",
+        "tables_used": [
+          "validated_program_manifest",
+          "generated_program_audit"
+        ]
+      }
+    },
+    {
+      "id": "history_evidence",
+      "label": "Reviewed repository experiment checkpoints",
+      "path": "history_evidence.sql",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "description": "Selected checkpoint values transcribed from versioned sweep, learnable-contrast, manual-ROI, and latent-intent artifacts; scopes are intentionally not pooled.",
+        "executed_at": "2026-07-21T17:22:38Z",
+        "sql": "SELECT * FROM (VALUES ('Pre-label CFAR screens', '36 cascades + two 12-setting ROI sweeps', 'Candidate counts varied substantially; no truth labels', 'Diagnostic only; cannot rank detector quality'), ('Grid32 passive dynamics', '1,212 / 1,212 experiments', 'Best test MSE improvement 0.0002295', 'Forecasting baseline, not intent or control'), ('Grid128 Stage A', 'Stopped at 477 / 972; 467 metric directories reviewed', 'Best global improvement 0.0008963; active-cell 0.0014562', 'Useful passive dynamics evidence; Stage B not launched'), ('Latent intent smoke test', '11 video-level folds', 'Ridge accuracy 0.3636, equal to majority accuracy', 'No validated intent signal yet'), ('Learnable detector v1-v3', 'Four sparse-positive held-out windows', 'Best v2 recall 0.2051; v3 tied raw direct at 0.6056', 'Precision remains unidentified; redesign labels and objective')) AS history(workstream, scale, result, implication)",
+        "tables_used": [
+          "reviewed_repository_artifacts"
+        ]
+      }
+    }
+  ],
+  "package_info": {
+    "root": "docs/reports/fish_control_program_v1",
+    "manifestPath": "artifact.json",
+    "snapshotPath": "artifact.json"
+  }
+}

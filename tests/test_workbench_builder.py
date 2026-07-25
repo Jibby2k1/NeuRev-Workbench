@@ -22,13 +22,15 @@ def _review_payload() -> dict:
 
 class WorkbenchBuilderTests(unittest.TestCase):
     def test_workbench_assets_packaged(self):
-        from neurobench.workbench.builder import load_workbench_asset
+        from neurobench.workbench.builder import load_workbench_asset, workbench_asset_version
 
         css = load_workbench_asset("workbench.css")
         js = load_workbench_asset("workbench.js")
 
         self.assertIn(".app", css)
         self.assertIn("traceEventCache", js)
+        self.assertEqual(len(workbench_asset_version()), 12)
+        self.assertNotEqual(workbench_asset_version(html_text="one"), workbench_asset_version(html_text="two"))
 
     def test_build_workbench_outputs_html_assets_and_manifests(self):
         from neurobench.workbench.builder import build_workbench
@@ -85,6 +87,67 @@ class WorkbenchBuilderTests(unittest.TestCase):
         self.assertEqual(inputs["dataset_id"], "external_test")
         self.assertEqual(inputs["review_data_path"], review_path.resolve())
 
+    def test_resolve_build_inputs_uses_legacy_parameter_dataset_id(self):
+        from neurobench.workbench.builder import resolve_build_inputs
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            review_path = root / "Outputs" / "NeuronReview" / "legacy_folder" / "app" / "review_data.json"
+            review_path.parent.mkdir(parents=True)
+            payload = _review_payload()
+            payload["parameters"]["datasetId"] = "legacy_declared"
+            review_path.write_text(json.dumps(payload), encoding="utf-8")
+            inputs = resolve_build_inputs(
+                review_data=review_path,
+                default_app_dir=review_path.parent,
+                default_review_data=review_path,
+                default_dataset_id="dataset",
+            )
+
+        self.assertEqual(inputs["dataset_id"], "legacy_declared")
+
+    def test_manifest_placeholder_catalog_allows_new_app_baseline(self):
+        from neurobench.workbench.builder import build_workbench, resolve_build_inputs
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            app_dir = root / "new_dataset" / "app"
+            review_path = app_dir / "review_data.json"
+            review_path.parent.mkdir(parents=True)
+            review_path.write_text(json.dumps(_review_payload()), encoding="utf-8")
+            manifest_path = root / "dataset_manifest.json"
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "dataset_id": "new_dataset",
+                        "paths": {
+                            "app_dir": str(app_dir),
+                            "review_data": str(review_path),
+                            "architecture_runs": str(app_dir / "architecture_runs.json"),
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            inputs = resolve_build_inputs(
+                dataset_manifest=manifest_path,
+                default_app_dir=app_dir,
+                default_review_data=review_path,
+                default_dataset_id="dataset",
+            )
+            paths = build_workbench(
+                app_dir=inputs["app_dir"],
+                review_data_path=inputs["review_data_path"],
+                dataset_id=inputs["dataset_id"],
+                dataset_manifest=inputs["dataset_manifest"],
+                architecture_runs_path=inputs["architecture_runs_path"],
+            )
+            runs = json.loads(paths["architecture_runs"].read_text(encoding="utf-8"))
+
+        self.assertIsNone(inputs["architecture_runs_path"])
+        self.assertEqual(runs["runs"][0]["run_id"], "current_review_pipeline")
+
     def test_build_workbench_preserves_review_dataset_without_manifest(self):
         from neurobench.workbench.builder import build_workbench
         from tools import build_neuron_workbench_v2 as legacy_builder
@@ -113,6 +176,61 @@ class WorkbenchBuilderTests(unittest.TestCase):
 
         self.assertEqual(data["dataset"]["dataset_id"], "external_test")
         self.assertEqual(data["dataset"]["raw_video"], "Inputs/external_test/zebrafish_test.mp4")
+
+    def test_rebuild_preserves_existing_architecture_run_catalog(self):
+        from neurobench.workbench.builder import build_workbench
+        from tools import build_neuron_workbench_v2 as legacy_builder
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            app_dir = root / "app"
+            app_dir.mkdir()
+            review_path = root / "review_data.json"
+            review_path.write_text(json.dumps(_review_payload()), encoding="utf-8")
+            catalog_text = '{"schema_version":1,"dataset_id":"synthetic_app","runs":[{"run_id":"attached_scientific_run"}]}\n'
+            catalog_path = app_dir / "architecture_runs.json"
+            catalog_path.write_text(catalog_text, encoding="utf-8")
+
+            paths = build_workbench(
+                app_dir=app_dir,
+                review_data_path=review_path,
+                dataset_id="synthetic_app",
+                html_template=legacy_builder.HTML_TEMPLATE,
+                css_fallback=legacy_builder.CSS,
+                js_fallback=legacy_builder.JS,
+            )
+            index = paths["index"].read_text(encoding="utf-8")
+            embedded = index.split('<script id="review-data" type="application/json">', 1)[1].split("</script>", 1)[0]
+            data = json.loads(embedded)
+            preserved_text = paths["architecture_runs"].read_text(encoding="utf-8")
+
+        self.assertEqual(preserved_text, catalog_text)
+        self.assertEqual(data["architectureRuns"]["runs"][0]["run_id"], "attached_scientific_run")
+
+    def test_missing_explicit_architecture_catalog_fails_without_clobbering_existing_catalog(self):
+        from neurobench.workbench.builder import build_workbench
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            app_dir = root / "app"
+            app_dir.mkdir()
+            review_path = root / "review_data.json"
+            review_path.write_text(json.dumps(_review_payload()), encoding="utf-8")
+            catalog_path = app_dir / "architecture_runs.json"
+            catalog_text = '{"schema_version":1,"dataset_id":"synthetic_app","runs":[{"run_id":"valuable"}]}\n'
+            catalog_path.write_text(catalog_text, encoding="utf-8")
+
+            with self.assertRaisesRegex(FileNotFoundError, "Architecture-run catalog does not exist"):
+                build_workbench(
+                    app_dir=app_dir,
+                    review_data_path=review_path,
+                    dataset_id="synthetic_app",
+                    architecture_runs_path=root / "missing_architecture_runs.json",
+                )
+
+            preserved_text = catalog_path.read_text(encoding="utf-8")
+
+        self.assertEqual(preserved_text, catalog_text)
 
     def test_legacy_build_script_uses_package_builder(self):
         with tempfile.TemporaryDirectory() as tmp:

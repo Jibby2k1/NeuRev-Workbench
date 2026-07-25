@@ -85,6 +85,9 @@ class CliMainTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         self.assertIn("attach-intermediates", result.stdout)
         self.assertIn("export-intermediate", result.stdout)
+        self.assertIn("build", result.stdout)
+        self.assertIn("status", result.stdout)
+        self.assertIn("serve", result.stdout)
 
     def test_cli_no_args_prints_help_and_returns_zero(self):
         from neurobench.cli.main import main
@@ -121,6 +124,65 @@ class CliMainTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         self.assertIn("Validated dataset manifest", result.stdout)
         self.assertIn("calcium_video_2", result.stdout)
+
+    def test_cli_llm_context_resolves_dataset_id_from_catalog(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            app = root / "Outputs" / "NeuronReview" / "catalog_demo" / "app"
+            app.mkdir(parents=True)
+            (app / "index.html").write_text("workbench", encoding="utf-8")
+            (app / "review_data.json").write_text(
+                json.dumps(
+                    {
+                        "dataset": {"dataset_id": "catalog_demo"},
+                        "video": {"name": "demo.tif", "frames": 2, "width": 3, "height": 4, "framePattern": "frames/frame_%03d.png"},
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (app / "architecture_runs.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "dataset_id": "catalog_demo",
+                        "runs": [
+                            {
+                                "run_id": "legacy_run",
+                                "pipeline": [{"id": "source", "stage_id": "source_video_import", "params": {}}],
+                                "execution": {"status": "completed"},
+                                "summary": {"roi_count": 2},
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "neurobench.cli.main",
+                    "llm",
+                    "context",
+                    "--dataset-id",
+                    "catalog_demo",
+                    "--catalog-root",
+                    str(root),
+                    "--json",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            payload = json.loads(result.stdout)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(payload["dataset_id"], "catalog_demo")
+        self.assertEqual(payload["dataset_manifest"]["video"]["frames"], 2)
+        self.assertEqual(payload["stage_catalog_detail"], "compact")
+        self.assertEqual(payload["current_runs"][0]["run_id"], "legacy_run")
+        self.assertEqual(payload["context_warnings"][0]["code"], "legacy_pipeline_metadata")
 
     def test_cli_validate_dataset_alias_example(self):
         result = subprocess.run(

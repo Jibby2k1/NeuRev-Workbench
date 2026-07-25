@@ -51,6 +51,35 @@ virtual ROI may include:
 Virtual ROIs do not rewrite source footprints in `review_data.json`. They are
 annotation-layer instructions for downstream export and future rebuilds.
 
+## CFAR Foreground And Background Regions
+
+Any source or virtual ROI annotation may include a separate `cfar_regions`
+object. These masks describe which pixels should behave as foreground and
+background evidence for CFAR-style detector development; they do not replace
+or mutate the ROI footprint.
+
+- `schema_version`: currently `1`
+- `foreground_points`: unique `[x, y]` image-pixel coordinates
+- `background_points`: unique `[x, y]` image-pixel coordinates
+- `reference_frames`: sorted frame indices on which the spatial masks were
+  reviewed
+- `provenance`: `manual_cfar_feature_annotation` for workbench edits
+- `updatedAt`: time of the most recent mask edit
+- `last_edit`: frame, target class, tool, reviewer, and any flood-fill settings
+  associated with the latest operation
+
+CFAR undo history is session-only and held in compact in-memory bitsets. It is
+not a durable scientific field and is stripped during annotation migration;
+only the current masks and latest-edit provenance are persisted.
+
+Foreground and background are mutually exclusive: adding a pixel to one class
+removes it from the other. The masks are spatial labels, while
+`reference_frames` records the temporal evidence used to make them. The full
+point sets remain in `annotations.json` and `annotations_v3.json`; ROI TSV
+exports summarize them as `cfar_foreground_px`, `cfar_background_px`, and
+`cfar_reference_frames` so tabular exports do not expand into one column per
+pixel.
+
 ## Event Fields
 
 Each event annotation may include:

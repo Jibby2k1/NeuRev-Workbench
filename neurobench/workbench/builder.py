@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from neurobench.annotations import migrate_annotations_v3
+from neurobench.data.catalog import dataset_id_from_review
 from neurobench.manifests import load_dataset_manifest, load_json, manifest_path
 from neurobench.pipeline_catalog import catalog_as_dict
 
@@ -58,6 +59,19 @@ def load_workbench_asset(name: str, fallback: str = "") -> str:
         return fallback.strip()
 
 
+def workbench_asset_version(
+    *,
+    css_text: str | None = None,
+    js_text: str | None = None,
+    html_text: str | None = None,
+) -> str:
+    """Return the stable version shared by built apps and status tooling."""
+    css = load_workbench_asset("workbench.css") if css_text is None else css_text
+    js = load_workbench_asset("workbench.js") if js_text is None else js_text
+    html = load_workbench_asset("workbench.html") if html_text is None else html_text
+    return hashlib.sha256((css + "\0" + js + "\0" + html).encode("utf-8")).hexdigest()[:12]
+
+
 def resolve_build_inputs(
     *,
     app_dir: str | Path | None = None,
@@ -76,14 +90,22 @@ def resolve_build_inputs(
     if manifest:
         resolved_app_dir = resolved_app_dir or manifest_path(manifest, "app_dir")
         resolved_review_data = resolved_review_data or manifest_path(manifest, "review_data")
-        resolved_architecture_runs = resolved_architecture_runs or manifest_path(manifest, "architecture_runs")
+        manifest_architecture_runs = manifest_path(manifest, "architecture_runs")
+        # Intake manifests declare the future output path before the catalog
+        # exists. Only an explicitly supplied path should fail fast later.
+        if resolved_architecture_runs is None and manifest_architecture_runs and manifest_architecture_runs.is_file():
+            resolved_architecture_runs = manifest_architecture_runs
     review_data_path = (resolved_review_data or Path(default_review_data)).resolve()
     review_dataset_id = None
     if review_data_path.exists():
         review_payload = load_json(review_data_path)
-        if isinstance(review_payload.get("dataset"), Mapping):
-            review_dataset_id = review_payload["dataset"].get("dataset_id")
-        review_dataset_id = review_dataset_id or review_payload.get("dataset_id")
+        inferred_root = Path(resolved_app_dir).resolve() if resolved_app_dir else review_data_path.parent
+        if inferred_root.name == "app":
+            inferred_root = inferred_root.parent
+        review_dataset_id = dataset_id_from_review(
+            review_payload,
+            fallback=inferred_root.name or default_dataset_id,
+        )
     return {
         "dataset_manifest": manifest,
         "app_dir": (resolved_app_dir or Path(default_app_dir)).resolve(),
@@ -98,7 +120,7 @@ def build_workbench(
     app_dir: str | Path,
     review_data_path: str | Path,
     dataset_id: str,
-    html_template: str,
+    html_template: str | None = None,
     dataset_manifest: Mapping[str, Any] | None = None,
     architecture_runs_path: str | Path | None = None,
     css_fallback: str = "",
@@ -107,6 +129,11 @@ def build_workbench(
     """Build the browser workbench and return generated paths."""
     app_path = Path(app_dir)
     review_path = Path(review_data_path)
+    architecture_source = Path(architecture_runs_path) if architecture_runs_path is not None else None
+    if architecture_source is not None and not architecture_source.is_file():
+        raise FileNotFoundError(f"Architecture-run catalog does not exist: {architecture_source}")
+    app_path.mkdir(parents=True, exist_ok=True)
+    architecture_output = app_path / "architecture_runs.json"
     manifest_payload = dict(dataset_manifest or {})
     data = load_json(review_path)
     review_dataset = data.get("dataset") if isinstance(data.get("dataset"), Mapping) else {}
@@ -116,26 +143,37 @@ def build_workbench(
     }
     data["dataset"].setdefault("dataset_id", dataset_id)
     data["pipelineCatalog"] = catalog_as_dict()
-    if architecture_runs_path and Path(architecture_runs_path).exists():
-        data["architectureRuns"] = load_json(architecture_runs_path)
+    write_architecture_runs = False
+    if architecture_source is not None:
+        data["architectureRuns"] = load_json(architecture_source)
+        write_architecture_runs = architecture_source.resolve() != architecture_output.resolve()
+    elif architecture_output.exists():
+        # Rebuilding assets must not replace an attached scientific run catalog.
+        # The catalog is independently maintained by sweep/architecture tooling.
+        data["architectureRuns"] = load_json(architecture_output)
     else:
         data["architectureRuns"] = architecture_runs_from_review(data, review_path, dataset_id)
+        write_architecture_runs = True
 
-    app_path.mkdir(parents=True, exist_ok=True)
     paths = {
         "index": app_path / "index.html",
         "css": app_path / "workbench.css",
         "js": app_path / "workbench.js",
         "annotations": app_path / "annotations.json",
-        "architecture_runs": app_path / "architecture_runs.json",
+        "architecture_runs": architecture_output,
     }
-    paths["architecture_runs"].write_text(json.dumps(data["architectureRuns"], indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    if write_architecture_runs:
+        paths["architecture_runs"].write_text(
+            json.dumps(data["architectureRuns"], indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
     css_text = load_workbench_asset("workbench.css", css_fallback)
     js_text = load_workbench_asset("workbench.js", js_fallback)
-    asset_version = hashlib.sha256((css_text + js_text).encode("utf-8")).hexdigest()[:12]
+    template = html_template or load_workbench_asset("workbench.html")
+    asset_version = workbench_asset_version(css_text=css_text, js_text=js_text, html_text=template)
     paths["css"].write_text(css_text + "\n", encoding="utf-8")
     paths["js"].write_text(js_text + "\n", encoding="utf-8")
-    html = html_template.format(
+    html = template.format(
         dataset_id=dataset_id,
         frames=data["video"]["frames"],
         asset_version=asset_version,

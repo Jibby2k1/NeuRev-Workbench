@@ -34,6 +34,8 @@ SCHEMA_ALIASES = {
     "latent_classifier_run": "latent_classifier_run.schema.json",
     "llm_architecture_proposal": "llm_architecture_proposal.schema.json",
     "llm_proposal": "llm_architecture_proposal.schema.json",
+    "fish_control_program": "fish_control_program.schema.json",
+    "fish_program": "fish_control_program.schema.json",
     "artifact_record": "artifact_record.schema.json",
     "artifact": "artifact_record.schema.json",
     "annotations": "annotations.schema.json",
@@ -73,6 +75,36 @@ def validate_dict(payload: Mapping[str, Any], schema_name: str) -> None:
     """Validate a JSON-like mapping against a repository schema."""
     schema = load_schema(schema_name)
     jsonschema.Draft202012Validator(schema).validate(dict(payload))
+    if schema_path(schema_name).name == "annotations.schema.json":
+        _validate_annotation_cfar_invariants(payload)
+
+
+def _validate_annotation_cfar_invariants(payload: Mapping[str, Any]) -> None:
+    containers: list[tuple[str, Mapping[str, Any]]] = []
+    for key in ("rois", "virtualRois"):
+        value = payload.get(key)
+        if isinstance(value, Mapping):
+            containers.append((key, value))
+    runs = payload.get("runs")
+    if isinstance(runs, Mapping):
+        for run_id, bucket in runs.items():
+            if isinstance(bucket, Mapping) and isinstance(bucket.get("rois"), Mapping):
+                containers.append((f"runs.{run_id}.rois", bucket["rois"]))
+    for prefix, annotations in containers:
+        for roi_id, annotation in annotations.items():
+            if not isinstance(annotation, Mapping):
+                continue
+            region = annotation.get("cfar_regions")
+            if not isinstance(region, Mapping):
+                continue
+            foreground = {tuple(point) for point in region.get("foreground_points", [])}
+            background = {tuple(point) for point in region.get("background_points", [])}
+            overlap = foreground & background
+            if overlap:
+                point = sorted(overlap)[0]
+                raise jsonschema.ValidationError(
+                    f"{prefix}.{roi_id}.cfar_regions foreground/background points must be mutually exclusive; overlap at {list(point)}"
+                )
 
 
 def validate_json(path: str | Path, schema_name: str) -> dict[str, Any]:

@@ -1,7 +1,7 @@
 # Separable Gamma CFAR And Neuron Review Workbench
 
 A toolkit for scientific calcium/voltage-imaging videos. The repository now has
-two complementary workflows:
+four connected workflow families:
 
 - a Python grid-search pipeline for Gamma/Kalman-MCC filtering, CFAR detection,
   and report generation
@@ -10,6 +10,9 @@ two complementary workflows:
 - a template-aligned grid workflow for zebrafish left/right/neutral activity
   modeling, including 128x128 max-pooled grid states, video-level splits, a
   grid autoencoder, latent GRU prediction, and latent-code classification
+- a stage-gated fish intent and inverse-control program that separates
+  activation measurement, causal intent decoding, action-conditioned system
+  identification, simulation, and deployment safety
 
 ---
 
@@ -53,13 +56,18 @@ top-level modules remain for compatibility and historical workflows; check
 │   ├── algorithms/      # CFAR, motion, template matching, grid extraction
 │   ├── cli/             # `neurobench ...` command groups
 │   ├── data/            # manifests, video loading, QC, synthetic fixtures
+│   ├── dashboards/      # dashboard manifest contracts
 │   ├── discovery/       # candidate ranking, clustering, active learning
 │   ├── dynamics/        # grid/latent dynamics models, sweeps, reports
+│   ├── experiments/     # bounded manifest-driven case studies
 │   ├── exports/         # annotation, behavior, inverse-dynamics exports
 │   ├── integrations/    # Suite2p, PMD, OASIS import adapters
+│   ├── logging/         # atomic run logging
 │   ├── metrics/         # detection, event, comparison, summary metrics
 │   ├── models/          # JSON artifact model helpers
 │   ├── pipelines/       # stage catalog execution and sweeps
+│   ├── programs/        # stage-gated research-program auditing
+│   ├── realtime/        # streaming and latency contracts
 │   ├── reports/         # markdown/JSON report builders
 │   ├── review/          # reviewer agreement and provenance
 │   ├── validation/      # JSON schema validation helpers
@@ -77,6 +85,14 @@ top-level modules remain for compatibility and historical workflows; check
 For current navigation and ownership guidance, start with
 `docs/CODEBASE_NAVIGATION.md`. For dashboard-specific organization, see
 `docs/DASHBOARD_CODE_AUDIT.md`.
+
+For the current activation-to-control research program, start with
+`docs/programs/fish_inverse_control/README.md`. Its read-only machine audit is:
+
+```bash
+.venv-neurobench/bin/python -m neurobench.cli.main program fish-control audit \
+  --manifest examples/fish_control_program.example.json
+```
 
 ---
 
@@ -268,11 +284,15 @@ python3 tools/run_neuron_review_pipeline.py \
   --fiji /path/to/Fiji.app/ImageJ-linux64
 ```
 
-3. Start the multi-dataset autosave server:
+3. Start the selected dataset through the canonical autosave server:
 
 ```bash
-python3 tools/serve_neuron_workbench.py --root-dir Outputs/NeuronReview --port 8765
+.venv-neurobench/bin/python -m neurobench.cli.main workbench serve \
+  --dataset-id calcium_rest_cropped --catalog-root . --port 8765
 ```
+
+The legacy `tools/serve_neuron_workbench.py --root-dir ...` wrapper remains
+available when a multi-app index is specifically required.
 
 4. Open:
 

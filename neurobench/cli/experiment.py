@@ -45,6 +45,22 @@ def add_experiment_subcommands(subparsers) -> None:
     run.add_argument("--config", required=True, help="Soma-excitation JSON manifest.")
     run.set_defaults(func=_run_soma_experiment)
 
+    learnable = workflows.add_parser("learnable-contrast", help="Train and evaluate guarded weakly-supervised contrast kernels.")
+    learnable_actions = learnable.add_subparsers(dest="experiment_action", required=True)
+    lc_preflight = learnable_actions.add_parser("preflight", help="Validate labels, source data, coordinates, and CUDA resources.")
+    lc_preflight.add_argument("--config", required=True)
+    lc_preflight.add_argument("--artifact-dir", type=Path, required=True)
+    lc_preflight.set_defaults(func=_run_learnable_contrast_preflight)
+    lc_diag = learnable_actions.add_parser("diagnostic", help="Run the 2x2x2 spatiotemporal factorial diagnostic.")
+    lc_diag.add_argument("--config", required=True)
+    lc_diag.set_defaults(func=_run_learnable_contrast_diagnostic)
+    lc_direct = learnable_actions.add_parser("direct-tuning", help="Tune a detector initialized from the raw-direct baseline.")
+    lc_direct.add_argument("--config", required=True)
+    lc_direct.set_defaults(func=_run_learnable_direct_tuning)
+    lc_run = learnable_actions.add_parser("run", help="Run the guarded CUDA learnable-contrast experiment.")
+    lc_run.add_argument("--config", required=True)
+    lc_run.set_defaults(func=_run_learnable_contrast_experiment)
+
 
 def _run_soma_preflight(args) -> int:
     _configure_resource_environment_from_manifest(args.config)
@@ -120,3 +136,47 @@ def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
         encoding="utf-8",
     )
     temporary.replace(destination)
+
+
+def _configure_cuda_resource_environment(config_path: str | Path) -> int:
+    """Set bounded CPU library threads without hiding the requested CUDA device."""
+    payload = json.loads(Path(config_path).expanduser().read_text(encoding="utf-8"))
+    resources = payload.get("resources", {})
+    raw = resources.get("cpu_threads", 4)
+    if isinstance(raw, bool) or not isinstance(raw, int) or not 1 <= raw <= 24:
+        raise ValueError("resources.cpu_threads must be an integer between 1 and 24")
+    for name in _THREAD_ENVIRONMENT_VARIABLES:
+        os.environ[name] = str(raw)
+    return raw
+
+
+def _run_learnable_contrast_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.learnable_contrast import Config, preflight
+    payload = preflight(Config.load(args.config), artifact_dir=args.artifact_dir)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_learnable_contrast_experiment(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.learnable_contrast import Config, run
+    payload = run(Config.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_learnable_contrast_diagnostic(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.learnable_contrast.diagnostic import DiagnosticConfig, run
+    payload = run(DiagnosticConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_learnable_direct_tuning(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.learnable_contrast.direct_tuning import DirectTuningConfig, run
+    payload = run(DirectTuningConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0

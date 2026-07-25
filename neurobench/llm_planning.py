@@ -28,12 +28,36 @@ def build_llm_context(
     objective: str = "review_efficiency",
     max_combinations: int = DEFAULT_MAX_COMBINATIONS,
     lab_notes: str = "",
+    catalog_detail: str = "compact",
 ) -> dict[str, Any]:
     """Build a provider-neutral context payload for an external LLM."""
 
-    manifest = as_run_manifest(architecture_runs) if architecture_runs else {"schema_version": 1, "dataset_id": "", "runs": []}
+    manifest, context_warnings = _context_run_manifest(architecture_runs) if architecture_runs else (
+        {"schema_version": 1, "dataset_id": "", "runs": []},
+        [],
+    )
     dataset_id = str((dataset_manifest or {}).get("dataset_id") or manifest.get("dataset_id") or "")
     stage_catalog = catalog_as_dict()
+    if catalog_detail not in {"compact", "full"}:
+        raise ValueError("catalog_detail must be 'compact' or 'full'")
+    if catalog_detail == "compact":
+        keep = {
+            "stage_id",
+            "label",
+            "availability",
+            "type",
+            "input",
+            "output",
+            "required_params",
+            "default_params",
+            "param_ranges",
+            "why_use_it",
+            "real_time_profile",
+        }
+        stage_catalog = {
+            stage_id: {key: value for key, value in stage.items() if key in keep}
+            for stage_id, stage in stage_catalog.items()
+        }
     return {
         "schema_version": 1,
         "kind": "neurobench_llm_architecture_context",
@@ -52,7 +76,9 @@ def build_llm_context(
         ],
         "dataset_manifest": deepcopy(dict(dataset_manifest or {})),
         "stage_catalog": stage_catalog,
+        "stage_catalog_detail": catalog_detail,
         "current_runs": [_run_summary(run) for run in manifest.get("runs", [])],
+        "context_warnings": context_warnings,
         "saved_pipelines": deepcopy(list(manifest.get("saved_pipelines") or [])),
         "optimization_studies": deepcopy(list(manifest.get("optimization_studies") or [])),
         "lab_notes": lab_notes,
@@ -297,7 +323,7 @@ def _proposal_spec(proposal_set: Mapping[str, Any], proposal: Mapping[str, Any],
 def _run_summary(run: Mapping[str, Any]) -> dict[str, Any]:
     summary = dict(run.get("summary") or {})
     execution = dict(run.get("execution") or {})
-    return {
+    result = {
         "run_id": run.get("run_id", ""),
         "label": run.get("label", ""),
         "status": execution.get("status", ""),
@@ -309,3 +335,56 @@ def _run_summary(run: Mapping[str, Any]) -> dict[str, Any]:
             for step in list(run.get("pipeline") or [])
         ],
     }
+    warning = run.get("_context_pipeline_warning")
+    if warning:
+        result["pipeline_validation"] = {"status": "legacy_metadata_warning", "message": str(warning)}
+    return result
+
+
+def _context_run_manifest(data: Mapping[str, Any]) -> tuple[dict[str, Any], list[dict[str, str]]]:
+    """Normalize usable run metadata while retaining legacy summaries.
+
+    Architecture-run schemas intentionally permit historical execution records
+    whose pipeline metadata predates today's stricter stage parameter and order
+    rules.  An LLM handoff must surface those records as evidence without
+    pretending they are executable specifications or failing the whole dataset.
+    Proposal import and execution continue to use strict normalization.
+    """
+
+    if "runs" in data:
+        raw_runs = data.get("runs") or []
+        if not isinstance(raw_runs, Sequence) or isinstance(raw_runs, (str, bytes, bytearray)):
+            raise ValueError("Architecture-run manifest 'runs' must be an array.")
+        dataset_id = data.get("dataset_id", "")
+    elif "run_id" in data:
+        raw_runs = [data]
+        dataset_id = data.get("dataset_id", "")
+    else:
+        raise ValueError("Expected an architecture-run manifest with 'runs' or a single run with 'run_id'.")
+
+    runs: list[dict[str, Any]] = []
+    warnings: list[dict[str, str]] = []
+    for index, run_like in enumerate(raw_runs):
+        if not isinstance(run_like, Mapping):
+            raise ValueError(f"Architecture run at index {index} must be an object.")
+        run = deepcopy(dict(run_like))
+        if "pipeline" in run:
+            try:
+                run["pipeline"] = normalize_pipeline(run.get("pipeline"))
+            except Exception as exc:
+                message = str(exc)
+                run["_context_pipeline_warning"] = message
+                warnings.append(
+                    {
+                        "code": "legacy_pipeline_metadata",
+                        "run_id": str(run.get("run_id") or f"index_{index}"),
+                        "message": message,
+                    }
+                )
+        runs.append(run)
+
+    manifest: dict[str, Any] = {"schema_version": 1, "dataset_id": dataset_id, "runs": runs}
+    for key in ("sweep", "experiments", "saved_pipelines", "optimization_studies", "llm_proposal_sets"):
+        if key in data:
+            manifest[key] = deepcopy(data[key])
+    return manifest, warnings

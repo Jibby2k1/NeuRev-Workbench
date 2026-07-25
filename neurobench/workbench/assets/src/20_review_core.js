@@ -549,6 +549,85 @@ function populateEvidenceSelect(){
   }
 }
 
+function logicalVideoViews(){
+  const width = Math.max(1, Number(data.video?.width) || 1);
+  const height = Math.max(1, Number(data.video?.height) || 1);
+  return (Array.isArray(data.video?.views) ? data.video.views : []).flatMap((view, index) => {
+    const bounds = view?.bounds || {};
+    const x = Math.max(0, Math.min(width - 1, Math.round(Number(bounds.x) || 0)));
+    const y = Math.max(0, Math.min(height - 1, Math.round(Number(bounds.y) || 0)));
+    const viewWidth = Math.max(1, Math.min(width - x, Math.round(Number(bounds.width) || 0)));
+    const viewHeight = Math.max(1, Math.min(height - y, Math.round(Number(bounds.height) || 0)));
+    if(!view?.view_id || !Number(bounds.width) || !Number(bounds.height)) return [];
+    return [{
+      view_id: String(view.view_id),
+      label: String(view.label || view.role || view.view_id || `View ${index + 1}`),
+      role: String(view.role || ''),
+      coordinate_space: String(view.coordinate_space || 'native_full_frame'),
+      bounds: {x, y, width:viewWidth, height:viewHeight}
+    }];
+  });
+}
+
+function activeLogicalVideoView(){
+  const activeId = String(setting('activeVideoViewId') || '');
+  return logicalVideoViews().find(view => view.view_id === activeId) || null;
+}
+
+function populateVideoViewControls(){
+  const control = document.getElementById('videoViewControl');
+  const select = document.getElementById('videoViewSelect');
+  if(!control || !select) return;
+  const views = logicalVideoViews();
+  control.classList.toggle('hidden', views.length === 0);
+  select.innerHTML = '<option value="">Full frame</option>' + views.map(view =>
+    `<option value="${escapeHtml(view.view_id)}">${escapeHtml(view.label)}</option>`
+  ).join('');
+  const activeId = String(setting('activeVideoViewId') || '');
+  if(activeId && !views.some(view => view.view_id === activeId)) annotations.settings.activeVideoViewId = '';
+  select.value = String(setting('activeVideoViewId') || '');
+}
+
+function drawLogicalVideoViewBounds(){
+  const views = logicalVideoViews();
+  if(!views.length) return;
+  const active = activeLogicalVideoView();
+  ctx.save();
+  ctx.font = '10px Arial';
+  for(const view of views){
+    const selected = active?.view_id === view.view_id;
+    const {x, y, width, height} = view.bounds;
+    ctx.strokeStyle = selected ? '#facc15' : 'rgba(255,255,255,0.55)';
+    ctx.fillStyle = selected ? '#facc15' : '#ffffff';
+    ctx.lineWidth = selected ? 2.5 : 1;
+    ctx.setLineDash(selected ? [] : [5, 4]);
+    ctx.strokeRect(x + 0.5, y + 0.5, Math.max(1, width - 1), Math.max(1, height - 1));
+    ctx.fillText(view.label, x + 4, y + 12);
+  }
+  ctx.restore();
+}
+
+function focusLogicalVideoView(){
+  const view = activeLogicalVideoView();
+  if(!view){
+    fitWidth();
+    return;
+  }
+  const availableWidth = Math.max(1, viewerScroll.clientWidth - 40);
+  const availableHeight = Math.max(1, viewerScroll.clientHeight - 40);
+  const zoom = Math.max(0.5, Math.min(5, availableWidth / view.bounds.width, availableHeight / view.bounds.height));
+  setSetting('zoom', zoom);
+  applySettingsToControls();
+  window.requestAnimationFrame(() => {
+    const scale = Math.max(0.01, img.getBoundingClientRect().width / Math.max(1, data.video.width));
+    viewerScroll.scrollTo({
+      left: Math.max(0, viewerWrap.offsetLeft + view.bounds.x * scale - 16),
+      top: Math.max(0, viewerWrap.offsetTop + view.bounds.y * scale - 16),
+      behavior: 'auto'
+    });
+  });
+}
+
 function applyDisplaySettings() {
   const zoom = Math.max(0.05, Number(setting('zoom')) || 1);
   const videoWidth = Math.max(1, Number(data.video?.width) || img.naturalWidth || 1);
@@ -580,13 +659,18 @@ function applyDisplaySettings() {
 }
 
 function reviewSideBySideEnabled(){ return Boolean(setting('reviewSideBySide')); }
+function ensureSingleAnnotationView(){
+  if(!reviewSideBySideEnabled()) return;
+  setSetting('reviewSideBySide', false);
+  applyReviewViewerMode();
+}
 function applyReviewViewerMode(){
   const enabled = reviewSideBySideEnabled();
   reviewRawPane?.classList.toggle('hidden', !enabled);
   reviewViewerLayout?.classList.toggle('sideBySide', enabled);
   const button = document.getElementById('reviewSideBySideBtn');
   if(button) {
-    button.textContent = enabled ? 'Single view' : 'Raw + outline';
+    button.textContent = enabled ? 'Annotated view' : 'Compare raw + overlay';
     button.classList.toggle('active', enabled);
     button.setAttribute('aria-pressed', enabled ? 'true' : 'false');
   }
@@ -607,6 +691,7 @@ function refreshReviewAfterDataChange(){
   selectedEventFrame = selectedId ? eventsForRoi(selectedRoi())?.[0]?.frame || null : null;
   selectedSuggestionId = data.discovery?.suggestions?.[0]?.id || null;
   populateEvidenceSelect();
+  populateVideoViewControls();
   if(!(data.discovery?.evidenceMaps || []).some(m => m.id === setting('evidenceMap'))) annotations.settings.evidenceMap = data.discovery?.evidenceMaps?.[0]?.id || '';
   applySettingsToControls();
   renderParams();
@@ -986,7 +1071,9 @@ function drawOverlay(){
   if(setting('showTemplateOverlay') || setting('showRegisteredProjectionOverlay')) drawTemplateReferenceOverlay();
   if(setting('showGridOverlay') || setting('showGridIntensityOverlay') || setting('showPredictionErrorOverlay')) drawTemplateGridOverlay();
   if(!showRois && !showSuggestions) {
+    if(typeof drawSelectedCfarMasks === "function") drawSelectedCfarMasks();
     drawReviewFocusBox();
+    drawLogicalVideoViewBounds();
     updateOverlayViewButtons();
     return;
   }
@@ -1056,8 +1143,10 @@ function drawOverlay(){
       }
     }
   }
+  if(typeof drawSelectedCfarMasks === "function") drawSelectedCfarMasks();
   drawReviewFocusBox();
   drawManualPreview();
+  drawLogicalVideoViewBounds();
   updateOverlayViewButtons();
 }
 
@@ -1329,12 +1418,14 @@ function circlePoints(cx, cy, radius){
   return points;
 }
 
-function pointInPolygon(x, y, polygon){
+function reviewPointInPolygon(x, y, polygon){
   let inside = false;
   for(let i=0, j=polygon.length - 1; i<polygon.length; j=i++){
     const xi = polygon[i].x, yi = polygon[i].y;
     const xj = polygon[j].x, yj = polygon[j].y;
-    const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / Math.max(1e-6, yj - yi) + xi);
+    // The crossing guard guarantees a non-zero denominator. Preserve its sign:
+    // clockwise and counter-clockwise lassos must select the same pixels.
+    const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
     if(intersect) inside = !inside;
   }
   return inside;
@@ -1348,7 +1439,7 @@ function lassoPoints(path){
   const y0 = Math.max(0, Math.floor(Math.min(...ys)));
   const y1 = Math.min(data.video.height - 1, Math.ceil(Math.max(...ys)));
   const points = [];
-  for(let y=y0;y<=y1;y++) for(let x=x0;x<=x1;x++) if(pointInPolygon(x + 0.5, y + 0.5, path)) points.push([x, y]);
+  for(let y=y0;y<=y1;y++) for(let x=x0;x<=x1;x++) if(reviewPointInPolygon(x + 0.5, y + 0.5, path)) points.push([x, y]);
   return points;
 }
 
@@ -1989,6 +2080,7 @@ function drawCrop(){
       cropCtx.fillRect(x, y, Math.max(1, scale), Math.max(1, scale));
     }
   }
+  if(typeof drawCfarMasksOnCrop === "function") drawCfarMasksOnCrop(cropCtx, roi, b, ox, oy, scale);
   cropCtx.strokeStyle = selectedEventFrame && eventNearFrame(roi, currentFrame) ? '#facc15' : '#ffffff';
   cropCtx.lineWidth = Math.max(2, Number(setting('selectedOutlineWidth')) || 2.5);
   cropCtx.beginPath();
@@ -2008,6 +2100,7 @@ function renderRoiContext(){
     return;
   }
   const events = eventsForRoi(roi);
+  const cfarCounts = typeof cfarMaskCountsForRoi === "function" ? cfarMaskCountsForRoi(roi) : {foreground:0, background:0, frames:[]};
   const diameterPx = 2 * Math.sqrt(roi.area / Math.PI);
   const pixelSize = Number(data.dataset?.pixel_size_microns);
   const diameterUm = Number.isFinite(pixelSize) ? `${(diameterPx * pixelSize).toFixed(1)} um` : 'n/a';
@@ -2043,6 +2136,9 @@ function renderRoiContext(){
       <tr><td>event support</td><td>${fmt(scoreValue(roi, 'eventSupport', null), 3)}</td></tr>
       <tr><td>artifact risk</td><td>${fmt(scoreValue(roi, 'artifactScore', null), 3)}</td></tr>
       <tr><td>events</td><td>${events.length}</td></tr>
+      <tr><td>CFAR foreground</td><td>${cfarCounts.foreground} px</td></tr>
+      <tr><td>CFAR background</td><td>${cfarCounts.background} px</td></tr>
+      <tr><td>CFAR reference frames</td><td>${cfarCounts.frames.length ? cfarCounts.frames.join(", ") : "none"}</td></tr>
       ${stencilHtml}
       ${warningHtml}
     </table>`;
@@ -3020,16 +3116,18 @@ function exportRows(type) {
   const newline = String.fromCharCode(10);
   let rows = [];
   if (type === 'roi') {
-    rows.push('roi_id\troi_kind\tsource_roi_ids\tstate\tcell_state\ttrace_quality\tcontrol_ready\tartifact_class\tidentity_group\tneeds_action\tconfidence\treason_tags\treviewer_id\tupdatedAt\tdeleted\tnotes\tcentroid_x\tcentroid_y\tarea\tpeak_score\tevent_count\tnoise_sigma\tpriority_score\tlocal_correlation_mean\tbackground_correlation\ttrace_snr\tevent_support\tartifact_score');
+    rows.push('roi_id\troi_kind\tsource_roi_ids\tstate\tcell_state\ttrace_quality\tcontrol_ready\tartifact_class\tidentity_group\tneeds_action\tconfidence\treason_tags\treviewer_id\tupdatedAt\tdeleted\tnotes\tcentroid_x\tcentroid_y\tarea\tpeak_score\tevent_count\tnoise_sigma\tpriority_score\tlocal_correlation_mean\tbackground_correlation\ttrace_snr\tevent_support\tartifact_score\tcfar_foreground_px\tcfar_background_px\tcfar_reference_frames');
     for(const roi of data.rois){
       const ann = roiAnn(roi.id);
       const notes = (ann.notes || '').split(String.fromCharCode(9)).join(' ').split(newline).join(' ');
-      rows.push([roi.id, 'source', '', ann.state || '', ann.cell_state || '', ann.trace_quality || '', ann.control_ready || '', ann.artifact_class || '', ann.identity_group || '', ann.needs_action || '', ann.confidence || '', (ann.reason_tags || []).join(','), ann.reviewer_id || '', ann.updatedAt || '', ann.deleted ? 1 : 0, notes, roi.centroidX, roi.centroidY, roi.area, roi.peakScore, eventsForRoi(roi).length, roi.noiseSigma, roi.priorityScore || '', roi.localCorrelationMean || '', roi.backgroundCorrelation || '', roi.traceSnr || '', roi.eventSupport || '', roi.artifactScore || ''].join('\t'));
+      const cfarCounts = typeof cfarMaskCountsForRoi === 'function' ? cfarMaskCountsForRoi(roi) : {foreground:0, background:0, frames:[]};
+      rows.push([roi.id, 'source', '', ann.state || '', ann.cell_state || '', ann.trace_quality || '', ann.control_ready || '', ann.artifact_class || '', ann.identity_group || '', ann.needs_action || '', ann.confidence || '', (ann.reason_tags || []).join(','), ann.reviewer_id || '', ann.updatedAt || '', ann.deleted ? 1 : 0, notes, roi.centroidX, roi.centroidY, roi.area, roi.peakScore, eventsForRoi(roi).length, roi.noiseSigma, roi.priorityScore || '', roi.localCorrelationMean || '', roi.backgroundCorrelation || '', roi.traceSnr || '', roi.eventSupport || '', roi.artifactScore || '', cfarCounts.foreground, cfarCounts.background, cfarCounts.frames.join(',')].join('\t'));
     }
     for(const virtual of Object.values(annotations.virtualRois || {})){
       const ann = Object.assign({}, virtual, roiAnn(virtual.id));
       const notes = (ann.notes || '').split(String.fromCharCode(9)).join(' ').split(newline).join(' ');
-      rows.push([virtual.id, virtual.roi_kind || 'virtual', (virtual.source_roi_ids || []).join(','), ann.state || '', ann.cell_state || '', ann.trace_quality || '', ann.control_ready || '', ann.artifact_class || '', ann.identity_group || '', ann.needs_action || '', ann.confidence || '', (ann.reason_tags || []).join(','), ann.reviewer_id || '', ann.updatedAt || '', ann.deleted ? 1 : 0, notes, virtual.centroidX || '', virtual.centroidY || '', virtual.area || '', '', '', '', '', '', '', '', '', ''].join('\t'));
+      const cfarCounts = typeof cfarMaskCountsForRoi === 'function' ? cfarMaskCountsForRoi(virtual) : {foreground:0, background:0, frames:[]};
+      rows.push([virtual.id, virtual.roi_kind || 'virtual', (virtual.source_roi_ids || []).join(','), ann.state || '', ann.cell_state || '', ann.trace_quality || '', ann.control_ready || '', ann.artifact_class || '', ann.identity_group || '', ann.needs_action || '', ann.confidence || '', (ann.reason_tags || []).join(','), ann.reviewer_id || '', ann.updatedAt || '', ann.deleted ? 1 : 0, notes, virtual.centroidX || '', virtual.centroidY || '', virtual.area || '', '', '', '', '', '', '', '', '', '', cfarCounts.foreground, cfarCounts.background, cfarCounts.frames.join(',')].join('\t'));
     }
   } else if (type === 'event') {
     rows.push('roi_id\tframe\tstate\tevent_state\tevent_type\ttiming_quality\tconfidence\treason_tags\treviewer_id\tupdatedAt\tnotes\tz\tamplitude\troi_state');
@@ -3072,7 +3170,7 @@ function downloadTsv(name, rows){
   URL.revokeObjectURL(a.href);
 }
 
-function cleanTsv(value){
+function reviewCleanTsv(value){
   return String(value ?? '').split(String.fromCharCode(9)).join(' ').split(String.fromCharCode(10)).join(' ');
 }
 
@@ -3082,21 +3180,21 @@ function exportActiveQueue(type){
     rows.push('rank\tqueue\troi_id\tstate\tcell_state\ttrace_quality\tcontrol_ready\tartifact_class\tconfidence\treason_tags\treviewer_id\tupdatedAt\tarea\tevent_count\tpriority_score\ttrace_snr\tartifact_score\tneeds_action');
     visibleRois().forEach((roi, idx) => {
       const ann = roiAnn(roi.id);
-      rows.push([idx + 1, setting('queue') || 'all', roi.id, ann.state || '', ann.cell_state || '', ann.trace_quality || '', ann.control_ready || '', ann.artifact_class || '', ann.confidence || '', (ann.reason_tags || []).join(','), ann.reviewer_id || '', ann.updatedAt || '', roi.area, eventsForRoi(roi).length, roi.priorityScore || '', roi.traceSnr || '', roi.artifactScore || '', ann.needs_action || ''].map(cleanTsv).join('\t'));
+      rows.push([idx + 1, setting('queue') || 'all', roi.id, ann.state || '', ann.cell_state || '', ann.trace_quality || '', ann.control_ready || '', ann.artifact_class || '', ann.confidence || '', (ann.reason_tags || []).join(','), ann.reviewer_id || '', ann.updatedAt || '', roi.area, eventsForRoi(roi).length, roi.priorityScore || '', roi.traceSnr || '', roi.artifactScore || '', ann.needs_action || ''].map(reviewCleanTsv).join('\t'));
     });
     downloadTsv(`${datasetId}_active_roi_queue.tsv`, rows);
   } else if(type === 'event'){
     rows.push('rank\tevent_queue\troi_id\tframe\tstate\tevent_state\tevent_type\ttiming_quality\tconfidence\treason_tags\treviewer_id\tupdatedAt\tz\tamplitude\troi_state');
     eventQueueItems().forEach((item, idx) => {
       const ann = eventAnn(item.roi.id, item.ev.frame);
-      rows.push([idx + 1, setting('eventQueue') || 'all', item.roi.id, item.ev.frame, ann.state || '', ann.event_state || '', ann.event_type || '', ann.timing_quality || '', ann.confidence || '', (ann.reason_tags || []).join(','), ann.reviewer_id || '', ann.updatedAt || '', fmt(item.ev.z, 4), fmt(item.ev.amplitude, 6), roiAnn(item.roi.id).state || ''].map(cleanTsv).join('\t'));
+      rows.push([idx + 1, setting('eventQueue') || 'all', item.roi.id, item.ev.frame, ann.state || '', ann.event_state || '', ann.event_type || '', ann.timing_quality || '', ann.confidence || '', (ann.reason_tags || []).join(','), ann.reviewer_id || '', ann.updatedAt || '', fmt(item.ev.z, 4), fmt(item.ev.amplitude, 6), roiAnn(item.roi.id).state || ''].map(reviewCleanTsv).join('\t'));
     });
     downloadTsv(`${datasetId}_active_event_queue.tsv`, rows);
   } else {
     rows.push('rank\tdiscovery_queue\tsuggestion_id\tstate\tartifact_class\tconfidence\treason_tags\treviewer_id\tupdatedAt\tpromoted\tarea\tdiscovery_score\tpriority_score\tevent_support\tartifact_score\tartifact_cue\tprovenance');
     visibleSuggestions().forEach((s, idx) => {
       const ann = suggestionAnn(s.id);
-      rows.push([idx + 1, setting('discoveryQueue') || 'all', s.id, ann.state || '', ann.artifact_class || ann.artifactClass || '', ann.confidence || '', (ann.reason_tags || []).join(','), ann.reviewer_id || '', ann.updatedAt || '', annotations.promotedRois[s.id] ? 1 : 0, s.area, s.discoveryScore || '', s.priorityScore || '', s.eventSupport || '', s.artifactScore || '', s.artifactCue || '', s.provenance || ''].map(cleanTsv).join('\t'));
+      rows.push([idx + 1, setting('discoveryQueue') || 'all', s.id, ann.state || '', ann.artifact_class || ann.artifactClass || '', ann.confidence || '', (ann.reason_tags || []).join(','), ann.reviewer_id || '', ann.updatedAt || '', annotations.promotedRois[s.id] ? 1 : 0, s.area, s.discoveryScore || '', s.priorityScore || '', s.eventSupport || '', s.artifactScore || '', s.artifactCue || '', s.provenance || ''].map(reviewCleanTsv).join('\t'));
     });
     downloadTsv(`${datasetId}_active_suggestion_queue.tsv`, rows);
   }

@@ -45,6 +45,7 @@ def migrate_annotations_v3(incoming: Mapping[str, Any] | None) -> dict[str, Any]
         item.setdefault("needs_action", "")
         item["reason_tags"] = _normalize_string_list(item.get("reason_tags", item.get("reason_codes", [])))
         item["confidence"] = _normalize_confidence(item.get("confidence", ""))
+        _strip_cfar_edit_history(item)
         migrated["rois"][str(roi_id)] = item
 
     migrated["events"] = {}
@@ -79,7 +80,28 @@ def migrate_annotations_v3(incoming: Mapping[str, Any] | None) -> dict[str, Any]
     migrated["reviewStats"] = dict(src.get("reviewStats", migrated["reviewStats"]))
     migrated["reviewStats"]["actions"] = dict(migrated["reviewStats"].get("actions", {}))
     migrated["settings"] = dict(src.get("settings", {}))
+    # Layout v1 could silently duplicate the same source frame as two panes.
+    # Move old files to the annotation-safe single canvas while preserving an
+    # explicit comparison choice made after this migration.
+    if int(migrated["settings"].get("reviewLayoutVersion", 0) or 0) < 2:
+        migrated["settings"]["reviewSideBySide"] = False
+    migrated["settings"]["reviewLayoutVersion"] = 2
+    for bucket in dict(migrated.get("runs", {})).values():
+        if not isinstance(bucket, Mapping):
+            continue
+        for item in dict(bucket.get("rois", {})).values():
+            if isinstance(item, dict):
+                _strip_cfar_edit_history(item)
     return migrated
+
+
+def _strip_cfar_edit_history(annotation: dict[str, Any]) -> None:
+    regions = annotation.get("cfar_regions")
+    if not isinstance(regions, Mapping):
+        return
+    cleaned = dict(regions)
+    cleaned.pop("edit_history", None)
+    annotation["cfar_regions"] = cleaned
 
 
 def _normalize_string_list(value: Any) -> list[str]:

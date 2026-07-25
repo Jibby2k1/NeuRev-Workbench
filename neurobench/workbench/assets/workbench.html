@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="neurobench-workbench-asset-version" content="{asset_version}">
+<meta name="neurobench-annotation-layout" content="dock-v2">
 <title>Neuron Annotation Workbench - {dataset_id}</title>
 <link rel="stylesheet" href="workbench.css?v={asset_version}">
 </head>
@@ -204,7 +206,10 @@
       <button id="playBtn">Play</button>
       <label class="frameControl">Frame <input id="frameSlider" type="range" min="1" max="{frames}" value="1"></label>
       <b id="frameLabel">1</b>
-      <button id="reviewSideBySideBtn" type="button">Raw + outline</button>
+      <label id="videoViewControl" class="hidden">Focus
+        <select id="videoViewSelect" aria-label="Logical video view"><option value="">Full frame</option></select>
+      </label>
+      <button id="reviewSideBySideBtn" type="button">Compare raw + overlay</button>
       <button id="fitBtn">Fit Width</button>
       <button id="fitHeightBtn">Fit Height</button>
       <button id="fullscreenBtn">Fullscreen</button>
@@ -281,7 +286,7 @@
       </div>
     </details>
     <details class="toolbarDisclosure expertOnly">
-      <summary>Overlay, trace, and manual ROI controls</summary>
+      <summary>Advanced overlay and trace controls</summary>
       <div class="toolbar compactToolGroup">
       <label><input id="showRois" type="checkbox" checked> ROIs</label>
       <label><input id="showLabels" type="checkbox" checked> IDs</label>
@@ -319,6 +324,17 @@
       <label>event z <input id="eventThreshold" type="range" min="1.2" max="5" step="0.1"> <span id="eventThresholdLabel">2.4</span></label>
       <label>Kalman gain <input id="kalmanGain" type="range" min="0.01" max="0.18" step="0.005"> <span id="kalmanGainLabel">0.060</span></label>
       <label>spike gain <input id="spikeGain" type="range" min="0" max="0.05" step="0.002"> <span id="spikeGainLabel">0.008</span></label>
+      </div>
+    </details>
+    <section class="annotationWorkspace" aria-label="Video annotation workspace">
+      <aside class="annotationToolDock" aria-label="Annotation tools">
+        <div class="annotationDockIntro">
+          <h2>Annotation tools</h2>
+          <p>Create or select an ROI, then mark its CFAR foreground and background evidence.</p>
+        </div>
+    <details class="toolbarDisclosure annotationToolPanel" id="roiAnnotationPanel" open>
+      <summary>ROI selection and mask editing</summary>
+      <div class="toolbar compactToolGroup annotationToolGrid">
       <label>Manual ROI
         <select id="manualRoiMode">
           <option value="select">Select</option>
@@ -343,6 +359,46 @@
       <button id="materializeManualTracesBtn" type="button">Materialize Traces</button>
       </div>
     </details>
+    <details class="toolbarDisclosure annotationToolPanel" id="cfarMaskAnnotationPanel" open>
+      <summary>CFAR foreground/background annotation</summary>
+      <div class="toolbar compactToolGroup cfarMaskToolbar annotationToolGrid">
+        <label>Class
+          <select id="cfarMaskTarget">
+            <option value="foreground">Foreground</option>
+            <option value="background">Background</option>
+          </select>
+        </label>
+        <label>Tool
+          <select id="cfarMaskTool">
+            <option value="off">Off / select ROI</option>
+            <option value="brush_add">Brush select</option>
+            <option value="brush_erase">Brush deselect</option>
+            <option value="flood_add">Flood select</option>
+            <option value="flood_erase">Flood deselect</option>
+          </select>
+        </label>
+        <label>Brush <input id="cfarMaskBrushRadius" type="range" min="1" max="24" step="1"> <span id="cfarMaskBrushRadiusLabel">4</span></label>
+        <label>Tolerance <input id="cfarFloodTolerance" type="range" min="0" max="96" step="1"> <span id="cfarFloodToleranceLabel">12</span></label>
+        <label>Flood bound
+          <select id="cfarFloodBound">
+            <option value="roi_box">ROI box + padding</option>
+            <option value="radius">Radius from click</option>
+            <option value="frame">Full frame (capped)</option>
+          </select>
+        </label>
+        <label id="cfarFloodPaddingWrap">Padding <input id="cfarFloodPadding" type="range" min="0" max="64" step="1"> <span id="cfarFloodPaddingLabel">12</span></label>
+        <label id="cfarFloodRadiusWrap" class="hidden">Radius <input id="cfarFloodRadius" type="range" min="4" max="160" step="2"> <span id="cfarFloodRadiusLabel">32</span></label>
+        <label><input id="showCfarMasks" type="checkbox" checked> Show masks</label>
+        <button id="cfarMaskUndoBtn" type="button">Undo CFAR</button>
+        <button id="cfarMaskClearBtn" type="button">Clear Active</button>
+        <button id="cfarMaskDoneBtn" type="button">Finish CFAR</button>
+        <span class="cfarMaskLegend cfarForegroundLegend">Foreground</span>
+        <span class="cfarMaskLegend cfarBackgroundLegend">Background</span>
+        <span id="cfarMaskStatus" class="hint" role="status" aria-live="polite">Select an ROI before annotating CFAR regions.</span>
+      </div>
+    </details>
+      </aside>
+      <div class="annotationViewerColumn">
     <div class="viewerScroll" id="viewerScroll">
       <div class="reviewViewerLayout" id="reviewViewerLayout">
         <figure class="reviewViewerPane reviewRawPane hidden" id="reviewRawPane">
@@ -355,7 +411,7 @@
           <div class="viewerWrap" id="viewerWrap">
             <img id="frameImg" alt="video frame">
             <img id="evidenceImg" alt="evidence map">
-            <canvas id="overlay"></canvas>
+            <canvas id="overlay" tabindex="0" role="application" aria-label="Interactive video annotation canvas"></canvas>
           </div>
           <figcaption>Candidate / event outline</figcaption>
         </figure>
@@ -365,6 +421,8 @@
       <span id="statusText" aria-live="polite"></span>
       <span id="selectionText" aria-live="polite"></span>
     </div>
+      </div>
+    </section>
     <div id="shortcutOverlay" class="shortcutOverlay hidden" role="dialog" aria-modal="true" aria-labelledby="shortcutOverlayTitle">
       <div class="shortcutPanel">
         <div class="runCardHeader">

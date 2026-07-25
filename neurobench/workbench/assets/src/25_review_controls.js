@@ -3,6 +3,14 @@ function initControls(){
   slider.oninput = () => setFrame(Number(slider.value));
   document.getElementById('playBtn').onclick = togglePlay;
   document.getElementById('reviewSideBySideBtn').onclick = toggleReviewSideBySide;
+  const videoViewSelect = document.getElementById('videoViewSelect');
+  if(videoViewSelect) videoViewSelect.onchange = event => {
+    setSetting('activeVideoViewId', event.target.value);
+    ensureSingleAnnotationView();
+    focusLogicalVideoView();
+    drawOverlay();
+    queueSave();
+  };
   document.getElementById('fitBtn').onclick = fitWidth;
   document.getElementById('fitHeightBtn').onclick = fitHeight;
   document.getElementById('fullscreenBtn').onclick = () => viewerScroll.requestFullscreen?.();
@@ -164,6 +172,7 @@ function initControls(){
   if(traceResetZoomBtn) traceResetZoomBtn.onclick = resetTraceZoom;
   document.getElementById('manualRoiMode').onchange = e => {
     setSetting('manualRoiMode', e.target.value);
+    ensureSingleAnnotationView();
     manualRoiState = {drawing:false, start:null, points:[], preview:null, suppressClick:false};
     if(e.target.value !== 'select') setSetting('roiEditMode', 'off');
     applySettingsToControls();
@@ -173,6 +182,7 @@ function initControls(){
   document.getElementById('startManualNeuronBtn').onclick = () => {
     setSetting('manualRoiMode', 'center');
     setSetting('roiEditMode', 'off');
+    ensureSingleAnnotationView();
     applySettingsToControls();
     setSaveState('click a neuron center in the video to add a missed-neuron ROI', 'ok');
   };
@@ -181,6 +191,7 @@ function initControls(){
   document.getElementById('saveManualEventWindowBtn').onclick = addManualEventWindow;
   document.getElementById('roiEditMode').onchange = e => {
     setSetting('roiEditMode', e.target.value);
+    if(e.target.value !== 'off') ensureSingleAnnotationView();
     roiEditState = {drawing:false, editedId:null};
     if(e.target.value !== 'off') setSetting('manualRoiMode', 'select');
     applySettingsToControls();

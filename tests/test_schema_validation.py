@@ -96,6 +96,69 @@ class SchemaValidationTests(unittest.TestCase):
 
             self.assertEqual(validate_json(path, "dataset"), payload)
 
+    def test_review_and_video_manifests_accept_native_logical_views(self):
+        from neurobench.validation.schemas import validate_dict
+
+        view = {
+            "view_id": "left",
+            "label": "Left acquisition view",
+            "bounds": {"x": 0, "y": 0, "width": 6, "height": 10},
+            "coordinate_space": "native_full_frame",
+        }
+        review = {
+            "video": {"width": 12, "height": 10, "frames": 2, "framePattern": "frames/frame_%03d.png", "views": [view]},
+            "parameters": {},
+            "rois": [],
+        }
+        video_manifest = {
+            "schema_version": 1,
+            "dataset_id": "views",
+            "root": "Inputs/views",
+            "label_set": ["left"],
+            "split_policy": "by_video",
+            "videos": [{"video_id": "v1", "fish_id": "f1", "path": "Inputs/views/v1.tif", "label": "left", "views": [view]}],
+        }
+
+        validate_dict(review, "review_data")
+        validate_dict(video_manifest, "video_manifest")
+        self.assertEqual(review["video"]["views"][0]["view_id"], "left")
+        self.assertEqual(video_manifest["videos"][0]["views"][0]["view_id"], "left")
+
+    def test_annotations_validate_cfar_regions_and_reject_overlap_or_history(self):
+        from copy import deepcopy
+        import jsonschema
+
+        from neurobench.validation.schemas import validate_dict
+
+        payload = {
+            "schema_version": 3,
+            "rois": {
+                "1": {
+                    "cfar_regions": {
+                        "schema_version": 1,
+                        "foreground_points": [[2, 3]],
+                        "background_points": [[4, 5]],
+                        "reference_frames": [1, 3],
+                        "provenance": "manual_cfar_feature_annotation",
+                    }
+                }
+            },
+            "events": {},
+            "suggestions": {},
+            "settings": {},
+        }
+        validate_dict(payload, "annotations")
+
+        overlapping = deepcopy(payload)
+        overlapping["rois"]["1"]["cfar_regions"]["background_points"] = [[2, 3]]
+        with self.assertRaisesRegex(jsonschema.ValidationError, "mutually exclusive"):
+            validate_dict(overlapping, "annotations")
+
+        persisted_history = deepcopy(payload)
+        persisted_history["rois"]["1"]["cfar_regions"]["edit_history"] = []
+        with self.assertRaises(jsonschema.ValidationError):
+            validate_dict(persisted_history, "annotations")
+
 
 if __name__ == "__main__":
     unittest.main()

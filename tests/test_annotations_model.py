@@ -14,6 +14,43 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AnnotationModelTests(unittest.TestCase):
+    def test_migration_strips_persisted_cfar_undo_snapshots_but_keeps_masks(self):
+        from neurobench.annotations import migrate_annotations_v3
+
+        region = {
+            "foreground_points": [[2, 3]],
+            "background_points": [[4, 5]],
+            "edit_history": [{"foreground_points": [[1, 1]]}],
+        }
+        migrated = migrate_annotations_v3(
+            {
+                "schema_version": 3,
+                "rois": {"1": {"cfar_regions": region}},
+                "runs": {"run_a": {"rois": {"1": {"cfar_regions": region}}}},
+            }
+        )
+
+        self.assertNotIn("edit_history", migrated["rois"]["1"]["cfar_regions"])
+        self.assertNotIn("edit_history", migrated["runs"]["run_a"]["rois"]["1"]["cfar_regions"])
+        self.assertEqual(migrated["rois"]["1"]["cfar_regions"]["foreground_points"], [[2, 3]])
+    def test_layout_migration_uses_single_canvas_without_changing_labels(self):
+        from neurobench.annotations import migrate_annotations_v3
+
+        migrated = migrate_annotations_v3(
+            {
+                "rois": {"1": {"cell_state": "accepted"}},
+                "settings": {"reviewSideBySide": True, "uiMode": "guided"},
+            }
+        )
+        current = migrate_annotations_v3(
+            {"settings": {"reviewLayoutVersion": 2, "reviewSideBySide": True}}
+        )
+
+        self.assertFalse(migrated["settings"]["reviewSideBySide"])
+        self.assertEqual(migrated["settings"]["reviewLayoutVersion"], 2)
+        self.assertEqual(migrated["rois"]["1"]["cell_state"], "accepted")
+        self.assertTrue(current["settings"]["reviewSideBySide"])
+
     def test_migration_adds_reason_tags_and_confidence_defaults(self):
         from neurobench.annotations import migrate_annotations_v3
 

@@ -1966,7 +1966,7 @@ function experimentDecisionRows(filter=experimentDecisionFilter()){
   });
 }
 
-function cleanTsv(value){
+function experimentCleanTsv(value){
   return String(value ?? '').replace(/\t/g, ' ').replace(/\r?\n/g, ' ').trim();
 }
 
@@ -1983,7 +1983,7 @@ function experimentDecisionMatrixTsv(rows=experimentDecisionRows()){
     row.action,
     changedParametersForRun(row.run).join(', ') || pipelineChangeSummary(row.run),
     experimentNote(row.run.run_id)
-  ].map(cleanTsv).join('\t'));
+  ].map(experimentCleanTsv).join('\t'));
   return [header.join('\t'), ...body].join('\n') + '\n';
 }
 

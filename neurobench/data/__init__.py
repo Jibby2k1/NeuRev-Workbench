@@ -1,6 +1,7 @@
 """Data helpers for Neurobench."""
 
 from neurobench.data.checksums import checksum_file, dataset_input_checksums, input_path_keys, sha256_path
+from neurobench.data.catalog import dataset_record_for_app, discover_dataset_catalog, llm_catalog_context, query_dataset_catalog
 from neurobench.data.intake import PUBLIC_DATASET_TEMPLATES, build_dataset_intake_manifest, dataset_intake_report, intake_checks
 from neurobench.data.qc import compute_dataset_qc_from_manifest, compute_video_qc, render_dataset_qc_markdown
 from neurobench.data.video_manifest import build_video_manifest
@@ -20,13 +21,17 @@ __all__ = [
     "compute_video_qc",
     "dataset_input_checksums",
     "dataset_intake_report",
+    "dataset_record_for_app",
+    "discover_dataset_catalog",
     "generate_synthetic_calcium_dataset",
     "input_path_keys",
     "video_metadata",
     "load_video_array",
     "intake_checks",
+    "llm_catalog_context",
     "open_video",
     "render_dataset_qc_markdown",
+    "query_dataset_catalog",
     "sha256_path",
 ]
 

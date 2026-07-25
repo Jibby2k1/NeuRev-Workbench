@@ -24,17 +24,18 @@ COMMAND_REGISTRARS = (
     ("grid", "neurobench.cli.grid", "add_grid_subcommands"),
     ("dynamics", "neurobench.cli.dynamics", "add_dynamics_subcommands"),
     ("experiment", "neurobench.cli.experiment", "add_experiment_subcommands"),
+    ("program", "neurobench.cli.program", "add_program_subcommands"),
     ("run", "neurobench.cli.run", "add_run_subcommands"),
     ("workbench", "neurobench.cli.workbench", "add_workbench_subcommands"),
     ("llm", "neurobench.cli.llm", "add_llm_subcommands"),
     ("report", "neurobench.cli.report", "add_report_subcommands"),
     ("validate", "neurobench.cli.dataset", "add_validate_subcommands"),
 )
-_SELECTIVE_COMMANDS = {"experiment"}
+_SELECTIVE_COMMANDS = {name for name, _, _ in COMMAND_REGISTRARS}
 
 
 def build_parser(active_command: str | None = None) -> argparse.ArgumentParser:
-    """Build the full CLI, or only one explicitly selected lightweight command."""
+    """Build the full CLI, or only the explicitly selected command group."""
     parser = argparse.ArgumentParser(
         prog="neurobench",
         description="Neurobench command-line tools for neuroimaging discovery, review, and reporting.",

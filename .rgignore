@@ -1,0 +1,20 @@
+# Local data, generated outputs, environments, and caches.
+Inputs/
+Outputs/
+.venv/
+.venv-*/
+.pytest_cache/
+**/__pycache__/
+*.pyc
+
+# Generated sources that obscure the maintained implementation.
+neurobench/workbench/assets/workbench.js
+docs/reports/**/report.html
+docs/API_REFERENCE.md
+
+# Historical plans: retained and directly readable, but not current authority.
+/goal.md
+/plan.md
+/codex_neurobench_plan.md
+/docs/plan.md
+

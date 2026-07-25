@@ -1,5 +1,12 @@
 # Inverse-Control Discussion Brief
 
+> **Current authority:** use
+> [Fish Neural Intent and Inverse-Control Roadmap](research/FISH_INVERSE_CONTROL_ROADMAP.md)
+> for current evidence, activation/intent checkpoints, action-data
+> requirements, and stage gates. This brief remains useful as historical
+> meeting context, but some experiment counts and validation totals below are
+> snapshots.
+
 This brief is designed to be pasted into ChatGPT or used as meeting context when
 designing an inverse-control solution from the Neurobench methods.
 

@@ -53,6 +53,9 @@ ROI_COLUMNS = [
     "notes",
     "reviewer_id",
     "updatedAt",
+    "cfar_foreground_px",
+    "cfar_background_px",
+    "cfar_reference_frames",
 ]
 EVENT_COLUMNS = [
     "roi_id",
@@ -160,6 +163,7 @@ def _roi_rows(review_data: Mapping[str, Any], ann: Mapping[str, Any], profile: s
         rows.append(_roi_row(roi_id, "source", "", item))
     for virtual in (ann.get("virtualRois") or {}).values():
         item = dict(virtual)
+        item.update(dict((ann.get("rois") or {}).get(str(item.get("id", "")), {})))
         state = str(item.get("cell_state") or item.get("state") or "").strip().lower()
         if not _include_state(state, profile):
             continue
@@ -236,6 +240,10 @@ def _split_merge_rows(ann: Mapping[str, Any], profile: str) -> list[dict[str, st
 
 
 def _roi_row(roi_id: str, roi_kind: str, source_roi_ids: str, item: Mapping[str, Any], *, needs_action: str | None = None) -> dict[str, str]:
+    cfar_regions = dict(item.get("cfar_regions") or {})
+    foreground_points = cfar_regions.get("foreground_points") or []
+    background_points = cfar_regions.get("background_points") or []
+    reference_frames = cfar_regions.get("reference_frames") or []
     return {
         "roi_id": _clean(roi_id),
         "roi_kind": _clean(roi_kind),
@@ -251,6 +259,9 @@ def _roi_row(roi_id: str, roi_kind: str, source_roi_ids: str, item: Mapping[str,
         "notes": _clean(item.get("notes", "")),
         "reviewer_id": _clean(item.get("reviewer_id", "")),
         "updatedAt": _clean(item.get("updatedAt", "")),
+        "cfar_foreground_px": _clean(len(foreground_points)),
+        "cfar_background_px": _clean(len(background_points)),
+        "cfar_reference_frames": _clean(",".join(str(frame) for frame in reference_frames)),
     }
 
 

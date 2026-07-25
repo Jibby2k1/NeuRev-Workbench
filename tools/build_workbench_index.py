@@ -4,47 +4,43 @@ from __future__ import annotations
 
 import argparse
 import html
-import json
 from pathlib import Path
 
+from neurobench.data.catalog import discover_dataset_catalog
 
-def load_json(path: Path) -> dict:
-    try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
+def _relative(root: Path, value: str) -> str:
+    path = Path(value)
+    absolute = path if path.is_absolute() else root / path
+    return absolute.resolve().relative_to(root.resolve()).as_posix()
 
 
 def dataset_rows(root: Path) -> list[dict]:
     rows: list[dict] = []
-    for app_index in sorted(root.glob("*/app/index.html")):
-        app_dir = app_index.parent
-        dataset_dir = app_dir.parent
-        review_data = app_dir / "review_data.json"
-        annotations = app_dir / "annotations.json"
-        architecture_runs = app_dir / "architecture_runs.json"
-        data = load_json(review_data)
+    records = discover_dataset_catalog(root, search_roots=[Path(".")], max_depth=5)
+    for record in records:
+        paths = record.get("paths") or {}
+        if not (record.get("capabilities") or {}).get("review_app"):
+            continue
+        app_index = (root / paths["entrypoint"]).resolve()
         app_html = app_index.read_text(encoding="utf-8", errors="ignore") if app_index.exists() else ""
         has_review_subpages = "reviewStencilPage" in app_html and "reviewOverlapPage" in app_html
-        dataset = data.get("dataset", {})
-        video = data.get("video", {})
-        qc = data.get("qc", {})
+        video = record.get("video") or {}
         rows.append(
             {
-                "dataset_id": dataset.get("dataset_id") or dataset_dir.name,
-                "name": video.get("name") or dataset.get("name") or dataset_dir.name,
+                "dataset_id": record.get("dataset_id", ""),
+                "name": record.get("name") or record.get("dataset_id", ""),
                 "frames": video.get("frames", ""),
                 "width": video.get("width", ""),
                 "height": video.get("height", ""),
-                "rois": len(data.get("rois", [])) if data else "",
-                "suggestions": len(data.get("discovery", {}).get("suggestions", [])) if data else "",
-                "median_area": qc.get("roiAreaStats", {}).get("median", ""),
-                "app": app_index.relative_to(root).as_posix(),
-                "review_data": review_data.relative_to(root).as_posix(),
-                "annotations": annotations.relative_to(root).as_posix(),
-                "architecture_runs": architecture_runs.relative_to(root).as_posix(),
-                "review_stencil": app_index.relative_to(root).as_posix() + "#review-stencil" if has_review_subpages else "",
-                "review_overlap": app_index.relative_to(root).as_posix() + "#review-overlap" if has_review_subpages else "",
+                "rois": record.get("roi_count", ""),
+                "suggestions": record.get("suggestion_count", ""),
+                "median_area": record.get("median_roi_area", ""),
+                "app": _relative(root, paths["entrypoint"]),
+                "review_data": _relative(root, paths["review_data"]),
+                "annotations": _relative(root, paths["annotations"]),
+                "architecture_runs": _relative(root, paths["architecture_runs"]),
+                "review_stencil": _relative(root, paths["entrypoint"]) + "#review-stencil" if has_review_subpages else "",
+                "review_overlap": _relative(root, paths["entrypoint"]) + "#review-overlap" if has_review_subpages else "",
             }
         )
     return rows

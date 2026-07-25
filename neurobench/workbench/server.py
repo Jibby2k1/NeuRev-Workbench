@@ -19,9 +19,17 @@ from typing import Any
 from urllib.parse import unquote, urlparse
 
 from neurobench.architecture_runs import as_run_manifest
+from neurobench.data.catalog import (
+    dataset_id_from_review,
+    dataset_record_for_app,
+    discover_dataset_catalog,
+    raw_video_from_review,
+)
+from neurobench.data.intake import build_dataset_intake_manifest
 from neurobench.llm_planning import proposal_set_to_architecture_manifest, validate_proposal_set
 from neurobench.pipeline_catalog import normalize_pipeline
 from neurobench.workbench.materialize import materialize_virtual_roi_traces
+from neurobench.validation.schemas import validate_dict
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -166,6 +174,76 @@ def atomic_write_json(path: Path, payload: dict[str, Any]) -> None:
     os.replace(tmp, path)
 
 
+def validated_architecture_runs_update(path: Path, payload: Any) -> dict[str, Any]:
+    """Validate new runs strictly while retaining unchanged legacy pipelines."""
+
+    if not isinstance(payload, dict):
+        raise ValueError("Architecture-run manifest must be an object.")
+    runs = payload.get("runs")
+    if not isinstance(runs, list):
+        raise ValueError("Architecture-run manifest runs must be an array.")
+
+    # Validate the manifest envelope and its auxiliary collections separately.
+    # Some retained historical runs predate required run-level fields, so a
+    # whole-manifest validation would prevent an unchanged file from being
+    # saved. New or modified rows are still validated strictly below.
+    envelope = dict(payload)
+    envelope["runs"] = []
+    validate_dict(envelope, "architecture_runs")
+    existing_payload = load_json(path) if path.is_file() else {"runs": []}
+    existing_runs = {
+        str(run.get("run_id")): run
+        for run in existing_payload.get("runs", [])
+        if isinstance(run, dict) and run.get("run_id")
+    }
+    dataset_id = str(payload.get("dataset_id") or "")
+    normalized_runs: list[dict[str, Any]] = []
+    seen_run_ids: set[str] = set()
+    for index, run in enumerate(runs):
+        if not isinstance(run, dict):
+            raise ValueError(f"Architecture run at index {index} must be an object.")
+        run_id = str(run.get("run_id") or "")
+        if not run_id:
+            raise ValueError(f"Architecture run at index {index} is missing run_id.")
+        if str(run.get("dataset_id") or "") != dataset_id:
+            raise ValueError(
+                f"Run '{run_id}' dataset_id must match manifest dataset_id '{dataset_id}'."
+            )
+        if run_id in seen_run_ids:
+            raise ValueError(f"Duplicate architecture run_id '{run_id}'.")
+        seen_run_ids.add(run_id)
+        existing = existing_runs.get(run_id)
+        if existing == run:
+            normalized_runs.append(dict(run))
+            continue
+        candidate_manifest = {
+            "schema_version": 1,
+            "dataset_id": dataset_id,
+            "runs": [run],
+        }
+        try:
+            validate_dict(candidate_manifest, "architecture_runs")
+            normalized = as_run_manifest(candidate_manifest)["runs"][0]
+        except Exception as exc:
+            if existing is None or existing.get("pipeline") != run.get("pipeline"):
+                raise ValueError(
+                    f"Run '{run_id or index}' has invalid new or modified pipeline metadata: {exc}"
+                ) from exc
+            # A metadata-only edit may retain an older pipeline that no longer
+            # normalizes, but the edited run must satisfy today's JSON schema.
+            try:
+                validate_dict(candidate_manifest, "architecture_runs")
+            except Exception as schema_exc:
+                raise ValueError(
+                    f"Run '{run_id or index}' has invalid new or modified pipeline metadata: {schema_exc}"
+                ) from schema_exc
+            normalized = dict(run)
+        normalized_runs.append(normalized)
+    result = dict(payload)
+    result["runs"] = normalized_runs
+    return result
+
+
 def resolve_materialization_raw_video(app_dir: Path, payload: dict[str, Any], review_data: dict[str, Any]) -> Path:
     raw_video = payload.get("raw_video")
     if raw_video:
@@ -244,11 +322,16 @@ def environment_report() -> dict[str, Any]:
 
 
 def infer_dataset_id(app_dir: Path, review_data: dict[str, Any] | None = None) -> str:
-    params = (review_data or {}).get("parameters") or {}
-    return str(params.get("datasetId") or app_dir.parent.name)
+    return dataset_id_from_review(review_data or {}, fallback=app_dir.parent.name)
 
 
 def find_raw_video(review_data: dict[str, Any], dataset_id: str) -> Path | None:
+    explicit = raw_video_from_review(review_data)
+    if explicit:
+        declared = Path(explicit).expanduser()
+        declared = declared.resolve() if declared.is_absolute() else (PROJECT_ROOT / declared).resolve()
+        if declared.is_file():
+            return declared
     video_name = review_data.get("video", {}).get("name")
     candidates: list[Path] = []
     if video_name:
@@ -272,20 +355,19 @@ def generated_dataset_manifest(app_dir: Path, payload: dict[str, Any], *, output
         raise RuntimeError("Could not infer raw video path. Add raw_video to the generation request or dataset manifest.")
     if not raw_path.is_absolute():
         raw_path = (PROJECT_ROOT / raw_path).resolve()
-    manifest = {
-        "schema_version": 1,
-        "dataset_id": dataset_id,
-        "name": review_data.get("video", {}).get("name") or raw_path.name,
-        "frame_rate_hz": float(payload.get("frame_rate_hz") or 5.0),
-        "pixel_size_microns": float(payload.get("pixel_size_microns") or 0.5),
-        "paths": {
-            "raw_video": str(raw_path),
-            "app_dir": str(output_app_dir),
-            "review_data": str(output_app_dir / "review_data.json"),
-            "annotations": str(output_app_dir / "annotations.json"),
-            "architecture_runs": str(app_dir / "architecture_runs.json"),
-        },
-    }
+    dataset = review_data.get("dataset") if isinstance(review_data.get("dataset"), dict) else {}
+    video = review_data.get("video") if isinstance(review_data.get("video"), dict) else {}
+    manifest = build_dataset_intake_manifest(
+        dataset_id=dataset_id,
+        raw_video=str(raw_path),
+        app_dir=output_app_dir,
+        frame_rate_hz=float(payload.get("frame_rate_hz") or dataset.get("frame_rate_hz") or video.get("frameRateHz") or 5.0),
+        pixel_size_microns=float(payload.get("pixel_size_microns") or dataset.get("pixel_size_microns") or 0.5),
+        name=video.get("name") or raw_path.name,
+        modality=str(dataset.get("modality") or "light_sheet_calcium"),
+        indicator=str(dataset.get("indicator") or "GCaMP"),
+    )
+    manifest["paths"]["architecture_runs"] = str(app_dir / "architecture_runs.json")
     out = output_app_dir / "dataset_manifest.generated.json"
     atomic_write_json(out, manifest)
     return out
@@ -506,9 +588,6 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
         self.send_response(status)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(body)))
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Neurobench-Owner-Token")
         self.end_headers()
         if include_body:
             self.wfile.write(body)
@@ -603,6 +682,24 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
         if tail == ["environment"]:
             self._send_json(200, environment_report(), include_body=include_body)
             return True
+        if tail == ["dataset"]:
+            self._send_json(
+                200,
+                dataset_record_for_app(app_dir, workspace_root=PROJECT_ROOT),
+                include_body=include_body,
+            )
+            return True
+        if tail == ["datasets"]:
+            self._send_json(
+                200,
+                {
+                    "schema_version": 1,
+                    "kind": "neurobench_dataset_catalog",
+                    "datasets": discover_dataset_catalog(PROJECT_ROOT),
+                },
+                include_body=include_body,
+            )
+            return True
         if tail == ["jobs"]:
             self._send_json(200, {"jobs": JOBS.list()}, include_body=include_body)
             return True
@@ -690,7 +787,7 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
             return
         if out.name == "architecture_runs.json":
             try:
-                parsed_json = as_run_manifest(parsed_json)
+                parsed_json = validated_architecture_runs_update(out, parsed_json)
             except Exception as exc:
                 self._send(400, f"Invalid architecture run manifest: {exc}\n".encode(), "text/plain")
                 return

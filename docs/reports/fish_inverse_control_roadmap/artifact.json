@@ -1,0 +1,272 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Fish Neural Intent and Inverse-Control Roadmap",
+    "description": "Evidence-backed technical roadmap from robust neural activation measurement through left/right intent decoding and action-conditioned inverse control.",
+    "generatedAt": "2026-07-21T14:56:59Z",
+    "cards": [],
+    "charts": [
+      {
+        "id": "activation_recall",
+        "title": "Learned contrast has not matched the raw-direct recall checkpoint",
+        "subtitle": "Unweighted mean held-out recall over four sparse-positive burst windows; precision is not estimable from these labels.",
+        "type": "bar",
+        "dataset": "activation_recall",
+        "sourceId": "activation_evidence",
+        "encodings": {
+          "x": {
+            "field": "method",
+            "type": "nominal",
+            "label": "Detector checkpoint"
+          },
+          "y": {
+            "field": "mean_recall",
+            "type": "quantitative",
+            "label": "Mean held-out recall",
+            "format": "percent"
+          },
+          "tooltip": [
+            {
+              "field": "method",
+              "type": "nominal",
+              "label": "Method"
+            },
+            {
+              "field": "mean_recall",
+              "type": "quantitative",
+              "label": "Recall",
+              "format": "percent"
+            },
+            {
+              "field": "detector_family",
+              "type": "nominal",
+              "label": "Family"
+            }
+          ]
+        },
+        "yAxisTitle": "Mean held-out recall",
+        "valueFormat": "percent",
+        "layout": "full"
+      }
+    ],
+    "tables": [
+      {
+        "id": "intent_checkpoint",
+        "title": "Current intent-decoding checkpoint",
+        "subtitle": "Eleven-video leave-one-video-out latent-head smoke test; values are diagnostic, not a validated decoder.",
+        "dataset": "intent_evidence",
+        "sourceId": "intent_evidence",
+        "defaultSort": {
+          "field": "accuracy",
+          "direction": "desc"
+        },
+        "columns": [
+          {
+            "field": "method",
+            "label": "Method",
+            "type": "text"
+          },
+          {
+            "field": "accuracy",
+            "label": "Accuracy",
+            "format": "percent"
+          },
+          {
+            "field": "balanced_accuracy",
+            "label": "Balanced accuracy",
+            "format": "percent"
+          },
+          {
+            "field": "macro_f1",
+            "label": "Macro F1",
+            "format": "percent"
+          }
+        ],
+        "layout": "full"
+      }
+    ],
+    "sources": [
+      {
+        "id": "activation_evidence",
+        "label": "Reviewed activation detector evidence",
+        "path": "activation_evidence.sql"
+      },
+      {
+        "id": "intent_evidence",
+        "label": "Reviewed latent intent-head evidence",
+        "path": "intent_evidence.sql"
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# Fish Neural Intent and Inverse-Control Roadmap"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "body": "## Technical summary\n\nThe program should stop treating activation detection as the final objective. Detection is the measurement layer for a staged causal program: **reliable neuron identity and events → causal pre-movement intent decoding → action-conditioned system identification → constrained control**.\n\nThe learnable-CFAR work is not a clean rejection of learnable detection. The labels are sparse positives, the loss and full-field threshold/NMS decision are mismatched, and the learned contrast statistic can discard absolute-amplitude information retained by the raw-direct baseline. The immediate priority is an exhaustive spatial-temporal benchmark that can measure precision honestly, followed by matched spatial, temporal, and spatial-temporal intent ablations. Inverse control must wait for synchronized, safely exploratory stimulation data with measured actions."
+      },
+      {
+        "id": "key_findings",
+        "type": "markdown",
+        "body": "## Key findings\n\n- The v3 direct-tuned detector reduced training loss and moved its parameters, but its held-out recall tied the frozen raw-direct baseline rather than exceeding it.\n- Existing burst annotations support recall-style comparisons, but unmatched detections cannot be called false positives because annotation coverage is non-exhaustive.\n- The current latent intent head is indistinguishable from the majority baseline at this scale; it is a smoke test, not evidence against neural intent information.\n- The passive grid-dynamics work demonstrates predictive structure, including stronger active-cell and high-change subsets, but has no stimulation action in the transition and therefore cannot identify an inverse policy.\n- Left/right spatial coding requires coordinate-shuffle and registration-perturbation controls; temporal coding requires causal pre-onset windows and time-shift controls."
+      },
+      {
+        "id": "activation_chart",
+        "type": "chart",
+        "chartId": "activation_recall",
+        "layout": "full"
+      },
+      {
+        "id": "activation_interpretation",
+        "type": "markdown",
+        "body": "## What the detector result means\n\nThe chart is an unweighted summary over four held-out burst windows. V1 learned contrast reached 13.3% recall and the best v2 learned contrast checkpoint reached 20.5%, compared with 60.6% for frozen raw-direct. V3 direct tuning also reached 60.6%. This supports preserving raw amplitude in the candidate score and redesigning the learning objective around the deployed decision, not simply adding epochs or changing initialization.\n\nIt does **not** establish precision, because the benchmark contains 79 burst rows across 27 unique ROIs and does not exhaustively label every neuron-time opportunity. The next benchmark must encode annotation coverage explicitly."
+      },
+      {
+        "id": "scope",
+        "type": "markdown",
+        "body": "## Scope and estimands\n\nThe work contains six distinct estimands that should have separate datasets and metrics:\n\n1. persistent neuron localization and identity;\n2. trace extraction conditional on an ROI;\n3. activation/event inference conditional on a trace;\n4. left/right/neutral intent before movement onset;\n5. next neural/behavioral state conditional on current state and stimulation action;\n6. a constrained policy that selects an action for a desired outcome.\n\nSuccess at an upstream estimand is necessary but not sufficient downstream. In particular, passive intent prediction is not a causal stimulation model."
+      },
+      {
+        "id": "methodology",
+        "type": "markdown",
+        "body": "## Detection methodology\n\nBuild exhaustive spatial-temporal tiles containing all neurons and all candidate opportunities, including random background, motion, vessel, edge, low-SNR, and detector-disagreement strata. Label coverage as exhaustive, candidate-review, or sparse-positive. Report object-level PR and FROC curves, event precision/recall and timing, calibration, duplicate/split/merge errors, and group-bootstrap confidence intervals.\n\nCompare frozen raw-direct, existing CFAR, hybrid amplitude-plus-local-contrast scoring, differentiable soft-CFAR, and a small learned proposal/refinement model. Freeze registration, splits, metrics, and the test set. Fit thresholds on validation groups only."
+      },
+      {
+        "id": "intent_table",
+        "type": "table",
+        "tableId": "intent_checkpoint",
+        "layout": "full"
+      },
+      {
+        "id": "intent_design",
+        "type": "markdown",
+        "body": "## Intent experiment design\n\nCreate frame-synchronized movement-onset trials and predict left, right, or neutral using windows that end before a behavior-uncertainty guard. Run matched representations on identical group splits: behavior-only; population amount; aggregated registered spatial map; coordinate-free temporal traces/events; neuron-by-time spatial-temporal input; and the joint input plus pre-movement behavior state.\n\nClaim spatial information only when it adds beyond behavior and population amount, persists across groups, and collapses under coordinate shuffling or registration perturbation. Claim temporal information only when it adds beyond aggregation, collapses under time shifts, and remains pre-onset. Report balanced accuracy, macro F1, per-class precision/recall, calibration, lead-time curves, and fish/session-bootstrap intervals."
+      },
+      {
+        "id": "control_design",
+        "type": "markdown",
+        "body": "## Action-conditioned control design\n\nEach system-identification row must contain current neural/behavioral state, requested and measured stimulation action, target, amplitude, duration, hardware timestamps, latency, recent action history, next state/outcome, and quality flags. Missing action logs must remain distinct from an observed no-stimulation action.\n\nBegin with safe randomized stimulation coverage, descriptive action-response tables, and regularized state-action models. Advance to a probabilistic transition model only after support and calibration checks. The first policy should be constrained model-predictive control in simulation, with stimulation cost, action limits, uncertainty-based abstention, and no-action/fixed/randomized baselines. Then use live shadow mode before conservative closed loop."
+      },
+      {
+        "id": "stage_gates",
+        "type": "markdown",
+        "body": "## Stage gates and checkpoints\n\n- **Gate 0 — data and synchronization:** identifiers, behavior labels, neural mapping, action logs, latency, and quality fields pass audit.\n- **Gate 1 — activation measurement:** recall and precision targets pass on exhaustive held-out tiles.\n- **Gate 2 — intent:** a causal pre-onset model beats behavior and population baselines with leakage controls passed.\n- **Gate 3 — system identification:** action support is adequate and held-out effects are calibrated.\n- **Gate 4 — simulated control:** constrained MPC beats no-action, fixed, and randomized baselines.\n- **Gate 5 — deployment:** shadow-mode latency, drift, abstention, interlocks, and safety criteria pass.\n\nExploratory downstream work must carry an explicit insufficient-evidence warning."
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "body": "## Limitations and robustness\n\nThe activation comparison uses four sparse-positive held-out windows and cannot estimate false-positive rates. The intent smoke test contains only 11 video-level folds, with limited independence and no sufficiently powered fish-level generalization claim. Current grid-model improvements are forecasting metrics, not intent or control metrics. Behavior and stimulation alignment are not populated by default, and no action-conditioned causal effect is presently established.\n\nAll future claims should use held-out fish where feasible, otherwise held-out sessions; report seed distributions and group-bootstrap uncertainty; freeze test sets; and include motion, registration, detector-version, coordinate-shuffle, time-shift, and label-permutation sensitivity analyses."
+      },
+      {
+        "id": "tooling",
+        "type": "markdown",
+        "body": "## Tool development priorities\n\nReuse the existing detection/event metrics, behavior alignment, inverse-dynamics export, manual ROI correction, latency monitoring, and resumable dynamics runner. Add four small packages: an activation benchmark builder with coverage semantics; an intent dataset/ablation runner with leakage controls; an action-transition and system-identification package; and a constrained simulator/MPC package. A read-only stage-gate report should link machine-readable evidence and return pass, fail, or insufficient evidence without inferring readiness from file existence.\n\nKeep artifacts manifest-driven and atomic, preserve failure evidence, log denominators and provenance, and run one bounded GPU job at a time with memory headroom and latency percentiles."
+      },
+      {
+        "id": "next_steps",
+        "type": "markdown",
+        "body": "## Recommended next steps\n\n1. Build and freeze an exhaustive activation benchmark so precision is measurable.\n2. Run the detector ladder with hard negatives and validation-selected thresholds; preserve raw amplitude in the learnable design.\n3. Export aligned pre-movement trials and run the matched intent ablations with leakage controls.\n4. Audit acquisition files against the proposed stimulation-action schema and repair synchronization gaps.\n5. Collect safe, exploratory action-conditioned transitions before fitting an inverse model.\n6. Implement constrained MPC in simulation and require a stage-gate review before any command-capable deployment."
+      },
+      {
+        "id": "questions",
+        "type": "markdown",
+        "body": "## Further questions\n\n- What is the minimum biologically meaningful lead time before movement onset?\n- Can neuron identities be registered across fish, or should spatial models be fish-specific with anatomical normalization?\n- Which stimulation variables are commanded versus measured by hardware?\n- What action envelope and adverse-outcome definitions are approved for system identification?\n- How many independent fish and sessions are available for a truly held-out intent test?\n- Should the controller optimize binary direction, turn magnitude, latency, or a multi-objective outcome?"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-07-21T14:56:59Z",
+    "status": "ready",
+    "datasets": {
+      "activation_recall": [
+        {
+          "method": "v1 contrast",
+          "mean_recall": 0.132763975,
+          "detector_family": "learned contrast"
+        },
+        {
+          "method": "v2 contrast",
+          "mean_recall": 0.205141477,
+          "detector_family": "learned contrast"
+        },
+        {
+          "method": "raw direct",
+          "mean_recall": 0.605615942,
+          "detector_family": "raw direct"
+        },
+        {
+          "method": "v3 tuned",
+          "mean_recall": 0.605615942,
+          "detector_family": "learnable direct"
+        }
+      ],
+      "intent_evidence": [
+        {
+          "method": "Balanced chance",
+          "accuracy": 0.3333,
+          "balanced_accuracy": null,
+          "macro_f1": null,
+          "scope": "reference"
+        },
+        {
+          "method": "Majority class",
+          "accuracy": 0.3636,
+          "balanced_accuracy": null,
+          "macro_f1": null,
+          "scope": "reference"
+        },
+        {
+          "method": "Ridge latent head",
+          "accuracy": 0.3636,
+          "balanced_accuracy": 0.3611,
+          "macro_f1": 0.3545,
+          "scope": "11-video LOOV smoke test"
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "activation_evidence",
+      "label": "Reviewed activation detector evidence",
+      "path": "activation_evidence.sql",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "description": "Reviewed detector means transcribed from the versioned learnable-contrast artifacts. Rates are fractions and labels are sparse positives.",
+        "executed_at": "2026-07-21T14:56:59Z",
+        "sql": "SELECT * FROM (VALUES ('v1 contrast', 0.132763975, 'learned contrast'), ('v2 contrast', 0.205141477, 'learned contrast'), ('raw direct', 0.605615942, 'raw direct'), ('v3 tuned', 0.605615942, 'learnable direct')) AS evidence(method, mean_recall, detector_family)",
+        "tables_used": [
+          "reviewed_activation_artifacts"
+        ]
+      }
+    },
+    {
+      "id": "intent_evidence",
+      "label": "Reviewed latent intent-head evidence",
+      "path": "intent_evidence.sql",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "description": "Reviewed values transcribed from the 11-video leave-one-video-out latent-head smoke-test report.",
+        "executed_at": "2026-07-21T14:56:59Z",
+        "sql": "SELECT * FROM (VALUES ('Balanced chance', 0.3333, NULL, NULL, 'reference'), ('Majority class', 0.3636, NULL, NULL, 'reference'), ('Ridge latent head', 0.3636, 0.3611, 0.3545, '11-video LOOV smoke test')) AS evidence(method, accuracy, balanced_accuracy, macro_f1, scope)",
+        "tables_used": [
+          "reviewed_latent_intent_artifact"
+        ]
+      }
+    }
+  ],
+  "package_info": {
+    "root": "docs/reports/fish_inverse_control_roadmap",
+    "manifestPath": "artifact.json",
+    "snapshotPath": "artifact.json"
+  }
+}
+

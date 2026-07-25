@@ -9,3 +9,6 @@ __pycache__/
 *.pyc
 .venv/
 .venv-*/
+
+# Local agent diagnostics (not source artifacts)
+.codex/diagnostics/

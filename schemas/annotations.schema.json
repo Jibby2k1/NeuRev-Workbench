@@ -1,5 +1,45 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "pixelPoint": {
+      "type": "array",
+      "prefixItems": [
+        {"type": "integer", "minimum": 0},
+        {"type": "integer", "minimum": 0}
+      ],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "cfarRegion": {
+      "type": "object",
+      "required": ["schema_version", "foreground_points", "background_points", "reference_frames", "provenance"],
+      "properties": {
+        "schema_version": {"type": "integer", "const": 1},
+        "foreground_points": {"type": "array", "items": {"$ref": "#/$defs/pixelPoint"}, "uniqueItems": true},
+        "background_points": {"type": "array", "items": {"$ref": "#/$defs/pixelPoint"}, "uniqueItems": true},
+        "reference_frames": {"type": "array", "items": {"type": "integer", "minimum": 1}, "uniqueItems": true},
+        "provenance": {"type": "string", "minLength": 1},
+        "updatedAt": {"type": "string"},
+        "last_edit": {"type": "object"},
+        "edit_history": false
+      },
+      "additionalProperties": true
+    },
+    "runBucket": {
+      "type": "object",
+      "properties": {
+        "rois": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {"cfar_regions": {"$ref": "#/$defs/cfarRegion"}},
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
   "title": "Neurobench Annotations",
   "type": "object",
   "required": ["schema_version", "rois", "events", "suggestions", "settings"],
@@ -23,7 +63,8 @@
           "reviewer_id": {"type": "string"},
           "updatedAt": {"type": "string"},
           "deleted": {"type": "boolean"},
-          "notes": {"type": "string"}
+          "notes": {"type": "string"},
+          "cfar_regions": {"$ref": "#/$defs/cfarRegion"}
         },
         "additionalProperties": true
       }
@@ -55,7 +96,8 @@
           "confidence": {"type": "string", "enum": ["", "low", "medium", "high"]},
           "reviewer_id": {"type": "string"},
           "updatedAt": {"type": "string"},
-          "notes": {"type": "string"}
+          "notes": {"type": "string"},
+          "cfar_regions": {"$ref": "#/$defs/cfarRegion"}
         },
         "additionalProperties": true
       }
@@ -116,6 +158,7 @@
       },
       "additionalProperties": true
     },
+    "runs": {"type": "object", "additionalProperties": {"$ref": "#/$defs/runBucket"}},
     "settings": {"type": "object"}
   },
   "additionalProperties": true
