@@ -12,6 +12,10 @@ import json
 import os
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
+
+from neurobench.capabilities import capability_states
+from neurobench.data.imports import read_import_record
 
 
 CATALOG_SCHEMA_VERSION = 1
@@ -96,6 +100,7 @@ def discover_dataset_catalog(
     video_manifests: list[tuple[Path, dict[str, Any]]] = []
     dashboard_manifests: list[tuple[Path, dict[str, Any]]] = []
     review_payloads: list[tuple[Path, dict[str, Any]]] = []
+    import_payloads: list[tuple[Path, dict[str, Any]]] = []
     for path in sorted(set(files)):
         payload = _load_json_object(path)
         if payload is None:
@@ -108,6 +113,18 @@ def discover_dataset_catalog(
             dashboard_manifests.append((path, payload))
         elif path.name == "review_data.json" and path.parent.name == "app":
             review_payloads.append((path, payload))
+    import_root = workspace / "Outputs" / "NeuronReview"
+    if import_root.is_dir():
+        for path in sorted(import_root.glob("*/app/imports/*.json")):
+            app_dir = path.parent.parent
+            payload = _read_valid_import_record(
+                path,
+                app_dir=app_dir,
+                workspace=workspace,
+                dataset_id=_dataset_identity_for_app(app_dir),
+            )
+            if payload is not None:
+                import_payloads.append((path, payload))
 
     records: dict[str, dict[str, Any]] = {}
     for path, payload in dataset_manifests:
@@ -128,6 +145,10 @@ def discover_dataset_catalog(
         dataset_id = str(payload["dataset_id"])
         record = records.setdefault(dataset_id, _empty_record(dataset_id))
         _merge_dashboard_manifest(record, path, payload, workspace)
+    for path, payload in import_payloads:
+        dataset_id = str(payload["dataset_id"])
+        record = records.setdefault(dataset_id, _empty_record(dataset_id))
+        _merge_import_record(record, path, payload, workspace)
 
     output = [_finalize_record(record, workspace) for record in records.values()]
     return sorted(output, key=lambda item: (str(item.get("name") or "").lower(), str(item["dataset_id"])))
@@ -182,7 +203,19 @@ def dataset_record_for_app(app_dir: str | Path, *, workspace_root: str | Path | 
     workspace = Path(workspace_root).expanduser().resolve() if workspace_root else _infer_workspace_root(app)
     review_path = app / "review_data.json"
     review = _load_json_object(review_path) or {}
-    dataset_id = dataset_id_from_review(review, fallback=app.parent.name)
+    dataset_id = _dataset_identity_for_app(app, review=review)
+    import_payloads: list[tuple[Path, dict[str, Any]]] = []
+    import_directory = app / "imports"
+    if import_directory.is_dir():
+        for path in sorted(import_directory.glob("*.json")):
+            payload = _read_valid_import_record(
+                path,
+                app_dir=app,
+                workspace=workspace,
+                dataset_id=dataset_id,
+            )
+            if payload is not None:
+                import_payloads.append((path, payload))
     record = _empty_record(dataset_id)
     for candidate in (app / "dataset_manifest.generated.json", app.parent / "dataset_manifest.json"):
         payload = _load_json_object(candidate)
@@ -194,6 +227,9 @@ def dataset_record_for_app(app_dir: str | Path, *, workspace_root: str | Path | 
     dashboard = _load_json_object(dashboard_path)
     if dashboard and str(dashboard.get("dataset_id") or dataset_id) == dataset_id:
         _merge_dashboard_manifest(record, dashboard_path, dashboard, workspace)
+    for path, payload in import_payloads:
+        if str(payload.get("dataset_id") or "") == dataset_id:
+            _merge_import_record(record, path, payload, workspace)
     return _finalize_record(record, workspace)
 
 
@@ -238,6 +274,8 @@ def _empty_record(dataset_id: str) -> dict[str, Any]:
         "schema_version": CATALOG_SCHEMA_VERSION,
         "dataset_id": dataset_id,
         "name": dataset_id,
+        "modality": None,
+        "indicator": None,
         "video": {},
         "paths": {},
         "manifests": {},
@@ -249,8 +287,8 @@ def _empty_record(dataset_id: str) -> dict[str, Any]:
 
 def _merge_dataset_manifest(record: dict[str, Any], path: Path, payload: Mapping[str, Any], workspace: Path) -> None:
     record["name"] = str(payload.get("name") or record.get("name") or record["dataset_id"])
-    record["modality"] = payload.get("modality", record.get("modality", ""))
-    record["indicator"] = payload.get("indicator", record.get("indicator", ""))
+    record["modality"] = payload.get("modality", record.get("modality"))
+    record["indicator"] = payload.get("indicator", record.get("indicator"))
     record["pixel_size_microns"] = payload.get("pixel_size_microns", record.get("pixel_size_microns"))
     video = record.setdefault("video", {})
     if payload.get("frame_rate_hz") is not None:
@@ -349,6 +387,67 @@ def _merge_dashboard_manifest(record: dict[str, Any], path: Path, payload: Mappi
         record["paths"]["raw_video"] = _display_path(resolved, workspace)
 
 
+def _read_valid_import_record(
+    path: Path,
+    *,
+    app_dir: Path,
+    workspace: Path,
+    dataset_id: str,
+) -> dict[str, Any] | None:
+    """Read one catalog sidecar, omitting any invalid or misbound record."""
+
+    try:
+        return read_import_record(
+            path,
+            expected_dataset_id=dataset_id,
+            expected_app_dir=app_dir,
+            workspace_root=workspace,
+        )
+    except (OSError, ValueError):
+        return None
+
+
+def _dataset_identity_for_app(
+    app_dir: Path,
+    *,
+    review: Mapping[str, Any] | None = None,
+) -> str:
+    """Resolve the same durable dataset identity for every catalog read path."""
+
+    review_payload = review if review is not None else _load_json_object(app_dir / "review_data.json")
+    declared = dataset_id_from_review(review_payload or {})
+    if declared:
+        return declared
+    for candidate in (
+        app_dir / "dataset_manifest.generated.json",
+        app_dir.parent / "dataset_manifest.json",
+    ):
+        payload = _load_json_object(candidate)
+        if payload and payload.get("dataset_id"):
+            return str(payload["dataset_id"])
+    return app_dir.parent.name
+
+
+def _merge_import_record(record: dict[str, Any], path: Path, payload: Mapping[str, Any], workspace: Path) -> None:
+    app_dir = path.parent.parent.resolve()
+    record.setdefault("paths", {}).setdefault("app_dir", _display_path(app_dir, workspace))
+    metadata = payload.get("metadata") if isinstance(payload.get("metadata"), Mapping) else {}
+    if metadata.get("kind") == "video":
+        observed = record.setdefault("observed_import_video", {})
+        for key in ("frames", "height", "width", "dtype", "format", "size_bytes", "frame_rate_hz", "pixel_size_microns"):
+            if metadata.get(key) is not None:
+                observed[key] = metadata[key]
+        observed["import_id"] = payload.get("import_id")
+        observed["source_role"] = payload.get("source_role")
+        observed["is_primary_video"] = bool(payload.get("is_primary_video"))
+        video = record.setdefault("video", {})
+        for key in ("frames", "height", "width", "frame_rate_hz"):
+            if metadata.get(key) is not None and video.get(key) is None:
+                video[key] = metadata[key]
+    if record.get("name") == record.get("dataset_id") and payload.get("original_name"):
+        record["name"] = str(payload["original_name"])
+
+
 def _finalize_record(record: dict[str, Any], workspace: Path) -> dict[str, Any]:
     paths = record.setdefault("paths", {})
     app_dir = _absolute_from_display(paths.get("app_dir"), workspace)
@@ -374,20 +473,127 @@ def _finalize_record(record: dict[str, Any], workspace: Path) -> dict[str, Any]:
         or any(bool(item.get("views")) for item in record.get("videos", []) if isinstance(item, Mapping)),
         "video_collection": bool(record.get("videos")),
     }
+    record["capability_states"] = capability_states(record)
+    import_directory = app_dir / "imports" if app_dir is not None else None
+    import_records = []
+    if import_directory is not None and import_directory.is_dir():
+        for import_path in sorted(import_directory.glob("*.json")):
+            payload = _read_valid_import_record(
+                import_path,
+                app_dir=app_dir,
+                workspace=workspace,
+                dataset_id=str(record.get("dataset_id") or ""),
+            )
+            if payload is not None:
+                import_records.append(payload)
+    import_records = sorted(
+        import_records,
+        key=lambda item: (
+            str(item.get("updated_at") or ""),
+            str(item.get("created_at") or ""),
+            str(item.get("import_id") or ""),
+        ),
+    )
+    if import_records:
+        latest = import_records[-1]
+        record["imports"] = [{
+            "import_id": item.get("import_id"),
+            "kind": (item.get("metadata") or {}).get("kind"),
+            "payload_kind": (item.get("metadata") or {}).get("payload_kind"),
+            "declared_dataset_id": (item.get("metadata") or {}).get("declared_dataset_id"),
+            "counts": dict((item.get("metadata") or {}).get("counts") or {}),
+            "has_qc": bool(item.get("qc") or (item.get("generated_artifacts") or {}).get("qc")),
+            "is_primary_video": bool(item.get("is_primary_video")),
+            "source_role": item.get("source_role"),
+            "source_available": _import_source_available(item, workspace),
+            "generated_artifacts": dict(item.get("generated_artifacts") or {}),
+            "state": item.get("state"),
+            "source_mode": item.get("source_mode"),
+            "original_name": item.get("original_name"),
+            "warnings": list(item.get("warnings") or []),
+        } for item in import_records]
+        record["latest_import"] = {
+            "state": latest.get("state"),
+            "import_id": latest.get("import_id"),
+            "updated_at": latest.get("updated_at"),
+        }
+        neurev_imports = [item for item in record["imports"] if item.get("kind") == "neurev_json"]
+        record["external_neurev"] = {
+            "count": len(neurev_imports),
+            "confirmed_count": sum(1 for item in neurev_imports if item.get("state") == "complete"),
+            "payload_kinds": sorted({str(item.get("payload_kind")) for item in neurev_imports if item.get("payload_kind")}),
+        }
     record["exists"] = {
         "raw_video": bool(raw_video and raw_video.is_file()),
         "review_data": bool(review_data and review_data.is_file()),
         "app_dir": bool(app_dir and app_dir.is_dir()),
         "raw_videos": bool(video_paths) and all(path is not None and path.is_file() for path in video_paths),
+        "import_sources": bool(import_records) and all(_import_source_available(item, workspace) for item in import_records),
     }
     review_ready = bool(record["exists"]["review_data"] and record["capabilities"]["review_app"])
     video_ready = bool(record["exists"]["raw_video"] or record["exists"]["raw_videos"])
     record["readiness"] = {
         "review_ready": review_ready,
         "video_ready": video_ready,
+        "scientific_results_ready": False,
+    }
+    architecture_runs = _absolute_from_display(paths.get("architecture_runs"), workspace)
+    scientific_results_ready = _scientific_results_ready(architecture_runs, workspace, record)
+    record["readiness"]["scientific_results_ready"] = scientific_results_ready
+    record["capabilities"]["scientific_results"] = scientific_results_ready
+    record["capability_states"] = capability_states(record)
+    record["lifecycle"] = {
+        "state": "ready" if review_ready else "import_only" if (video_ready or import_records) else "unavailable",
+        "latest_import_id": (record.get("latest_import") or {}).get("import_id"),
+        "latest_import_state": (record.get("latest_import") or {}).get("state"),
+    }
+    encoded_dataset_id = quote(str(record.get("dataset_id") or ""), safe="")
+    api_base = f"/api/datasets/{encoded_dataset_id}"
+    record["links"] = {
+        "app": f"/_datasets/{encoded_dataset_id}/",
+        "annotate": f"/_datasets/{encoded_dataset_id}/#annotate",
+        "api_base": api_base,
+        "imports": f"{api_base}/imports",
+        "import_action_template": f"{api_base}/imports/{{import_id}}/{{action}}",
+        "labels": f"{api_base}/labels",
+        "neurev": f"{api_base}/neurev",
     }
     record["ready"] = review_ready or video_ready
     return record
+
+
+def _scientific_results_ready(path: Path | None, workspace: Path, record: Mapping[str, Any]) -> bool:
+    if path is None or not path.is_file():
+        return False
+    payload = _load_json_object(path)
+    if payload is None:
+        return False
+    evidence_count = int(record.get("roi_count") or 0) + int(record.get("suggestion_count") or 0)
+    for run in payload.get("runs") or []:
+        if not isinstance(run, Mapping) or (run.get("execution") or {}).get("status") != "completed":
+            continue
+        summary = run.get("summary") if isinstance(run.get("summary"), Mapping) else {}
+        summarized = sum(int(summary.get(key) or 0) for key in ("roi_count", "event_count", "suggestion_count"))
+        if summarized > 0 and evidence_count > 0:
+            return True
+        artifacts = run.get("artifacts") if isinstance(run.get("artifacts"), Mapping) else {}
+        for key in ("metrics", "metrics_report", "roi_summary_tsv", "discovery_suggestions_tsv"):
+            value = artifacts.get(key)
+            if value and _resolve_declared_path(value, declaration=path, workspace=workspace).is_file():
+                return True
+    return False
+
+
+def _import_source_available(record: Mapping[str, Any], workspace: Path) -> bool:
+    raw = record.get("destination_path") or record.get("source_path")
+    if not raw:
+        return False
+    candidate = Path(str(raw)).expanduser()
+    if not candidate.is_absolute():
+        candidate = workspace / candidate
+    candidate = candidate.resolve()
+    allowed = ((workspace / "Inputs").resolve(), (workspace / "Outputs").resolve())
+    return any(root in candidate.parents for root in allowed) and candidate.is_file()
 
 
 def _load_json_object(path: Path) -> dict[str, Any] | None:

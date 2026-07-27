@@ -4,6 +4,40 @@ import unittest
 
 
 class WorkbenchStructureTests(unittest.TestCase):
+    def test_first_release_product_shell_has_task_first_routes_and_states(self):
+        from pathlib import Path
+
+        html = Path("neurobench/workbench/assets/workbench.html").read_text(encoding="utf-8")
+        js = Path("neurobench/workbench/assets/workbench.js").read_text(encoding="utf-8")
+        self.assertIn("Datasets", html)
+        self.assertIn("Annotate", html)
+        self.assertIn("Results", html)
+        self.assertIn("Research Tools", html)
+        self.assertIn("annotationTaskShell", html)
+        self.assertIn("annotationTask", js)
+        self.assertIn("Neuron", js)
+        self.assertIn("Not neuron", js)
+        self.assertIn("Unsure", js)
+        self.assertIn("api/datasets/", js)
+        self.assertIn("imports/register", js)
+        self.assertIn("imports/upload", js)
+        self.assertIn("datasetImportActionUrl", js)
+        self.assertIn("replace('{import_id}'", js)
+        self.assertIn("Run bounded QC", js)
+        self.assertIn("Use as primary video", js)
+        self.assertIn("Prepare manual annotation", js)
+        self.assertIn("Preview and map labels", js)
+        self.assertIn("datasetMetadataForm", js)
+        self.assertIn("waitForDatasetJob", js)
+        self.assertIn("capability_states", js)
+        self.assertIn("lifecycle", js)
+        self.assertIn("Research Tools", js)
+        self.assertIn("#datasets", js)
+        self.assertIn("normalQueueChoices", js)
+        self.assertIn("Save + Next", js)
+        self.assertIn("No event", js)
+        self.assertIn("Foreground/background masks are stored separately", js)
+
     def test_template_contains_accessible_roi_context_and_pipeline_builder(self):
         from tools import build_neuron_workbench_v2 as builder
 
@@ -228,10 +262,12 @@ class WorkbenchStructureTests(unittest.TestCase):
         self.assertIn("convertOptunaPlanToSweepSeeds", js)
         self.assertIn("Convert To Sweep Seeds", js)
         self.assertIn("experimentBaseSelect", js)
-        self.assertIn("hash === 'experiments'", js)
-        self.assertIn("location.hash || '#home'", js)
+        self.assertIn("['experiments','experiment-lab'].includes(hash)", js)
+        self.assertIn("location.hash || '#datasets'", js)
+        self.assertIn("resetRouteState", js)
+        self.assertIn("normal-annotation-mode", js)
         self.assertIn("appRoot.classList.remove('booting')", js)
-        self.assertIn("window.scrollTo({top: 0, left: 0, behavior: 'auto'})", js)
+        self.assertIn("window.scrollTo({top:0, left:0, behavior:'auto'})", js)
         self.assertIn("renderSharedPageChrome", js)
         self.assertIn("frameLabelText", js)
         self.assertIn("scheduleRenderAll", js)

@@ -43,6 +43,7 @@ const OVERLAY_PRESETS = {
     selectedFillOpacity: 0.10,
     selectedOutlineWidth: 2.5,
     overlayOpacity: 0.38,
+    showRois: true,
     showLabels: true,
     showEvents: true,
     showSuggestions: true,
@@ -54,6 +55,7 @@ const OVERLAY_PRESETS = {
     selectedFillOpacity: 0.32,
     selectedOutlineWidth: 2.0,
     overlayOpacity: 0.72,
+    showRois: true,
     showLabels: true,
     showEvents: true,
     showSuggestions: true,
@@ -65,6 +67,7 @@ const OVERLAY_PRESETS = {
     selectedFillOpacity: 0.14,
     selectedOutlineWidth: 2.5,
     overlayOpacity: 0.28,
+    showRois: true,
     showLabels: false,
     showEvents: true,
     showSuggestions: true,
@@ -195,6 +198,21 @@ const REVIEW_WORKFLOW_PRESETS = {
     uiMode: 'guided'
   }
 };
+
+const LEGACY_WORKFLOW_ANNOTATION_TASK = Object.freeze({
+  fast_triage: 'neuron_validation',
+  validate_neurons: 'neuron_validation',
+  event_validation: 'event_validation',
+  missed_neuron_search: 'missed_neuron_search',
+  find_missed_neurons: 'missed_neuron_search',
+  artifact_cleanup: 'artifact_resolution',
+  clean_artifacts: 'artifact_resolution',
+  mask_editing: 'signal_background'
+});
+
+function annotationTaskForWorkflowPreset(name){
+  return LEGACY_WORKFLOW_ANNOTATION_TASK[String(name || '')] || '';
+}
 
 let currentFrame = 1;
 let selectedId = data.rois.length ? data.rois[0].id : null;
@@ -327,12 +345,16 @@ function defaultAnnotations() {
       cfarFloodRadius: 32,
       showCfarMasks: true,
       reviewWorkflowPreset: 'custom',
+      annotationTask: 'neuron_validation',
+      researchToolsEnabled: false,
       activeSnapshotId: '',
       parameterSnapshots: [],
       queue: 'unlabeled',
       eventQueue: 'all',
       discoveryQueue: 'all',
       evidenceMap: data.discovery?.evidenceMaps?.[0]?.id || '',
+      showRois: true,
+      showEvents: true,
       showEvidence: false,
       showSuggestions: false,
       showStencilOverlay: false,
@@ -394,6 +416,10 @@ function mergeAnnotations(incoming) {
   annotations.reviewStats = Object.assign(defaultAnnotations().reviewStats, incoming?.reviewStats || {});
   annotations.reviewStats.actions = Object.assign({}, incoming?.reviewStats?.actions || {});
   annotations.settings = Object.assign(defaultAnnotations().settings, incoming?.settings || {});
+  const allowedTasks = new Set(['neuron_validation','missed_neuron_search','event_validation','artifact_resolution','exhaustive_tile','signal_background']);
+  const incomingTask = String(incoming?.settings?.annotationTask || '');
+  annotations.settings.annotationTask = allowedTasks.has(incomingTask) ? incomingTask : (annotationTaskForWorkflowPreset(incoming?.settings?.reviewWorkflowPreset) || 'neuron_validation');
+  annotations.settings.researchToolsEnabled = Boolean(incoming?.settings?.researchToolsEnabled);
   if(Number(incoming?.settings?.reviewLayoutVersion || 0) < 2) {
     annotations.settings.reviewSideBySide = false;
   }
@@ -401,14 +427,14 @@ function mergeAnnotations(incoming) {
 }
 
 function migrateRunBucket(bucket) {
-  const out = {
+  const out = Object.assign({}, bucket || {}, {
     rois: {},
     events: {},
     suggestions: {},
     promotedRois: Object.assign({}, bucket?.promotedRois || {}),
     virtualRois: Object.assign({}, bucket?.virtualRois || {}),
     splitMergeDecisions: {}
-  };
+  });
   for(const [id, ann] of Object.entries(bucket?.rois || {})) out.rois[id] = migrateRoiAnn(ann);
   for(const [id, ann] of Object.entries(bucket?.events || {})) out.events[id] = migrateEventAnn(ann);
   for(const [id, ann] of Object.entries(bucket?.suggestions || {})) out.suggestions[id] = migrateSuggestionAnn(ann);
@@ -545,7 +571,9 @@ function runAnnotationSnapshot(){
 }
 function captureActiveRunAnnotations(){
   annotations.runs = annotations.runs || {};
-  annotations.runs[activeRunId()] = migrateRunBucket(runAnnotationSnapshot());
+  const runId = activeRunId();
+  const previous = annotations.runs[runId] || {};
+  annotations.runs[runId] = migrateRunBucket(Object.assign({}, previous, runAnnotationSnapshot()));
 }
 function materializeRunAnnotations(runId){
   annotations.runs = annotations.runs || {};
@@ -771,7 +799,7 @@ function saveAnnotationsNow() {
   }
   fetch('annotations.json', {
     method: 'PUT',
-    headers: {'Content-Type': 'application/json'},
+    headers: generationHeaders(),
     body: payload
   }).then(res => {
     const text = res.ok
@@ -1249,6 +1277,7 @@ async function loadGenerationEnvironment(){
     generationEnvironment = null;
   }
   renderRunSyncControls();
+  if(typeof updateOwnerAuthControls === 'function') updateOwnerAuthControls();
   return generationEnvironment;
 }
 function backendReadiness(){

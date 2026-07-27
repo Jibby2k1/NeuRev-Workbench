@@ -1,3 +1,61 @@
+function reviewShortcutRouteActive(hashText=location.hash){
+  const hash = String(hashText || '').replace(/^#\/?/, '');
+  return hash === 'annotate' || hash === 'review';
+}
+
+function reviewShortcutTargetIsEditable(target){
+  const tag = String(target?.tagName || '').toUpperCase();
+  if(['INPUT','TEXTAREA','SELECT','BUTTON'].includes(tag) || target?.isContentEditable) return true;
+  return Boolean(target?.closest?.('input, textarea, select, button, [contenteditable="true"]'));
+}
+
+function handleReviewShortcutKeydown(e){
+  if(e.key === 'Escape') {
+    toggleShortcutHelp(false);
+    return;
+  }
+  if(!reviewShortcutRouteActive() || reviewShortcutTargetIsEditable(e.target)) return;
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+    e.preventDefault();
+    undoLastAnnotationChange();
+    return;
+  }
+  if(e.key === '?'){ e.preventDefault(); toggleShortcutHelp(); }
+  else if(e.code === 'Space'){ e.preventDefault(); togglePlay(); }
+  else if(e.key === 'ArrowRight') setFrame(currentFrame + 1);
+  else if(e.key === 'ArrowLeft') setFrame(currentFrame - 1);
+  else if(e.key === 'j') nextRoi(1);
+  else if(e.key === 'k') nextRoi(-1);
+  else if(e.key === 'N') nextEventQueue(1);
+  else if(e.key === 'P') nextEventQueue(-1);
+  else if(e.key === 'n') nextEvent(1);
+  else if(e.key === 'p') nextEvent(-1);
+  else if(e.key === '.') nextSuggestion(1);
+  else if(e.key === ',') nextSuggestion(-1);
+  else if(e.key === '0') resetTraceZoom();
+  else if(e.key === 'v') nextActiveFrame(1);
+  else if(e.key === 'V') nextActiveFrame(-1);
+  else if(e.key === 'a') setRoiState('accept');
+  else if(e.key === 'r') setRoiState('reject');
+  else if(e.key === 'u') setRoiState('unsure');
+  else if(e.key === 'e') setEventState('accept');
+  else if(e.key === 'x') setEventState('reject');
+  else if(e.key === 'f') viewerScroll.requestFullscreen?.();
+  else if(e.key === 'M') setSuggestionStateAndNext('missed');
+  else if(e.key === 'G') promoteSuggestionAndNext();
+  else if(e.key === 'm') setSuggestionState('missed');
+  else if(e.key === 'g') promoteSuggestion();
+  else if(e.key === ']') {
+    const tasks = guidedTasks();
+    setSetting('guidedTaskIndex', Math.min(Math.max(0, tasks.length - 1), Number(setting('guidedTaskIndex') || 0) + 1));
+    selectGuidedTask();
+  }
+  else if(e.key === '[') {
+    setSetting('guidedTaskIndex', Math.max(0, Number(setting('guidedTaskIndex') || 0) - 1));
+    selectGuidedTask();
+  }
+}
+
 function initControls(){
   slider.max = data.video.frames;
   slider.oninput = () => setFrame(Number(slider.value));
@@ -29,13 +87,7 @@ function initControls(){
   document.getElementById('previewRunViewBtn').onclick = () => startGenerationJob({preview:true});
   document.getElementById('generateRunViewBtn').onclick = () => startGenerationJob({preview:false});
   document.getElementById('unlockGenerationBtn').onclick = () => {
-    const token = prompt('Owner token for local generation jobs');
-    if(token !== null) {
-      generationOwnerToken = token.trim();
-      if(generationOwnerToken) localStorage.setItem(ownerTokenKey, generationOwnerToken);
-      else localStorage.removeItem(ownerTokenKey);
-      renderRunSyncControls();
-    }
+    if(typeof promptForOwnerToken === 'function') promptForOwnerToken();
   };
   document.getElementById('refreshRunBtn').onclick = refreshArchitectureRuns;
   const showAllSweeps = document.getElementById('showAllSweeps');
@@ -138,7 +190,10 @@ function initControls(){
   document.getElementById('bookmarkAddBtn').onclick = addReviewBookmark;
   document.getElementById('bookmarkGoBtn').onclick = goToReviewBookmark;
   document.getElementById('bookmarkDeleteBtn').onclick = deleteReviewBookmark;
-  for(const id of ['showRois','showEvents']) document.getElementById(id).onchange = drawOverlay;
+  for(const id of ['showRois','showEvents']) document.getElementById(id).onchange = e => {
+    setSetting(id, Boolean(e.target.checked));
+    drawOverlay();
+  };
   document.getElementById('showLabels').onchange = e => { setSetting('roiLabelMode', e.target.checked ? 'all' : 'off'); applySettingsToControls(); drawOverlay(); };
   document.getElementById('roiLabelMode')?.addEventListener('change', e => { setSetting('roiLabelMode', normalizeRoiLabelMode(e.target.value)); applySettingsToControls(); drawOverlay(); });
   document.getElementById('showSuggestions').onchange = e => { setSetting('showSuggestions', e.target.checked); drawOverlay(); };
@@ -171,37 +226,23 @@ function initControls(){
   const traceResetZoomBtn = document.getElementById('traceResetZoomBtn');
   if(traceResetZoomBtn) traceResetZoomBtn.onclick = resetTraceZoom;
   document.getElementById('manualRoiMode').onchange = e => {
-    setSetting('manualRoiMode', e.target.value);
-    ensureSingleAnnotationView();
-    manualRoiState = {drawing:false, start:null, points:[], preview:null, suppressClick:false};
-    if(e.target.value !== 'select') setSetting('roiEditMode', 'off');
-    applySettingsToControls();
-    drawOverlay();
+    activateAnnotationTool(e.target.value === 'select' ? 'roi-select' : `roi-${e.target.value}`);
   };
   document.getElementById('manualRoiCancelBtn').onclick = cancelManualRoi;
   document.getElementById('startManualNeuronBtn').onclick = () => {
-    setSetting('manualRoiMode', 'center');
-    setSetting('roiEditMode', 'off');
-    ensureSingleAnnotationView();
-    applySettingsToControls();
+    activateAnnotationTool('roi-center');
     setSaveState('click a neuron center in the video to add a missed-neuron ROI', 'ok');
   };
   document.getElementById('markEventStartBtn').onclick = () => setManualEventWindowFrame('start');
   document.getElementById('markEventEndBtn').onclick = () => setManualEventWindowFrame('end');
   document.getElementById('saveManualEventWindowBtn').onclick = addManualEventWindow;
   document.getElementById('roiEditMode').onchange = e => {
-    setSetting('roiEditMode', e.target.value);
-    if(e.target.value !== 'off') ensureSingleAnnotationView();
-    roiEditState = {drawing:false, editedId:null};
-    if(e.target.value !== 'off') setSetting('manualRoiMode', 'select');
-    applySettingsToControls();
-    drawOverlay();
+    if(e.target.value === 'brush_add') activateAnnotationTool('roi-add');
+    else if(e.target.value === 'brush_erase') activateAnnotationTool('roi-erase');
+    else setAnnotationToolModes({manualRoiMode:'select', roiEditMode:'off', cfarMaskTool:'off'});
   };
   document.getElementById('roiEditDoneBtn').onclick = () => {
-    setSetting('roiEditMode', 'off');
-    roiEditState = {drawing:false, editedId:null};
-    applySettingsToControls();
-    drawOverlay();
+    setAnnotationToolModes({manualRoiMode:'select', roiEditMode:'off', cfarMaskTool:'off'});
   };
   document.getElementById('roiEditUndoBtn').onclick = undoRoiEdit;
   document.getElementById('roiEditRevertBtn').onclick = revertEditedRoiToSource;
@@ -520,49 +561,7 @@ function initControls(){
     if(bestType === 'suggestion') selectSuggestion(best.id);
     else if(best) selectRoi(best.id, e.shiftKey || e.ctrlKey || e.metaKey);
   };
-  document.addEventListener('keydown', e => {
-    if(e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
-    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
-      e.preventDefault();
-      undoLastAnnotationChange();
-      return;
-    }
-    if(e.key === 'Escape') toggleShortcutHelp(false);
-    else if(e.key === '?'){ e.preventDefault(); toggleShortcutHelp(); }
-    else if(e.code === 'Space'){ e.preventDefault(); togglePlay(); }
-    else if(e.key === 'ArrowRight') setFrame(currentFrame + 1);
-    else if(e.key === 'ArrowLeft') setFrame(currentFrame - 1);
-    else if(e.key === 'j') nextRoi(1);
-    else if(e.key === 'k') nextRoi(-1);
-    else if(e.key === 'N') nextEventQueue(1);
-    else if(e.key === 'P') nextEventQueue(-1);
-    else if(e.key === 'n') nextEvent(1);
-    else if(e.key === 'p') nextEvent(-1);
-    else if(e.key === '.') nextSuggestion(1);
-    else if(e.key === ',') nextSuggestion(-1);
-    else if(e.key === '0') resetTraceZoom();
-    else if(e.key === 'v') nextActiveFrame(1);
-    else if(e.key === 'V') nextActiveFrame(-1);
-    else if(e.key === 'a') setRoiState('accept');
-    else if(e.key === 'r') setRoiState('reject');
-    else if(e.key === 'u') setRoiState('unsure');
-    else if(e.key === 'e') setEventState('accept');
-    else if(e.key === 'x') setEventState('reject');
-    else if(e.key === 'f') viewerScroll.requestFullscreen?.();
-    else if(e.key === 'M') setSuggestionStateAndNext('missed');
-    else if(e.key === 'G') promoteSuggestionAndNext();
-    else if(e.key === 'm') setSuggestionState('missed');
-    else if(e.key === 'g') promoteSuggestion();
-    else if(e.key === ']') {
-      const tasks = guidedTasks();
-      setSetting('guidedTaskIndex', Math.min(Math.max(0, tasks.length - 1), Number(setting('guidedTaskIndex') || 0) + 1));
-      selectGuidedTask();
-    }
-    else if(e.key === '[') {
-      setSetting('guidedTaskIndex', Math.max(0, Number(setting('guidedTaskIndex') || 0) - 1));
-      selectGuidedTask();
-    }
-  });
+  document.addEventListener('keydown', handleReviewShortcutKeydown);
   img.onload = () => { resizeOverlay(); drawCrop(); };
   window.onresize = resizeOverlay;
   window.addEventListener('hashchange', routePage);
@@ -697,7 +696,7 @@ async function persistArchitectureRuns(manifest, successText, fallbackName='arch
   data.architectureRuns = manifest;
   if(serverBacked){
     try {
-      const res = await fetch('architecture_runs.json', {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(manifest, null, 2)});
+      const res = await fetch('architecture_runs.json', {method:'PUT', headers:generationHeaders(), body:JSON.stringify(manifest, null, 2)});
       if(!res.ok) throw new Error(await res.text());
       setSaveState(successText, 'ok');
       return true;

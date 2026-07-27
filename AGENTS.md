@@ -49,6 +49,7 @@ Read the matching workflow before changing or running an experiment:
 
 - `docs/workflows/spon_ca_burst_soma_excitation.md`
 - `docs/workflows/spon_ca_burst_learnable_contrast.md`
+- `docs/workflows/spon_ca_burst_frame_derivatives.md`
 
 First guarded CUDA run: `Outputs/LearnableContrast/spon_ca_burst_v1_cuda_guarded`.
 Its gate is `do_not_advance`; direct residual is the held-out recall baseline to beat.
@@ -61,8 +62,15 @@ scored `0.0`; the gate stopped masked/final stages by design.
 Learnable raw-direct v3: `Outputs/LearnableContrast/spon_ca_burst_learnable_direct_tuning_v3`.
 All 36 screen fits completed. Every cumulative variant and learning rate tied
 frozen direct at `0.6056` mean held-out recall and won `0/4` bursts, so the
-conditional confirmation/masked/final stages did not run. The next justified
-test is full-field quiet hard-negative mining, not a wider blind parameter sweep.
+conditional confirmation/masked/final stages did not run.
+
+Morphology-aware CFAR v4-v6 is documented in
+`docs/workflows/spon_ca_burst_multihypothesis_cfar.md`. The v6 top-two bounded
+gate reached `0.3294` mean cross-fitted recall (27/79 known matches, 53
+candidates), versus nested fixed selection `0.3158` (26/79, 59 candidates).
+Its `+0.0135` gain missed the predeclared `+0.02` C2 gate, so bounded-kernel C3
+did not run. The next justified step is morphology/neighborhood annotation and
+exhaustive review of a fixed candidate panel, not another blind sweep.
 
 UI frames are one-based and inclusive; NumPy intervals are zero-based and
 half-open. Coordinates use `x=column`, `y=row`. Every new label-driven run must

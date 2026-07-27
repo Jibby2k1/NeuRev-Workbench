@@ -14,6 +14,14 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AnnotationModelTests(unittest.TestCase):
+    def test_migration_locks_annotation_task_without_enabling_research_tools(self):
+        from neurobench.annotations import migrate_annotations_v3
+
+        migrated = migrate_annotations_v3({"settings": {"reviewWorkflowPreset": "mask_editing", "uiMode": "expert"}})
+
+        self.assertEqual(migrated["settings"]["annotationTask"], "signal_background")
+        self.assertFalse(migrated["settings"]["researchToolsEnabled"])
+        self.assertEqual(migrated["ui_migration"]["source_review_workflow_preset"], "mask_editing")
     def test_migration_strips_persisted_cfar_undo_snapshots_but_keeps_masks(self):
         from neurobench.annotations import migrate_annotations_v3
 

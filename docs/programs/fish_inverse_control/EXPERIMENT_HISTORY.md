@@ -181,6 +181,39 @@ coordinates, while deployment calibrates full-field quiet NMS peaks.
 Evidence:
 `Outputs/LearnableContrast/spon_ca_burst_learnable_direct_tuning_v3/validation_report.md`.
 
+### Morphology-aware multi-hypothesis CFAR v4-v6, July 26
+
+- V4 screened 24 fixed experts: two morphologies, three radii, two reference
+  estimators, and two temporal pools. The strongest diagnostic expert was the
+  radius-8 crowded-center/coherence branch at `0.340839` mean recall (28/79).
+- Fusion of all experts was harmful: log-mean-exp reached `0.155538` and max
+  fusion `0.034679`. Membrane branches averaged `0.0038`, but morphology types
+  are not annotated, so this is not evidence that membrane events are absent.
+- Leakage-safe expert selection on three bursts and evaluation on the fourth
+  reached `0.315839` (26/79): 3/15, 4/20, 9/21, and 10/23.
+- V5 exposed diffuse initialization: its best expert received only 14-17% gate
+  mass and the learned result fell to `0.214182` (18/79).
+- V6 used a top-two, temperature-0.02 prior and a 10%-bounded contextual
+  residual. It reached `0.329374` (27/79) with 53 candidates, versus 59 for
+  nested fixed selection. The mean gain was `0.013535`, below the predeclared
+  `0.02` C2 gate, and one burst regressed, so kernel-residual training did not
+  run.
+- Peak CUDA allocation was 337 MiB and peak RSS approximately 1.64 GiB, well
+  below the 9,216 MiB GPU and 16,384 MiB RAM caps.
+
+This establishes that scale, robust spatial reference, and causal temporal
+coherence can more than double guarded CFAR known-center recall, and that
+selective initialization matters. It does not beat Raw Direct (`0.605616`),
+identify ordinary precision, or validate membrane/crowding subtypes. The next
+high-information step is morphology/neighborhood annotation and exhaustive
+review of a fixed candidate panel, not additional blind optimization.
+
+Evidence:
+`Outputs/LearnableContrast/spon_ca_burst_multihypothesis_cfar_v4/results.json`,
+`Outputs/LearnableContrast/spon_ca_burst_multihypothesis_cfar_v5_selective_gate/results.json`,
+and
+`Outputs/LearnableContrast/spon_ca_burst_multihypothesis_cfar_v6_sharp_gate/results.json`.
+
 ### Behavior/action readiness
 
 Behavior alignment and inverse-dynamics export support timestamps, residuals,
@@ -206,4 +239,3 @@ This establishes tooling scaffolding only.
   change interpretation.
 - **Stage conflation:** forecasting, detection, intent, causality, and control
   are different estimands.
-

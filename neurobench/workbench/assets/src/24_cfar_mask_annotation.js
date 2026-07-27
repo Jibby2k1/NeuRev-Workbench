@@ -446,15 +446,12 @@ function initCfarMaskAnnotation(){
   if(required.some(id => !document.getElementById(id))) return;
   document.getElementById('cfarMaskTarget').onchange = event => { setSetting('cfarMaskTarget', event.target.value); syncCfarMaskControls(); drawOverlay(); };
   document.getElementById('cfarMaskTool').onchange = event => {
-    setSetting('cfarMaskTool', event.target.value);
-    cfarMaskState = {drawing:false, roiId:null, pointerId:null};
-    if(event.target.value !== 'off'){
-      ensureSingleAnnotationView();
-      setSetting('manualRoiMode', 'select');
-      setSetting('roiEditMode', 'off');
-      applySettingsToControls();
-    }
-    syncCfarMaskControls();
+    setAnnotationToolModes({
+      manualRoiMode:'select',
+      roiEditMode:'off',
+      cfarMaskTool:event.target.value,
+      cfarMaskTarget:cfarMaskSetting('cfarMaskTarget')
+    }, {render:false, forceSingle:event.target.value !== 'off'});
     drawOverlay();
   };
   document.getElementById('cfarFloodBound').onchange = event => { setSetting('cfarFloodBound', event.target.value); syncCfarMaskControls(); };
@@ -465,18 +462,9 @@ function initCfarMaskAnnotation(){
   document.getElementById('cfarMaskUndoBtn').onclick = undoCfarMaskEdit;
   document.getElementById('cfarMaskClearBtn').onclick = clearActiveCfarMask;
   document.getElementById('cfarMaskDoneBtn').onclick = () => {
-    setSetting('cfarMaskTool', 'off');
-    cfarMaskState = {drawing:false, roiId:null, pointerId:null};
-    syncCfarMaskControls();
+    setAnnotationToolModes({manualRoiMode:'select', roiEditMode:'off', cfarMaskTool:'off'}, {render:false});
     drawOverlay();
   };
-  document.getElementById('manualRoiMode')?.addEventListener('change', event => {
-    if(event.target.value !== 'select'){ setSetting('cfarMaskTool', 'off'); syncCfarMaskControls(); }
-  });
-  document.getElementById('roiEditMode')?.addEventListener('change', event => {
-    if(event.target.value !== 'off'){ setSetting('cfarMaskTool', 'off'); syncCfarMaskControls(); }
-  });
-  document.getElementById('startManualNeuronBtn')?.addEventListener('click', () => { setSetting('cfarMaskTool', 'off'); syncCfarMaskControls(); });
   overlay.addEventListener('pointerdown', cfarMaskPointerDown, true);
   overlay.addEventListener('pointermove', cfarMaskPointerMove, true);
   overlay.addEventListener('pointerup', cfarMaskPointerUp, true);

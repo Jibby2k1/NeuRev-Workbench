@@ -1,6 +1,6 @@
 # Codebase Navigation
 
-Last updated: 2026-07-21.
+Last updated: 2026-07-25.
 
 This guide is a fast map for humans and coding agents. It names the stable
 entry points first, then points to the implementation modules behind common
@@ -12,7 +12,8 @@ from this map.
 | Goal | Start Here | Then Read |
 | --- | --- | --- |
 | Run CLI workflows | `neurobench/cli/main.py` | The matching file under `neurobench/cli/` |
-| Build or serve the neuron dashboard | `neurobench workbench build/status/serve` | `neurobench/workbench/builder.py`, `neurobench/workbench/server.py`, `docs/developer/WORKBENCH_VIDEO_CATALOG_REFACTOR.md` |
+| Use the normal NeuRev workflow | `neurobench workbench baseline`, then `neurobench workbench serve --asset-mode current` | `docs/developer/NEUREV_FIRST_RELEASE_HANDOFF.md`, `neurobench/workbench/baseline.py`, `neurobench/workbench/server.py` |
+| Build or serve the neuron dashboard | `neurobench workbench build/status/serve` | `neurobench/workbench/builder.py`, `neurobench/workbench/server.py`, `docs/developer/WORKBENCH_VIDEO_CATALOG_REFACTOR.md`; installed annotation migration requires `--migrate-annotations` |
 | Query datasets and videos for App/LLM use | `neurobench dataset catalog` | `neurobench/data/catalog.py`, `neurobench llm context --dataset-id ...` |
 | Run Gamma CFAR candidate workflows | `tools/prepare_gamma_cfar_workbench_run.py` | `neurobench/algorithms/cfar.py`, `neurobench/reports/gamma_cfar_sweep.py`, `docs/workflows/raw_video_to_report.md` |
 | Run the Spon dark-soma/excitation case study | `examples/spon_ca_burst_soma_excitation.example.json` | `neurobench/experiments/soma_excitation/`, `docs/workflows/spon_ca_burst_soma_excitation.md` |
@@ -30,7 +31,7 @@ from this map.
 | --- | --- |
 | `neurobench/algorithms/` | Core image/video algorithms such as CFAR, motion, template matching, and grid extraction. |
 | `neurobench/cli/` | Argparse command groups. These should stay thin and delegate to package modules. |
-| `neurobench/data/` | Dataset manifests, video loading/cropping, QC, checksums, preflight estimates, and synthetic fixtures. |
+| `neurobench/data/` | Dataset manifests and catalogs, bounded import inspection, video loading/cropping, QC, checksums, preflight estimates, and synthetic fixtures. |
 | `neurobench/dashboards/` | Dashboard manifest and presentation contracts. |
 | `neurobench/discovery/` | Candidate clustering, ranking, and active-learning helpers. |
 | `neurobench/dynamics/` | Grid/latent dynamics datasets, models, training, sweeps, reports, comparisons, and supervisors. |
@@ -46,7 +47,7 @@ from this map.
 | `neurobench/reports/` | Markdown/JSON report builders and renderers. |
 | `neurobench/review/` | Reviewer agreement and provenance utilities. |
 | `neurobench/validation/` | JSON schema loading and validation helpers. |
-| `neurobench/workbench/` | Browser workbench builder, server, assets, intermediate exports, ROI sidecars, and materialization. |
+| `neurobench/workbench/` | Browser workbench builder, no-write/current and installed serving, preservation baselines, durable local jobs, assets, intermediate exports, ROI sidecars, and materialization. |
 
 ## Non-Package Areas
 
@@ -72,9 +73,19 @@ from this map.
 ```bash
 .venv-neurobench/bin/python -m neurobench.cli.main workbench serve \
   --app-dir path/to/app \
+  --asset-mode current \
   --host 127.0.0.1 \
   --port 8765
 ```
+
+`current` is the default and renders packaged assets in memory without
+rewriting the selected app. Use `workbench status` to compare installed bytes
+with the package, and use `--asset-mode installed` only when the archived UI
+itself is the intended comparison target. Capture/verify a Wave 0 baseline
+before any explicit historical `workbench build`; annotation rewriting also
+requires the separate `--migrate-annotations` flag. See
+`docs/developer/NEUREV_FIRST_RELEASE_HANDOFF.md` for the recovery commands and
+first-release limitations.
 
 `tools/serve_neuron_workbench.py` remains a compatibility and multi-app-index
 wrapper; do not use it as the canonical single-app route.
@@ -128,7 +139,9 @@ preflight and the runner provide estimated and live `VmRSS`/`VmHWM` checks.
 
 ### Work On The Workbench UI
 
-1. Edit source files under `neurobench/workbench/assets/src/`.
+1. Edit source files under `neurobench/workbench/assets/src/`. Production
+   source order is explicit in `assets/src/bundle_sources.txt`; adding or
+   removing a module requires updating that manifest.
 2. Rebuild the generated bundle:
 
 ```bash
@@ -136,9 +149,13 @@ preflight and the runner provide estimated and live `VmRSS`/`VmHWM` checks.
 .venv-neurobench/bin/python tools/build_workbench_assets.py --check
 ```
 
-3. Rebuild a fixture app with `neurobench workbench build --review-data ... --app-dir ...`.
-4. Run focused tests such as `tests/test_workbench_assets.py` and
-   `tests/test_workbench_builder.py`.
+3. Rebuild only a disposable fixture with
+   `neurobench workbench build --review-data ... --app-dir ...`. For a
+   historical app, prefer `serve --asset-mode current`; capture and verify a
+   baseline before an intentional installed rebuild.
+4. Run focused tests such as `tests/test_workbench_assets.py`,
+   `tests/test_workbench_builder.py`, `tests/test_workbench_cli.py`, and
+   `tests/test_workbench_product_shell_runtime.py`.
 
 Do not edit `neurobench/workbench/assets/workbench.js` directly except for
 recovery; it is generated.
@@ -159,6 +176,9 @@ recovery; it is generated.
 | --- | --- | --- |
 | `tools/prepare_gamma_cfar_workbench_run.py` | Single large script mixing conversion, spec writing, sweep execution, attachment, and reporting. | Extract to package modules, keep CLI compatibility. |
 | `neurobench/workbench/assets/src/20_review_core.js` | Large browser module with review rendering and interactions. | Split by review state, drawing, ROI list, trace panel, and event controls. |
+| `neurobench/workbench/assets/workbench.css` | One served stylesheet still couples the dataset, annotation, results, and research surfaces. | Introduce ordered CSS source modules while preserving generated-bundle compatibility. |
+| `neurobench/workbench/server.py` | Large HTTP module still spans dataset routing, owner authorization, import/job orchestration, processing, and legacy research endpoints. Pure label reconciliation now lives in `label_reconciliation.py`, and sidecar reads use the shared bounded identity validator. | Continue extracting route and job-runner modules behind the tested dataset-qualified API; preserve current-mode no-write startup and compatibility hooks. |
+| `neurobench/data/imports.py` | Central safety and lifecycle contract for first-release TIFF/NPY, label-table, and four recognized native NeuRev JSON formats. Generic JSON and future scientific-container adapters remain deliberately absent. | Add future bounded adapters behind the existing import record and transition contract; never infer scientific metadata or accept arbitrary JSON shapes. |
 | `neurobench/dynamics/overnight_sweep.py` | Large orchestration module for expensive GPU experiments. | Keep runner behavior stable; extract manifest/progress helpers only with tests. |
 | `neurobench/pipeline_catalog.py` and `neurobench/pipelines/executor.py` | Central stage definitions and execution; easy to create hidden coupling. | Keep docs/tests synchronized for every stage. |
 

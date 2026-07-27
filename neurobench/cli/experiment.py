@@ -25,6 +25,65 @@ def add_experiment_subcommands(subparsers) -> None:
         description="Focused resource-bounded experiment workflows.",
     )
     workflows = root.add_subparsers(dest="experiment_workflow", required=True)
+    difference = workflows.add_parser(
+        "frame-difference",
+        help="Generate globally normalized signed derivative TIFF stacks.",
+    )
+    difference_actions = difference.add_subparsers(dest="experiment_action", required=True)
+    difference_preflight = difference_actions.add_parser("preflight", help="Validate inputs and output resources.")
+    difference_preflight.add_argument("--config", required=True)
+    difference_preflight.set_defaults(func=_run_frame_difference_preflight)
+    difference_run = difference_actions.add_parser("run", help="Write chunked derivative BigTIFF stacks.")
+    difference_run.add_argument("--config", required=True)
+    difference_run.set_defaults(func=_run_frame_difference)
+    smoothed_difference = workflows.add_parser(
+        "smoothed-frame-difference",
+        help="Generate smoothed signed derivatives with global and quiet-MAD views.",
+    )
+    smoothed_actions = smoothed_difference.add_subparsers(dest="experiment_action", required=True)
+    smoothed_preflight = smoothed_actions.add_parser("preflight", help="Validate smoothing and TIFF resource bounds.")
+    smoothed_preflight.add_argument("--config", required=True)
+    smoothed_preflight.set_defaults(func=_run_smoothed_difference_preflight)
+    smoothed_run = smoothed_actions.add_parser("run", help="Write four smoothed derivative BigTIFFs.")
+    smoothed_run.add_argument("--config", required=True)
+    smoothed_run.set_defaults(func=_run_smoothed_difference)
+    activity_gate = workflows.add_parser(
+        "activity-gate",
+        help="Generate bounded derivative-energy and artifact-attenuated review TIFFs.",
+    )
+    activity_actions = activity_gate.add_subparsers(dest="experiment_action", required=True)
+    activity_preflight = activity_actions.add_parser("preflight", help="Validate review interval and resources.")
+    activity_preflight.add_argument("--config", required=True)
+    activity_preflight.set_defaults(func=_run_activity_gate_preflight)
+    activity_run = activity_actions.add_parser("run", help="Write four activity-gated review TIFFs.")
+    activity_run.add_argument("--config", required=True)
+    activity_run.set_defaults(func=_run_activity_gate)
+    activity_benchmark = workflows.add_parser(
+        "activity-gate-benchmark",
+        help="Compare Raw Direct with offline and causal artifact-gated inputs.",
+    )
+    benchmark_actions = activity_benchmark.add_subparsers(dest="experiment_action", required=True)
+    benchmark_preflight = benchmark_actions.add_parser("preflight", help="Validate labels, inputs, and resource bounds.")
+    benchmark_preflight.add_argument("--config", required=True)
+    benchmark_preflight.set_defaults(func=_run_activity_gate_benchmark_preflight)
+    benchmark_run = benchmark_actions.add_parser("run", help="Run the six-lane paired detection comparison.")
+    benchmark_run.add_argument("--config", required=True)
+    benchmark_run.set_defaults(func=_run_activity_gate_benchmark)
+    proposal = workflows.add_parser(
+        "causal-proposal-program",
+        help="Run the checkpointed Spon Ca Burst causal proposal breadth/depth program.",
+    )
+    proposal_actions = proposal.add_subparsers(dest="experiment_action", required=True)
+    proposal_preflight = proposal_actions.add_parser(
+        "preflight", help="Validate the preregistered design, inputs, labels, and resource headroom."
+    )
+    proposal_preflight.add_argument("--config", required=True)
+    proposal_preflight.set_defaults(func=_run_causal_proposal_preflight)
+    proposal_run = proposal_actions.add_parser(
+        "run", help="Execute the guarded overnight proposal program."
+    )
+    proposal_run.add_argument("--config", required=True)
+    proposal_run.set_defaults(func=_run_causal_proposal_program)
     soma = workflows.add_parser(
         "soma-excitation",
         help="Evaluate dark-soma zones and frozen model transfer.",
@@ -57,6 +116,29 @@ def add_experiment_subcommands(subparsers) -> None:
     lc_direct = learnable_actions.add_parser("direct-tuning", help="Tune a detector initialized from the raw-direct baseline.")
     lc_direct.add_argument("--config", required=True)
     lc_direct.set_defaults(func=_run_learnable_direct_tuning)
+    lc_multi_preflight = learnable_actions.add_parser(
+        "multi-cfar-preflight",
+        help="Validate the morphology-aware multiscale CFAR screen.",
+    )
+    lc_multi_preflight.add_argument("--config", required=True)
+    lc_multi_preflight.add_argument("--artifact-dir", type=Path, required=True)
+    lc_multi_preflight.set_defaults(func=_run_multi_cfar_preflight)
+    lc_multi = learnable_actions.add_parser(
+        "multi-cfar",
+        help="Run the checkpointed morphology-aware multiscale CFAR screen.",
+    )
+    lc_multi.add_argument("--config", required=True)
+    lc_multi.set_defaults(func=_run_multi_cfar)
+    lc_multi_video = learnable_actions.add_parser(
+        "multi-cfar-videos",
+        help="Generate standalone diagnostic videos for a fixed CFAR expert.",
+    )
+    lc_multi_video.add_argument("--config", required=True)
+    lc_multi_video.add_argument("--results-json", type=Path, required=True)
+    lc_multi_video.add_argument("--output-dir", type=Path, required=True)
+    lc_multi_video.add_argument("--expert-id")
+    lc_multi_video.add_argument("--fps", type=float, default=10.0)
+    lc_multi_video.set_defaults(func=_run_multi_cfar_videos)
     lc_run = learnable_actions.add_parser("run", help="Run the guarded CUDA learnable-contrast experiment.")
     lc_run.add_argument("--config", required=True)
     lc_run.set_defaults(func=_run_learnable_contrast_experiment)
@@ -76,6 +158,108 @@ def _run_soma_preflight(args) -> int:
     )
     if args.output_json:
         _atomic_json(Path(args.output_json), payload)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_frame_difference_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.frame_difference import FrameDifferenceConfig, preflight
+
+    payload = preflight(FrameDifferenceConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_frame_difference(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.frame_difference import FrameDifferenceConfig, run
+
+    payload = run(FrameDifferenceConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_smoothed_difference_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.smoothed_frame_difference import SmoothedDifferenceConfig, preflight
+
+    payload = preflight(SmoothedDifferenceConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_smoothed_difference(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.smoothed_frame_difference import SmoothedDifferenceConfig, run
+
+    payload = run(SmoothedDifferenceConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_activity_gate_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.activity_gated_video import ActivityGateConfig, preflight
+
+    payload = preflight(ActivityGateConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_activity_gate(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.activity_gated_video import ActivityGateConfig, run
+
+    payload = run(ActivityGateConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_activity_gate_benchmark_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.activity_gate_benchmark import (
+        ActivityGateBenchmarkConfig,
+        preflight,
+    )
+
+    payload = preflight(ActivityGateBenchmarkConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_activity_gate_benchmark(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.activity_gate_benchmark import (
+        ActivityGateBenchmarkConfig,
+        run,
+    )
+
+    payload = run(ActivityGateBenchmarkConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_causal_proposal_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.causal_proposal_program import (
+        CausalProposalProgramConfig,
+        preflight,
+    )
+
+    payload = preflight(CausalProposalProgramConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_causal_proposal_program(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.causal_proposal_program import (
+        CausalProposalProgramConfig,
+        run,
+    )
+
+    payload = run(CausalProposalProgramConfig.load(args.config))
     print(json.dumps(payload, indent=2, sort_keys=True))
     return 0
 
@@ -178,5 +362,45 @@ def _run_learnable_direct_tuning(args) -> int:
     _configure_cuda_resource_environment(args.config)
     from neurobench.experiments.learnable_contrast.direct_tuning import DirectTuningConfig, run
     payload = run(DirectTuningConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_multi_cfar_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.learnable_contrast.multihypothesis import (
+        MultiCFARConfig,
+        preflight,
+    )
+
+    payload = preflight(MultiCFARConfig.load(args.config), artifact_dir=args.artifact_dir)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_multi_cfar(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.learnable_contrast.multihypothesis import (
+        MultiCFARConfig,
+        run,
+    )
+
+    payload = run(MultiCFARConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_multi_cfar_videos(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.learnable_contrast.diagnostic_video import generate
+    from neurobench.experiments.learnable_contrast.multihypothesis import MultiCFARConfig
+
+    payload = generate(
+        MultiCFARConfig.load(args.config),
+        results_json=args.results_json.resolve(),
+        output_dir=args.output_dir.resolve(),
+        expert_id=args.expert_id,
+        fps=args.fps,
+    )
     print(json.dumps(payload, indent=2, sort_keys=True))
     return 0

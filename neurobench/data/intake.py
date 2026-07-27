@@ -48,8 +48,8 @@ def build_dataset_intake_manifest(
     pixel_size_microns: float | None = None,
     source_template: str = "local",
     name: str | None = None,
-    modality: str = "light_sheet_calcium",
-    indicator: str = "GCaMP",
+    modality: str | None = None,
+    indicator: str | None = None,
 ) -> dict[str, Any]:
     """Create a manifest stub for a dataset before heavy processing runs."""
     if not dataset_id:
@@ -63,8 +63,6 @@ def build_dataset_intake_manifest(
         "schema_version": 1,
         "dataset_id": dataset_id,
         "name": name or raw_path.name or dataset_id,
-        "modality": modality,
-        "indicator": indicator,
         "source": {
             "template": source_template,
             "label": template["label"],
@@ -82,6 +80,10 @@ def build_dataset_intake_manifest(
         manifest["frame_rate_hz"] = float(frame_rate_hz)
     if pixel_size_microns is not None:
         manifest["pixel_size_microns"] = float(pixel_size_microns)
+    if modality is not None:
+        manifest["modality"] = str(modality)
+    if indicator is not None:
+        manifest["indicator"] = str(indicator)
     return manifest
 
 

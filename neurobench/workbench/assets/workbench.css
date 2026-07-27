@@ -70,6 +70,9 @@ body {
   display: block;
   overflow: auto;
 }
+.app.product-mode { display: block; overflow: auto; }
+
+.app.product-mode .reviewOnly { display: none; }
 .app.arch-mode .reviewOnly,
 .app.home-mode .reviewOnly,
 .app.lab-mode .reviewOnly,
@@ -82,6 +85,25 @@ body {
 .app.standard-ui .expertOnly,
 .app.basic-ui .advancedOnly {
   display: none !important;
+}
+.app.product-mode .researchModeControl,
+.app.normal-annotation-mode .researchModeControl,
+.app.normal-annotation-mode .nextBestActionShell,
+.app.normal-annotation-mode .reviewSubnav,
+.app.normal-annotation-mode .legacyReviewControl,
+.app.normal-annotation-mode .legacyWorkflowControl,
+.app.normal-annotation-mode .legacyDecisionRow,
+.app.normal-annotation-mode .legacyQueueShortcuts {
+  display: none !important;
+}
+.app.normal-annotation-mode:not(.research-context-enabled) .runSyncBar,
+.app.normal-annotation-mode:not(.research-context-enabled) .runGeneratePanel,
+.app.normal-annotation-mode:not(.research-context-enabled) .reviewProjectionStrip,
+.app.normal-annotation-mode:not(.research-context-enabled) .advancedOnly {
+  display: none !important;
+}
+.app.normal-annotation-mode.task-missed_neuron_search .manualDiscoveryPanel {
+  display: block !important;
 }
 .modeToggle {
   display: inline-flex;
@@ -112,6 +134,58 @@ body {
 }
 .hidden {
   display: none !important;
+}
+
+.productPage { display: block; max-width: 1280px; margin: 0 auto; padding: 20px; }
+.productIntro, .annotationTaskHeader, .sectionTitle, .datasetCardHeader { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.productIntro { margin-bottom: 18px; }
+.productIntro h1 { margin: 4px 0; }
+.eyebrow { color: var(--accent); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+.datasetImportCard, .datasetCard, .researchToolCard, .annotationTaskShell, .resultsCard { border: 1px solid var(--line); border-radius: 12px; background: var(--panel); box-shadow: var(--shadow); padding: 14px; }
+.datasetImportCard { margin-bottom: 18px; }
+.datasetCatalogGrid, .researchToolGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.datasetCard h2, .researchToolCard h2 { margin: 0 0 5px; text-transform: none; letter-spacing: 0; }
+.datasetCard p { margin: 8px 0; }
+.datasetCard button { margin-top: 8px; }
+.researchToolCard { color: var(--ink); text-decoration: none; transition: border-color .15s ease, transform .15s ease; }
+.researchToolCard:hover { border-color: var(--accent); transform: translateY(-1px); }
+.researchToggle { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--panel); font-weight: 700; }
+.lifecycleBadge { border-radius: 999px; padding: 4px 8px; font-size: 11px; font-weight: 800; text-transform: capitalize; }
+.lifecycle-ready { color: #166534; background: #dcfce7; }
+.lifecycle-metadata_needed, .lifecycle-qc_ready, .lifecycle-import_only { color: #92400e; background: #fef3c7; }
+.lifecycle-failed, .lifecycle-unavailable { color: #991b1b; background: #fee2e2; }
+.capabilityChips { display: flex; flex-wrap: wrap; gap: 5px; }
+.capabilityChips span, .taskContextLine span { border: 1px solid var(--line); border-radius: 999px; padding: 3px 7px; color: var(--muted); font-size: 11px; }
+.annotationTaskShell { margin-bottom: 6px; }
+.annotationTaskHeader h2 { margin: 2px 0; text-transform: none; letter-spacing: 0; }
+.taskSelectLabel { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; }
+.annotationDecisionRow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.annotationDecisionRow button { min-width: 118px; font-weight: 800; }
+.annotationDecisionRow .decisionNeuron { border-color: var(--ok); }
+.annotationDecisionRow .decisionNotNeuron { border-color: var(--bad); }
+.annotationDecisionRow .decisionUnsure { border-color: var(--unsure); }
+.annotationDecisionRow .decisionSaveNext { background: var(--accent); color: white; }
+.annotationDecisionRow button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--accent); background: var(--accent-soft); }
+.taskContextLine { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+.taskActionRow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.taskActionRow button { font-weight: 750; }
+.fileButton { display: inline-flex; align-items: center; gap: 5px; }
+.fileButton input { max-width: 190px; }
+.datasetIntakeSteps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 12px 0; }
+.datasetIntakeStep { border: 1px solid var(--line); border-radius: 9px; padding: 9px; background: var(--control); }
+.datasetIntakeStep b { display: block; margin-bottom: 3px; }
+.datasetIdField { min-width: 190px; }
+.labelPreviewPanel { margin: 12px 0 18px; }
+.labelPreviewPanel table { width: 100%; }
+.labelMappingGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin: 10px 0; }
+.labelMappingGrid label { display: grid; gap: 4px; font-size: 12px; font-weight: 700; }
+.resultsGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.resultsCard h2 { margin-top: 0; text-transform: none; letter-spacing: 0; }
+.resultsEmpty { border-left: 3px solid var(--warn); padding-left: 10px; color: var(--muted); }
+.resultsExportRow { display: flex; align-items: end; flex-wrap: wrap; gap: 8px; }
+.resultsExportRow label { display: grid; gap: 4px; min-width: 230px; font-size: 12px; font-weight: 700; }
+@media (max-width: 760px) {
+  .datasetIntakeSteps { grid-template-columns: 1fr; }
 }
 .stage {
   padding: 14px;

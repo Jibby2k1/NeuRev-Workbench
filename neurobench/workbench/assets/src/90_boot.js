@@ -1,25 +1,39 @@
 const PAGE_CHROME = {
-  home: {label:'Home', page:'home'},
+  datasets: {label:'Datasets', page:'datasets'},
+  annotate: {label:'Annotate', page:'annotate'},
+  results: {label:'Results', page:'results'},
+  research: {label:'Research Tools', page:'research'},
+  home: {label:'Research Tools', page:'home'},
   architecture: {label:'Pipelines', page:'architecture'},
   experiments: {label:'Experiment Lab', page:'experiments'},
   metrics: {label:'Progress', page:'metrics'},
   qc: {label:'Data', page:'qc'},
-  report: {label:'Report', page:'report'}
+  report: {label:'Detailed Report', page:'report'}
 };
+
 const PAGE_NAV_ITEMS = [
-  {page:'home', href:'#home', label:'Home'},
-  {page:'qc', href:'#data', label:'Data'},
-  {page:'architecture', href:'#pipelines', label:'Pipelines'},
-  {page:'experiments', href:'#experiments', label:'Experiment Lab'},
-  {page:'review', href:'#review', label:'Review'},
-  {page:'metrics', href:'#progress', label:'Progress'},
-  {page:'report', href:'#report', label:'Report'}
+  {page:'datasets', href:'#datasets', label:'Datasets'},
+  {page:'annotate', href:'#annotate', label:'Annotate'},
+  {page:'results', href:'#results', label:'Results'},
+  {page:'research', href:'#research', label:'Research Tools'}
 ];
+
+const ROUTE_PAGE_IDS = [
+  'homePage','datasetsPage','researchPage','architecturePage',
+  'experimentsPage','metricsPage','qcPage','reportPage'
+];
+
+const ROUTE_MODE_CLASSES = [
+  'product-mode','research-mode','home-mode','arch-mode','lab-mode',
+  'qc-mode','normal-annotation-mode','research-context-enabled'
+];
+
 function pageNavHtml(){
   return `<nav class="navTabs">${PAGE_NAV_ITEMS.map(item => `<a data-nav-page="${item.page}" href="${item.href}">${escapeHtml(item.label)}</a>`).join('')}</nav>`;
 }
+
 function modeSelectHtml(){
-  return `<label class="modeToggle">Mode
+  return `<label class="modeToggle researchModeControl">Mode
     <select class="uiModeSelect" aria-label="Interface mode">
       <option value="guided">Guided</option>
       <option value="standard">Standard</option>
@@ -27,6 +41,7 @@ function modeSelectHtml(){
     </select>
   </label>`;
 }
+
 function themeSelectHtml(){
   return `<label class="modeToggle">Theme
     <select class="themeSelect" aria-label="Theme">
@@ -36,52 +51,112 @@ function themeSelectHtml(){
     </select>
   </label>`;
 }
+
 function renderSharedPageChrome(){
   for(const root of document.querySelectorAll('[data-page-chrome]')){
     const config = PAGE_CHROME[root.dataset.pageChrome] || PAGE_CHROME.home;
-    root.innerHTML = `<h1>Neurobench</h1><span class="pageContext">${escapeHtml(config.label)} · ${escapeHtml(datasetId)}</span>${pageNavHtml()}${modeSelectHtml()}${themeSelectHtml()}`;
+    root.innerHTML = `<h1>NeuRev</h1><span class="pageContext">${escapeHtml(config.label)} · ${escapeHtml(datasetId)}</span>${pageNavHtml()}${modeSelectHtml()}${themeSelectHtml()}`;
   }
 }
 
-function routePage(){
-  const hash = (location.hash || '#home').replace(/^#\/?/, '');
-  const page = hash === 'home' || hash === 'workflow' ? 'home' : hash === 'pipelines' || hash === 'architecture' || hash === 'architecture-lab' ? 'architecture' : hash === 'experiments' || hash === 'experiment-lab' ? 'experiments' : hash === 'progress' || hash === 'metrics' || hash === 'audit' ? 'metrics' : hash === 'data' || hash === 'data-compare' || hash === 'process' || hash === 'process-lab' || hash === 'qc' || hash === 'dataset-qc' ? 'qc' : hash === 'report' ? 'report' : 'review';
-  const reviewSubpage = page === 'review' ? reviewSubPageFromHash(location.hash) : 'inspect';
-  const dataSubpage = page === 'qc' ? dataSubPageFromHash(location.hash) : 'inspect';
+function resetRouteState(){
+  for(const id of ROUTE_PAGE_IDS) document.getElementById(id)?.classList.add('hidden');
+  for(const className of ROUTE_MODE_CLASSES) appRoot.classList.remove(className);
+  for(const task of Object.keys(ANNOTATION_TASK_DEFS || {})) appRoot.classList.remove(`task-${task}`);
+  for(const link of document.querySelectorAll('[data-nav-page]')) link.classList.remove('active');
+  updateReviewSubnav('inspect');
+  updateDataSubnav('inspect');
+}
+
+function setActiveProductNav(page){
   for(const link of document.querySelectorAll('[data-nav-page]')) link.classList.toggle('active', link.dataset.navPage === page);
-  document.getElementById('homePage')?.classList.toggle('hidden', page !== 'home');
-  document.getElementById('architecturePage').classList.toggle('hidden', page !== 'architecture');
-  document.getElementById('experimentsPage').classList.toggle('hidden', page !== 'experiments');
-  document.getElementById('metricsPage').classList.toggle('hidden', page !== 'metrics');
-  document.getElementById('qcPage').classList.toggle('hidden', page !== 'qc');
-  document.getElementById('reportPage').classList.toggle('hidden', page !== 'report');
+}
+
+function setPageContext(pageId, label){
+  const context = document.querySelector(`#${pageId} .pageContext`);
+  if(context) context.textContent = `${label} · ${datasetId}`;
+}
+
+function finishRoute(routeKey){
+  appRoot.classList.remove('booting');
+  if(routePage.lastRoute !== routeKey) window.requestAnimationFrame(() => window.scrollTo({top:0, left:0, behavior:'auto'}));
+  routePage.lastRoute = routeKey;
+}
+
+function routeProductLanding(page){
+  resetRouteState();
+  appRoot.classList.add('product-mode');
+  const pageId = page === 'datasets' ? 'datasetsPage' : page === 'results' ? 'reportPage' : 'researchPage';
+  document.getElementById(pageId)?.classList.remove('hidden');
+  setActiveProductNav(page);
+  setPageContext(pageId, PAGE_CHROME[page]?.label || page);
+  if(page === 'datasets') renderDatasetsPage();
+  else if(page === 'results') renderResultsPage();
+  else renderResearchToolsPage();
+  finishRoute(`product:${page}`);
+}
+
+function routeReview(hash){
+  resetRouteState();
+  const reviewSubpage = reviewSubPageFromHash(`#${hash}`);
+  const normal = hash === 'annotate' || hash === 'review';
+  if(normal){
+    appRoot.classList.add('normal-annotation-mode');
+    appRoot.classList.toggle('research-context-enabled', researchToolsEnabled());
+    setActiveProductNav('annotate');
+  } else setActiveProductNav('research');
+  updateReviewSubnav(reviewSubpage);
+  if(normal){
+    const context = document.querySelector('.stage.reviewOnly .pageContext');
+    if(context) context.textContent = `Annotate · ${datasetId}`;
+  }
+  if(reviewSubpage === 'stencil') renderReviewStencil();
+  else if(reviewSubpage === 'overlap') renderReviewOverlap();
+  else if(reviewSubpage === 'triage') renderReviewTriage();
+  else resizeOverlay();
+  renderAnnotationTaskShell();
+  renderNextBestActions();
+  finishRoute(`review:${hash}:${reviewSubpage}`);
+}
+
+function routeAdvanced(page, hash){
+  resetRouteState();
+  setActiveProductNav('research');
+  const pageId = page === 'home' ? 'homePage' : page === 'architecture' ? 'architecturePage' : page === 'experiments' ? 'experimentsPage' : page === 'metrics' ? 'metricsPage' : page === 'qc' ? 'qcPage' : 'reportPage';
+  document.getElementById(pageId)?.classList.remove('hidden');
   appRoot.classList.toggle('home-mode', page === 'home');
   appRoot.classList.toggle('arch-mode', page === 'architecture');
-  appRoot.classList.toggle('lab-mode', page === 'metrics' || page === 'report' || page === 'experiments');
+  appRoot.classList.toggle('lab-mode', ['experiments','metrics','report'].includes(page));
   appRoot.classList.toggle('qc-mode', page === 'qc');
-  updateReviewSubnav(reviewSubpage);
-  if(page !== 'review') updateReviewSubnav('inspect');
-  updateDataSubnav(dataSubpage);
-  if(page !== 'qc') updateDataSubnav('inspect');
+  const dataSubpage = page === 'qc' ? dataSubPageFromHash(`#${hash}`) : 'inspect';
+  if(page === 'qc') updateDataSubnav(dataSubpage);
   if(page === 'home') renderWorkflowHome();
   else if(page === 'architecture') renderArchitectureLab();
   else if(page === 'experiments') renderExperimentLab();
   else if(page === 'metrics') renderMetricsAudit();
   else if(page === 'qc' && dataSubpage === 'compare') renderDataCompare();
   else if(page === 'qc') renderDatasetQc();
-  else if(page === 'report') renderReviewReport();
-  else if(reviewSubpage === 'stencil') renderReviewStencil();
-  else if(reviewSubpage === 'overlap') renderReviewOverlap();
-  else if(reviewSubpage === 'triage') renderReviewTriage();
-  else resizeOverlay();
+  else renderReviewReport();
   renderNextBestActions();
-  appRoot.classList.remove('booting');
-  if(!routePage.lastPage || routePage.lastPage !== page || routePage.lastReviewSubpage !== reviewSubpage || routePage.lastDataSubpage !== dataSubpage) {
-    window.requestAnimationFrame(() => window.scrollTo({top: 0, left: 0, behavior: 'auto'}));
-  }
-  routePage.lastPage = page;
-  routePage.lastReviewSubpage = reviewSubpage;
-  routePage.lastDataSubpage = dataSubpage;
+  finishRoute(`advanced:${page}:${hash}`);
+}
+
+function routePage(){
+  const hash = (location.hash || '#datasets').replace(/^#\/?/, '');
+  if(['datasets','dataset','imports'].includes(hash)) return routeProductLanding('datasets');
+  if(hash === 'annotate' || hash === 'review') return routeReview(hash);
+  if(hash === 'results') return routeProductLanding('results');
+  if(hash === 'research') return routeProductLanding('research');
+  if(['review-stencil','stencil','anatomy-stencil','review-overlap','overlap','sweep-overlap','candidate-overlay','review-candidate-overlay','review-triage','triage','review-queue'].includes(hash)) return routeReview(hash);
+
+  const page = ['home','workflow'].includes(hash) ? 'home'
+    : ['pipelines','architecture','architecture-lab'].includes(hash) ? 'architecture'
+      : ['experiments','experiment-lab'].includes(hash) ? 'experiments'
+        : ['progress','metrics','audit'].includes(hash) ? 'metrics'
+          : ['data','data-compare','process','process-lab','qc','dataset-qc'].includes(hash) ? 'qc'
+            : hash === 'report' ? 'report' : null;
+  if(page) return routeAdvanced(page, hash);
+  routeProductLanding('datasets');
 }
 
 async function boot(){
@@ -89,7 +164,7 @@ async function boot(){
   populateEvidenceSelect();
   await loadAnnotations();
   populateVideoViewControls();
-  if(serverBacked) {
+  if(serverBacked){
     try {
       const res = await fetch('architecture_runs.json', {cache:'no-store'});
       if(res.ok) data.architectureRuns = await res.json();
@@ -107,12 +182,12 @@ async function boot(){
   const first = visibleRois()[0] || reviewRois()[0];
   selectedId = first?.id || null;
   selectedRoiIds = new Set(selectedId ? [String(selectedId)] : []);
-  if(selectedId) {
+  if(selectedId){
     selectedEventFrame = eventsForRoi(selectedRoi())[0]?.frame || null;
     roiNotes.value = roiAnn(selectedId).notes || '';
     eventNotes.value = selectedEventFrame ? eventAnn(selectedId, selectedEventFrame).notes || '' : '';
   }
-  if(selectedSuggestionId) {
+  if(selectedSuggestionId){
     document.getElementById('suggestionNotes').value = suggestionAnn(selectedSuggestionId).notes || '';
     document.getElementById('artifactClass').value = suggestionAnn(selectedSuggestionId).artifact_class || suggestionAnn(selectedSuggestionId).artifactClass || '';
   }
@@ -122,4 +197,5 @@ async function boot(){
   routePage();
   renderAll();
 }
+
 boot();

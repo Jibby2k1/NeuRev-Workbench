@@ -1,0 +1,34 @@
+{
+  "experiment_id": "spon_ca_burst_activity_gate_v1",
+  "source_video": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+  "source_tiff": "../Inputs/Spon Ca Burst/3 hindbrain to tail 488 20ms.tif",
+  "labels_tsv": "../Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+  "output_dir": "../Outputs/FrameDifference/spon_ca_burst_activity_gate_v1",
+  "frames": {
+    "review_start_ui": 1800,
+    "review_end_ui": 2359,
+    "quiet_start_ui": 1800,
+    "quiet_end_ui": 1899
+  },
+  "smoothing": {
+    "spatial_sigma_px": 1.0,
+    "temporal_window_frames": 7,
+    "temporal_polyorder": 2
+  },
+  "gate": {
+    "derivative_lag_frames": 1,
+    "energy_ema_span_frames": 4.0,
+    "gate_tau_z": 2.5,
+    "structural_floor": 0.2,
+    "artifact_attenuation": 0.7,
+    "intensity_asinh_gain": 5.0,
+    "quiet_mad_floor_percentile": 10.0
+  },
+  "resources": {
+    "cpu_threads": 6,
+    "frame_chunk": 64,
+    "max_ram_mib": 4096,
+    "min_free_disk_mib": 4096,
+    "max_output_mib": 1024
+  }
+}

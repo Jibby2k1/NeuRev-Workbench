@@ -1,0 +1,28 @@
+{
+  "experiment_id": "spon_ca_burst_smoothed_derivatives_v1",
+  "source_video": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+  "source_tiff": "../Inputs/Spon Ca Burst/3 hindbrain to tail 488 20ms.tif",
+  "output_dir": "../Outputs/FrameDifference/spon_ca_burst_smoothed_derivatives_v1",
+  "lags": [1, 4],
+  "frame_period_ms": 20.0,
+  "quiet_frames": {"start_ui": 1800, "end_ui": 1899},
+  "smoothing": {
+    "spatial_sigma_px": 1.0,
+    "temporal_window_frames": 7,
+    "temporal_polyorder": 2
+  },
+  "normalization": {
+    "global_absolute_percentile": 99.5,
+    "quiet_mad_floor_percentile": 10.0,
+    "quiet_clip_z": 5.0,
+    "quiet_deadband_z": 2.5,
+    "sample_spatial_stride": 4
+  },
+  "resources": {
+    "cpu_threads": 6,
+    "frame_chunk": 64,
+    "max_ram_mib": 6144,
+    "min_free_disk_mib": 8192,
+    "max_output_mib": 4096
+  }
+}

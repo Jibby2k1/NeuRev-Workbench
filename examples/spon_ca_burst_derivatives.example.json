@@ -1,0 +1,19 @@
+{
+  "experiment_id": "spon_ca_burst_derivatives_v1",
+  "source_video": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+  "source_tiff": "../Inputs/Spon Ca Burst/3 hindbrain to tail 488 20ms.tif",
+  "output_dir": "../Outputs/FrameDifference/spon_ca_burst_derivatives_v1",
+  "lags": [1, 4],
+  "frame_period_ms": 20.0,
+  "normalization": {
+    "absolute_percentile": 99.5,
+    "zero_code": 32768
+  },
+  "resources": {
+    "cpu_threads": 6,
+    "frame_chunk": 64,
+    "max_ram_mib": 4096,
+    "min_free_disk_mib": 4096,
+    "max_output_mib": 2048
+  }
+}

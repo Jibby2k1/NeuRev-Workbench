@@ -19,6 +19,8 @@ SCHEMA_ALIASES = {
     "run": "architecture_run.schema.json",
     "pipeline_run": "pipeline_run.schema.json",
     "pipeline_spec": "pipeline_spec.schema.json",
+    "dataset_import": "dataset_import.schema.json",
+    "import": "dataset_import.schema.json",
 
     "video_manifest": "video_manifest.schema.json",
     "video": "video_manifest.schema.json",
@@ -77,6 +79,32 @@ def validate_dict(payload: Mapping[str, Any], schema_name: str) -> None:
     jsonschema.Draft202012Validator(schema).validate(dict(payload))
     if schema_path(schema_name).name == "annotations.schema.json":
         _validate_annotation_cfar_invariants(payload)
+    if schema_path(schema_name).name == "dataset_import.schema.json":
+        _validate_dataset_import_invariants(payload)
+
+
+def _validate_dataset_import_invariants(payload: Mapping[str, Any]) -> None:
+    metadata = payload.get("metadata") if isinstance(payload.get("metadata"), Mapping) else {}
+    if metadata.get("kind") not in {"video", "label_table", "neurev_json"}:
+        raise jsonschema.ValidationError("metadata.kind must be video, label_table, or neurev_json")
+    checksum = payload.get("checksum") if isinstance(payload.get("checksum"), Mapping) else {}
+    sha = str(checksum.get("sha256") or "")
+    if len(sha) != 64 or any(character not in "0123456789abcdef" for character in sha.lower()):
+        raise jsonschema.ValidationError("checksum.sha256 must be a lowercase SHA-256 digest")
+    if int(payload.get("revision") or 1) < 1:
+        raise jsonschema.ValidationError("revision must be positive")
+    role = str(
+        payload.get("source_role")
+        or (
+            "primary_video_candidate"
+            if metadata.get("kind") == "video"
+            else "neurev_json_attachment"
+            if metadata.get("kind") == "neurev_json"
+            else "label_attachment"
+        )
+    )
+    if role not in {"primary_video_candidate", "primary_video", "label_attachment", "neurev_json_attachment"}:
+        raise jsonschema.ValidationError("source_role is invalid")
 
 
 def _validate_annotation_cfar_invariants(payload: Mapping[str, Any]) -> None:

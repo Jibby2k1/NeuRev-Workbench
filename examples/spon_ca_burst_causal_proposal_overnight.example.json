@@ -1,0 +1,51 @@
+{
+  "experiment_id": "spon_ca_burst_causal_proposal_overnight_v1",
+  "source_video": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+  "source_tiff": "../Inputs/Spon Ca Burst/3 hindbrain to tail 488 20ms.tif",
+  "labels_tsv": "../Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+  "design_document": "../docs/workflows/spon_ca_burst_frame_derivatives.md",
+  "cfar_config": "spon_ca_burst_multihypothesis_cfar_v6.example.json",
+  "output_dir": "../Outputs/FrameDifference/spon_ca_burst_causal_proposal_overnight_v1",
+  "preflight_dir": "../Outputs/FrameDifference/spon_ca_burst_causal_proposal_overnight_v1_preflight",
+  "frames": {
+    "review_start_ui": 1800,
+    "review_end_ui": 2359,
+    "quiet_start_ui": 1800,
+    "quiet_end_ui": 1899
+  },
+  "design": {
+    "spatial_sigmas": [0.0, 0.5, 1.0, 1.5, 2.0],
+    "temporal_ema_spans": [1.0, 2.0, 4.0, 8.0, 16.0],
+    "artifact_attenuations": [0.0, 0.35, 0.7, 0.9],
+    "intensity_transforms": ["linear", "asinh2", "asinh5", "asinh10"],
+    "baseline_modes": ["frozen_median", "slow_clipped_ema", "robust_adaptive"],
+    "pool_modes": ["lme0.1", "lme0.25", "lme0.5", "mean", "max"],
+    "fractional_count": 48,
+    "fractional_seed": 20260727,
+    "fusion_finalists": 8,
+    "fusion_variants_per_finalist": 12,
+    "robustness_finalists": 12,
+    "calibration_conditions": 8,
+    "perturbation_types": [
+      "gain", "offset", "noise", "translation", "stripe", "saturation_bloom",
+      "frame_drop", "quiet_contamination", "photobleach"
+    ],
+    "perturbation_severities": [0.1, 0.25],
+    "horizon_frames": [12, 24, 28, 47, 64]
+  },
+  "detector": {
+    "nms_distance_px": 6,
+    "match_radius_px": 6,
+    "quiet_peaks_per_map": 1.0,
+    "primary_cap": 58
+  },
+  "resources": {
+    "cpu_threads": 12,
+    "max_ram_mib": 32768,
+    "max_gpu_memory_mib": 8500,
+    "min_free_disk_mib": 32768,
+    "max_output_mib": 12288,
+    "wall_clock_hours": 8.0,
+    "heartbeat_seconds": 60
+  }
+}

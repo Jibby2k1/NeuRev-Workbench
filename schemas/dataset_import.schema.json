@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Neurobench Dataset Import Record",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "kind",
+    "import_id",
+    "dataset_id",
+    "source_mode",
+    "original_name",
+    "source_path",
+    "destination_path",
+    "checksum",
+    "state",
+    "metadata",
+    "warnings",
+    "generated_artifacts",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "kind": {"type": "string", "const": "neurobench_dataset_import"},
+    "import_id": {"type": "string", "minLength": 1},
+    "dataset_id": {"type": "string", "minLength": 1},
+    "source_mode": {"type": "string", "enum": ["upload", "local_registration", "existing_artifact"]},
+    "source_role": {
+      "type": "string",
+      "enum": ["primary_video_candidate", "primary_video", "label_attachment", "neurev_json_attachment"]
+    },
+    "is_primary_video": {"type": "boolean"},
+    "original_name": {"type": "string", "minLength": 1},
+    "source_path": {"type": "string"},
+    "destination_path": {"type": "string"},
+    "checksum": {
+      "type": "object",
+      "required": ["sha256", "size_bytes"],
+      "properties": {
+        "sha256": {"type": ["string", "null"]},
+        "size_bytes": {"type": ["integer", "null"], "minimum": 0}
+      },
+      "additionalProperties": true
+    },
+    "state": {
+      "type": "string",
+      "enum": ["uploaded", "metadata_needed", "qc_ready", "processing", "ready", "annotation_in_progress", "complete", "failed"]
+    },
+    "metadata": {"type": "object", "additionalProperties": true},
+    "warnings": {"type": "array", "items": {"type": "string"}},
+    "generated_artifacts": {"type": "object", "additionalProperties": {"type": "string"}},
+    "revision": {"type": "integer", "minimum": 1},
+    "created_at": {"type": "string", "minLength": 1},
+    "updated_at": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": true
+}

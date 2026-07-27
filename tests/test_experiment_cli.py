@@ -37,6 +37,22 @@ def test_parser_registers_nested_soma_excitation_workflow():
     assert callable(args.func)
 
 
+def test_parser_registers_causal_proposal_program():
+    args = build_parser(active_command="experiment").parse_args(
+        [
+            "experiment",
+            "causal-proposal-program",
+            "preflight",
+            "--config",
+            "experiment.json",
+        ]
+    )
+
+    assert args.experiment_workflow == "causal-proposal-program"
+    assert args.experiment_action == "preflight"
+    assert callable(args.func)
+
+
 def test_preflight_cli_prints_json_and_can_write_explicit_copy(tmp_path, capsys):
     source = tmp_path / "source.npy"
     np.save(source, np.zeros((20, 8, 9), dtype=np.uint16))

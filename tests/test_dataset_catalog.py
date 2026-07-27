@@ -79,6 +79,8 @@ def test_catalog_joins_manifest_dashboard_and_review_app(tmp_path: Path) -> None
     assert len(records) == 1
     record = records[0]
     assert record["dataset_id"] == "burst"
+    assert record["modality"] is None
+    assert record["indicator"] is None
     assert record["paths"]["raw_video"] == "Inputs/Spon Ca Burst/burst.tif"
     assert record["video"]["frames"] == 20
     assert record["roi_count"] == 1
@@ -86,7 +88,7 @@ def test_catalog_joins_manifest_dashboard_and_review_app(tmp_path: Path) -> None
     assert record["capabilities"]["cfar_annotation"] is True
     assert record["capabilities"]["logical_views"] is True
     assert record["ready"] is True
-    assert record["readiness"] == {"review_ready": True, "video_ready": True}
+    assert record["readiness"] == {"review_ready": True, "video_ready": True, "scientific_results_ready": False}
     assert query_dataset_catalog(records, "spon burst")[0]["dataset_id"] == "burst"
     assert query_dataset_catalog(records, "right view")[0]["dataset_id"] == "burst"
     assert llm_catalog_context(records)["datasets"][0]["raw_video"] == "Inputs/Spon Ca Burst/burst.tif"
@@ -94,6 +96,8 @@ def test_catalog_joins_manifest_dashboard_and_review_app(tmp_path: Path) -> None
 
 
 def test_catalog_for_one_app_prefers_explicit_review_identity(tmp_path: Path) -> None:
+    from neurobench.data.imports import inspect_source, make_import_record
+
     app = tmp_path / "Outputs" / "NeuronReview" / "folder_name" / "app"
     _write_json(
         app / "review_data.json",
@@ -103,13 +107,139 @@ def test_catalog_for_one_app_prefers_explicit_review_identity(tmp_path: Path) ->
         },
     )
     (app / "index.html").write_text("workbench", encoding="utf-8")
+    source = tmp_path / "Inputs" / "declared" / "labels.tsv"
+    source.parent.mkdir(parents=True)
+    source.write_text("roi_id\nr1\n", encoding="utf-8")
+    inspected = inspect_source(source, workspace_root=tmp_path)
+    import_record = make_import_record(
+        dataset_id="declared",
+        import_id_value="imp_declared",
+        source_mode="local_registration",
+        original_name=source.name,
+        source_path="Inputs/declared/labels.tsv",
+        destination_path="Inputs/declared/labels.tsv",
+        metadata=inspected["metadata"],
+        warnings=inspected["warnings"],
+    )
+    import_record["app_dir"] = "Outputs/NeuronReview/folder_name/app"
+    _write_json(app / "imports" / "imp_declared.json", import_record)
 
     record = dataset_record_for_app(app, workspace_root=tmp_path)
+    discovered = discover_dataset_catalog(tmp_path)
+    discovered_record = next(item for item in discovered if item["dataset_id"] == "declared")
 
     assert dataset_id_from_review(json.loads((app / "review_data.json").read_text())) == "declared"
     assert raw_video_from_review(json.loads((app / "review_data.json").read_text())) == "Inputs/declared.tif"
     assert record["dataset_id"] == "declared"
     assert record["paths"]["raw_video"] == "Inputs/declared.tif"
+    assert record["imports"][0]["import_id"] == "imp_declared"
+    assert discovered_record["imports"][0]["import_id"] == "imp_declared"
+
+
+def test_catalog_exposes_neurev_json_as_distinct_external_import(tmp_path: Path) -> None:
+    app = tmp_path / "Outputs" / "NeuronReview" / "demo" / "app"
+    source = tmp_path / "Inputs" / "demo" / "external.json"
+    source.parent.mkdir(parents=True)
+    source.write_text('{"schema_version":1,"dataset_id":"demo","runs":[]}', encoding="utf-8")
+    _write_json(
+        app / "imports" / "imp_json.json",
+        {
+            "schema_version": 1,
+            "kind": "neurobench_dataset_import",
+            "import_id": "imp_json",
+            "dataset_id": "demo",
+            "source_mode": "local_registration",
+            "source_role": "neurev_json_attachment",
+            "is_primary_video": False,
+            "original_name": "external.json",
+            "source_path": "Inputs/demo/external.json",
+            "destination_path": "Inputs/demo/external.json",
+            "app_dir": "Outputs/NeuronReview/demo/app",
+            "checksum": {"sha256": "0" * 64, "size_bytes": source.stat().st_size},
+            "state": "complete",
+            "metadata": {
+                "kind": "neurev_json",
+                "format": "json",
+                "payload_kind": "architecture_runs",
+                "declared_dataset_id": "demo",
+                "counts": {"run_count": 0},
+            },
+            "warnings": [],
+            "generated_artifacts": {"external_neurev_json": "external_neurev/imp_json.json"},
+            "revision": 2,
+            "created_at": "2026-07-25T00:00:00Z",
+            "updated_at": "2026-07-25T00:01:00Z",
+        },
+    )
+
+    record = dataset_record_for_app(app, workspace_root=tmp_path)
+
+    assert record["imports"][0]["kind"] == "neurev_json"
+    assert record["imports"][0]["payload_kind"] == "architecture_runs"
+    assert record["imports"][0]["counts"] == {"run_count": 0}
+    assert record["external_neurev"] == {
+        "count": 1,
+        "confirmed_count": 1,
+        "payload_kinds": ["architecture_runs"],
+    }
+    assert record["links"]["neurev"] == "/api/datasets/demo/neurev"
+    assert "raw_video" not in record["paths"]
+
+
+def test_catalog_omits_corrupt_misbound_and_oversized_import_sidecars(tmp_path: Path) -> None:
+    from neurobench.data.imports import (
+        MAX_IMPORT_RECORD_BYTES,
+        inspect_source,
+        make_import_record,
+    )
+
+    app = tmp_path / "Outputs" / "NeuronReview" / "demo" / "app"
+    _write_json(
+        app / "review_data.json",
+        {
+            "dataset": {"dataset_id": "demo"},
+            "video": {"name": "movie", "frames": 1, "height": 2, "width": 2},
+            "parameters": {},
+            "rois": [],
+        },
+    )
+    source = tmp_path / "Inputs" / "demo" / "labels.tsv"
+    source.parent.mkdir(parents=True)
+    source.write_text("roi_id\nr1\n", encoding="utf-8")
+    inspected = inspect_source(source, workspace_root=tmp_path)
+    base = make_import_record(
+        dataset_id="demo",
+        import_id_value="imp_base",
+        source_mode="local_registration",
+        original_name=source.name,
+        source_path="Inputs/demo/labels.tsv",
+        destination_path="Inputs/demo/labels.tsv",
+        metadata=inspected["metadata"],
+        warnings=inspected["warnings"],
+    )
+    base["app_dir"] = "Outputs/NeuronReview/demo/app"
+
+    corrupt_path = app / "imports" / "imp_corrupt.json"
+    corrupt_path.parent.mkdir(parents=True)
+    corrupt_path.write_text("{not-json", encoding="utf-8")
+    _write_json(app / "imports" / "imp_filename.json", dict(base, import_id="imp_other"))
+    _write_json(app / "imports" / "imp_dataset.json", dict(base, import_id="imp_dataset", dataset_id="other"))
+    _write_json(
+        app / "imports" / "imp_app.json",
+        dict(base, import_id="imp_app", app_dir="Outputs/NeuronReview/other/app"),
+    )
+    oversize_path = app / "imports" / "imp_oversize.json"
+    with oversize_path.open("wb") as handle:
+        handle.truncate(MAX_IMPORT_RECORD_BYTES + 1)
+
+    direct = dataset_record_for_app(app, workspace_root=tmp_path)
+    discovered = discover_dataset_catalog(tmp_path)
+    discovered_demo = next(item for item in discovered if item["dataset_id"] == "demo")
+
+    assert "imports" not in direct
+    assert "latest_import" not in direct
+    assert "imports" not in discovered_demo
+    assert "latest_import" not in discovered_demo
 
 
 def test_raw_video_from_review_accepts_nested_dataset_paths() -> None:
@@ -163,7 +293,7 @@ def test_catalog_discovers_labeled_video_collections(tmp_path: Path) -> None:
     assert record["video"]["frame_rate_hz"] == 50.0
     assert record["capabilities"]["video_collection"] is True
     assert record["exists"]["raw_videos"] is True
-    assert record["readiness"] == {"review_ready": False, "video_ready": True}
+    assert record["readiness"] == {"review_ready": False, "video_ready": True, "scientific_results_ready": False}
     assert record["ready"] is True
     assert query_dataset_catalog(records, "stimulus side")[0]["dataset_id"] == "fish_intent"
     assert llm_record["videos"][0]["path"] == "Inputs/fish/2 left.tif"

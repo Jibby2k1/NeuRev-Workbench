@@ -4,25 +4,22 @@
 <meta charset="utf-8">
 <meta name="neurobench-workbench-asset-version" content="{asset_version}">
 <meta name="neurobench-annotation-layout" content="dock-v2">
-<title>Neuron Annotation Workbench - {dataset_id}</title>
+<title>NeuRev - {dataset_id}</title>
 <link rel="stylesheet" href="workbench.css?v={asset_version}">
 </head>
 <body>
 <div class="app booting" id="appRoot">
   <main class="stage reviewOnly">
     <div class="topbar">
-      <h1>Neurobench</h1>
-      <span class="pageContext">Review · {dataset_id}</span>
+      <h1>NeuRev</h1>
+      <span class="pageContext">Annotate · {dataset_id}</span>
       <nav class="navTabs">
-        <a id="homeTab" data-nav-page="home" href="#home">Home</a>
-        <a id="qcTab" data-nav-page="qc" href="#data">Data</a>
-        <a id="architectureTab" data-nav-page="architecture" href="#pipelines">Pipelines</a>
-        <a id="experimentsTab" data-nav-page="experiments" href="#experiments">Experiment Lab</a>
-        <a id="reviewTab" data-nav-page="review" href="#review">Review</a>
-        <a id="metricsTab" data-nav-page="metrics" href="#progress">Progress</a>
-        <a id="reportTab" data-nav-page="report" href="#report">Report</a>
+        <a id="datasetsTab" data-nav-page="datasets" href="#datasets">Datasets</a>
+        <a id="annotateTab" data-nav-page="annotate" href="#annotate">Annotate</a>
+        <a id="resultsTab" data-nav-page="results" href="#results">Results</a>
+        <a id="researchTab" data-nav-page="research" href="#research">Research Tools</a>
       </nav>
-      <label class="modeToggle">Mode
+      <label class="modeToggle researchModeControl">Mode
         <select id="uiMode" class="uiModeSelect">
           <option value="guided">Guided</option>
           <option value="standard">Standard</option>
@@ -43,6 +40,7 @@
       <span id="saveState" class="saveState">loading</span>
     </div>
     <div class="nextBestActionShell" data-next-action></div>
+    <section id="annotationTaskShell" class="annotationTaskShell" aria-label="Annotation task"></section>
     <nav class="reviewSubnav" aria-label="Review views">
       <a id="reviewInspectSubtab" href="#review">Inspect</a>
       <a id="reviewStencilSubtab" href="#review-stencil">Stencil</a>
@@ -65,7 +63,7 @@
       <button id="openRunViewBtn" class="advancedOnly">Open View</button>
       <button id="previewRunViewBtn" class="advancedOnly">Generate Preview</button>
       <button id="generateRunViewBtn" class="advancedOnly">Generate View</button>
-      <button id="unlockGenerationBtn" class="advancedOnly">Unlock Generation</button>
+      <button id="unlockGenerationBtn" class="ownerAuthControl hidden">Unlock Changes</button>
       <button id="refreshRunBtn">Refresh</button>
     </div>
     <div id="runGeneratePanel" class="runGeneratePanel hidden advancedOnly"></div>
@@ -220,7 +218,7 @@
       <div class="toolbar compactToolGroup">
         <button id="prevActiveFrameBtn">Prev Active</button>
         <button id="nextActiveFrameBtn">Next Active</button>
-      <label>Workflow
+      <label class="legacyWorkflowControl">Workflow
         <select id="reviewWorkflowPreset">
           <option value="custom">Custom</option>
           <option value="validate_neurons">Validate neurons</option>
@@ -500,17 +498,17 @@
       <div class="metric"><b>{frames}</b><span>frames</span></div>
       </div>
     </details>
-    <details class="reviewRailSection primary" open>
+    <details id="roiReviewRail" class="reviewRailSection primary" open>
       <summary>ROI Review</summary>
     <section class="reviewSessionPanel" id="reviewSessionPanel" aria-label="Review session checklist"></section>
-    <section class="guidedPanelShell">
+    <section class="guidedPanelShell legacyReviewControl">
       <div class="topbar">
         <h2>Guided Review</h2>
         <button id="reviewModeToggle">Explore / Guided</button>
       </div>
       <div id="guidedPanel"></div>
     </section>
-    <div class="buttonRow">
+    <div class="buttonRow legacyDecisionRow">
       <button id="acceptBtn" class="accept">Accept</button>
       <button id="rejectBtn" class="reject">Reject</button>
       <button id="unsureBtn" class="unsure">Unsure</button>
@@ -522,7 +520,7 @@
       <button id="clearBtn">Clear</button>
       <button id="deleteBtn">Hide ROI</button>
     </div>
-    <div class="toolbar">
+    <div class="toolbar legacyQueueShortcuts">
       <button id="nextActiveRoiBtn">Next Active ROI</button>
       <button id="nextUncertainRoiBtn">Next Uncertain</button>
       <button id="nextArtifactRiskBtn">Next Artifact Risk</button>
@@ -592,9 +590,9 @@
       <button id="clearMultiSelectBtn">Clear Multi</button>
     </div>
     </details>
-    <details class="reviewRailSection">
+    <details id="eventReviewRail" class="reviewRailSection">
       <summary>Event Review</summary>
-    <div class="buttonRow">
+    <div class="buttonRow legacyDecisionRow">
       <button id="eventAcceptBtn" class="accept">Accept Event</button>
       <button id="eventRejectBtn" class="reject">Reject Event</button>
       <button id="eventUnsureBtn" class="unsure">Unsure</button>
@@ -731,7 +729,7 @@
       <div class="suggestionList" id="suggestionList"></div>
     </details>
     </details>
-    <details class="reviewRailSection" open>
+    <details id="reviewQueueRail" class="reviewRailSection" open>
       <summary>Review Queue</summary>
     <div class="toolbar advancedOnly">
       <select id="queueSelect">
@@ -815,6 +813,20 @@
   <section id="homePage" class="architecturePage homePage hidden">
     <div class="topbar" data-page-chrome="home"></div>
     <div id="workflowHome"></div>
+  </section>
+  <section id="datasetsPage" class="architecturePage productPage hidden">
+    <div class="topbar" data-page-chrome="datasets"></div>
+    <div id="datasetsPageBody"></div>
+  </section>
+  <section id="researchPage" class="architecturePage productPage hidden">
+    <div class="topbar" data-page-chrome="research"></div>
+    <div id="researchPageBody"></div>
+    <a class="hidden" href="#experiments" aria-label="Legacy Experiment Lab route">Experiment Lab</a>
+    <a class="hidden" data-nav-page="experiments" href="#experiments">Experiment Lab</a>
+    <a id="architectureTab" class="hidden" href="#pipelines">Pipelines</a>
+    <a id="reviewTab" class="hidden" href="#annotate">Annotate</a>
+    <a id="reportTab" class="hidden" href="#report">Results</a>
+    <a id="qcTab" class="hidden" href="#data">Data</a>
   </section>
   <section id="architecturePage" class="architecturePage hidden">
     <div class="topbar" data-page-chrome="architecture"></div>

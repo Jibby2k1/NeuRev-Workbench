@@ -1,0 +1,13 @@
+# Production workbench JavaScript bundle order. Keep this list explicit.
+10_state_persistence.js
+15_product_shell.js
+20_review_core.js
+24_cfar_mask_annotation.js
+25_review_controls.js
+30_architecture_lab.js
+40_experiment_lab.js
+50_pipeline_builder.js
+60_metrics_report.js
+70_dataset_qc.js
+80_review_subpages.js
+90_boot.js

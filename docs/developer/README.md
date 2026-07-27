@@ -8,6 +8,7 @@
 | Implement fish intent/control tools | [Fish control tooling roadmap](FISH_CONTROL_TOOLING_ROADMAP.md) | `neurobench/programs/`, future intent/control packages |
 | Change workbench UI | [Neuron Workbench](../NEURON_WORKBENCH.md) | `neurobench/workbench/assets/src/` |
 | Query/build video review apps | [Workbench video/catalog refactor](WORKBENCH_VIDEO_CATALOG_REFACTOR.md) | `neurobench/data/catalog.py`, `neurobench/workbench/` |
+| Implement the NeuRev first release | [First-release handoff](NEUREV_FIRST_RELEASE_HANDOFF.md) | `neurobench/data/imports.py`, `neurobench/workbench/baseline.py`, `neurobench/workbench/server.py`, `neurobench/workbench/assets/src/` |
 | Review architecture debt | [Codebase audit](../CODEBASE_AUDIT.md) | use the current package map before acting |
 
 Public commands should use thin modules under `neurobench/cli/`. Reusable

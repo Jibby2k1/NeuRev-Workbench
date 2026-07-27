@@ -86,7 +86,8 @@ def test_annotation_tools_are_visible_in_guided_mode_and_share_one_canvas():
     assert "setSetting('activeVideoViewId', event.target.value)" in controls
     assert "focusLogicalVideoView();" in controls
     start_manual = controls.split("document.getElementById('startManualNeuronBtn').onclick", 1)[1].split("};", 1)[0]
-    assert "ensureSingleAnnotationView();" in start_manual
+    assert "activateAnnotationTool('roi-center');" in start_manual
+    assert "forceSingle:true" in (ASSETS / "src" / "20_review_core.js").read_text(encoding="utf-8")
 
 
 def test_review_and_qc_polygon_helpers_do_not_collide():
@@ -130,6 +131,62 @@ def test_review_lasso_polygon_is_orientation_independent():
 
     assert result.returncode == 0, result.stderr
     assert json.loads(result.stdout) == [True, True, False, False]
+
+
+def test_cfar_flood_respects_roi_bounds_and_pixel_cap():
+    node = shutil.which("node")
+    if node is None:
+        pytest.skip("Node.js is required for the CFAR flood behavior check")
+    source = (ASSETS / "src" / "24_cfar_mask_annotation.js").read_text(
+        encoding="utf-8"
+    )
+    start = source.index("function cfarFloodBounds")
+    end = source.index("\nfunction applyCfarMaskFlood", start)
+    function_source = source[start:end]
+    script = "\n".join(
+        [
+            "const CFAR_FLOOD_PIXEL_LIMIT = 50000;",
+            "const settings = {cfarFloodBound:'roi_box', cfarFloodPadding:0, cfarFloodTolerance:0, cfarFloodRadius:1};",
+            "const cfarMaskSetting = name => settings[name];",
+            "const activeLogicalVideoView = () => null;",
+            "const geometrySummary = () => null;",
+            "const data = {video:{width:5,height:5}};",
+            "let currentImageData;",
+            "const cfarFrameImageData = () => currentImageData;",
+            "function uniformImage(width, height, value){",
+            "  const pixels = new Uint8ClampedArray(width * height * 4);",
+            "  for(let index=0; index<width * height; index++){",
+            "    pixels[index * 4] = value; pixels[index * 4 + 1] = value; pixels[index * 4 + 2] = value; pixels[index * 4 + 3] = 255;",
+            "  }",
+            "  return {width, height, data:pixels};",
+            "}",
+            function_source,
+            "currentImageData = uniformImage(5, 5, 40);",
+            "const bounded = connectedCfarFlood({x:2,y:2}, {bbox:[1,1,3,3]});",
+            "settings.cfarFloodBound = 'frame';",
+            "data.video.width = 230; data.video.height = 230;",
+            "currentImageData = uniformImage(230, 230, 40);",
+            "const capped = connectedCfarFlood({x:115,y:115}, {bbox:[0,0,229,229]});",
+            "process.stdout.write(JSON.stringify({",
+            "  boundedCount:bounded.points.length,",
+            "  boundedBox:bounded.bounds.bbox,",
+            "  boundedOutside:bounded.points.some(([x,y]) => x < 1 || x > 3 || y < 1 || y > 3),",
+            "  cappedCount:capped.points.length,",
+            "  cappedTruncated:capped.truncated",
+            "}));",
+        ]
+    )
+    result = subprocess.run([node, "-e", script], text=True, capture_output=True, check=False)
+
+    assert result.returncode == 0, result.stderr
+    payload = json.loads(result.stdout)
+    assert payload == {
+        "boundedCount": 9,
+        "boundedBox": [1, 1, 3, 3],
+        "boundedOutside": False,
+        "cappedCount": 50_000,
+        "cappedTruncated": True,
+    }
 
 
 def test_browser_frame_pattern_supports_general_padding_widths():

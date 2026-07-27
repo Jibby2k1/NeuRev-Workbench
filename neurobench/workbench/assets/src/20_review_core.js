@@ -115,6 +115,7 @@ function eventMatchesQueue(roi, ev, queue=setting('eventQueue') || 'all'){
   if(queue === 'accepted') return state === 'accepted';
   if(queue === 'rejected') return state === 'rejected';
   if(queue === 'unsure') return state === 'unsure';
+  if(queue === 'reviewed') return Boolean(state);
   if(queue === 'missingReviewer') return Boolean(state) && !reviewer;
   if(queue === 'reviewedByMe') return currentReviewerId() && reviewer === currentReviewerId();
   if(queue === 'reviewedByOther') return currentReviewerId() && Boolean(state) && reviewer && reviewer !== currentReviewerId();
@@ -155,6 +156,7 @@ function visibleRois(){
     if (queue === 'accepted') return ann.state === 'accept';
     if (queue === 'rejected') return ann.state === 'reject';
     if (queue === 'unsure') return ann.state === 'unsure';
+    if (queue === 'reviewed') return roiReviewed(r);
     if (queue === 'missingReviewer') return roiReviewed(r) && !roiReviewerId(r);
     if (queue === 'reviewedByMe') return currentReviewerId() && roiReviewerId(r) === currentReviewerId();
     if (queue === 'reviewedByOther') return currentReviewerId() && roiReviewed(r) && roiReviewerId(r) && roiReviewerId(r) !== currentReviewerId();
@@ -434,6 +436,13 @@ function shouldDrawSuggestionLabel(suggestion){
   return true;
 }
 
+function applyOverlayVisibilityToControls(){
+  for(const id of ['showRois','showEvents']){
+    const control = document.getElementById(id);
+    if(control) control.checked = setting(id) !== false;
+  }
+}
+
 function applySettingsToControls() {
   const pairs = [
     ['eventThreshold', 'eventThresholdLabel', 1],
@@ -463,6 +472,7 @@ function applySettingsToControls() {
   if(eventQueueSelect) eventQueueSelect.value = setting('eventQueue') || 'all';
   document.getElementById('discoveryQueueSelect').value = setting('discoveryQueue') || 'all';
   document.getElementById('evidenceSelect').value = setting('evidenceMap') || '';
+  applyOverlayVisibilityToControls();
   document.getElementById('showEvidence').checked = Boolean(setting('showEvidence'));
   document.getElementById('showSuggestions').checked = Boolean(setting('showSuggestions'));
   const labelMode = currentRoiLabelMode();
@@ -681,6 +691,71 @@ function toggleReviewSideBySide(){
   queueSave();
 }
 
+const ANNOTATION_TOOL_ACTIONS = Object.freeze({
+  'roi-select': {manualRoiMode:'select', roiEditMode:'off', cfarMaskTool:'off', panelId:'roiAnnotationPanel'},
+  'roi-center': {manualRoiMode:'center', roiEditMode:'off', cfarMaskTool:'off', panelId:'roiAnnotationPanel'},
+  'roi-circle': {manualRoiMode:'circle', roiEditMode:'off', cfarMaskTool:'off', panelId:'roiAnnotationPanel'},
+  'roi-lasso': {manualRoiMode:'lasso', roiEditMode:'off', cfarMaskTool:'off', panelId:'roiAnnotationPanel'},
+  'roi-add': {manualRoiMode:'select', roiEditMode:'brush_add', cfarMaskTool:'off', panelId:'roiAnnotationPanel'},
+  'roi-erase': {manualRoiMode:'select', roiEditMode:'brush_erase', cfarMaskTool:'off', panelId:'roiAnnotationPanel'},
+  'foreground-brush': {manualRoiMode:'select', roiEditMode:'off', cfarMaskTool:'brush_add', cfarMaskTarget:'foreground', panelId:'cfarMaskAnnotationPanel'},
+  'background-brush': {manualRoiMode:'select', roiEditMode:'off', cfarMaskTool:'brush_add', cfarMaskTarget:'background', panelId:'cfarMaskAnnotationPanel'},
+  'foreground-flood': {manualRoiMode:'select', roiEditMode:'off', cfarMaskTool:'flood_add', cfarMaskTarget:'foreground', panelId:'cfarMaskAnnotationPanel'},
+  'background-flood-erase': {manualRoiMode:'select', roiEditMode:'off', cfarMaskTool:'flood_erase', cfarMaskTarget:'background', panelId:'cfarMaskAnnotationPanel'}
+});
+
+function normalizeAnnotationToolModes(next={}){
+  const manualModes = new Set(['select','center','circle','lasso']);
+  const roiEditModes = new Set(['off','brush_add','brush_erase']);
+  const cfarModes = new Set(['off','brush_add','brush_erase','flood_add','flood_erase']);
+  let manualRoiMode = manualModes.has(next.manualRoiMode) ? next.manualRoiMode : 'select';
+  let roiEditMode = roiEditModes.has(next.roiEditMode) ? next.roiEditMode : 'off';
+  let cfarMaskTool = cfarModes.has(next.cfarMaskTool) ? next.cfarMaskTool : 'off';
+
+  if(cfarMaskTool !== 'off'){
+    manualRoiMode = 'select';
+    roiEditMode = 'off';
+  } else if(roiEditMode !== 'off'){
+    manualRoiMode = 'select';
+  } else if(manualRoiMode !== 'select'){
+    roiEditMode = 'off';
+    cfarMaskTool = 'off';
+  }
+  return {manualRoiMode, roiEditMode, cfarMaskTool};
+}
+
+function resetAnnotationToolInteractions(){
+  manualRoiState = {drawing:false, start:null, points:[], preview:null, suppressClick:false};
+  roiEditState = {drawing:false, editedId:null};
+  if(typeof cfarMaskState !== 'undefined') cfarMaskState = {drawing:false, roiId:null, pointerId:null};
+}
+
+function setAnnotationToolModes(next={}, {render=true, openPanelId='', forceSingle=false}={}){
+  const modes = normalizeAnnotationToolModes({
+    manualRoiMode: Object.prototype.hasOwnProperty.call(next, 'manualRoiMode') ? next.manualRoiMode : setting('manualRoiMode'),
+    roiEditMode: Object.prototype.hasOwnProperty.call(next, 'roiEditMode') ? next.roiEditMode : setting('roiEditMode'),
+    cfarMaskTool: Object.prototype.hasOwnProperty.call(next, 'cfarMaskTool') ? next.cfarMaskTool : setting('cfarMaskTool')
+  });
+  Object.assign(annotations.settings, modes);
+  if(['foreground','background'].includes(next.cfarMaskTarget)) annotations.settings.cfarMaskTarget = next.cfarMaskTarget;
+  const activeEdit = modes.manualRoiMode !== 'select' || modes.roiEditMode !== 'off' || modes.cfarMaskTool !== 'off';
+  if(forceSingle || activeEdit) annotations.settings.reviewSideBySide = false;
+  resetAnnotationToolInteractions();
+  applyReviewViewerMode();
+  applySettingsToControls();
+  if(typeof syncCfarMaskControls === 'function') syncCfarMaskControls();
+  if(openPanelId && typeof openToolPanel === 'function') openToolPanel(openPanelId);
+  queueSave();
+  if(render && typeof renderAll === 'function') renderAll();
+  return Object.assign({}, modes, {cfarMaskTarget:annotations.settings.cfarMaskTarget});
+}
+
+function activateAnnotationTool(action, {render=true}={}){
+  const config = ANNOTATION_TOOL_ACTIONS[action];
+  if(!config) return null;
+  return setAnnotationToolModes(config, {render, openPanelId:config.panelId, forceSingle:true});
+}
+
 function refreshReviewAfterDataChange(){
   clearTraceCaches('review-data-change');
   slider.max = data.video.frames;
@@ -736,7 +811,7 @@ function renderRunSyncControls(){
   if(unlockBtn) {
     const needsToken = Boolean(generationEnvironment?.owner_token_required);
     unlockBtn.classList.toggle('hidden', !needsToken);
-    unlockBtn.textContent = generationOwnerToken ? 'Generation Unlocked' : 'Unlock Generation';
+    unlockBtn.textContent = generationOwnerToken ? 'Changes unlocked' : 'Unlock changes';
   }
   if(refreshBtn) refreshBtn.disabled = !serverBacked;
   if(run && (!runGenerated(run) || currentGenerationJob)){
@@ -1004,7 +1079,7 @@ function applyOverlayPreset(name){
   const preset = OVERLAY_PRESETS[name];
   if(!preset) return;
   setSetting('overlayPreset', name);
-  for(const key of ['selectedOverlayMode','selectedFillOpacity','selectedOutlineWidth','overlayOpacity','showEvidence','showSuggestions']) {
+  for(const key of ['selectedOverlayMode','selectedFillOpacity','selectedOutlineWidth','overlayOpacity','showRois','showEvents','showEvidence','showSuggestions']) {
     if(Object.prototype.hasOwnProperty.call(preset, key)) setSetting(key, preset[key]);
   }
   if(Object.prototype.hasOwnProperty.call(preset, 'showLabels')) setSetting('roiLabelMode', preset.showLabels ? 'all' : 'off');
@@ -1029,11 +1104,14 @@ function applyReviewWorkflowPreset(name){
     return;
   }
   setSetting('reviewWorkflowPreset', name);
-  for(const key of ['queue','discoveryQueue','roiFocusMode','reviewMode','selectedOverlayMode','showEvidence','showSuggestions','uiMode']) {
+  for(const key of ['queue','discoveryQueue','roiFocusMode','reviewMode','selectedOverlayMode','showRois','showEvents','showEvidence','showSuggestions','uiMode']) {
     if(Object.prototype.hasOwnProperty.call(preset, key)) setSetting(key, preset[key]);
   }
+  const mappedTask = typeof annotationTaskForWorkflowPreset === 'function' ? annotationTaskForWorkflowPreset(name) : '';
+  if(mappedTask) annotations.settings.annotationTask = mappedTask;
   if(preset.overlayPreset) applyOverlayPreset(preset.overlayPreset);
   if(Object.prototype.hasOwnProperty.call(preset, 'showLabels')) setSetting('roiLabelMode', preset.showLabels ? 'all' : 'off');
+  setCheckbox('showRois', preset.showRois !== false);
   setCheckbox('showLabels', preset.showLabels);
   setCheckbox('showEvents', preset.showEvents);
   setCheckbox('showSuggestions', preset.showSuggestions);
@@ -1042,7 +1120,9 @@ function applyReviewWorkflowPreset(name){
     const details = document.getElementById('discoveryDetails');
     if(details) details.open = true;
   }
-  if(name === 'mask_editing') setSetting('manualRoiMode', 'select');
+  if(mappedTask && typeof setAnnotationToolModes === 'function') {
+    setAnnotationToolModes({manualRoiMode:'select', roiEditMode:'off', cfarMaskTool:'off'}, {render:false});
+  }
   setSetting('overlayScope', preset.roiFocusMode && preset.roiFocusMode !== 'all' ? 'focus' : 'all');
   const first = visibleRois()[0];
   if(first && !selectedRoi()) selectedId = first.id;
@@ -1771,10 +1851,7 @@ function drawManualPreview(){
 }
 
 function cancelManualRoi(){
-  manualRoiState = {drawing:false, start:null, points:[], preview:null, suppressClick:false};
-  setSetting('manualRoiMode', 'select');
-  applySettingsToControls();
-  drawOverlay();
+  setAnnotationToolModes({manualRoiMode:'select', roiEditMode:'off', cfarMaskTool:'off'});
 }
 
 async function materializeManualTraces(){
@@ -2733,6 +2810,7 @@ function renderParams(){
 
 function renderAll(){
   updateCounts();
+  if(typeof renderAnnotationTaskShell === 'function') renderAnnotationTaskShell();
   updateUndoButton();
   renderButtons();
   renderReviewSessionPanel();
@@ -2923,6 +3001,8 @@ function resetReviewVisibility(){
   setSetting('showPotentialRois', true);
   setSetting('showAnnotatedNeuronRois', true);
   setSetting('showAnnotatedNonNeuronRois', true);
+  setSetting('showRois', true);
+  setSetting('showEvents', true);
   setSetting('showSuggestions', true);
   setSetting('roiLabelMode', 'all');
   setSetting('reviewWorkflowPreset', 'custom');
@@ -3466,7 +3546,7 @@ function activateMissedNeuronMode(){
 }
 
 function snapshotFields(){
-  return ['eventThreshold','kalmanGain','spikeGain','overlayOpacity','overlayPreset','selectedOverlayMode','selectedFillOpacity','selectedOutlineWidth','roiFocusMode','overlayScope','neighborRadiusPx','queue','eventQueue','discoveryQueue','evidenceMap','showEvidence','showSuggestions','showStencilOverlay','showTemplateOverlay','showRegisteredProjectionOverlay','showGridOverlay','showGridIntensityOverlay','showPredictionErrorOverlay','selectedGridCell','showPotentialRois','showAnnotatedNeuronRois','showAnnotatedNonNeuronRois','minArea','minEvents','activeRunId'];
+  return ['eventThreshold','kalmanGain','spikeGain','overlayOpacity','overlayPreset','selectedOverlayMode','selectedFillOpacity','selectedOutlineWidth','roiFocusMode','overlayScope','neighborRadiusPx','queue','eventQueue','discoveryQueue','evidenceMap','showRois','showEvents','showEvidence','showSuggestions','showStencilOverlay','showTemplateOverlay','showRegisteredProjectionOverlay','showGridOverlay','showGridIntensityOverlay','showPredictionErrorOverlay','selectedGridCell','showPotentialRois','showAnnotatedNeuronRois','showAnnotatedNonNeuronRois','minArea','minEvents','activeRunId'];
 }
 
 function parameterSnapshots(){
@@ -3572,8 +3652,9 @@ function nextRoi(delta){
     setSaveState('no visible ROIs in the current queue', 'bad');
     return;
   }
-  const idx = Math.max(0, rows.findIndex(r => String(r.id) === String(selectedId)));
-  const next = rows[(idx + delta + rows.length) % rows.length];
+  const idx = rows.findIndex(r => String(r.id) === String(selectedId));
+  const base = idx >= 0 ? idx : delta > 0 ? -1 : 0;
+  const next = rows[(base + delta + rows.length) % rows.length];
   selectRoi(next.id, false, {animate:true});
   setSaveState(`selected ROI ${next.id}`, 'ok');
 }

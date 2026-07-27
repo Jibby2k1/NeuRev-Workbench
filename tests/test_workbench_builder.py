@@ -20,6 +20,11 @@ def _review_payload() -> dict:
     }
 
 
+def _embedded_review_data(index: str) -> dict:
+    embedded = index.split('<script id="review-data" type="application/json">', 1)[1].split("</script>", 1)[0]
+    return json.loads(embedded)
+
+
 class WorkbenchBuilderTests(unittest.TestCase):
     def test_workbench_assets_packaged(self):
         from neurobench.workbench.builder import load_workbench_asset, workbench_asset_version
@@ -56,13 +61,13 @@ class WorkbenchBuilderTests(unittest.TestCase):
             annotations = json.loads(paths["annotations"].read_text(encoding="utf-8"))
             architecture_runs = json.loads(paths["architecture_runs"].read_text(encoding="utf-8"))
 
-        self.assertIn("Neuron Annotation Workbench - synthetic_app", index)
+        self.assertIn("<title>NeuRev - synthetic_app</title>", index)
         self.assertIn("workbench.css?v=", index)
         self.assertIn("workbench.js?v=", index)
         self.assertEqual(data["dataset"]["dataset_id"], "synthetic_app")
         self.assertIn("pipelineCatalog", data)
         self.assertEqual(annotations["schema_version"], 3)
-        self.assertEqual(architecture_runs["runs"][0]["run_id"], "current_review_pipeline")
+        self.assertEqual(architecture_runs, {"schema_version": 1, "dataset_id": "synthetic_app", "runs": []})
         self.assertTrue(paths["css"].name.endswith(".css"))
         self.assertTrue(paths["js"].name.endswith(".js"))
 
@@ -146,7 +151,114 @@ class WorkbenchBuilderTests(unittest.TestCase):
             runs = json.loads(paths["architecture_runs"].read_text(encoding="utf-8"))
 
         self.assertIsNone(inputs["architecture_runs_path"])
-        self.assertEqual(runs["runs"][0]["run_id"], "current_review_pipeline")
+        self.assertEqual(runs, {"schema_version": 1, "dataset_id": "new_dataset", "runs": []})
+
+    def test_in_memory_renderer_preserves_review_and_attached_run_bytes(self):
+        from neurobench.workbench.builder import render_workbench_assets
+
+        with tempfile.TemporaryDirectory() as tmp:
+            app = Path(tmp) / "historical" / "app"
+            app.mkdir(parents=True)
+            review_path = app / "review_data.json"
+            review_bytes = json.dumps(_review_payload(), indent=1).encode("utf-8") + b"\n"
+            annotation_bytes = b'{ "schema_version" : 2, "reviewer" : "historical" }\n'
+            run_bytes = b'{"schema_version":1,"dataset_id":"historical","runs":[{"run_id":"attached_scientific_run"}]}\n'
+            review_path.write_bytes(review_bytes)
+            (app / "annotations.json").write_bytes(annotation_bytes)
+            (app / "architecture_runs.json").write_bytes(run_bytes)
+            before = {path.name: path.read_bytes() for path in app.iterdir()}
+
+            rendered = render_workbench_assets(
+                app_dir=app,
+                review_data_path=review_path,
+                dataset_id="historical",
+            )
+
+            after = {path.name: path.read_bytes() for path in app.iterdir()}
+            embedded = _embedded_review_data(rendered["index.html"].decode("utf-8"))
+
+        self.assertEqual(set(rendered), {"index.html", "workbench.css", "workbench.js"})
+        self.assertTrue(all(isinstance(value, bytes) for value in rendered.values()))
+        self.assertEqual(before, after)
+        self.assertEqual(embedded["architectureRuns"]["runs"][0]["run_id"], "attached_scientific_run")
+
+    def test_rebuild_byte_preserves_nonempty_historical_artifacts_by_default(self):
+        from neurobench.workbench.builder import build_workbench
+
+        with tempfile.TemporaryDirectory() as tmp:
+            app = Path(tmp) / "historical" / "app"
+            app.mkdir(parents=True)
+            review_path = app / "review_data.json"
+            review_bytes = json.dumps(_review_payload(), indent=3).encode("utf-8") + b"\n"
+            annotation_bytes = b'{ "schema_version" : 2, "reviewer" : "historical", "decisions" : [1] }\n'
+            run_bytes = b'{ "schema_version" : 1, "dataset_id" : "historical", "runs" : [{"run_id":"valuable"}] }\n'
+            review_path.write_bytes(review_bytes)
+            (app / "annotations.json").write_bytes(annotation_bytes)
+            (app / "architecture_runs.json").write_bytes(run_bytes)
+            protected = {
+                name: (app / name).read_bytes()
+                for name in ("review_data.json", "annotations.json", "architecture_runs.json")
+            }
+
+            paths = build_workbench(
+                app_dir=app,
+                review_data_path=review_path,
+                dataset_id="historical",
+            )
+
+            after = {name: (app / name).read_bytes() for name in protected}
+
+        self.assertEqual(after, protected)
+        self.assertTrue(paths["index"].name.endswith(".html"))
+
+    def test_explicit_annotation_migration_is_the_only_rewrite_path(self):
+        from neurobench.workbench.builder import build_workbench
+
+        with tempfile.TemporaryDirectory() as tmp:
+            app = Path(tmp) / "app"
+            app.mkdir()
+            review_path = app / "review_data.json"
+            review_path.write_text(json.dumps(_review_payload()), encoding="utf-8")
+            original = b'{"schema_version":2,"settings":{"reviewWorkflowPreset":"cfar_mask"}}\n'
+            (app / "annotations.json").write_bytes(original)
+            (app / "architecture_runs.json").write_text(
+                json.dumps({"schema_version": 1, "dataset_id": "demo", "runs": []}),
+                encoding="utf-8",
+            )
+
+            build_workbench(
+                app_dir=app,
+                review_data_path=review_path,
+                dataset_id="demo",
+                migrate_annotations=True,
+            )
+            migrated_bytes = (app / "annotations.json").read_bytes()
+            migrated = json.loads(migrated_bytes)
+
+        self.assertNotEqual(migrated_bytes, original)
+        self.assertEqual(migrated["schema_version"], 3)
+
+    def test_asset_status_rejects_tampered_js_even_with_current_html_marker(self):
+        from neurobench.workbench.builder import build_workbench, workbench_asset_status
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            review_path = root / "review_data.json"
+            review_path.write_text(json.dumps(_review_payload()), encoding="utf-8")
+            paths = build_workbench(
+                app_dir=root / "app",
+                review_data_path=review_path,
+                dataset_id="demo",
+            )
+            before = workbench_asset_status(root / "app")
+            paths["js"].write_bytes(paths["js"].read_bytes() + b"// tampered\n")
+            after = workbench_asset_status(root / "app")
+
+        self.assertTrue(before["current"])
+        self.assertTrue(after["marker_current"])
+        self.assertTrue(after["css_current"])
+        self.assertFalse(after["js_current"])
+        self.assertFalse(after["current"])
 
     def test_build_workbench_preserves_review_dataset_without_manifest(self):
         from neurobench.workbench.builder import build_workbench
@@ -219,6 +331,7 @@ class WorkbenchBuilderTests(unittest.TestCase):
             catalog_path = app_dir / "architecture_runs.json"
             catalog_text = '{"schema_version":1,"dataset_id":"synthetic_app","runs":[{"run_id":"valuable"}]}\n'
             catalog_path.write_text(catalog_text, encoding="utf-8")
+            before = {path.name: path.read_bytes() for path in app_dir.iterdir()}
 
             with self.assertRaisesRegex(FileNotFoundError, "Architecture-run catalog does not exist"):
                 build_workbench(
@@ -229,8 +342,10 @@ class WorkbenchBuilderTests(unittest.TestCase):
                 )
 
             preserved_text = catalog_path.read_text(encoding="utf-8")
+            after = {path.name: path.read_bytes() for path in app_dir.iterdir()}
 
         self.assertEqual(preserved_text, catalog_text)
+        self.assertEqual(after, before)
 
     def test_legacy_build_script_uses_package_builder(self):
         with tempfile.TemporaryDirectory() as tmp:

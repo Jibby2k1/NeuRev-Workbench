@@ -143,11 +143,18 @@ Data helpers for Neurobench.
 - Signature: `as_video_store(video: Any) -> VideoStore`
 - Summary: Return ``video`` as a ``VideoStore`` without copying when possible.
 
+### `atomic_write_import_record`
+
+- Kind: `function`
+- Source: `neurobench.data.imports`
+- Signature: `atomic_write_import_record(path: str | Path, record: Mapping[str, Any]) -> Path`
+- Summary: Write an import record atomically.
+
 ### `build_dataset_intake_manifest`
 
 - Kind: `function`
 - Source: `neurobench.data.intake`
-- Signature: `build_dataset_intake_manifest(*, dataset_id: str, raw_video: str | Path, app_dir: str | Path | None=None, frame_rate_hz: float | None=None, pixel_size_microns: float | None=None, source_template: str='local', name: str | None=None, modality: str='light_sheet_calcium', indicator: str='GCaMP') -> dict[str, Any]`
+- Signature: `build_dataset_intake_manifest(*, dataset_id: str, raw_video: str | Path, app_dir: str | Path | None=None, frame_rate_hz: float | None=None, pixel_size_microns: float | None=None, source_template: str='local', name: str | None=None, modality: str | None=None, indicator: str | None=None) -> dict[str, Any]`
 - Summary: Create a manifest stub for a dataset before heavy processing runs.
 
 ### `build_video_manifest`
@@ -192,6 +199,13 @@ Data helpers for Neurobench.
 - Signature: `dataset_intake_report(manifest: Mapping[str, Any], *, base_dir: str | Path | None=None) -> dict[str, Any]`
 - Summary: No docstring summary available.
 
+### `dataset_manifest_from_import`
+
+- Kind: `function`
+- Source: `neurobench.data.imports`
+- Signature: `dataset_manifest_from_import(record: Mapping[str, Any], *, app_dir: str | Path) -> dict[str, Any]`
+- Summary: Create a truthful dataset manifest from an import record.
+
 ### `dataset_record_for_app`
 
 - Kind: `function`
@@ -213,12 +227,54 @@ Data helpers for Neurobench.
 - Signature: `generate_synthetic_calcium_dataset(*, frames: int=24, height: int=32, width: int=32, events: list[SyntheticEvent] | None=None, noise_sigma: float=0.03, background_gradient: bool=True, include_impulse_artifact: bool=True, include_drift: bool=False, seed: int=7) -> SyntheticDataset`
 - Summary: Generate a tiny deterministic video with known neuron events.
 
+### `import_checksum_file`
+
+- Kind: `object`
+- Source: `neurobench.data`
+- Signature: `import_checksum_file`
+- Summary: Exported by __all__.
+
+### `IMPORT_STATES`
+
+- Kind: `object`
+- Source: `neurobench.data`
+- Signature: `IMPORT_STATES`
+- Summary: Exported by __all__.
+
+### `infer_label_mapping`
+
+- Kind: `function`
+- Source: `neurobench.data.imports`
+- Signature: `infer_label_mapping(columns: Iterable[str]) -> dict[str, str | None]`
+- Summary: Suggest a non-destructive mapping for common label-table columns.
+
 ### `input_path_keys`
 
 - Kind: `function`
 - Source: `neurobench.data.checksums`
 - Signature: `input_path_keys(paths: Mapping[str, Any], *, path_keys: Iterable[str] | None=None) -> list[str]`
 - Summary: Select manifest path keys that should be treated as immutable inputs.
+
+### `inspect_label_table`
+
+- Kind: `function`
+- Source: `neurobench.data.imports`
+- Signature: `inspect_label_table(path: str | Path) -> dict[str, Any]`
+- Summary: Inspect label columns without discarding or normalizing rows.
+
+### `inspect_neurev_json`
+
+- Kind: `function`
+- Source: `neurobench.data.imports`
+- Signature: `inspect_neurev_json(path: str | Path) -> dict[str, Any]`
+- Summary: Recognize and summarize one established NeuRev JSON contract.
+
+### `inspect_source`
+
+- Kind: `function`
+- Source: `neurobench.data.imports`
+- Signature: `inspect_source(path: str | Path, *, workspace_root: str | Path | None=None) -> dict[str, Any]`
+- Summary: Inspect a source using bounded metadata readers and no scientific guesses.
 
 ### `intake_checks`
 
@@ -227,6 +283,13 @@ Data helpers for Neurobench.
 - Signature: `intake_checks(manifest: Mapping[str, Any], *, base_dir: str | Path | None=None) -> list[IntakeCheck]`
 - Summary: Return conservative readiness checks for a dataset manifest stub.
 
+### `iter_label_rows`
+
+- Kind: `function`
+- Source: `neurobench.data.imports`
+- Signature: `iter_label_rows(path: str | Path, *, limit: int=MAX_LABEL_ROWS) -> Iterable[dict[str, Any]]`
+- Summary: Yield label rows without loading a complete table into memory.
+
 ### `llm_catalog_context`
 
 - Kind: `function`
@@ -234,12 +297,47 @@ Data helpers for Neurobench.
 - Signature: `llm_catalog_context(records: Iterable[Mapping[str, Any]]) -> dict[str, Any]`
 - Summary: Return a compact, path-grounded catalog suitable for an LLM handoff.
 
+### `load_neurev_json`
+
+- Kind: `function`
+- Source: `neurobench.data.imports`
+- Signature: `load_neurev_json(path: str | Path, *, max_bytes: int=MAX_NEUREV_JSON_BYTES) -> dict[str, Any]`
+- Summary: Load one bounded UTF-8 NeuRev JSON object without accepting duplicate keys.
+
 ### `load_video_array`
 
 - Kind: `function`
 - Source: `neurobench.data.video`
 - Signature: `load_video_array(path: str | Path, *, mmap: bool=False, max_eager_bytes: int | None=None) -> Any`
 - Summary: Return a frame-first ``[T, H, W]`` video array from ``.npy`` or TIFF.
+
+### `make_import_record`
+
+- Kind: `function`
+- Source: `neurobench.data.imports`
+- Signature: `make_import_record(*, dataset_id: str, import_id_value: str, source_mode: str, original_name: str, source_path: str, destination_path: str, metadata: Mapping[str, Any], warnings: Iterable[str]=(), state: str | None=None, source_role: str | None=None) -> dict[str, Any]`
+- Summary: Create a schema-shaped import record with explicit unknown metadata.
+
+### `MAX_IMPORT_RECORD_BYTES`
+
+- Kind: `object`
+- Source: `neurobench.data`
+- Signature: `MAX_IMPORT_RECORD_BYTES`
+- Summary: Exported by __all__.
+
+### `MAX_NEUREV_JSON_BYTES`
+
+- Kind: `object`
+- Source: `neurobench.data`
+- Signature: `MAX_NEUREV_JSON_BYTES`
+- Summary: Exported by __all__.
+
+### `normalize_dataset_id`
+
+- Kind: `function`
+- Source: `neurobench.data.imports`
+- Signature: `normalize_dataset_id(value: str, *, fallback: str='dataset') -> str`
+- Summary: Return a stable filesystem-safe dataset identifier.
 
 ### `open_video`
 
@@ -262,6 +360,13 @@ Data helpers for Neurobench.
 - Signature: `query_dataset_catalog(records: Iterable[Mapping[str, Any]], query: str) -> list[dict[str, Any]]`
 - Summary: Rank catalog records by exact, prefix, then token containment matches.
 
+### `read_import_record`
+
+- Kind: `function`
+- Source: `neurobench.data.imports`
+- Signature: `read_import_record(path: str | Path, *, expected_dataset_id: str, expected_app_dir: str | Path, workspace_root: str | Path, max_bytes: int=MAX_IMPORT_RECORD_BYTES) -> dict[str, Any]`
+- Summary: Read one sidecar and enforce its schema and storage identity.
+
 ### `render_dataset_qc_markdown`
 
 - Kind: `function`
@@ -269,12 +374,40 @@ Data helpers for Neurobench.
 - Signature: `render_dataset_qc_markdown(qc: Mapping[str, Any]) -> str`
 - Summary: Render a concise Markdown QC report.
 
+### `resolve_allowed_local_path`
+
+- Kind: `function`
+- Source: `neurobench.data.imports`
+- Signature: `resolve_allowed_local_path(value: str | Path, *, workspace_root: str | Path, allowed_roots: Iterable[str | Path] | None=None) -> Path`
+- Summary: Resolve an existing local file and reject paths outside configured roots.
+
 ### `sha256_path`
 
 - Kind: `function`
 - Source: `neurobench.data.checksums`
 - Signature: `sha256_path(path: str | Path, *, chunk_size: int=1024 * 1024) -> str`
 - Summary: Compute a SHA-256 digest for a file path.
+
+### `SUPPORTED_LABEL_SUFFIXES`
+
+- Kind: `object`
+- Source: `neurobench.data`
+- Signature: `SUPPORTED_LABEL_SUFFIXES`
+- Summary: Exported by __all__.
+
+### `SUPPORTED_NEUREV_SUFFIXES`
+
+- Kind: `object`
+- Source: `neurobench.data`
+- Signature: `SUPPORTED_NEUREV_SUFFIXES`
+- Summary: Exported by __all__.
+
+### `SUPPORTED_VIDEO_SUFFIXES`
+
+- Kind: `object`
+- Source: `neurobench.data`
+- Signature: `SUPPORTED_VIDEO_SUFFIXES`
+- Summary: Exported by __all__.
 
 ### `SyntheticDataset`
 
@@ -289,6 +422,13 @@ Data helpers for Neurobench.
 - Source: `neurobench.data.synthetic`
 - Signature: `class SyntheticEvent`
 - Summary: Known synthetic event location and timing.
+
+### `update_import_record`
+
+- Kind: `function`
+- Source: `neurobench.data.imports`
+- Signature: `update_import_record(record: Mapping[str, Any], **updates: Any) -> dict[str, Any]`
+- Summary: Return an atomic-update-ready record while preserving immutable identity.
 
 ### `video_metadata`
 
@@ -1118,7 +1258,7 @@ Workbench package helpers and static assets.
 - Kind: `function`
 - Source: `neurobench.workbench.builder`
 - Signature: `architecture_runs_from_review(data: Mapping[str, Any], review_data_path: Path, dataset_id: str) -> dict[str, Any]`
-- Summary: Create a baseline architecture-run manifest from a review_data payload.
+- Summary: Return a truthful empty run catalog for annotation-only review data.
 
 ### `attach_pipeline_intermediates`
 
@@ -1131,21 +1271,21 @@ Workbench package helpers and static assets.
 
 - Kind: `function`
 - Source: `neurobench.workbench.builder`
-- Signature: `build_workbench(*, app_dir: str | Path, review_data_path: str | Path, dataset_id: str, html_template: str | None=None, dataset_manifest: Mapping[str, Any] | None=None, architecture_runs_path: str | Path | None=None, css_fallback: str='', js_fallback: str='') -> dict[str, Path]`
-- Summary: Build the browser workbench and return generated paths.
+- Signature: `build_workbench(*, app_dir: str | Path, review_data_path: str | Path, dataset_id: str, html_template: str | None=None, dataset_manifest: Mapping[str, Any] | None=None, architecture_runs_path: str | Path | None=None, css_fallback: str='', js_fallback: str='', migrate_annotations: bool=False) -> dict[str, Path]`
+- Summary: Atomically publish a browser workbench and return generated paths.
 
 ### `configure_workbench_handler`
 
 - Kind: `function`
 - Source: `neurobench.workbench.server`
-- Signature: `configure_workbench_handler(*, app_dir: Path=DEFAULT_APP_DIR, root_dir: Path | None=None) -> tuple[type[WorkbenchHandler], Path]`
-- Summary: Validate serving roots and configure the shared handler class.
+- Signature: `configure_workbench_handler(*, app_dir: Path=DEFAULT_APP_DIR, root_dir: Path | None=None, asset_mode: str='current') -> tuple[type[WorkbenchHandler], Path]`
+- Summary: Validate serving roots and return an isolated configured handler class.
 
 ### `create_workbench_server`
 
 - Kind: `function`
 - Source: `neurobench.workbench.server`
-- Signature: `create_workbench_server(*, app_dir: Path=DEFAULT_APP_DIR, root_dir: Path | None=None, host: str='127.0.0.1', port: int=8765) -> tuple[ThreadingHTTPServer, Path]`
+- Signature: `create_workbench_server(*, app_dir: Path=DEFAULT_APP_DIR, root_dir: Path | None=None, host: str='127.0.0.1', port: int=8765, asset_mode: str='current') -> tuple[ThreadingHTTPServer, Path]`
 - Summary: No docstring summary available.
 
 ### `environment_report`
@@ -1229,7 +1369,7 @@ Workbench package helpers and static assets.
 
 - Kind: `function`
 - Source: `neurobench.workbench.server`
-- Signature: `serve_workbench(*, app_dir: Path=DEFAULT_APP_DIR, root_dir: Path | None=None, host: str='127.0.0.1', port: int=8765) -> None`
+- Signature: `serve_workbench(*, app_dir: Path=DEFAULT_APP_DIR, root_dir: Path | None=None, host: str='127.0.0.1', port: int=8765, asset_mode: str='current') -> None`
 - Summary: No docstring summary available.
 
 ### `workbench_asset_version`

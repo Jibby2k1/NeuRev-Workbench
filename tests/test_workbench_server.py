@@ -141,6 +141,16 @@ class WorkbenchServerTests(unittest.TestCase):
                 ("jobs", "generate-preview"),
                 ("materialize-traces",),
                 ("llm-proposals", "import"),
+                ("imports", "register"),
+                ("imports", "upload"),
+                ("imports", "promote"),
+                ("imports", "metadata"),
+                ("imports", "qc"),
+                ("imports", "process"),
+                ("labels", "preview"),
+                ("labels", "import"),
+                ("neurev", "preview"),
+                ("neurev", "import"),
             },
         )
         self.assertEqual(WorkbenchHandler.POST_HANDLERS[("llm-proposals", "import")], "_handle_llm_proposal_import_post")
@@ -197,10 +207,353 @@ class WorkbenchServerTests(unittest.TestCase):
             server, served = create_workbench_server(app_dir=app_dir, host="127.0.0.1", port=0)
             try:
                 self.assertEqual(served, app_dir.resolve())
-                self.assertEqual(WorkbenchHandler.app_dir, app_dir.resolve())
-                self.assertIsNone(WorkbenchHandler.root_dir)
+                handler = server.RequestHandlerClass
+                self.assertIsNot(handler, WorkbenchHandler)
+                self.assertTrue(issubclass(handler, WorkbenchHandler))
+                self.assertEqual(handler.app_dir, app_dir.resolve())
+                self.assertIsNone(handler.root_dir)
+                self.assertEqual(handler.asset_mode, "current")
             finally:
                 server.server_close()
+
+    def test_current_dataset_route_serves_packaged_assets_without_writes(self):
+        import neurobench.workbench.server as server_module
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            review_root = root / "Outputs" / "NeuronReview"
+            app_dir = review_root / "demo" / "app"
+            app_dir.mkdir(parents=True)
+            (review_root / "index.html").write_text("catalog", encoding="utf-8")
+            (app_dir / "index.html").write_text("stale installed html", encoding="utf-8")
+            (app_dir / "workbench.css").write_text("stale installed css", encoding="utf-8")
+            (app_dir / "workbench.js").write_text("stale installed js", encoding="utf-8")
+            (app_dir / "review_data.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "dataset": {"dataset_id": "demo"},
+                        "video": {"name": "demo.npy", "frames": 2, "width": 4, "height": 3, "framePattern": "frames/frame_%06d.png"},
+                        "parameters": {},
+                        "rois": [],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            def snapshot() -> tuple[tuple[str, ...], dict[str, bytes]]:
+                directories = tuple(sorted(path.relative_to(root).as_posix() for path in root.rglob("*") if path.is_dir()))
+                files = {path.relative_to(root).as_posix(): path.read_bytes() for path in root.rglob("*") if path.is_file()}
+                return directories, files
+
+            before = snapshot()
+            previous_root = server_module.PROJECT_ROOT
+            server_module.PROJECT_ROOT = root
+            http_server, _ = server_module.create_workbench_server(root_dir=review_root, host="127.0.0.1", port=0, asset_mode="current")
+            thread = threading.Thread(target=http_server.serve_forever, daemon=True)
+            thread.start()
+            try:
+                host, port = http_server.server_address[:2]
+                with urlopen(f"http://{host}:{port}/_datasets/demo/", timeout=5) as response:
+                    html = response.read().decode("utf-8")
+                with urlopen(f"http://{host}:{port}/_datasets/demo/workbench.css", timeout=5) as response:
+                    css = response.read().decode("utf-8")
+                with urlopen(f"http://{host}:{port}/_datasets/demo/workbench.js", timeout=5) as response:
+                    javascript = response.read().decode("utf-8")
+                with urlopen(f"http://{host}:{port}/api/datasets/demo/jobs", timeout=5) as response:
+                    jobs = json.loads(response.read())
+            finally:
+                http_server.shutdown()
+                thread.join(timeout=5)
+                http_server.server_close()
+                server_module.PROJECT_ROOT = previous_root
+            after = snapshot()
+
+        self.assertNotIn("stale installed html", html)
+        self.assertNotIn("stale installed css", css)
+        self.assertNotIn("stale installed js", javascript)
+        self.assertEqual(jobs["durable_jobs"], [])
+        self.assertEqual(before, after)
+
+    def test_dataset_qualified_mutations_require_auth_and_cannot_cross_datasets(self):
+        from urllib.error import HTTPError
+        import neurobench.workbench.server as server_module
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            app_dir = root / "Outputs" / "NeuronReview" / "demo" / "app"
+            app_dir.mkdir(parents=True)
+            (app_dir / "index.html").write_text("demo", encoding="utf-8")
+            source = root / "Inputs" / "demo" / "movie.npy"
+            source.parent.mkdir(parents=True)
+            import numpy as np
+
+            np.save(source, np.zeros((2, 3, 4), dtype=np.uint16))
+            previous_root = server_module.PROJECT_ROOT
+            previous_token = os.environ.get("NEUROBENCH_OWNER_TOKEN")
+            server_module.PROJECT_ROOT = root
+            os.environ["NEUROBENCH_OWNER_TOKEN"] = "owner-secret"
+            http_server, _ = server_module.create_workbench_server(app_dir=app_dir, host="127.0.0.1", port=0, asset_mode="installed")
+            thread = threading.Thread(target=http_server.serve_forever, daemon=True)
+            thread.start()
+            try:
+                host, port = http_server.server_address[:2]
+                base = f"http://{host}:{port}"
+                body = json.dumps({"dataset_id": "demo", "source_path": "Inputs/demo/movie.npy"}).encode("utf-8")
+                with self.assertRaises(HTTPError) as unauthorized:
+                    urlopen(Request(f"{base}/api/datasets/demo/imports/register", data=body, headers={"Content-Type": "application/json"}, method="POST"), timeout=5)
+                self.assertEqual(unauthorized.exception.code, 401)
+                self.assertFalse((app_dir / "imports").exists())
+                request = Request(
+                    f"{base}/api/datasets/demo/imports/register",
+                    data=body,
+                    headers={"Content-Type": "application/json", "X-Neurobench-Owner-Token": "owner-secret"},
+                    method="POST",
+                )
+                with urlopen(request, timeout=5) as response:
+                    registered = json.loads(response.read())
+                cross_body = json.dumps({"dataset_id": "other", "source_path": "Inputs/demo/movie.npy"}).encode("utf-8")
+                with self.assertRaises(HTTPError) as cross_error:
+                    urlopen(Request(f"{base}/api/datasets/demo/imports/register", data=cross_body, headers={"Content-Type": "application/json", "X-Neurobench-Owner-Token": "owner-secret"}, method="POST"), timeout=5)
+                self.assertEqual(cross_error.exception.code, 400)
+                with self.assertRaises(HTTPError) as unknown_get:
+                    urlopen(f"{base}/api/datasets/other/imports", timeout=5)
+                self.assertEqual(unknown_get.exception.code, 404)
+                put_body = b"{}"
+                with self.assertRaises(HTTPError) as put_error:
+                    urlopen(Request(f"{base}/api/datasets/demo/annotations", data=put_body, method="PUT"), timeout=5)
+                self.assertEqual(put_error.exception.code, 401)
+            finally:
+                http_server.shutdown()
+                thread.join(timeout=5)
+                http_server.server_close()
+                server_module.PROJECT_ROOT = previous_root
+                if previous_token is None:
+                    os.environ.pop("NEUROBENCH_OWNER_TOKEN", None)
+                else:
+                    os.environ["NEUROBENCH_OWNER_TOKEN"] = previous_token
+
+        self.assertEqual(registered["import"]["dataset_id"], "demo")
+
+    def test_configured_non_neuronreview_app_wins_same_id_registry_binding(self):
+        import numpy as np
+        import neurobench.workbench.server as server_module
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            gamma_app = root / "Outputs" / "GammaCFAR" / "shared" / "app"
+            neuron_app = root / "Outputs" / "NeuronReview" / "shared" / "app"
+            for app, marker in ((gamma_app, "gamma"), (neuron_app, "neuron")):
+                app.mkdir(parents=True)
+                (app / "index.html").write_text(marker, encoding="utf-8")
+                (app / "review_data.json").write_text(
+                    json.dumps({"dataset": {"dataset_id": "shared", "name": marker}, "video": {"name": marker, "frames": 1, "width": 2, "height": 2, "framePattern": "frames/frame_%06d.png"}, "parameters": {}, "rois": []}),
+                    encoding="utf-8",
+                )
+            source = root / "Inputs" / "shared" / "movie.npy"
+            source.parent.mkdir(parents=True)
+            np.save(source, np.zeros((1, 2, 2), dtype=np.uint16))
+            neuron_before = {path.relative_to(neuron_app).as_posix(): path.read_bytes() for path in neuron_app.rglob("*") if path.is_file()}
+            previous_root = server_module.PROJECT_ROOT
+            server_module.PROJECT_ROOT = root
+            http_server, _ = server_module.create_workbench_server(app_dir=gamma_app, host="127.0.0.1", port=0, asset_mode="installed")
+            registry_binding = http_server.RequestHandlerClass.dataset_apps["shared"]
+            registry_conflicts = dict(http_server.RequestHandlerClass.dataset_registry_conflicts)
+            thread = threading.Thread(target=http_server.serve_forever, daemon=True)
+            thread.start()
+            try:
+                host, port = http_server.server_address[:2]
+                base = f"http://{host}:{port}"
+                with urlopen(f"{base}/_datasets/shared/review_data.json", timeout=5) as response:
+                    served_review = json.loads(response.read())
+                body = json.dumps({"dataset_id": "shared", "source_path": "Inputs/shared/movie.npy"}).encode("utf-8")
+                with urlopen(Request(f"{base}/api/datasets/shared/imports/register", data=body, headers={"Content-Type": "application/json"}, method="POST"), timeout=5) as response:
+                    registered = json.loads(response.read())
+                put_body = b"{\"schema_version\":3}"
+                with urlopen(Request(f"{base}/api/datasets/shared/annotations", data=put_body, headers={"Content-Type": "application/json"}, method="PUT"), timeout=5) as response:
+                    self.assertEqual(response.status, 200)
+                gamma_record_exists = (gamma_app / "imports" / f"{registered['import']['import_id']}.json").is_file()
+                gamma_annotations_exists = (gamma_app / "annotations.json").is_file()
+                neuron_after = {path.relative_to(neuron_app).as_posix(): path.read_bytes() for path in neuron_app.rglob("*") if path.is_file()}
+            finally:
+                http_server.shutdown()
+                thread.join(timeout=5)
+                http_server.server_close()
+                server_module.PROJECT_ROOT = previous_root
+
+        self.assertEqual(served_review["video"]["name"], "gamma")
+        self.assertEqual(registry_binding, gamma_app.resolve())
+        self.assertEqual(len(registry_conflicts["shared"]), 2)
+        self.assertTrue(gamma_record_exists)
+        self.assertEqual(neuron_before, neuron_after)
+        self.assertTrue(gamma_annotations_exists)
+
+    def test_new_normalized_dataset_registers_into_catalog_then_promotes_and_qcs(self):
+        from urllib.error import HTTPError
+        import time as clock
+        import numpy as np
+        import neurobench.workbench.server as server_module
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            review_root = root / "Outputs" / "NeuronReview"
+            review_root.mkdir(parents=True)
+            (review_root / "index.html").write_text("catalog", encoding="utf-8")
+            source = root / "Inputs" / "new-fish" / "movie.npy"
+            source.parent.mkdir(parents=True)
+            np.save(source, np.arange(24, dtype=np.uint16).reshape(2, 3, 4))
+            previous_root = server_module.PROJECT_ROOT
+            server_module.PROJECT_ROOT = root
+            http_server, _ = server_module.create_workbench_server(root_dir=review_root, host="127.0.0.1", port=0, asset_mode="installed")
+            thread = threading.Thread(target=http_server.serve_forever, daemon=True)
+            thread.start()
+            try:
+                host, port = http_server.server_address[:2]
+                base = f"http://{host}:{port}"
+                with self.assertRaises(HTTPError) as unknown_process:
+                    urlopen(Request(f"{base}/api/datasets/new-fish/imports/imp_missing/process", data=b"{}", headers={"Content-Type": "application/json"}, method="POST"), timeout=5)
+                self.assertEqual(unknown_process.exception.code, 404)
+                register_body = json.dumps({"dataset_id": "new-fish", "source_path": "Inputs/new-fish/movie.npy"}).encode("utf-8")
+                with self.assertRaises(HTTPError) as alias_error:
+                    urlopen(Request(f"{base}/api/datasets/New-Fish/imports/register", data=register_body, headers={"Content-Type": "application/json"}, method="POST"), timeout=5)
+                self.assertEqual(alias_error.exception.code, 404)
+                with urlopen(Request(f"{base}/api/datasets/new-fish/imports/register", data=register_body, headers={"Content-Type": "application/json"}, method="POST"), timeout=5) as response:
+                    registered = json.loads(response.read())["import"]
+                with urlopen(f"{base}/api/datasets", timeout=5) as response:
+                    initial_catalog = json.loads(response.read())["datasets"]
+                initial = next(item for item in initial_catalog if item["dataset_id"] == "new-fish")
+                promote_body = b"{}"
+                with urlopen(Request(f"{base}/api/datasets/new-fish/imports/{registered['import_id']}/promote", data=promote_body, headers={"Content-Type": "application/json"}, method="POST"), timeout=5) as response:
+                    promoted = json.loads(response.read())["import"]
+                with urlopen(Request(f"{base}/api/datasets/new-fish/imports/{registered['import_id']}/qc", data=b"{}", headers={"Content-Type": "application/json"}, method="POST"), timeout=5) as response:
+                    qc_job = json.loads(response.read())["job"]
+                durable = None
+                for _ in range(100):
+                    with urlopen(f"{base}/api/datasets/new-fish/durable-jobs/{qc_job['job_id']}", timeout=5) as response:
+                        durable = json.loads(response.read())
+                    if durable["status"] in {"completed", "failed", "stopped"}:
+                        break
+                    clock.sleep(0.02)
+                with urlopen(f"{base}/api/datasets", timeout=5) as response:
+                    final_catalog = json.loads(response.read())["datasets"]
+                final = next(item for item in final_catalog if item["dataset_id"] == "new-fish")
+            finally:
+                http_server.shutdown()
+                thread.join(timeout=5)
+                http_server.server_close()
+                server_module.PROJECT_ROOT = previous_root
+
+        self.assertEqual(initial["lifecycle"]["state"], "import_only")
+        self.assertFalse(initial["readiness"]["video_ready"])
+        self.assertEqual(initial["imports"][0]["source_role"], "primary_video_candidate")
+        self.assertTrue(initial["imports"][0]["source_available"])
+        self.assertTrue(promoted["is_primary_video"])
+        self.assertEqual(durable["status"], "completed")
+        self.assertTrue(final["imports"][0]["is_primary_video"])
+        self.assertTrue(final["imports"][0]["has_qc"])
+
+    def test_failed_upload_is_durable_and_cleans_partial_files(self):
+        from urllib.error import HTTPError
+        import neurobench.workbench.server as server_module
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            review_root = root / "Outputs" / "NeuronReview"
+            review_root.mkdir(parents=True)
+            (review_root / "index.html").write_text("catalog", encoding="utf-8")
+            previous_root = server_module.PROJECT_ROOT
+            server_module.PROJECT_ROOT = root
+            http_server, _ = server_module.create_workbench_server(root_dir=review_root, host="127.0.0.1", port=0, asset_mode="installed")
+            thread = threading.Thread(target=http_server.serve_forever, daemon=True)
+            thread.start()
+            try:
+                host, port = http_server.server_address[:2]
+                request = Request(
+                    f"http://{host}:{port}/api/datasets/bad-upload/imports/upload?filename=broken.npy",
+                    data=b"not-a-valid-numpy-file",
+                    headers={"Content-Type": "application/octet-stream"},
+                    method="POST",
+                )
+                with self.assertRaises(HTTPError) as upload_error:
+                    urlopen(request, timeout=5)
+                self.assertEqual(upload_error.exception.code, 400)
+                failure = json.loads(upload_error.exception.read())["import"]
+                with urlopen(f"http://{host}:{port}/api/datasets/bad-upload/imports", timeout=5) as response:
+                    listed = json.loads(response.read())["imports"]
+                input_dir = root / "Inputs" / "bad-upload"
+                leftovers = [path.name for path in input_dir.iterdir()] if input_dir.is_dir() else []
+                destination_exists = (input_dir / "broken.npy").exists()
+                sidecar_exists = (review_root / "bad-upload" / "app" / "imports" / f"{failure['import_id']}.json").is_file()
+            finally:
+                http_server.shutdown()
+                thread.join(timeout=5)
+                http_server.server_close()
+                server_module.PROJECT_ROOT = previous_root
+
+        self.assertEqual(failure["state"], "failed")
+        self.assertFalse(failure["upload_failure"]["source_available"])
+        self.assertEqual([item["import_id"] for item in listed], [failure["import_id"]])
+        self.assertTrue(sidecar_exists)
+        self.assertFalse(destination_exists)
+        self.assertEqual(leftovers, [])
+
+    def test_json_upload_rejects_arbitrary_and_oversized_payloads(self):
+        from urllib.error import HTTPError
+        import neurobench.workbench.server as server_module
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            review_root = root / "Outputs" / "NeuronReview"
+            review_root.mkdir(parents=True)
+            (review_root / "index.html").write_text("catalog", encoding="utf-8")
+            previous_root = server_module.PROJECT_ROOT
+            server_module.PROJECT_ROOT = root
+            http_server, _ = server_module.create_workbench_server(root_dir=review_root, host="127.0.0.1", port=0, asset_mode="installed")
+            thread = threading.Thread(target=http_server.serve_forever, daemon=True)
+            thread.start()
+            try:
+                host, port = http_server.server_address[:2]
+                base = f"http://{host}:{port}/api/datasets/json-reject/imports/upload"
+                arbitrary = b'{"hello":"world"}'
+                with self.assertRaises(HTTPError) as arbitrary_error:
+                    urlopen(
+                        Request(
+                            f"{base}?filename=arbitrary.json",
+                            data=arbitrary,
+                            headers={"Content-Type": "application/octet-stream", "Content-Length": str(len(arbitrary))},
+                            method="POST",
+                        ),
+                        timeout=5,
+                    )
+                arbitrary_failure = json.loads(arbitrary_error.exception.read())["import"]
+                with self.assertRaises(HTTPError) as oversize_error:
+                    urlopen(
+                        Request(
+                            f"{base}?filename=oversize.json",
+                            data=b"x",
+                            headers={
+                                "Content-Type": "application/octet-stream",
+                                "Content-Length": str(server_module.MAX_NEUREV_JSON_BYTES + 1),
+                            },
+                            method="POST",
+                        ),
+                        timeout=5,
+                    )
+                oversize_body = json.loads(oversize_error.exception.read())
+                input_dir = root / "Inputs" / "json-reject"
+                leftovers = [path.name for path in input_dir.iterdir()] if input_dir.is_dir() else []
+            finally:
+                http_server.shutdown()
+                thread.join(timeout=5)
+                http_server.server_close()
+                server_module.PROJECT_ROOT = previous_root
+
+        self.assertEqual(arbitrary_error.exception.code, 400)
+        self.assertEqual(arbitrary_failure["metadata"]["kind"], "neurev_json")
+        self.assertEqual(arbitrary_failure["state"], "failed")
+        self.assertEqual(oversize_error.exception.code, 413)
+        self.assertIn("safety limit", oversize_body["error"])
+        self.assertEqual(leftovers, [])
 
     def test_server_exposes_canonical_dataset_record(self):
         from neurobench.workbench.server import create_workbench_server
@@ -320,10 +673,11 @@ class WorkbenchServerTests(unittest.TestCase):
 
             handler, served = configure_workbench_handler(root_dir=root_dir)
 
-            self.assertIs(handler, WorkbenchHandler)
+            self.assertIsNot(handler, WorkbenchHandler)
+            self.assertTrue(issubclass(handler, WorkbenchHandler))
             self.assertEqual(served, root_dir.resolve())
-            self.assertEqual(WorkbenchHandler.root_dir, root_dir.resolve())
-            self.assertEqual(WorkbenchHandler.app_dir, root_dir.resolve())
+            self.assertEqual(handler.root_dir, root_dir.resolve())
+            self.assertEqual(handler.app_dir, root_dir.resolve())
 
 
 if __name__ == "__main__":

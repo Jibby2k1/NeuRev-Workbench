@@ -8,6 +8,17 @@ from typing import Any, Mapping
 ROI_STATE_MAP = {"accept": "accepted", "reject": "rejected", "unsure": "unsure", "": ""}
 EVENT_STATE_MAP = {"accept": "accepted", "reject": "rejected", "unsure": "unsure", "": ""}
 CONFIDENCE_VALUES = {"", "low", "medium", "high"}
+ANNOTATION_TASKS = {"neuron_validation", "missed_neuron_search", "event_validation", "artifact_resolution", "exhaustive_tile", "signal_background"}
+LEGACY_TASK_MAP = {
+    "fast_triage": "neuron_validation",
+    "validate_neurons": "neuron_validation",
+    "event_validation": "event_validation",
+    "missed_neuron_search": "missed_neuron_search",
+    "find_missed_neurons": "missed_neuron_search",
+    "artifact_cleanup": "artifact_resolution",
+    "clean_artifacts": "artifact_resolution",
+    "mask_editing": "signal_background",
+}
 
 
 def default_annotations_v3() -> dict[str, Any]:
@@ -80,6 +91,17 @@ def migrate_annotations_v3(incoming: Mapping[str, Any] | None) -> dict[str, Any]
     migrated["reviewStats"] = dict(src.get("reviewStats", migrated["reviewStats"]))
     migrated["reviewStats"]["actions"] = dict(migrated["reviewStats"].get("actions", {}))
     migrated["settings"] = dict(src.get("settings", {}))
+    previous_task = str(migrated["settings"].get("annotationTask") or "")
+    legacy_preset = str(migrated["settings"].get("reviewWorkflowPreset") or "")
+    task = previous_task if previous_task in ANNOTATION_TASKS else LEGACY_TASK_MAP.get(legacy_preset, "neuron_validation")
+    migrated["settings"]["annotationTask"] = task
+    migrated["settings"]["researchToolsEnabled"] = bool(migrated["settings"].get("researchToolsEnabled", False))
+    migrated["ui_migration"] = {
+        "schema_version": 1,
+        "annotation_task": task,
+        "source_review_workflow_preset": legacy_preset,
+        "research_tools_enabled": migrated["settings"]["researchToolsEnabled"],
+    }
     # Layout v1 could silently duplicate the same source frame as two panes.
     # Move old files to the annotation-safe single canvas while preserving an
     # explicit comparison choice made after this migration.

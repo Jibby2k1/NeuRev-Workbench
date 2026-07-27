@@ -38,8 +38,8 @@ def add_dataset_subcommands(subparsers) -> argparse.ArgumentParser:
     intake_parser.add_argument("--pixel-size-microns", type=float, default=None)
     intake_parser.add_argument("--source-template", choices=["local", "dandi-nwb", "janelia-figshare"], default="local")
     intake_parser.add_argument("--name", default=None)
-    intake_parser.add_argument("--modality", default="light_sheet_calcium")
-    intake_parser.add_argument("--indicator", default="GCaMP")
+    intake_parser.add_argument("--modality", default=None, help="Optional modality; remains unknown when omitted.")
+    intake_parser.add_argument("--indicator", default=None, help="Optional indicator; remains unknown when omitted.")
     intake_parser.add_argument("--report-out", type=Path, default=None)
     intake_parser.set_defaults(func=dataset_intake_command)
 

@@ -97,7 +97,9 @@ function stageOp(stageOrOp){
 function stageDef(stageOrOp){ return STAGE_CATALOG.find(s => s.op === stageOp(stageOrOp)); }
 
 function datasetFrameRateHz(){
-  return Number(data.dataset?.online?.target_frame_rate_hz || data.dataset?.frame_rate_hz || data.video?.frameRateHz || data.video?.frame_rate_hz || 5);
+  const value = data.dataset?.online?.target_frame_rate_hz ?? data.dataset?.frame_rate_hz ?? data.video?.frameRateHz ?? data.video?.frame_rate_hz;
+  const rate = Number(value);
+  return Number.isFinite(rate) && rate > 0 ? rate : NaN;
 }
 
 function formatSeconds(seconds){
