@@ -50,6 +50,9 @@ Read the matching workflow before changing or running an experiment:
 - `docs/workflows/spon_ca_burst_soma_excitation.md`
 - `docs/workflows/spon_ca_burst_learnable_contrast.md`
 - `docs/workflows/spon_ca_burst_frame_derivatives.md`
+- `docs/developer/PAIRWISE_SOURCE_SEPARATION_IMPLEMENTATION_BRIEF.md` for the
+  planned binary-difference, adaptive subtraction, ICA, CS-divergence, and
+  constrained-NMF implementation.
 
 First guarded CUDA run: `Outputs/LearnableContrast/spon_ca_burst_v1_cuda_guarded`.
 Its gate is `do_not_advance`; direct residual is the held-out recall baseline to beat.
