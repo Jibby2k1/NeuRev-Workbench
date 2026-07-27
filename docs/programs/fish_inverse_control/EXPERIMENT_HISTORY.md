@@ -1,6 +1,6 @@
 # Experiment History: Activation to Fish Control
 
-Last reviewed: 2026-07-21.
+Last reviewed: 2026-07-27.
 
 ## Bottom line
 
@@ -213,6 +213,25 @@ Evidence:
 `Outputs/LearnableContrast/spon_ca_burst_multihypothesis_cfar_v5_selective_gate/results.json`,
 and
 `Outputs/LearnableContrast/spon_ca_burst_multihypothesis_cfar_v6_sharp_gate/results.json`.
+
+### Causal artifact/baseline proposal program, July 27
+
+- Completed all 1,884 declared evaluations and reproduced both frozen C0
+  anchors: Raw Direct `0.605615942` and causal artifact-only `0.734187371`.
+- The C1 nested comparison passed (`0.705020` versus `0.594746`, 4/4 burst
+  wins). The best recall remained 58/79 rather than exceeding the causal anchor.
+- A slow-clipped-EMA fractional method retained 58/79 with 488 candidates,
+  compared with 745 for causal artifact-only, making it the most useful
+  candidate-yield result.
+- Fixed CFAR recovered 34/79 with 65 candidates. Ten-percent CFAR fusion added
+  no recall and reduced candidates by only 1.34%; C2 stopped as designed.
+- Robustness median and lower quartile were `0.734187`; the worst tested
+  photobleach condition was `0.6464`.
+
+The program is temporarily sidelined. Sparse positives do not establish the
+precision of its lower-candidate variants; the 206-row frozen review queue needs
+foreground/background review before another search. Evidence:
+`Outputs/FrameDifference/spon_ca_burst_causal_proposal_overnight_v1`.
 
 ### Behavior/action readiness
 

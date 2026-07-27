@@ -536,6 +536,24 @@ No docstring summary available.
 - Signature: `run(config: Config) -> dict[str, Any]`
 - Summary: No docstring summary available.
 
+## `neurobench.experiments.pairwise_separation`
+
+Bounded adjacent-frame source-separation experiment.
+
+### `PairwiseSeparationConfig`
+
+- Kind: `class`
+- Source: `neurobench.experiments.pairwise_separation.config`
+- Signature: `class PairwiseSeparationConfig`
+- Summary: No docstring summary available.
+
+### `preflight`
+
+- Kind: `module`
+- Source: `neurobench.experiments.pairwise_separation.preflight`
+- Signature: `neurobench.experiments.pairwise_separation.preflight`
+- Summary: Read-only validation plus explicitly directed preflight artifacts.
+
 ## `neurobench.experiments.soma_excitation`
 
 Memory-safe transfer experiments for dark-soma excitation zones.
@@ -766,6 +784,20 @@ Scientific metrics for Neurobench candidate, event, and run evaluation.
 - Signature: `candidate_consensus_metrics(runs: Sequence[Mapping[str, Any]]) -> dict[str, Any]`
 - Summary: Compare accepted candidate IDs across runs.
 
+### `candidate_records`
+
+- Kind: `function`
+- Source: `neurobench.metrics.sparse_detection`
+- Signature: `candidate_records(lane: str, frame_or_burst_id: int, peaks: Sequence[Peak], labels: Sequence[Mapping[str, Any]], radius: float) -> list[dict[str, Any]]`
+- Summary: Create explicit known-match/unknown-candidate records.
+
+### `capacity_select`
+
+- Kind: `function`
+- Source: `neurobench.metrics.sparse_detection`
+- Signature: `capacity_select(peaks: Sequence[Peak], capacity: int) -> list[Peak]`
+- Summary: Return the first score-ranked candidates under a fixed capacity.
+
 ### `centroid_distance`
 
 - Kind: `function`
@@ -794,6 +826,20 @@ Scientific metrics for Neurobench candidate, event, and run evaluation.
 - Signature: `event_timing_metrics(ground_truth: Sequence[Mapping[str, Any]], candidates: Sequence[Mapping[str, Any]], *, onset_tolerance_frames: int=2, require_same_object: bool=True) -> dict[str, Any]`
 - Summary: Return event precision/recall and timing-quality summaries.
 
+### `extract_local_maxima`
+
+- Kind: `function`
+- Source: `neurobench.metrics.sparse_detection`
+- Signature: `extract_local_maxima(score: np.ndarray, distance: int, threshold: float=-np.inf, limit: int=10000, *, tie_breaker: np.ndarray | None=None) -> list[Peak]`
+- Summary: Return spatial maxima sorted by score, optional tie score, then y/x.
+
+### `known_label_recall_summary`
+
+- Kind: `function`
+- Source: `neurobench.metrics.sparse_detection`
+- Signature: `known_label_recall_summary(peaks: Sequence[Peak], labels: Sequence[Mapping[str, Any]], radius: float) -> dict[str, Any]`
+- Summary: No docstring summary available.
+
 ### `match_candidate_objects`
 
 - Kind: `function`
@@ -807,6 +853,13 @@ Scientific metrics for Neurobench candidate, event, and run evaluation.
 - Source: `neurobench.metrics.event_quality`
 - Signature: `match_events(ground_truth: Sequence[Mapping[str, Any]], candidates: Sequence[Mapping[str, Any]], *, onset_tolerance_frames: int=2, require_same_object: bool=True) -> dict[str, Any]`
 - Summary: Greedily match candidate events to ground truth events.
+
+### `match_peaks_one_to_one`
+
+- Kind: `function`
+- Source: `neurobench.metrics.sparse_detection`
+- Signature: `match_peaks_one_to_one(peaks: Sequence[Peak], labels: Sequence[Mapping[str, Any]], radius: float) -> tuple[list[tuple[int, float, int, int, float]], set[int]]`
+- Summary: Greedily match score-ranked peaks to the nearest remaining label.
 
 ### `metric_winner_table`
 
@@ -836,12 +889,26 @@ Scientific metrics for Neurobench candidate, event, and run evaluation.
 - Signature: `population_time_series_summary(*, events: Sequence[Mapping[str, Any]] | None=None, traces: Mapping[Any, Sequence[float]] | Sequence[Any] | None=None, frame_count: int | None=None, bin_size_frames: int=1, object_ids: Sequence[Any] | None=None) -> dict[str, Any]`
 - Summary: Return a combined schema-versioned summary for events and/or traces.
 
+### `quiet_calibrated_threshold`
+
+- Kind: `function`
+- Source: `neurobench.metrics.sparse_detection`
+- Signature: `quiet_calibrated_threshold(maps: Sequence[np.ndarray], distance: int, peaks_per_map: float, *, limit: int=2000) -> float`
+- Summary: Calibrate a threshold using only quiet-map local maxima.
+
 ### `spatial_iou`
 
 - Kind: `function`
 - Source: `neurobench.metrics.detection`
 - Signature: `spatial_iou(a: Mapping[str, Any], b: Mapping[str, Any]) -> float`
 - Summary: Return footprint IoU for two object records.
+
+### `temporal_pool`
+
+- Kind: `function`
+- Source: `neurobench.metrics.sparse_detection`
+- Signature: `temporal_pool(frames: np.ndarray, mode: str='lme0.25') -> np.ndarray`
+- Summary: Pool a non-empty ``T,Y,X`` stack into one score map.
 
 ### `trace_correlation_summary`
 

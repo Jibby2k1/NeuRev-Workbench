@@ -6,7 +6,7 @@
 | Add a pipeline stage | [Adding a pipeline stage](adding_pipeline_stage.md) | `neurobench/pipeline_catalog.py`, `neurobench/pipelines/` |
 | Work on stopped grid128 experiments | [Grid128 handoff](GRID128_EXPERIMENT_HANDOFF.md) | `neurobench/dynamics/` |
 | Implement fish intent/control tools | [Fish control tooling roadmap](FISH_CONTROL_TOOLING_ROADMAP.md) | `neurobench/programs/`, future intent/control packages |
-| Implement pairwise binary difference, ICA, CS-divergence, or constrained NMF | [Pairwise source-separation brief](PAIRWISE_SOURCE_SEPARATION_IMPLEMENTATION_BRIEF.md) | `neurobench/algorithms/`, `neurobench/experiments/`, `neurobench/metrics/` |
+| Run or implement pairwise binary difference, ICA, CS-divergence, or constrained NMF | [Pairwise workflow](../workflows/spon_ca_burst_pairwise_separation.md), [implementation brief](PAIRWISE_SOURCE_SEPARATION_IMPLEMENTATION_BRIEF.md) | `neurobench/algorithms/pairwise_separation.py`, `neurobench/experiments/pairwise_separation/`, `neurobench/metrics/sparse_detection.py` |
 | Change workbench UI | [Neuron Workbench](../NEURON_WORKBENCH.md) | `neurobench/workbench/assets/src/` |
 | Query/build video review apps | [Workbench video/catalog refactor](WORKBENCH_VIDEO_CATALOG_REFACTOR.md) | `neurobench/data/catalog.py`, `neurobench/workbench/` |
 | Implement the NeuRev first release | [First-release handoff](NEUREV_FIRST_RELEASE_HANDOFF.md) | `neurobench/data/imports.py`, `neurobench/workbench/baseline.py`, `neurobench/workbench/server.py`, `neurobench/workbench/assets/src/` |

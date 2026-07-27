@@ -16,6 +16,12 @@ import numpy as np
 from .activity_gated_video import _artifact_score, _smooth_review
 from .frame_difference import _atomic_json, _available_ram_mib, _sha256
 from .learnable_contrast import core as v1
+from neurobench.metrics.sparse_detection import (
+    extract_local_maxima,
+    match_peaks_one_to_one,
+    quiet_calibrated_threshold,
+    temporal_pool,
+)
 
 
 LANES = (
@@ -200,9 +206,7 @@ def preflight(config: ActivityGateBenchmarkConfig, write_artifacts: bool = True)
 
 
 def _direct_map(frames: np.ndarray, tau: float) -> np.ndarray:
-    from scipy.special import logsumexp
-
-    return (tau * (logsumexp(frames / tau, axis=0) - math.log(len(frames)))).astype(np.float32)
+    return temporal_pool(frames, f"lme{tau}")
 
 
 def _quiet_windows(quiet: np.ndarray) -> list[np.ndarray]:
@@ -210,29 +214,11 @@ def _quiet_windows(quiet: np.ndarray) -> list[np.ndarray]:
 
 
 def _threshold(maps: list[np.ndarray], nms_distance: int, peaks_per_map: float) -> float:
-    values = []
-    for score in maps:
-        values.extend(value for value, _, _ in v1._peaks(score, nms_distance, limit=2000))
-    ranked = sorted(values, reverse=True)
-    allowed = max(1, int(round(peaks_per_map * len(maps))))
-    if len(ranked) <= allowed:
-        raise RuntimeError("Too few quiet peaks for threshold calibration")
-    return float(np.nextafter(ranked[allowed], np.inf))
+    return quiet_calibrated_threshold(maps, nms_distance, peaks_per_map, limit=2000)
 
 
 def _match_with_peak_indices(peaks, rows, radius: int) -> tuple[list[tuple], set[int]]:
-    remaining = set(range(len(rows)))
-    matches, peak_indices = [], set()
-    for peak_index, (score, x, y) in enumerate(peaks):
-        choices = [(math.hypot(x - rows[i]["x_px"], y - rows[i]["y_px"]), i) for i in remaining]
-        if not choices:
-            break
-        distance, row_index = min(choices)
-        if distance <= radius:
-            remaining.remove(row_index)
-            matches.append((row_index, score, x, y, distance))
-            peak_indices.add(peak_index)
-    return matches, peak_indices
+    return match_peaks_one_to_one(peaks, rows, radius)
 
 
 def _crossfit_quiet(quiet: np.ndarray, config: ActivityGateBenchmarkConfig) -> dict[str, Any]:
@@ -243,7 +229,7 @@ def _crossfit_quiet(quiet: np.ndarray, config: ActivityGateBenchmarkConfig) -> d
         calibration_maps = [_direct_map(halves[calibration_index][s : s + d], config.temporal_pool_tau) for s, d in zip(starts, durations)]
         threshold = _threshold(calibration_maps, config.nms_distance_px, config.quiet_false_peaks_per_map)
         evaluation_maps = [_direct_map(halves[evaluation_index][s : s + d], config.temporal_pool_tau) for s, d in zip(starts, durations)]
-        counts = [len([p for p in v1._peaks(score, config.nms_distance_px, limit=2000) if p[0] >= threshold]) for score in evaluation_maps]
+        counts = [len([p for p in extract_local_maxima(score, config.nms_distance_px, limit=2000) if p[0] >= threshold]) for score in evaluation_maps]
         directions.append({
             "calibration_half": calibration_index + 1,
             "evaluation_half": evaluation_index + 1,
@@ -274,7 +260,7 @@ def _evaluate_lane(
     radius_summaries = {str(radius): [] for radius in config.match_radii_px}
     for burst_id in range(1, 5):
         score = _direct_map(bursts[burst_id], config.temporal_pool_tau)
-        peaks = [peak for peak in v1._peaks(score, config.nms_distance_px, limit=2000) if peak[0] >= primary]
+        peaks = [peak for peak in extract_local_maxima(score, config.nms_distance_px, limit=2000) if peak[0] >= primary]
         rows = [row for row in labels if row["burst_id"] == burst_id]
         primary_matches, matched_peak_indices = _match_with_peak_indices(peaks, rows, config.primary_match_radius_px)
         fold_rows.append({
@@ -294,16 +280,16 @@ def _evaluate_lane(
                 "interpretation": "known match" if index in matched_peak_indices else "unmatched candidate; truth unknown",
             })
         for radius in config.match_radii_px:
-            matches = v1._match(peaks, rows, radius)
+            matches = match_peaks_one_to_one(peaks, rows, radius)[0]
             radius_summaries[str(radius)].append(len(matches) / len(rows))
     froc = []
     for rate, threshold in thresholds.items():
         recalls, peak_counts = [], []
         for burst_id in range(1, 5):
             score = _direct_map(bursts[burst_id], config.temporal_pool_tau)
-            peaks = [peak for peak in v1._peaks(score, config.nms_distance_px, limit=2000) if peak[0] >= threshold]
+            peaks = [peak for peak in extract_local_maxima(score, config.nms_distance_px, limit=2000) if peak[0] >= threshold]
             rows = [row for row in labels if row["burst_id"] == burst_id]
-            recalls.append(len(v1._match(peaks, rows, config.primary_match_radius_px)) / len(rows))
+            recalls.append(len(match_peaks_one_to_one(peaks, rows, config.primary_match_radius_px)[0]) / len(rows))
             peak_counts.append(len(peaks))
         froc.append({"quiet_peaks_per_map_target": float(rate), "threshold": threshold,
                      "mean_recall": float(np.mean(recalls)), "mean_event_peaks": float(np.mean(peak_counts))})
@@ -420,7 +406,7 @@ def _matched_at_reference_budget(
         )[:budget]
         peaks = [(row["score"], row["x_px"], row["y_px"]) for row in lane_rows]
         burst_labels = [row for row in labels if row["burst_id"] == burst_id]
-        matches = v1._match(peaks, burst_labels, radius)
+        matches = match_peaks_one_to_one(peaks, burst_labels, radius)[0]
         for row_index, *_ in matches:
             matched_keys.add((burst_id, burst_labels[row_index]["roi_identity"]))
         folds.append({

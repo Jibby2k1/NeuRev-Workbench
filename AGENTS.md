@@ -50,9 +50,10 @@ Read the matching workflow before changing or running an experiment:
 - `docs/workflows/spon_ca_burst_soma_excitation.md`
 - `docs/workflows/spon_ca_burst_learnable_contrast.md`
 - `docs/workflows/spon_ca_burst_frame_derivatives.md`
-- `docs/developer/PAIRWISE_SOURCE_SEPARATION_IMPLEMENTATION_BRIEF.md` for the
-  planned binary-difference, adaptive subtraction, ICA, CS-divergence, and
-  constrained-NMF implementation.
+- `docs/workflows/spon_ca_burst_pairwise_separation.md`
+- `docs/workflows/spon_ca_burst_pairwise_feature_fusion.md`
+- `docs/research/PAIRWISE_ICA_AS_TEMPORAL_DERIVATIVE.md`
+- `docs/developer/PAIRWISE_SOURCE_SEPARATION_IMPLEMENTATION_BRIEF.md`
 
 First guarded CUDA run: `Outputs/LearnableContrast/spon_ca_burst_v1_cuda_guarded`.
 Its gate is `do_not_advance`; direct residual is the held-out recall baseline to beat.
@@ -74,6 +75,18 @@ candidates), versus nested fixed selection `0.3158` (26/79, 59 candidates).
 Its `+0.0135` gain missed the predeclared `+0.02` C2 gate, so bounded-kernel C3
 did not run. The next justified step is morphology/neighborhood annotation and
 exhaustive review of a fixed candidate panel, not another blind sweep.
+
+Causal proposal program:
+`Outputs/FrameDifference/spon_ca_burst_causal_proposal_overnight_v1`. All 1,884
+evaluations completed; adaptive causal subtraction retained 58/79 known matches
+with 488 candidates versus 745 for its causal reference, while bounded CFAR
+fusion failed C2. This work is sidelined pending review of its 206-row fixed
+queue; do not restart or widen it without explicit selection.
+
+Pairwise separation is implemented for fixed/adaptive difference, InfoMax ICA,
+bounded CS-Parzen ICA, and shared-background NMF. Only synthetic/tiny validation
+is authorized by default. Preflight requires an explicit new artifact directory;
+a full Spon run requires explicit user selection.
 
 UI frames are one-based and inclusive; NumPy intervals are zero-based and
 half-open. Coordinates use `x=column`, `y=row`. Every new label-driven run must

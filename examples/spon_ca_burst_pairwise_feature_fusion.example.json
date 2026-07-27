@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_pairwise_feature_fusion_v1",
+  "pairwise_config": "spon_ca_burst_pairwise_separation.example.json",
+  "pairwise_run_dir": "../Outputs/PairwiseSeparation/spon_ca_burst_pairwise_separation_v1",
+  "output_dir": "../Outputs/PairwiseSeparation/spon_ca_burst_pairwise_feature_fusion_v1",
+  "features": ["fixed_binary_difference", "adaptive_binary_difference", "infomax_tanh_ica"],
+  "additive_lambdas": [0.05, 0.1, 0.2, 0.4],
+  "gate_floors": [0.5, 0.7, 0.85],
+  "feature_clip_z": 5.0,
+  "learning": {"max_lambda": 0.4, "learning_rate": 0.001, "epochs": 300, "l2_to_raw_initialization": 0.1},
+  "visualizations": [
+    {"kind": "soft_gate", "feature": "adaptive_binary_difference", "value": 0.7, "filename": "original_adaptive_gate_floor0p7.tif"},
+    {"kind": "soft_gate", "feature": "infomax_tanh_ica", "value": 0.7, "filename": "original_infomax_gate_floor0p7.tif"},
+    {"kind": "additive", "feature": "infomax_tanh_ica", "value": 0.1, "filename": "raw_plus_infomax_lambda0p1.tif"}
+  ],
+  "resources": {"cpu_threads": 4, "max_ram_mib": 6144, "min_free_disk_mib": 8192, "max_output_mib": 2048}
+}

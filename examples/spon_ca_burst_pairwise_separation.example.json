@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_pairwise_separation_v1",
+  "source_video": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+  "source_tiff": "../Inputs/Spon Ca Burst/3 hindbrain to tail 488 20ms.tif",
+  "labels_tsv": "../Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+  "design_document": "../docs/workflows/spon_ca_burst_pairwise_separation.md",
+  "output_dir": "../Outputs/PairwiseSeparation/spon_ca_burst_pairwise_separation_v1",
+  "frames": {"review_start_ui": 1800, "review_end_ui": 2359, "quiet_start_ui": 1800, "quiet_end_ui": 1899, "frame_period_ms": 20.0},
+  "preprocessing": {"lag_frames": 1, "spatial_sigma_px": 1.0, "temporal_mode": "causal_ema", "temporal_ema_span_frames": 4.0, "motion_mode": "none", "run_integer_shift_sensitivity": false, "max_shift_px": 2},
+  "sampling": {"primary_policy": "uniform_anatomy", "screen_samples": 1024, "confirm_samples": 4096, "screen_angle_step_degrees": 3.0, "refine_half_width_degrees": 3.0, "refine_angle_step_degrees": 0.25, "pairwise_diagnostic_frames_ui": [1900, 2000, 2100, 2200, 2300], "seed": 20260727},
+  "methods": {
+    "fixed_binary_difference": {"enabled": true},
+    "adaptive_binary_difference": {"enabled": true, "alpha_min": 0.8, "alpha_max": 1.2, "trim_fraction": 0.1, "refinement_iterations": 3},
+    "infomax_tanh_ica": {"enabled": true, "max_iterations": 500, "learning_rate": 0.01, "tolerance": 1e-7, "initial_angles_degrees": [0, 15, 30, 45, 60, 75]},
+    "cs_parzen_ica": {"enabled": true, "bandwidth": 0.35, "kernel_block_rows": 256},
+    "shared_background_nmf": {"enabled": true, "activity_l1": 0.05, "max_iterations": 100, "tolerance": 1e-6}
+  },
+  "thresholding": {"z_thresholds": [2.0, 2.5, 3.0, 3.5, 4.0], "primary_z_threshold": 3.0, "one_sided_positive": true, "minimum_component_pixels": [1, 3, 5], "write_binary_tiff": true, "quiet_mad_floor_percentile": 10.0},
+  "evaluation": {"binary_temporal_pool": "occupancy", "nms_distance_px": 6, "primary_match_radius_px": 6, "match_radii_px": [4, 6, 8, 10], "quiet_false_peaks_per_map": 1.0, "capacity_reference_lane": "raw_direct", "candidate_review_rows": 240},
+  "resources": {"cpu_threads": 4, "frame_chunk": 32, "kernel_block_rows": 256, "max_ram_mib": 6144, "min_free_disk_mib": 8192, "max_output_mib": 8192}
+}

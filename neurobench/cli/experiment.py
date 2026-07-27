@@ -84,6 +84,27 @@ def add_experiment_subcommands(subparsers) -> None:
     )
     proposal_run.add_argument("--config", required=True)
     proposal_run.set_defaults(func=_run_causal_proposal_program)
+    pairwise = workflows.add_parser(
+        "pairwise-separation",
+        help="Preflight or run bounded adjacent-frame binary, ICA, and constrained-NMF lanes.",
+    )
+    pairwise_actions = pairwise.add_subparsers(dest="experiment_action", required=True)
+    pairwise_preflight = pairwise_actions.add_parser("preflight", help="Write read-only validation artifacts to a new explicit directory.")
+    pairwise_preflight.add_argument("--config", required=True)
+    pairwise_preflight.add_argument("--artifact-dir", type=Path, required=True)
+    pairwise_preflight.set_defaults(func=_run_pairwise_preflight)
+    pairwise_run = pairwise_actions.add_parser("run", help="Run after an explicitly reviewed matching preflight.")
+    pairwise_run.add_argument("--config", required=True)
+    pairwise_run.add_argument("--preflight-dir", type=Path, required=True)
+    pairwise_run.set_defaults(func=_run_pairwise_separation)
+    fusion_preflight = pairwise_actions.add_parser("fusion-preflight", help="Validate bounded Raw Direct and pairwise-feature fusion.")
+    fusion_preflight.add_argument("--config", required=True)
+    fusion_preflight.add_argument("--artifact-dir", type=Path, required=True)
+    fusion_preflight.set_defaults(func=_run_pairwise_fusion_preflight)
+    fusion_run = pairwise_actions.add_parser("fusion-run", help="Run bounded additive, soft-gate, and scalar-tuned fusion.")
+    fusion_run.add_argument("--config", required=True)
+    fusion_run.add_argument("--preflight-dir", type=Path, required=True)
+    fusion_run.set_defaults(func=_run_pairwise_fusion)
     soma = workflows.add_parser(
         "soma-excitation",
         help="Evaluate dark-soma zones and frozen model transfer.",
@@ -260,6 +281,39 @@ def _run_causal_proposal_program(args) -> int:
     )
 
     payload = run(CausalProposalProgramConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_pairwise_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.pairwise_separation import PairwiseSeparationConfig, preflight
+    payload = preflight(PairwiseSeparationConfig.load(args.config), artifact_dir=args.artifact_dir)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_pairwise_separation(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.pairwise_separation.config import PairwiseSeparationConfig
+    from neurobench.experiments.pairwise_separation.runner import run
+    payload = run(PairwiseSeparationConfig.load(args.config), preflight_dir=args.preflight_dir)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_pairwise_fusion_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.pairwise_separation.fusion import PairwiseFusionConfig, preflight
+    payload = preflight(PairwiseFusionConfig.load(args.config), artifact_dir=args.artifact_dir)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_pairwise_fusion(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.pairwise_separation.fusion import PairwiseFusionConfig, run
+    payload = run(PairwiseFusionConfig.load(args.config), preflight_dir=args.preflight_dir)
     print(json.dumps(payload, indent=2, sort_keys=True))
     return 0
 

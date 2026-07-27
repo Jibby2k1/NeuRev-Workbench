@@ -273,3 +273,31 @@ not exhaustive truth.
 .venv-neurobench/bin/python -m neurobench.cli.main experiment causal-proposal-program run \
   --config examples/spon_ca_burst_causal_proposal_overnight.example.json
 ```
+
+### Completed result and temporary sideline, July 27
+
+`Outputs/FrameDifference/spon_ca_burst_causal_proposal_overnight_v1` completed
+all 1,884 logical evaluations in 1,213.9 seconds. C0 reproduced Raw Direct at
+`0.605615942` and causal artifact-only at `0.734187371`. C1 passed: the nested
+comparison was `0.705020` versus `0.594746` for Raw Direct and won all four
+bursts.
+
+The nominal best fractional method tied causal artifact-only at 58/79 known
+labels. A more useful Pareto result, `fractional_494f8eee07`, also recovered
+58/79 while producing 488 natural event candidates instead of 745 for the
+causal reference. It used spatial sigma 1, causal EMA span 1, artifact
+attenuation 0, asinh scale 5, a slow clipped EMA baseline, and log-mean-exp
+pooling 0.25. This supports adaptive baseline subtraction as a candidate-yield
+control, not as an established precision improvement.
+
+Fixed CFAR recovered 34/79 with 65 candidates. Adding 10% CFAR fusion did not
+improve recall and reduced candidates by only 1.34%, so C2 correctly stopped
+further fusion stages. Robustness median and lower quartile were both
+`0.734187`; the worst tested photobleach condition reached `0.6464`. The run
+produced a 206-row review queue.
+
+This program is now **sidelined**: do not widen or restart it. The next valid
+action on this branch is manual foreground/background review of its fixed queue.
+Current implementation work instead follows the pairwise source-separation
+workflow, using synthetic/tiny validation only until a full Spon run is
+explicitly selected.

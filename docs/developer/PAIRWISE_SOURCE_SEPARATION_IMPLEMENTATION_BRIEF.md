@@ -369,7 +369,7 @@ shape:
   "evaluation": {
     "binary_temporal_pool": "occupancy",
     "nms_distance_px": 6,
-    "primary_match_radius_px": 8,
+    "primary_match_radius_px": 6,
     "match_radii_px": [4, 6, 8, 10],
     "quiet_false_peaks_per_map": 1.0,
     "capacity_reference_lane": "raw_direct",
@@ -415,10 +415,12 @@ importing NumPy/SciPy at parser construction time:
 
 ```bash
 .venv-neurobench/bin/python -m neurobench.cli.main experiment pairwise-separation preflight \
-  --config examples/spon_ca_burst_pairwise_separation.example.json
+  --config examples/spon_ca_burst_pairwise_separation.example.json \
+  --artifact-dir Outputs/PairwiseSeparation/preflight_v1
 
 .venv-neurobench/bin/python -m neurobench.cli.main experiment pairwise-separation run \
-  --config examples/spon_ca_burst_pairwise_separation.example.json
+  --config examples/spon_ca_burst_pairwise_separation.example.json \
+  --preflight-dir Outputs/PairwiseSeparation/preflight_v1
 ```
 
 Optional bounded actions may be added only when they reduce risk:
@@ -1003,8 +1005,8 @@ methods/
     diagnostics.json
     timing.json
     continuous_activity.npy
-    binary_mask.npy
-    binary_mask.tif                 # only when enabled
+    binary_mask.npy                 # only when activity component is resolved
+    binary_mask.tif                 # resolved component and TIFF enabled
     candidate_maps.npz
     objective_by_angle.tsv          # ICA where applicable
 candidates/
@@ -1023,6 +1025,11 @@ figures/
 Large arrays may be memory-mapped or compressed, but their dtype, shape, axes,
 frame alignment, normalization, undefined-leading-frame behavior, checksum, and
 method ID must be declared in metadata.
+
+For ICA lanes, `continuous_activity.npy` and both binary-mask artifacts are
+conditional on a resolved activity component. An unresolved or unidentifiable
+fit must instead declare those omissions in `fit.json`; it must not emit an
+arbitrary component as a scientific mask.
 
 Write to `.partial` files and atomically rename only after validation. On failure,
 preserve `run_state.json`, progress, and bounded error information; do not rename
