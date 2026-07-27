@@ -139,3 +139,58 @@ preflight and the runner provide estimated and live `VmRSS`/`VmHWM` checks.
 4. Add tests under `tests/test_pipeline_executor.py` or a focused test file.
 5. Update `docs/developer/adding_pipeline_stage.md` if the stage changes the
    workflow pattern.
+
+### Work On The Workbench UI
+
+1. Edit source files under `neurobench/workbench/assets/src/`. Production
+   source order is explicit in `assets/src/bundle_sources.txt`; adding or
+   removing a module requires updating that manifest.
+2. Rebuild the generated bundle:
+
+```bash
+.venv-neurobench/bin/python tools/build_workbench_assets.py
+.venv-neurobench/bin/python tools/build_workbench_assets.py --check
+```
+
+3. Rebuild only a disposable fixture with
+   `neurobench workbench build --review-data ... --app-dir ...`. For a
+   historical app, prefer `serve --asset-mode current`; capture and verify a
+   baseline before an intentional installed rebuild.
+4. Run focused tests such as `tests/test_workbench_assets.py`,
+   `tests/test_workbench_builder.py`, `tests/test_workbench_cli.py`, and
+   `tests/test_workbench_product_shell_runtime.py`.
+
+Do not edit `neurobench/workbench/assets/workbench.js` directly except for
+recovery; it is generated.
+
+## Naming And Ownership Conventions
+
+- Public CLI commands live under `neurobench/cli/` or thin `tools/` wrappers.
+- Long-running experiments should write under `Outputs/` and record a manifest
+  or summary JSON that points to the generated dashboard/report artifacts.
+- Reusable algorithms belong in `neurobench/algorithms/`, not in `tools/`.
+- Reusable report/dashboard generation belongs in `neurobench/reports/`,
+  `neurobench/workbench/`, or a future `neurobench/dashboards/` package.
+- Tests should be close in name to the module or workflow they protect.
+
+## Current Hotspots
+
+| Hotspot | Why It Matters | Preferred Direction |
+| --- | --- | --- |
+| `tools/prepare_gamma_cfar_workbench_run.py` | Single large script mixing conversion, spec writing, sweep execution, attachment, and reporting. | Extract to package modules, keep CLI compatibility. |
+| `neurobench/workbench/assets/src/20_review_core.js` | Large browser module with review rendering and interactions. | Split by review state, drawing, ROI list, trace panel, and event controls. |
+| `neurobench/workbench/assets/workbench.css` | One served stylesheet still couples the dataset, annotation, results, and research surfaces. | Introduce ordered CSS source modules while preserving generated-bundle compatibility. |
+| `neurobench/workbench/server.py` | Large HTTP module still spans dataset routing, owner authorization, import/job orchestration, processing, and legacy research endpoints. Pure label reconciliation now lives in `label_reconciliation.py`, and sidecar reads use the shared bounded identity validator. | Continue extracting route and job-runner modules behind the tested dataset-qualified API; preserve current-mode no-write startup and compatibility hooks. |
+| `neurobench/data/imports.py` | Central safety and lifecycle contract for first-release TIFF/NPY, label-table, and four recognized native NeuRev JSON formats. Generic JSON and future scientific-container adapters remain deliberately absent. | Add future bounded adapters behind the existing import record and transition contract; never infer scientific metadata or accept arbitrary JSON shapes. |
+| `neurobench/dynamics/overnight_sweep.py` | Large orchestration module for expensive GPU experiments. | Keep runner behavior stable; extract manifest/progress helpers only with tests. |
+| `neurobench/pipeline_catalog.py` and `neurobench/pipelines/executor.py` | Central stage definitions and execution; easy to create hidden coupling. | Keep docs/tests synchronized for every stage. |
+
+## Agent Notes
+
+- Read `AGENTS.md` before touching sweep code or interpreting active experiment
+  results.
+- Prefer `.venv-neurobench/bin/python` for repository Python commands.
+- The workspace can require escalated shell reads/writes because sandboxed
+  commands may fail before the shell starts.
+- Do not delete archived progress logs or generated experiment evidence unless
+  explicitly asked.
