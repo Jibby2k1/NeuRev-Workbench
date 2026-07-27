@@ -54,6 +54,8 @@ Read the matching workflow before changing or running an experiment:
 - `docs/workflows/spon_ca_burst_pairwise_feature_fusion.md`
 - `docs/research/PAIRWISE_ICA_AS_TEMPORAL_DERIVATIVE.md`
 - `docs/developer/PAIRWISE_SOURCE_SEPARATION_IMPLEMENTATION_BRIEF.md`
+- `docs/research/DENOISE_THEN_DIFFERENCE.md`
+- `docs/developer/LATENT_DYNAMICS_DENOISING_IMPLEMENTATION_BRIEF.md`
 
 First guarded CUDA run: `Outputs/LearnableContrast/spon_ca_burst_v1_cuda_guarded`.
 Its gate is `do_not_advance`; direct residual is the held-out recall baseline to beat.
@@ -87,6 +89,14 @@ Pairwise separation is implemented for fixed/adaptive difference, InfoMax ICA,
 bounded CS-Parzen ICA, and shared-background NMF. Only synthetic/tiny validation
 is authorized by default. Preflight requires an explicit new artifact directory;
 a full Spon run requires explicit user selection.
+
+Latent-dynamics denoising is documentation-only. The planned reference is a
+signed, stable AR state-space filter/smoother whose latent state, lagged
+difference, dynamic drive, filter innovation, and observation residual remain
+separate. The historical `kalman_positive_residual_stack` remains a legacy
+asymmetric-EMA baseline, not a full Kalman model. Code/tests/synthetic fixtures
+and tiny smoke tests may follow the brief; a full Spon or GPU run still requires
+explicit user selection.
 
 UI frames are one-based and inclusive; NumPy intervals are zero-based and
 half-open. Coordinates use `x=column`, `y=row`. Every new label-driven run must
