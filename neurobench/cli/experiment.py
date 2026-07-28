@@ -163,6 +163,26 @@ def add_experiment_subcommands(subparsers) -> None:
     lc_run = learnable_actions.add_parser("run", help="Run the guarded CUDA learnable-contrast experiment.")
     lc_run.add_argument("--config", required=True)
     lc_run.set_defaults(func=_run_learnable_contrast_experiment)
+    latent = workflows.add_parser(
+        "latent-dynamics",
+        help="Preflight and run stable AR(1) denoising and feature benchmarks.",
+    )
+    latent_actions = latent.add_subparsers(dest="experiment_action", required=True)
+    latent_preflight = latent_actions.add_parser("preflight", help="Write collision-safe read-only validation artifacts.")
+    latent_preflight.add_argument("--config", required=True)
+    latent_preflight.add_argument("--artifact-dir", type=Path, required=True)
+    latent_preflight.set_defaults(func=_run_latent_dynamics_preflight)
+    latent_synthetic = latent_actions.add_parser("synthetic", help="Run deterministic synthetic falsification cases.")
+    latent_synthetic.add_argument("--output-dir", type=Path, required=True)
+    latent_synthetic.add_argument("--seeds", type=int, nargs="+", default=[7, 13, 19, 29, 37])
+    latent_synthetic.set_defaults(func=_run_latent_dynamics_synthetic)
+    latent_run = latent_actions.add_parser("run", help="Run a matching reviewed CPU preflight.")
+    latent_run.add_argument("--config", required=True)
+    latent_run.add_argument("--preflight-dir", type=Path, required=True)
+    latent_run.set_defaults(func=_run_latent_dynamics)
+    latent_benchmark = latent_actions.add_parser("feature-benchmark", help="Read the completed feature benchmark artifact.")
+    latent_benchmark.add_argument("--run-dir", type=Path, required=True)
+    latent_benchmark.set_defaults(func=_run_latent_dynamics_feature_benchmark)
 
 
 def _run_soma_preflight(args) -> int:
@@ -456,5 +476,36 @@ def _run_multi_cfar_videos(args) -> int:
         expert_id=args.expert_id,
         fps=args.fps,
     )
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_latent_dynamics_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.latent_dynamics import LatentDynamicsConfig, preflight
+    payload = preflight(LatentDynamicsConfig.load(args.config), artifact_dir=args.artifact_dir)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_latent_dynamics_synthetic(args) -> int:
+    from neurobench.experiments.latent_dynamics.runner import run_synthetic
+    payload = run_synthetic(args.output_dir, seeds=tuple(args.seeds))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_latent_dynamics(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.latent_dynamics.config import LatentDynamicsConfig
+    from neurobench.experiments.latent_dynamics.runner import run
+    payload = run(LatentDynamicsConfig.load(args.config), preflight_dir=args.preflight_dir)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_latent_dynamics_feature_benchmark(args) -> int:
+    from neurobench.experiments.latent_dynamics.runner import feature_benchmark
+    payload = feature_benchmark(args.run_dir)
     print(json.dumps(payload, indent=2, sort_keys=True))
     return 0

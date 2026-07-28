@@ -504,6 +504,24 @@ Discovery, ranking, and triage helpers for candidate neurons.
 - Signature: `validate_candidate_feature_table(rows: Sequence[Mapping[str, Any]]) -> None`
 - Summary: Validate the public candidate feature row contract.
 
+## `neurobench.experiments.latent_dynamics`
+
+Stage-gated latent fluorescence denoising experiment.
+
+### `LatentDynamicsConfig`
+
+- Kind: `class`
+- Source: `neurobench.experiments.latent_dynamics.config`
+- Signature: `class LatentDynamicsConfig`
+- Summary: No docstring summary available.
+
+### `preflight`
+
+- Kind: `module`
+- Source: `neurobench.experiments.latent_dynamics.preflight`
+- Signature: `neurobench.experiments.latent_dynamics.preflight`
+- Summary: Read-only validation and explicit artifacts for latent-dynamics runs.
+
 ## `neurobench.experiments.learnable_contrast`
 
 No docstring summary available.

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_latent_dynamics_v1",
+  "source_video": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+  "labels_tsv": "../Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+  "output_dir": "../Outputs/LatentDynamics/spon_ca_burst_latent_dynamics_v1",
+  "frames": {"review_start_ui": 1800, "review_end_ui": 2359, "quiet_start_ui": 1800, "quiet_end_ui": 1899, "frame_period_ms": 20.0},
+  "preprocessing": {"baseline_mode": "quiet_median", "signed_residual": true, "gain_mode": "none", "motion_mode": "none", "quiet_scale_floor_percentile": 10.0},
+  "fit": {"sample_pixels": 4096, "sample_seed": 20260727, "temporal_validation_blocks": 5, "stability_epsilon": 0.001, "decay_time_ms_grid": [40, 80, 160, 320, 640, 1280], "process_to_observation_grid": [0.01, 0.03, 0.1, 0.3, 1.0], "parameter_mode": "bounded_grid"},
+  "application": {"tile_height": 64, "tile_width": 64, "write_filter_mean": true, "write_smoother_mean": true, "write_dense_residuals": false},
+  "features": {"lags": [1, 4], "write_dense_features": false, "write_selected_tiffs": true, "positive_views": true},
+  "evaluation": {"primary_match_radius_px": 6, "match_radii_px": [4, 6, 8], "quiet_false_peaks_per_map": 1.0, "capacity_reference_lane": "raw_direct", "synthetic_seeds": [7, 13, 19, 29, 37]},
+  "resources": {"cpu_threads": 2, "max_ram_mib": 4096, "min_free_disk_mib": 4096, "max_output_mib": 3072}
+}
