@@ -90,13 +90,20 @@ bounded CS-Parzen ICA, and shared-background NMF. Only synthetic/tiny validation
 is authorized by default. Preflight requires an explicit new artifact directory;
 a full Spon run requires explicit user selection.
 
-Latent-dynamics denoising is documentation-only. The planned reference is a
-signed, stable AR state-space filter/smoother whose latent state, lagged
-difference, dynamic drive, filter innovation, and observation residual remain
-separate. The historical `kalman_positive_residual_stack` remains a legacy
-asymmetric-EMA baseline, not a full Kalman model. Code/tests/synthetic fixtures
-and tiny smoke tests may follow the brief; a full Spon or GPU run still requires
-explicit user selection.
+Latent-dynamics denoising now has a stable AR(1) numerical reference, strict
+preflight, deterministic synthetic fixtures, chunked CPU runner, artifact
+contract, and tiny smoke coverage. Read
+`docs/workflows/spon_ca_burst_latent_dynamics.md` before changing or running it.
+The completed full CPU run is
+`Outputs/LatentDynamics/spon_ca_burst_latent_dynamics_v1`: exact Raw Direct
+macro recall was `0.6056` (49/79 matches, 232 candidates); offline smoother
+amplitude reached `0.6867` (55/79, 320 candidates) and won 4/4 bursts. The
+causal filter reached `0.6540` but won only 2/4. C2/C3 confirmation remains
+incomplete, and the smoother is not real-time.
+The historical `kalman_positive_residual_stack` remains a legacy asymmetric-EMA
+baseline, not a full Kalman model. A full Spon or GPU run still requires
+explicit user selection; any additional confirmation run requires a new output
+root and explicit selection.
 
 UI frames are one-based and inclusive; NumPy intervals are zero-based and
 half-open. Coordinates use `x=column`, `y=row`. Every new label-driven run must
