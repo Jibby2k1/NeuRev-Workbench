@@ -57,6 +57,8 @@ Read the matching workflow before changing or running an experiment:
 - `docs/developer/PAIRWISE_SOURCE_SEPARATION_IMPLEMENTATION_BRIEF.md`
 - `docs/research/DENOISE_THEN_DIFFERENCE.md`
 - `docs/developer/LATENT_DYNAMICS_DENOISING_IMPLEMENTATION_BRIEF.md`
+- `docs/research/HIERARCHICAL_PARZEN_NOISY_ICA.md`
+- `docs/developer/hierarchical_parzen_noisy_ica/README.md`
 
 The completed v1 representation run evaluated 36 fits. Amplitude PCA rank 8
 led fixed-budget neuron ID at 54/79 known matches versus Raw Direct 52/79;
@@ -110,6 +112,14 @@ The historical `kalman_positive_residual_stack` remains a legacy asymmetric-EMA
 baseline, not a full Kalman model. A full Spon or GPU run still requires
 explicit user selection; any additional confirmation run requires a new output
 root and explicit selection.
+
+Hierarchical Parzen/noisy ICA is documentation-only. The planned Stage 1
+reconstructs a background-like aggregate component and passes an
+amplitude-preserving residual; Stage 2 uses local explicit additive-noise
+modeling, noise-corrected subspaces, noisy Parzen posterior source estimates,
+and a validated residual. Code, tests, synthetic fixtures, preflight, figures,
+and tiny smoke tests may follow the Codex package. A full Spon or GPU run still
+requires explicit selection and a new output root.
 
 UI frames are one-based and inclusive; NumPy intervals are zero-based and
 half-open. Coordinates use `x=column`, `y=row`. Every new label-driven run must
