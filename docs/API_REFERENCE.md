@@ -504,6 +504,23 @@ Discovery, ranking, and triage helpers for candidate neurons.
 - Signature: `validate_candidate_feature_table(rows: Sequence[Mapping[str, Any]]) -> None`
 - Summary: Validate the public candidate feature row contract.
 
+## `neurobench.experiments.representation_benchmark`
+
+Guarded PCA, spatial ICA, autoencoder, optional UMAP, and neuron-ID benchmark.
+
+### `RepresentationBenchmarkConfig`
+
+- Kind: `class`
+- Source: `neurobench.experiments.representation_benchmark.config`
+- Summary: Strict version-1 representation benchmark manifest.
+
+### `preflight`
+
+- Kind: `function`
+- Source: `neurobench.experiments.representation_benchmark.preflight`
+- Summary: Validate inputs, labels, output collision, fit count, RAM, disk, and GPU headroom.
+
+
 ## `neurobench.experiments.latent_dynamics`
 
 Stage-gated latent fluorescence denoising experiment.

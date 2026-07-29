@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_representation_benchmark_v1",
+  "source_video": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+  "labels_tsv": "../Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+  "output_dir": "../Outputs/RepresentationBenchmark/spon_ca_burst_representation_benchmark_v1",
+  "frames": {
+    "review_start_ui": 1800,
+    "review_end_ui": 2359,
+    "quiet_start_ui": 1800,
+    "quiet_end_ui": 1899,
+    "frame_period_ms": 20.0
+  },
+  "pca": {
+    "inputs": ["amplitude", "quiet_residual"],
+    "ranks": [8, 16, 32, 64, 128]
+  },
+  "ica": {
+    "inputs": ["amplitude", "quiet_residual"],
+    "ranks": [16, 32, 64],
+    "seeds": [7, 13, 19],
+    "fit_sample_pixels": 32768,
+    "max_iterations": 300,
+    "tolerance": 0.00001
+  },
+  "autoencoder": {
+    "enabled": true,
+    "inputs": ["quiet_residual"],
+    "kinds": ["linear", "nonlinear"],
+    "ranks": [32, 64],
+    "seeds": [7, 13],
+    "train_pixels": 65536,
+    "validation_pixels": 8192,
+    "epochs": 20,
+    "batch_size": 4096,
+    "learning_rate": 0.001,
+    "hidden_width": 128
+  },
+  "umap": {
+    "enabled_if_available": true,
+    "neighbors": 30,
+    "min_dist": 0.1,
+    "sample_pixels": 20000,
+    "seed": 7
+  },
+  "evaluation": {
+    "nms_distance_px": 6,
+    "match_radius_px": 6,
+    "quiet_false_peaks_per_map": 1.0,
+    "fixed_candidates_per_burst": 58,
+    "reconstruction_ranks": [32, 64, 128],
+    "representative_rank": 64,
+    "component_gallery_count": 8,
+    "write_representative_tiffs": true
+  },
+  "resources": {
+    "device": "cuda",
+    "cpu_threads": 4,
+    "projection_chunk_pixels": 8192,
+    "max_ram_mib": 16384,
+    "min_free_disk_mib": 16384,
+    "max_output_mib": 4096,
+    "gpu_reserve_mib": 2048
+  }
+}

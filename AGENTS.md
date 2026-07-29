@@ -47,6 +47,7 @@ Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hin
 
 Read the matching workflow before changing or running an experiment:
 
+- `docs/workflows/spon_ca_burst_representation_benchmark.md`
 - `docs/workflows/spon_ca_burst_soma_excitation.md`
 - `docs/workflows/spon_ca_burst_learnable_contrast.md`
 - `docs/workflows/spon_ca_burst_frame_derivatives.md`
@@ -56,6 +57,11 @@ Read the matching workflow before changing or running an experiment:
 - `docs/developer/PAIRWISE_SOURCE_SEPARATION_IMPLEMENTATION_BRIEF.md`
 - `docs/research/DENOISE_THEN_DIFFERENCE.md`
 - `docs/developer/LATENT_DYNAMICS_DENOISING_IMPLEMENTATION_BRIEF.md`
+
+The completed v1 representation run evaluated 36 fits. Amplitude PCA rank 8
+led fixed-budget neuron ID at 54/79 known matches versus Raw Direct 52/79;
+this two-match gain remains provisional. Rank-16 ICA was stable but did not win
+at fixed budget; rank-64 ICA did not converge. Read the workflow before follow-up.
 
 First guarded CUDA run: `Outputs/LearnableContrast/spon_ca_burst_v1_cuda_guarded`.
 Its gate is `do_not_advance`; direct residual is the held-out recall baseline to beat.

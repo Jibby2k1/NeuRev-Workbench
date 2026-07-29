@@ -183,6 +183,16 @@ def add_experiment_subcommands(subparsers) -> None:
     latent_benchmark = latent_actions.add_parser("feature-benchmark", help="Read the completed feature benchmark artifact.")
     latent_benchmark.add_argument("--run-dir", type=Path, required=True)
     latent_benchmark.set_defaults(func=_run_latent_dynamics_feature_benchmark)
+    representation = workflows.add_parser("representation", help="Benchmark PCA, spatial ICA, autoencoders, and optional UMAP.")
+    representation_actions = representation.add_subparsers(dest="experiment_action", required=True)
+    representation_preflight = representation_actions.add_parser("preflight", help="Write guarded representation preflight artifacts.")
+    representation_preflight.add_argument("--config", required=True)
+    representation_preflight.add_argument("--artifact-dir", type=Path, required=True)
+    representation_preflight.set_defaults(func=_run_representation_preflight)
+    representation_run = representation_actions.add_parser("run", help="Run the matching reviewed representation benchmark.")
+    representation_run.add_argument("--config", required=True)
+    representation_run.add_argument("--preflight-dir", type=Path, required=True)
+    representation_run.set_defaults(func=_run_representation_benchmark)
 
 
 def _run_soma_preflight(args) -> int:
@@ -507,5 +517,22 @@ def _run_latent_dynamics(args) -> int:
 def _run_latent_dynamics_feature_benchmark(args) -> int:
     from neurobench.experiments.latent_dynamics.runner import feature_benchmark
     payload = feature_benchmark(args.run_dir)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_representation_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.representation_benchmark import RepresentationBenchmarkConfig, preflight
+    payload = preflight(RepresentationBenchmarkConfig.load(args.config), artifact_dir=args.artifact_dir)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_representation_benchmark(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.representation_benchmark.config import RepresentationBenchmarkConfig
+    from neurobench.experiments.representation_benchmark.runner import run
+    payload = run(RepresentationBenchmarkConfig.load(args.config), preflight_dir=args.preflight_dir)
     print(json.dumps(payload, indent=2, sort_keys=True))
     return 0

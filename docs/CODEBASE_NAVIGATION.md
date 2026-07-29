@@ -19,6 +19,7 @@ from this map.
 | Run the Spon dark-soma/excitation case study | `examples/spon_ca_burst_soma_excitation.example.json` | `neurobench/experiments/soma_excitation/`, `docs/workflows/spon_ca_burst_soma_excitation.md` |
 | Run or inspect learnable contrast experiments | `docs/workflows/spon_ca_burst_learnable_contrast.md` | `neurobench/experiments/learnable_contrast/`, `neurobench/cli/experiment.py` |
 | Develop pairwise temporal source separation | `docs/workflows/spon_ca_burst_pairwise_separation.md` | `neurobench/algorithms/pairwise_separation.py`, `neurobench/experiments/pairwise_separation/` |
+| Benchmark PCA, spatial ICA, autoencoders, and optional UMAP | `docs/workflows/spon_ca_burst_representation_benchmark.md` | `neurobench/algorithms/representation_benchmark.py`, `neurobench/experiments/representation_benchmark/` |
 | Fuse pairwise/derivative evidence with Raw Direct | `docs/workflows/spon_ca_burst_pairwise_feature_fusion.md` | `neurobench/experiments/pairwise_separation/fusion.py`, `docs/research/PAIRWISE_ICA_AS_TEMPORAL_DERIVATIVE.md` |
 | Develop stable latent-dynamics denoising and post-denoising features | `docs/workflows/spon_ca_burst_latent_dynamics.md` | `neurobench/algorithms/latent_dynamics.py`, `neurobench/experiments/latent_dynamics/`, `docs/developer/LATENT_DYNAMICS_DENOISING_IMPLEMENTATION_BRIEF.md` |
 | Audit the fish intent/inverse-control program | `docs/programs/fish_inverse_control/README.md` | `examples/fish_control_program.example.json`, `neurobench/programs/fish_control.py` |
