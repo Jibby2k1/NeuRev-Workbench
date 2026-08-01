@@ -1,6 +1,6 @@
 # Codebase Navigation
 
-Last updated: 2026-07-27.
+Last updated: 2026-07-29.
 
 This guide is a fast map for humans and coding agents. It names the stable
 entry points first, then points to the implementation modules behind common
@@ -22,6 +22,7 @@ from this map.
 | Benchmark PCA, spatial ICA, autoencoders, and optional UMAP | `docs/workflows/spon_ca_burst_representation_benchmark.md` | `neurobench/algorithms/representation_benchmark.py`, `neurobench/experiments/representation_benchmark/` |
 | Fuse pairwise/derivative evidence with Raw Direct | `docs/workflows/spon_ca_burst_pairwise_feature_fusion.md` | `neurobench/experiments/pairwise_separation/fusion.py`, `docs/research/PAIRWISE_ICA_AS_TEMPORAL_DERIVATIVE.md` |
 | Develop stable latent-dynamics denoising and post-denoising features | `docs/workflows/spon_ca_burst_latent_dynamics.md` | `neurobench/algorithms/latent_dynamics.py`, `neurobench/experiments/latent_dynamics/`, `docs/developer/LATENT_DYNAMICS_DENOISING_IMPLEMENTATION_BRIEF.md` |
+| Plan hierarchical Parzen/noisy ICA background-signal-noise decomposition | `docs/research/HIERARCHICAL_PARZEN_NOISY_ICA.md` | `docs/developer/hierarchical_parzen_noisy_ica/`, `docs/research/overleaf/hierarchical_parzen_noisy_ica/`; implementation is not yet present |
 | Audit the fish intent/inverse-control program | `docs/programs/fish_inverse_control/README.md` | `examples/fish_control_program.example.json`, `neurobench/programs/fish_control.py` |
 | Add a pipeline stage | `docs/developer/adding_pipeline_stage.md` | `neurobench/pipeline_catalog.py`, `neurobench/pipelines/executor.py`, `tests/test_pipeline_executor.py` |
 | Work on template/grid preprocessing | `docs/TEMPLATE_GRID_WORKFLOW.md` | `neurobench/algorithms/template_matching.py`, `neurobench/algorithms/grid_regions.py`, `neurobench/cli/template.py`, `neurobench/cli/grid.py` |
