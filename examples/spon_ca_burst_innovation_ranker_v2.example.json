@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_innovation_ranker_v2",
+  "feature_root": "../Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1",
+  "feature_manifest": "../Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/feature_manifest.json",
+  "source_video": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+  "labels_tsv": "../Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+  "output_dir": "../Outputs/HierarchicalParzenICA/spon_ca_burst_innovation_ranker_v2",
+  "preflight_dir": "../Outputs/HierarchicalParzenICA/preflight_spon_ca_burst_innovation_ranker_v2",
+  "frames": {
+    "review_start_ui": 1800,
+    "review_end_ui": 2359,
+    "quiet_count": 100
+  },
+  "map_generation": {
+    "signed_powers": [1.25, 1.5, 2.0],
+    "whitening_rhos": [0.25, 0.5, 1.0],
+    "center_sigmas_px": [1.5, 2.5, 3.5],
+    "ring_specs": [[3.0, 0.75], [3.0, 1.25], [4.5, 0.75], [4.5, 1.25], [6.0, 0.75], [6.0, 1.25]],
+    "crowd_sigma_px": 8.0,
+    "artifact_authorities": [0.5, 1.0],
+    "normalization_clip": 8.0
+  },
+  "proposals": {
+    "source_ids": [
+      "carrier_signed",
+      "local_psd_signal",
+      "asymmetric_state",
+      "spatial_coherence",
+      "cross_scale_rank",
+      "cross_scale_recall",
+      "cfar_score",
+      "signed_power_1p25",
+      "signed_power_1p5",
+      "signed_power_2",
+      "shot_whitened_rho0p25",
+      "shot_whitened_rho0p5",
+      "shot_whitened_rho1",
+      "cut_center_sigma1p5",
+      "cut_center_sigma2p5",
+      "cut_center_sigma3p5",
+      "cut_ring_r3p0_t0p75",
+      "cut_ring_r3p0_t1p25",
+      "cut_ring_r4p5_t0p75",
+      "cut_ring_r4p5_t1p25",
+      "cut_ring_r6p0_t0p75",
+      "cut_ring_r6p0_t1p25"
+    ],
+    "nms_distance_px": 6,
+    "per_source_limit": 100,
+    "dedupe_radius_px": 3.0
+  },
+  "evaluation": {
+    "match_radius_px": 6.0,
+    "fixed_candidates_per_burst": 58,
+    "quiet_false_candidates_per_map": 1.0,
+    "oracle_source_budgets": [20, 40, 58, 80, 100]
+  },
+  "linear_grid": {
+    "feature_sets": ["separation", "temporal", "cut_aware", "calibrated", "full"],
+    "learning_rates": [0.003, 0.01, 0.03],
+    "l2_values": [0.01, 0.1, 1.0],
+    "maximum_total_weights": [0.25, 0.5, 1.0],
+    "epochs": 300
+  },
+  "mlp_grid": {
+    "feature_sets": ["separation", "temporal", "cut_aware", "calibrated", "full"],
+    "learning_rates": [0.0003, 0.001, 0.003],
+    "weight_decays": [0.001, 0.01],
+    "hidden_units": [8, 16],
+    "maximum_residuals": [0.25, 0.5],
+    "epochs": 150,
+    "inner_seeds": [17, 29],
+    "confirmation_seeds": [17, 29, 43]
+  },
+  "selection": {
+    "minimum_weight": 0.25,
+    "mean_weight": 1.0,
+    "threshold_weight": 0.1,
+    "candidate_penalty": 0.02
+  },
+  "visualization": {
+    "overlay_candidate_limit": 100,
+    "score_sigma_px": 2.0,
+    "compression": "zlib"
+  },
+  "resources": {
+    "cpu_threads": 2,
+    "max_ram_mib": 12288,
+    "min_free_disk_mib": 8192,
+    "max_output_mib": 2048
+  }
+}

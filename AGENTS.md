@@ -53,12 +53,13 @@ Read the matching workflow before changing or running an experiment:
 - `docs/workflows/spon_ca_burst_frame_derivatives.md`
 - `docs/workflows/spon_ca_burst_pairwise_separation.md`
 - `docs/workflows/spon_ca_burst_pairwise_feature_fusion.md`
+- `docs/workflows/spon_ca_burst_hierarchical_parzen_noisy_ica.md`
+- `docs/workflows/spon_ca_burst_multiscale_information.md`
+- `docs/workflows/spon_ca_burst_scientific_feature_audit.md`
 - `docs/research/PAIRWISE_ICA_AS_TEMPORAL_DERIVATIVE.md`
 - `docs/developer/PAIRWISE_SOURCE_SEPARATION_IMPLEMENTATION_BRIEF.md`
 - `docs/research/DENOISE_THEN_DIFFERENCE.md`
 - `docs/developer/LATENT_DYNAMICS_DENOISING_IMPLEMENTATION_BRIEF.md`
-- `docs/research/HIERARCHICAL_PARZEN_NOISY_ICA.md`
-- `docs/developer/hierarchical_parzen_noisy_ica/README.md`
 
 The completed v1 representation run evaluated 36 fits. Amplitude PCA rank 8
 led fixed-budget neuron ID at 54/79 known matches versus Raw Direct 52/79;
@@ -113,13 +114,35 @@ baseline, not a full Kalman model. A full Spon or GPU run still requires
 explicit user selection; any additional confirmation run requires a new output
 root and explicit selection.
 
-Hierarchical Parzen/noisy ICA is documentation-only. The planned Stage 1
-reconstructs a background-like aggregate component and passes an
-amplitude-preserving residual; Stage 2 uses local explicit additive-noise
-modeling, noise-corrected subspaces, noisy Parzen posterior source estimates,
-and a validated residual. Code, tests, synthetic fixtures, preflight, figures,
-and tiny smoke tests may follow the Codex package. A full Spon or GPU run still
-requires explicit selection and a new output root.
+Hierarchical Parzen ICA is specified in
+`docs/developer/HIERARCHICAL_PARZEN_NOISY_ICA_IMPLEMENTATION_BRIEF.md` and
+`docs/research/HIERARCHICAL_PARZEN_NOISY_ICA.md`. The planned hierarchy
+reconstructs a background-like component from adjacent-frame Parzen ICA, passes
+an amplitude-preserving residual to local noisy Parzen ICA, and keeps structured
+neural signal, structured artifact, and qualified measurement noise separate.
+Only code, tests, synthetic/semi-synthetic fixtures, preflight, and tiny smoke
+work are authorized by the specification. A full Spon/GPU run requires explicit
+selection and a new output root.
+
+The guarded Stage-1 generated matrix is
+`Outputs/HierarchicalParzenICA/stage1_guarded_synthetic_multiseed_v1`.
+All 240 combinations completed and numerical stability passed, but scientific
+validity failed. Adaptive gain remains the general reference; constrained
+stochastic Parzen improved all five similar-persistence cases but lost the
+other 15 signal comparisons, and batch raw feedback was rejected in 57/60
+runs. Read
+`docs/developer/HIERARCHICAL_PARZEN_STAGE1_GUARDED_SYNTHETIC_REPORT.md`.
+Do not begin Stage 2 or semi-synthetic Spon injection until the failed gate is
+addressed.
+
+The completed scientific feature audit is
+`Outputs/HierarchicalParzenICA/spon_ca_burst_scientific_feature_audit_v1`.
+It evaluated 16 maps and 192 lanes. Family-specific `coherence_w15` improved
+budget-20 recall in all four bursts (`0.6053` versus carrier `0.5409`) and is
+the primary compact confirmation candidate; lagged recurrence is secondary.
+The all-family selector was less stable. Read
+`docs/research/SPON_CA_BURST_SCIENTIFIC_FEATURE_AUDIT_V1_RESULTS.md` before
+widening this search. Precision still requires exhaustive bounded-field labels.
 
 UI frames are one-based and inclusive; NumPy intervals are zero-based and
 half-open. Coordinates use `x=column`, `y=row`. Every new label-driven run must

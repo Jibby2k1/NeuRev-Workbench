@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_hard_roi_adjudication_v1",
+  "source_video": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+  "original_labels_tsv": "../Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+  "source_ranker_root": "../Outputs/HierarchicalParzenICA/spon_ca_burst_innovation_ranker_v5",
+  "source_scientific_audit_root": "../Outputs/HierarchicalParzenICA/spon_ca_burst_scientific_feature_audit_v1",
+  "output_dir": "../Outputs/HardROIAdjudication/spon_ca_burst_hard_roi_adjudication_v1",
+  "preflight_dir": "../Outputs/HardROIAdjudication/preflight_spon_ca_burst_hard_roi_adjudication_v1",
+  "review": {
+    "target_roi_ids": [
+      "roi_007",
+      "roi_008",
+      "roi_010",
+      "roi_014",
+      "roi_015",
+      "roi_017",
+      "roi_019",
+      "roi_020",
+      "roi_023"
+    ],
+    "pad_before_frames": 15,
+    "pad_after_frames": 15,
+    "crop_padding_px": 32,
+    "box_half_size_px": 8,
+    "playback_fps": 10.0,
+    "display_lower_percentile": 0.5,
+    "display_upper_percentile": 99.8,
+    "source_frame_rate_hz": 50.0
+  },
+  "evaluation": {
+    "budgets": [20, 40, 58, 80, 100],
+    "match_radius_px": 6.0,
+    "nms_distance_px": 6,
+    "relaxed_localization_radius_px": 10.0,
+    "temporal_pool_temperature": 0.25
+  },
+  "frozen_panel": [
+    {
+      "feature_id": "carrier_signed",
+      "path": "../Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/carrier_signed.npy",
+      "storage": "npy_float",
+      "role": "immutable_quiet_standardized_activity_carrier"
+    },
+    {
+      "feature_id": "coherence_w15",
+      "path": "../Outputs/HierarchicalParzenICA/spon_ca_burst_scientific_feature_audit_v1/videos/coherence_w15.tif",
+      "storage": "display_tiff_uint16",
+      "role": "promoted_causal_neighborhood_feature"
+    },
+    {
+      "feature_id": "propagation_lag2_w15",
+      "path": "../Outputs/HierarchicalParzenICA/spon_ca_burst_scientific_feature_audit_v1/videos/propagation_lag2_w15.tif",
+      "storage": "display_tiff_uint16",
+      "role": "secondary_lagged_recurrence_feature"
+    },
+    {
+      "feature_id": "radial_cs_shell",
+      "path": "../Outputs/HierarchicalParzenICA/spon_ca_burst_scientific_feature_audit_v1/videos/radial_cs_shell.tif",
+      "storage": "display_tiff_uint16",
+      "role": "radial_information_feature"
+    },
+    {
+      "feature_id": "noise_vst_residual",
+      "path": "../Outputs/HierarchicalParzenICA/spon_ca_burst_scientific_feature_audit_v1/videos/noise_vst_residual.tif",
+      "storage": "display_tiff_uint16",
+      "role": "diagnostic_variance_stabilized_auxiliary"
+    }
+  ],
+  "resources": {
+    "cpu_threads": 2,
+    "max_ram_mib": 4096,
+    "min_free_disk_mib": 4096,
+    "max_output_mib": 512
+  }
+}

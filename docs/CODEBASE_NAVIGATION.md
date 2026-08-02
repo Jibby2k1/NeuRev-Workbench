@@ -1,6 +1,6 @@
 # Codebase Navigation
 
-Last updated: 2026-07-29.
+Last updated: 2026-07-30.
 
 This guide is a fast map for humans and coding agents. It names the stable
 entry points first, then points to the implementation modules behind common
@@ -20,9 +20,13 @@ from this map.
 | Run or inspect learnable contrast experiments | `docs/workflows/spon_ca_burst_learnable_contrast.md` | `neurobench/experiments/learnable_contrast/`, `neurobench/cli/experiment.py` |
 | Develop pairwise temporal source separation | `docs/workflows/spon_ca_burst_pairwise_separation.md` | `neurobench/algorithms/pairwise_separation.py`, `neurobench/experiments/pairwise_separation/` |
 | Benchmark PCA, spatial ICA, autoencoders, and optional UMAP | `docs/workflows/spon_ca_burst_representation_benchmark.md` | `neurobench/algorithms/representation_benchmark.py`, `neurobench/experiments/representation_benchmark/` |
+| Develop and benchmark hierarchical Parzen background/signal/noise separation | `docs/workflows/spon_ca_burst_stochastic_architecture_grid.md` | `docs/workflows/spon_ca_burst_noisy_parzen_signal_split.md`, `docs/workflows/spon_ca_burst_sequential_denoise_audit.md`, `docs/workflows/spon_ca_burst_stage1_architecture_visuals.md`, `neurobench/experiments/hierarchical_parzen_ica/` |
+| Tune advanced carrier-preserving denoising families | `docs/workflows/spon_ca_burst_advanced_denoising_program.md` | `docs/research/SPON_CA_BURST_ADVANCED_DENOISING_RESULTS.md`, `neurobench/algorithms/advanced_denoising.py`, `neurobench/metrics/synthetic_denoising.py` |
+| Test bounded local/component/graph/blind-spot denoisers and Pareto mixtures | `docs/workflows/spon_ca_burst_innovation_denoising_v3.md` | `docs/research/SPON_CA_BURST_INNOVATION_DENOISING_V3_RESULTS.md`, `neurobench/algorithms/innovative_denoising.py`, `neurobench/experiments/hierarchical_parzen_ica/innovation_denoising_program.py` |
+| Generate and cross-fit derivative, persistence, morphology, CFAR, and separation features | `docs/workflows/spon_ca_burst_feature_utility.md` | `neurobench/algorithms/activity_feature_bank.py`, `neurobench/experiments/hierarchical_parzen_ica/feature_utility_program.py` |
+| Formalize convolutional or spatiotemporal Infomax ICA | `docs/research/CONVOLUTIONAL_INFOMAX_ICA_FOR_NEURAL_IMAGING.md` | `docs/research/overleaf/convolutional_infomax_ica_neural_imaging_main.tex`, `docs/research/HIERARCHICAL_PARZEN_NOISY_ICA.md` |
 | Fuse pairwise/derivative evidence with Raw Direct | `docs/workflows/spon_ca_burst_pairwise_feature_fusion.md` | `neurobench/experiments/pairwise_separation/fusion.py`, `docs/research/PAIRWISE_ICA_AS_TEMPORAL_DERIVATIVE.md` |
 | Develop stable latent-dynamics denoising and post-denoising features | `docs/workflows/spon_ca_burst_latent_dynamics.md` | `neurobench/algorithms/latent_dynamics.py`, `neurobench/experiments/latent_dynamics/`, `docs/developer/LATENT_DYNAMICS_DENOISING_IMPLEMENTATION_BRIEF.md` |
-| Plan hierarchical Parzen/noisy ICA background-signal-noise decomposition | `docs/research/HIERARCHICAL_PARZEN_NOISY_ICA.md` | `docs/developer/hierarchical_parzen_noisy_ica/`, `docs/research/overleaf/hierarchical_parzen_noisy_ica/`; implementation is not yet present |
 | Audit the fish intent/inverse-control program | `docs/programs/fish_inverse_control/README.md` | `examples/fish_control_program.example.json`, `neurobench/programs/fish_control.py` |
 | Add a pipeline stage | `docs/developer/adding_pipeline_stage.md` | `neurobench/pipeline_catalog.py`, `neurobench/pipelines/executor.py`, `tests/test_pipeline_executor.py` |
 | Work on template/grid preprocessing | `docs/TEMPLATE_GRID_WORKFLOW.md` | `neurobench/algorithms/template_matching.py`, `neurobench/algorithms/grid_regions.py`, `neurobench/cli/template.py`, `neurobench/cli/grid.py` |

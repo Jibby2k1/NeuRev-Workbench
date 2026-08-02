@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_stochastic_architecture_grid_v1",
+  "source_video": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+  "labels_tsv": "../Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+  "architecture_manifest": "../Outputs/HierarchicalParzenICA/spon_ca_burst_stage1_architecture_visuals_v1/manifest.json",
+  "output_dir": "../Outputs/HierarchicalParzenICA/spon_ca_burst_stochastic_architecture_grid_v1",
+  "preflight_dir": "../Outputs/HierarchicalParzenICA/preflight_spon_ca_burst_stochastic_architecture_grid_v1",
+  "frames": {
+    "review_start_ui": 1800,
+    "review_end_ui": 2359,
+    "quiet_start_ui": 1800,
+    "quiet_end_ui": 1899,
+    "frame_period_ms": 20.0
+  },
+  "grid": {
+    "innovation_half_life_seconds": [2, 5, 10, 20, 40],
+    "correction_fractions": [0, 0.025, 0.05, 0.1, 0.2, 0.4],
+    "correction_clip_mad": [1, 2, 4, 8, 16],
+    "fixed_memory_half_life_seconds": [0.1, 0.2, 0.33, 0.5, 1, 2, 5, 10, 20],
+    "fixed_steady_state_observation_fractions": [0, 0.05, 0.1, 0.2, 0.4, 0.8, 1]
+  },
+  "screening": {
+    "roi_radius_px": 4,
+    "proxy_pixels_per_stratum": 4096,
+    "random_seed": 20260729,
+    "finalists_per_family_per_fold": 2,
+    "global_visual_finalists": 4,
+    "bootstrap_samples": 10000,
+    "hard_gates": {
+      "minimum_peak_retention": 0.75,
+      "minimum_area_retention": 0.7,
+      "minimum_late_retention": 0.6,
+      "minimum_waveform_correlation": 0.9,
+      "maximum_quiet_rms_ratio": 1.5,
+      "maximum_artifact_dynamics_ratio": 1.25
+    }
+  },
+  "detection": {
+    "temporal_pool_tau": 0.25,
+    "nms_distance_px": 6,
+    "primary_match_radius_px": 6,
+    "match_radii_px": [4, 6, 8],
+    "quiet_false_peaks_per_map": 1,
+    "froc_quiet_peaks_per_map": [0.25, 0.5, 1, 2, 5],
+    "candidate_cap_per_burst": 500,
+    "fixed_candidates_per_burst": 58
+  },
+  "visualization": {
+    "compression": "zlib",
+    "write_background": true,
+    "write_dynamics": true,
+    "write_detection_maps": true
+  },
+  "resources": {
+    "device": "cpu",
+    "cpu_threads": 2,
+    "max_ram_mib": 8192,
+    "min_free_disk_mib": 8192,
+    "max_output_mib": 4096,
+    "heartbeat_seconds": 30
+  }
+}

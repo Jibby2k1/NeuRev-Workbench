@@ -193,6 +193,246 @@ def add_experiment_subcommands(subparsers) -> None:
     representation_run.add_argument("--config", required=True)
     representation_run.add_argument("--preflight-dir", type=Path, required=True)
     representation_run.set_defaults(func=_run_representation_benchmark)
+    architecture = workflows.add_parser(
+        "parzen-architecture-visuals",
+        help="Compare four stochastic-Parzen state architectures on Spon Ca.",
+    )
+    architecture_actions = architecture.add_subparsers(
+        dest="experiment_action",
+        required=True,
+    )
+    architecture_preflight = architecture_actions.add_parser(
+        "preflight",
+        help="Read-only validation of data, output collision, and resources.",
+    )
+    architecture_preflight.add_argument("--config", required=True)
+    architecture_preflight.set_defaults(
+        func=_run_parzen_architecture_preflight
+    )
+    architecture_run = architecture_actions.add_parser(
+        "run",
+        help="Write background and dynamics/noise TIFFs for all four lanes.",
+    )
+    architecture_run.add_argument("--config", required=True)
+    architecture_run.set_defaults(func=_run_parzen_architecture_visuals)
+    architecture_grid = workflows.add_parser(
+        "parzen-architecture-grid",
+        help="Screen stochastic-state architectures and evaluate cross-fitted finalists.",
+    )
+    architecture_grid_actions = architecture_grid.add_subparsers(
+        dest="experiment_action", required=True,
+    )
+    architecture_grid_preflight = architecture_grid_actions.add_parser(
+        "preflight", help="Write the read-only grid and resource audit.",
+    )
+    architecture_grid_preflight.add_argument("--config", required=True)
+    architecture_grid_preflight.set_defaults(func=_run_parzen_architecture_grid_preflight)
+    architecture_grid_run = architecture_grid_actions.add_parser(
+        "run", help="Run the matching broad screen and full-field finalists.",
+    )
+    architecture_grid_run.add_argument("--config", required=True)
+    architecture_grid_run.set_defaults(func=_run_parzen_architecture_grid)
+    signal_split = workflows.add_parser(
+        "parzen-signal-split",
+        help="Split Parzen Innovation with a noisy-Parzen posterior diagnostic.",
+    )
+    signal_split_actions = signal_split.add_subparsers(
+        dest="experiment_action", required=True,
+    )
+    signal_split_preflight = signal_split_actions.add_parser(
+        "preflight", help="Write the read-only split and resource audit.",
+    )
+    signal_split_preflight.add_argument("--config", required=True)
+    signal_split_preflight.set_defaults(func=_run_parzen_signal_split_preflight)
+    signal_split_run = signal_split_actions.add_parser(
+        "run", help="Screen posterior settings and write signal/noise TIFFs.",
+    )
+    signal_split_run.add_argument("--config", required=True)
+    signal_split_run.set_defaults(func=_run_parzen_signal_split)
+    denoise_audit = workflows.add_parser(
+        "parzen-denoise-audit",
+        help="Sequentially audit denoising families on Parzen Innovation.",
+    )
+    denoise_audit_actions = denoise_audit.add_subparsers(
+        dest="experiment_action", required=True,
+    )
+    denoise_audit_preflight = denoise_audit_actions.add_parser(
+        "preflight", help="Write the read-only method and resource audit.",
+    )
+    denoise_audit_preflight.add_argument("--config", required=True)
+    denoise_audit_preflight.set_defaults(func=_run_parzen_denoise_audit_preflight)
+    denoise_audit_run = denoise_audit_actions.add_parser(
+        "run", help="Run all denoising methods sequentially and write audit TIFFs.",
+    )
+    denoise_audit_run.add_argument("--config", required=True)
+    denoise_audit_run.set_defaults(func=_run_parzen_denoise_audit)
+    spatial_ica = workflows.add_parser(
+        "parzen-spatial-ica",
+        help="Compare patch and dense spatial ICA on accepted Parzen Innovation.",
+    )
+    spatial_ica_actions = spatial_ica.add_subparsers(
+        dest="experiment_action", required=True,
+    )
+    spatial_ica_preflight = spatial_ica_actions.add_parser(
+        "preflight", help="Write the read-only spatial ICA and resource audit.",
+    )
+    spatial_ica_preflight.add_argument("--config", required=True)
+    spatial_ica_preflight.set_defaults(func=_run_parzen_spatial_ica_preflight)
+    spatial_ica_run = spatial_ica_actions.add_parser(
+        "run", help="Run the C1-C3 patch/convolutional ICA architecture screen.",
+    )
+    spatial_ica_run.add_argument("--config", required=True)
+    spatial_ica_run.set_defaults(func=_run_parzen_spatial_ica)
+    advanced_denoising = workflows.add_parser(
+        "advanced-denoising-program",
+        help="Run staged breadth/depth tuning across ten denoising families.",
+    )
+    advanced_denoising_actions = advanced_denoising.add_subparsers(
+        dest="experiment_action", required=True,
+    )
+    advanced_denoising_preflight = advanced_denoising_actions.add_parser(
+        "preflight", help="Write the read-only design and resource audit.",
+    )
+    advanced_denoising_preflight.add_argument("--config", required=True)
+    advanced_denoising_preflight.set_defaults(
+        func=_run_advanced_denoising_preflight
+    )
+    advanced_denoising_run = advanced_denoising_actions.add_parser(
+        "run", help="Run breadth, full-field semifinals, and finalist TIFFs.",
+    )
+    advanced_denoising_run.add_argument("--config", required=True)
+    advanced_denoising_run.set_defaults(func=_run_advanced_denoising_program)
+    innovation_denoising = workflows.add_parser(
+        "innovation-denoising-v3",
+        help="Run bounded local, component, graph, blind-spot, and Pareto-mixture denoisers.",
+    )
+    innovation_denoising_actions = innovation_denoising.add_subparsers(
+        dest="experiment_action", required=True,
+    )
+    innovation_denoising_preflight = innovation_denoising_actions.add_parser(
+        "preflight", help="Write the read-only v3 design and resource audit.",
+    )
+    innovation_denoising_preflight.add_argument("--config", required=True)
+    innovation_denoising_preflight.set_defaults(
+        func=_run_innovation_denoising_preflight
+    )
+    innovation_denoising_run = innovation_denoising_actions.add_parser(
+        "run", help="Run v3 breadth, full-field, mixture, and gated seed stages.",
+    )
+    innovation_denoising_run.add_argument("--config", required=True)
+    innovation_denoising_run.set_defaults(func=_run_innovation_denoising_program)
+    feature_utility = workflows.add_parser(
+        "feature-utility",
+        help="Generate and cross-fit bounded activity features on Spon Ca.",
+    )
+    feature_utility_actions = feature_utility.add_subparsers(
+        dest="experiment_action", required=True,
+    )
+    feature_utility_preflight = feature_utility_actions.add_parser(
+        "preflight", help="Write the read-only feature and resource audit.",
+    )
+    feature_utility_preflight.add_argument("--config", required=True)
+    feature_utility_preflight.set_defaults(func=_run_feature_utility_preflight)
+    feature_utility_run = feature_utility_actions.add_parser(
+        "run", help="Generate features and run nested utility evaluation.",
+    )
+    feature_utility_run.add_argument("--config", required=True)
+    feature_utility_run.set_defaults(func=_run_feature_utility)
+    innovation_ranker = workflows.add_parser(
+        "innovation-ranker",
+        help="Run nested proposal, cut-morphology, calibration, and fine-tuning experiments.",
+    )
+    innovation_ranker_actions = innovation_ranker.add_subparsers(
+        dest="experiment_action", required=True,
+    )
+    innovation_ranker_preflight = innovation_ranker_actions.add_parser(
+        "preflight", help="Write the read-only nested-ranker resource audit.",
+    )
+    innovation_ranker_preflight.add_argument("--config", required=True)
+    innovation_ranker_preflight.set_defaults(
+        func=_run_innovation_ranker_preflight
+    )
+    innovation_ranker_run = innovation_ranker_actions.add_parser(
+        "run", help="Run screening, nested tuning, confirmations, and diagnostics.",
+    )
+    innovation_ranker_run.add_argument("--config", required=True)
+    innovation_ranker_run.set_defaults(func=_run_innovation_ranker)
+    innovation_ranker_video = innovation_ranker_actions.add_parser(
+        "missed-video",
+        help="Overlay identities missed by a completed ranker on the raw video.",
+    )
+    innovation_ranker_video.add_argument("--config", required=True)
+    innovation_ranker_video.add_argument("--ranker-root", required=True)
+    innovation_ranker_video.add_argument("--output-dir", required=True)
+    innovation_ranker_video.add_argument("--fps", type=float, default=10.0)
+    innovation_ranker_video.add_argument(
+        "--box-half-size-px", type=int, default=9
+    )
+    innovation_ranker_video.add_argument(
+        "--zoom-padding-px", type=int, default=36
+    )
+    innovation_ranker_video.add_argument(
+        "--recovery-field", default="linear_recovered"
+    )
+    innovation_ranker_video.set_defaults(
+        func=_run_innovation_ranker_missed_video
+    )
+    patch_information = workflows.add_parser(
+        "patch-information",
+        help="Evaluate Principe-aligned local Renyi, CS, and correntropy features.",
+    )
+    patch_information_actions = patch_information.add_subparsers(
+        dest="experiment_action", required=True,
+    )
+    patch_information_preflight = patch_information_actions.add_parser(
+        "preflight", help="Write the read-only patch-information resource audit.",
+    )
+    patch_information_preflight.add_argument("--config", required=True)
+    patch_information_preflight.set_defaults(
+        func=_run_patch_information_preflight
+    )
+    patch_information_run = patch_information_actions.add_parser(
+        "run", help="Run fixed ITL screens and nested candidate ranking.",
+    )
+    patch_information_run.add_argument("--config", required=True)
+    patch_information_run.set_defaults(func=_run_patch_information)
+    patch_information_video = patch_information_actions.add_parser(
+        "video", help="Generate every review-frame map for one frozen ITL feature.",
+    )
+    patch_information_video.add_argument("--config", required=True)
+    patch_information_video.add_argument(
+        "--feature-id", default="cs_quiet__p7__bw0p5"
+    )
+    patch_information_video.add_argument("--output-dir", type=Path, required=True)
+    patch_information_video.set_defaults(func=_run_patch_information_video)
+    multiscale_preflight = patch_information_actions.add_parser(
+        "multiscale-preflight",
+        help="Audit the frozen multiscale CS-divergence experiment.",
+    )
+    multiscale_preflight.add_argument("--config", required=True)
+    multiscale_preflight.set_defaults(
+        func=_run_multiscale_information_preflight
+    )
+    multiscale_run = patch_information_actions.add_parser(
+        "multiscale-run",
+        help="Run multiscale CS maps, fusions, and held-out evaluation.",
+    )
+    multiscale_run.add_argument("--config", required=True)
+    multiscale_run.set_defaults(func=_run_multiscale_information)
+    scientific_audit_preflight = patch_information_actions.add_parser(
+        "scientific-audit-preflight",
+        help="Audit acquisition/noise, morphology, and structured-feature resources.",
+    )
+    scientific_audit_preflight.add_argument("--config", required=True)
+    scientific_audit_preflight.set_defaults(
+        func=_run_scientific_feature_audit_preflight
+    )
+    scientific_audit_run = patch_information_actions.add_parser(
+        "scientific-audit-run",
+        help="Run the checkpointed Spon scientific feature audit.",
+    )
+    scientific_audit_run.add_argument("--config", required=True)
+    scientific_audit_run.set_defaults(func=_run_scientific_feature_audit)
 
 
 def _run_soma_preflight(args) -> int:
@@ -534,5 +774,364 @@ def _run_representation_benchmark(args) -> int:
     from neurobench.experiments.representation_benchmark.config import RepresentationBenchmarkConfig
     from neurobench.experiments.representation_benchmark.runner import run
     payload = run(RepresentationBenchmarkConfig.load(args.config), preflight_dir=args.preflight_dir)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_parzen_architecture_preflight(args) -> int:
+    _configure_resource_environment_from_manifest(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.architecture_config import (
+        ArchitectureVisualConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.architecture_visuals import (
+        preflight,
+    )
+
+    payload = preflight(ArchitectureVisualConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_parzen_architecture_visuals(args) -> int:
+    _configure_resource_environment_from_manifest(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.architecture_config import (
+        ArchitectureVisualConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.architecture_visuals import (
+        run,
+    )
+
+    payload = run(ArchitectureVisualConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_parzen_architecture_grid_preflight(args) -> int:
+    _configure_resource_environment_from_manifest(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.innovation_grid_config import (
+        InnovationGridConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.innovation_grid import preflight
+
+    payload = preflight(InnovationGridConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_parzen_architecture_grid(args) -> int:
+    _configure_resource_environment_from_manifest(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.innovation_grid_config import (
+        InnovationGridConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.innovation_grid import run
+
+    payload = run(InnovationGridConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_parzen_signal_split_preflight(args) -> int:
+    _configure_resource_environment_from_manifest(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.signal_noise_config import (
+        SignalNoiseConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.signal_noise_split import preflight
+
+    payload = preflight(SignalNoiseConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_parzen_signal_split(args) -> int:
+    _configure_resource_environment_from_manifest(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.signal_noise_config import (
+        SignalNoiseConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.signal_noise_split import run
+
+    payload = run(SignalNoiseConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_parzen_denoise_audit_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.denoise_audit import preflight
+    from neurobench.experiments.hierarchical_parzen_ica.denoise_audit_config import (
+        DenoiseAuditConfig,
+    )
+
+    payload = preflight(DenoiseAuditConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_parzen_denoise_audit(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.denoise_audit import run
+    from neurobench.experiments.hierarchical_parzen_ica.denoise_audit_config import (
+        DenoiseAuditConfig,
+    )
+
+    payload = run(DenoiseAuditConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_parzen_spatial_ica_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.spatial_ica_config import (
+        SpatialICAConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.spatial_ica_screen import (
+        preflight,
+    )
+
+    payload = preflight(SpatialICAConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_parzen_spatial_ica(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.spatial_ica_config import (
+        SpatialICAConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.spatial_ica_screen import run
+
+    payload = run(SpatialICAConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_advanced_denoising_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.advanced_denoising_program import (
+        preflight,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.denoising_program_config import (
+        DenoisingProgramConfig,
+    )
+
+    payload = preflight(DenoisingProgramConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_advanced_denoising_program(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.advanced_denoising_program import (
+        run,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.denoising_program_config import (
+        DenoisingProgramConfig,
+    )
+
+    payload = run(DenoisingProgramConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+def _run_innovation_denoising_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.innovation_denoising_config import (
+        InnovationDenoisingConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.innovation_denoising_program import (
+        preflight,
+    )
+
+    payload = preflight(InnovationDenoisingConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_innovation_denoising_program(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.innovation_denoising_config import (
+        InnovationDenoisingConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.innovation_denoising_program import (
+        run,
+    )
+
+    payload = run(InnovationDenoisingConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_feature_utility_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.feature_utility_config import (
+        FeatureUtilityConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.feature_utility_program import (
+        preflight,
+    )
+
+    payload = preflight(FeatureUtilityConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_feature_utility(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.feature_utility_config import (
+        FeatureUtilityConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.feature_utility_program import run
+
+    payload = run(FeatureUtilityConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_innovation_ranker_preflight(args) -> int:
+    _configure_resource_environment_from_manifest(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.innovation_ranker_config import (
+        InnovationRankerConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.innovation_ranker_program import (
+        preflight,
+    )
+
+    payload = preflight(InnovationRankerConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_innovation_ranker(args) -> int:
+    _configure_resource_environment_from_manifest(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.innovation_ranker_config import (
+        InnovationRankerConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.innovation_ranker_program import (
+        run,
+    )
+
+    payload = run(InnovationRankerConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_innovation_ranker_missed_video(args) -> int:
+    _configure_resource_environment_from_manifest(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.innovation_ranker_config import (
+        InnovationRankerConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.missed_neuron_video import (
+        generate,
+    )
+
+    payload = generate(
+        InnovationRankerConfig.load(args.config),
+        ranker_root=Path(args.ranker_root),
+        output_dir=Path(args.output_dir),
+        recovery_field=str(args.recovery_field),
+        fps=float(args.fps),
+        box_half_size_px=int(args.box_half_size_px),
+        zoom_padding_px=int(args.zoom_padding_px),
+    )
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_patch_information_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.patch_information_config import (
+        PatchInformationConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.patch_information_program import (
+        preflight,
+    )
+
+    payload = preflight(PatchInformationConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_patch_information(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.patch_information_config import (
+        PatchInformationConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.patch_information_program import (
+        run,
+    )
+
+    payload = run(PatchInformationConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_patch_information_video(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.patch_information_config import (
+        PatchInformationConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.patch_information_video import (
+        generate,
+    )
+
+    payload = generate(
+        PatchInformationConfig.load(args.config),
+        feature_id=str(args.feature_id),
+        output_dir=Path(args.output_dir),
+    )
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_multiscale_information_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.multiscale_information_config import (
+        MultiscaleInformationConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.multiscale_information_program import (
+        preflight,
+    )
+
+    payload = preflight(MultiscaleInformationConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_multiscale_information(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.multiscale_information_config import (
+        MultiscaleInformationConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.multiscale_information_program import (
+        run,
+    )
+
+    payload = run(MultiscaleInformationConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_scientific_feature_audit_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.scientific_audit_config import (
+        ScientificAuditConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.scientific_audit_program import (
+        preflight,
+    )
+
+    payload = preflight(ScientificAuditConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_scientific_feature_audit(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.scientific_audit_config import (
+        ScientificAuditConfig,
+    )
+    from neurobench.experiments.hierarchical_parzen_ica.scientific_audit_program import (
+        run,
+    )
+
+    payload = run(ScientificAuditConfig.load(args.config))
     print(json.dumps(payload, indent=2, sort_keys=True))
     return 0

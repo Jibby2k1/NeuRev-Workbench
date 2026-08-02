@@ -504,22 +504,52 @@ Discovery, ranking, and triage helpers for candidate neurons.
 - Signature: `validate_candidate_feature_table(rows: Sequence[Mapping[str, Any]]) -> None`
 - Summary: Validate the public candidate feature row contract.
 
-## `neurobench.experiments.representation_benchmark`
+## `neurobench.experiments.hard_roi_adjudication`
 
-Guarded PCA, spatial ICA, autoencoder, optional UMAP, and neuron-ID benchmark.
+Versioned hard-ROI review and frozen re-evaluation workflow.
 
-### `RepresentationBenchmarkConfig`
+### `HardRoiAdjudicationConfig`
 
 - Kind: `class`
-- Source: `neurobench.experiments.representation_benchmark.config`
-- Summary: Strict version-1 representation benchmark manifest.
+- Source: `neurobench.experiments.hard_roi_adjudication.config`
+- Signature: `class HardRoiAdjudicationConfig`
+- Summary: No docstring summary available.
 
-### `preflight`
+## `neurobench.experiments.hierarchical_parzen_ica`
+
+Stage-gated hierarchical Parzen ICA experiment.
+
+### `HierarchicalParzenConfigError`
+
+- Kind: `class`
+- Source: `neurobench.experiments.hierarchical_parzen_ica.config`
+- Signature: `class HierarchicalParzenConfigError`
+- Summary: No docstring summary available.
+
+### `HierarchicalParzenICAConfig`
+
+- Kind: `class`
+- Source: `neurobench.experiments.hierarchical_parzen_ica.config`
+- Signature: `class HierarchicalParzenICAConfig`
+- Summary: No docstring summary available.
+
+## `neurobench.experiments.information_source_separation`
+
+Bounded information-theoretic source-separation benchmark.
+
+### `make_spatiotemporal_fixture`
 
 - Kind: `function`
-- Source: `neurobench.experiments.representation_benchmark.preflight`
-- Summary: Validate inputs, labels, output collision, fit count, RAM, disk, and GPU headroom.
+- Source: `neurobench.experiments.information_source_separation.synthetic`
+- Signature: `make_spatiotemporal_fixture(case_id: FixtureCase, *, seed: int, frame_count: int=256, shape: tuple[int, int]=(16, 16), snr: float=8.0, frame_period_ms: float=20.0) -> SpatiotemporalFixture`
+- Summary: Create a B/S/A/N fixture with exact additive closure.
 
+### `SpatiotemporalFixture`
+
+- Kind: `class`
+- Source: `neurobench.experiments.information_source_separation.synthetic`
+- Signature: `class SpatiotemporalFixture`
+- Summary: No docstring summary available.
 
 ## `neurobench.experiments.latent_dynamics`
 
@@ -588,6 +618,24 @@ Bounded adjacent-frame source-separation experiment.
 - Source: `neurobench.experiments.pairwise_separation.preflight`
 - Signature: `neurobench.experiments.pairwise_separation.preflight`
 - Summary: Read-only validation plus explicitly directed preflight artifacts.
+
+## `neurobench.experiments.representation_benchmark`
+
+PCA, spatial ICA, autoencoder, and embedding benchmark.
+
+### `preflight`
+
+- Kind: `module`
+- Source: `neurobench.experiments.representation_benchmark.preflight`
+- Signature: `neurobench.experiments.representation_benchmark.preflight`
+- Summary: Read-only validation and collision-safe artifacts for representation runs.
+
+### `RepresentationBenchmarkConfig`
+
+- Kind: `class`
+- Source: `neurobench.experiments.representation_benchmark.config`
+- Signature: `class RepresentationBenchmarkConfig`
+- Summary: No docstring summary available.
 
 ## `neurobench.experiments.soma_excitation`
 

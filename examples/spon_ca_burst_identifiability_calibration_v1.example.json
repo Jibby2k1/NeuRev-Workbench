@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_identifiability_calibration_v1",
+  "scientific_config": "spon_ca_burst_information_source_separation_gpu_v1.example.json",
+  "output_dir": "../Outputs/InformationSourceSeparation/identifiability_calibration_v1",
+  "calibration": {
+    "case_ids": ["isolated", "overlap", "motion_edge", "spatial_rank_deficient", "exact_duplicate_sources"],
+    "seeds": [101, 103],
+    "snr_levels": [4.0, 8.0, 16.0]
+  },
+  "evaluation": {
+    "case_ids": ["synchronous", "saturation", "similar_persistence", "temporal_rank_deficient", "pure_noise"],
+    "seeds": [131, 137, 139],
+    "snr_levels": [4.0, 8.0, 16.0]
+  },
+  "methods": [
+    {"method_id": "pca_reference", "parameters": {"rank": 4}},
+    {"method_id": "multilag_sobi", "parameters": {"rank": 4, "lags": [1, 2, 4], "covariance_shrinkage": 0.02}},
+    {"method_id": "kernel_hsic_pairwise_rotation", "parameters": {"rank": 4, "bandwidth_scale": 2.0}},
+    {"method_id": "knn_mi_pairwise_rotation", "parameters": {"rank": 6, "neighbors": 5}}
+  ],
+  "confidence": {
+    "perturbations": 2,
+    "perturbation_scale": 0.002,
+    "logistic_c_grid": [0.01, 0.1, 1.0, 10.0, 100.0]
+  },
+  "gate": {
+    "maximum_false_resolution_count": 0,
+    "minimum_identifiable_resolution_rate": 0.8,
+    "minimum_converged_fraction": 0.95
+  },
+  "resources": {
+    "device": "cuda:0",
+    "cpu_threads": 2,
+    "minimum_free_gpu_mib": 4096,
+    "minimum_free_disk_mib": 4096,
+    "maximum_output_mib": 512
+  }
+}

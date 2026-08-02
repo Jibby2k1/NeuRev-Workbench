@@ -1,0 +1,6 @@
+name: neurobench-caiman-1.13.1
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - caiman=1.13.1

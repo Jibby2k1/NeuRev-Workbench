@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_information_source_separation_conclusive_batch_v1",
+  "output_root": "../Outputs/InformationSourceSeparation/conclusive_batch_v1",
+  "scientific_config": "spon_ca_burst_information_source_separation_gpu_v1.example.json",
+  "source_video": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+  "source_tiff": "../Inputs/Spon Ca Burst/3 hindbrain to tail 488 20ms.tif",
+  "labels_tsv": "../Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+  "caiman_python": "/home/jibby2k1/.local/share/neurobench-caiman-1.13.1/bin/python",
+  "frames": {
+    "review_start_ui": 1800,
+    "review_end_ui": 2359,
+    "quiet_start_ui": 1800,
+    "quiet_end_ui": 1899,
+    "frame_period_ms": 20.0
+  },
+  "methods": [
+    {
+      "method_id": "raw_direct_reference",
+      "enabled": true,
+      "track": "anchor",
+      "configurations": [{"contract": "exact_existing"}]
+    },
+    {
+      "method_id": "amplitude_pca_reference",
+      "enabled": true,
+      "track": "controlled_input",
+      "configurations": [{"rank": 4}, {"rank": 8}, {"rank": 12}]
+    },
+    {
+      "method_id": "multilag_sobi",
+      "enabled": true,
+      "track": "controlled_input",
+      "configurations": [
+        {"rank": 4, "lags": [1, 2, 4], "covariance_shrinkage": 0.02},
+        {"rank": 4, "lags": [1, 2, 4, 8, 15], "covariance_shrinkage": 0.1},
+        {"rank": 8, "lags": [1, 2, 4], "covariance_shrinkage": 0.02},
+        {"rank": 8, "lags": [1, 2, 4, 8, 15], "covariance_shrinkage": 0.1}
+      ]
+    },
+    {
+      "method_id": "full_window_spatial_fastica_reference",
+      "enabled": true,
+      "track": "controlled_input",
+      "configurations": [{"rank": 4}, {"rank": 8}]
+    },
+    {
+      "method_id": "dense_patch_fastica_wiener_reference",
+      "enabled": true,
+      "track": "native_best",
+      "configurations": [
+        {"patch_size": 7, "rank": 4, "wiener_lambda_z": 0.75},
+        {"patch_size": 9, "rank": 6, "wiener_lambda_z": 1.0}
+      ]
+    },
+    {
+      "method_id": "kernel_hsic_pairwise_rotation",
+      "enabled": true,
+      "track": "controlled_input",
+      "configurations": [
+        {"rank": 4, "bandwidth_scale": 1.0},
+        {"rank": 4, "bandwidth_scale": 2.0},
+        {"rank": 6, "bandwidth_scale": 1.0},
+        {"rank": 6, "bandwidth_scale": 2.0}
+      ]
+    },
+    {
+      "method_id": "knn_mi_pairwise_rotation",
+      "enabled": true,
+      "track": "controlled_input",
+      "configurations": [
+        {"rank": 4, "neighbors": 3},
+        {"rank": 4, "neighbors": 5},
+        {"rank": 6, "neighbors": 3},
+        {"rank": 6, "neighbors": 5}
+      ]
+    },
+    {
+      "method_id": "group_energy_hsic_isa",
+      "enabled": true,
+      "track": "controlled_input",
+      "configurations": [
+        {"rank": 4, "group_size": 2, "bandwidth_scale": 1.0},
+        {"rank": 8, "group_size": 2, "bandwidth_scale": 2.0}
+      ]
+    },
+    {
+      "method_id": "spatial_noisy_parzen_infomax",
+      "enabled": true,
+      "track": "native_best",
+      "configurations": [
+        {"rank": 4, "patch_size": 7, "noise_scale": 0.75},
+        {"rank": 6, "patch_size": 9, "noise_scale": 1.0}
+      ]
+    },
+    {
+      "method_id": "multistart_consensus",
+      "enabled": true,
+      "track": "controlled_input",
+      "configurations": [
+        {"base_method": "kernel_hsic_pairwise_rotation", "rank": 4, "starts": 5},
+        {"base_method": "knn_mi_pairwise_rotation", "rank": 6, "starts": 5},
+        {"base_method": "multilag_sobi", "rank": 4, "starts": 5}
+      ]
+    },
+    {
+      "method_id": "caiman_cnmf",
+      "enabled": true,
+      "track": "native_best",
+      "configurations": [
+        {"gSig": [3, 3], "K": 4, "p": 1},
+        {"gSig": [4, 4], "K": 6, "p": 1}
+      ]
+    },
+    {
+      "method_id": "caiman_cnmfe",
+      "enabled": true,
+      "track": "native_best",
+      "configurations": [
+        {"gSig": [3, 3], "K": 4, "p": 1, "method_init": "corr_pnr"},
+        {"gSig": [4, 4], "K": 6, "p": 1, "method_init": "corr_pnr"}
+      ]
+    }
+  ],
+  "design": {
+    "development_fixture_count": 72,
+    "confirmation_fixture_count": 312,
+    "semi_synthetic_fixture_count": 135,
+    "confidence_perturbations": 2,
+    "fixed_candidate_budgets": [10, 20, 40, 58, 80, 100],
+    "manual_review_rows": 320
+  },
+  "gates": {
+    "closure_tolerance": 0.000001,
+    "maximum_false_resolution_count": 0,
+    "minimum_identifiable_coverage": 0.8,
+    "minimum_converged_fraction": 0.95,
+    "equivalence_margin": 0.01,
+    "minimum_peak_retention": 0.8,
+    "minimum_area_retention": 0.8,
+    "minimum_waveform_correlation": 0.8,
+    "maximum_timing_error_frames": 2
+  },
+  "resources": {
+    "general_cpu_workers": 2,
+    "maximum_caiman_processes": 1,
+    "worker_threads": 1,
+    "gpu_device": "cuda:0",
+    "gpu_allocation_cap_mib": 4096,
+    "minimum_free_gpu_mib": 6144,
+    "rss_soft_cap_mib": 24576,
+    "rss_hard_stop_mib": 32768,
+    "minimum_free_disk_mib": 204800,
+    "maximum_output_mib": 40960,
+    "heartbeat_seconds": 15,
+    "gpu_warning_c": 74,
+    "gpu_stop_c": 80
+  }
+}

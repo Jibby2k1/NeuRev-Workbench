@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_noisy_parzen_signal_split_balanced_v1",
+  "source_video": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+  "labels_tsv": "../Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+  "architecture_manifest": "../Outputs/HierarchicalParzenICA/spon_ca_burst_stage1_architecture_visuals_v1/manifest.json",
+  "output_dir": "../Outputs/HierarchicalParzenICA/spon_ca_burst_noisy_parzen_signal_split_balanced_v1",
+  "preflight_dir": "../Outputs/HierarchicalParzenICA/preflight_spon_ca_burst_noisy_parzen_signal_split_balanced_v1",
+  "frames": {
+    "review_start_ui": 1800,
+    "review_end_ui": 2359,
+    "quiet_start_ui": 1800,
+    "quiet_end_ui": 1899,
+    "frame_period_ms": 20.0
+  },
+  "input_lane": {
+    "id": "reference_parzen_innovation",
+    "reference_half_life_seconds": 10,
+    "correction_fraction": 0.1,
+    "correction_clip_mad": 4
+  },
+  "posterior": {
+    "dictionary_centers": 64,
+    "dictionary_zero_mass_fraction": 0.5,
+    "dictionary_activation_abs_z": 2,
+    "dictionary_sample_pixels": 8192,
+    "sample_seed": 20260729,
+    "bandwidths": [0.25, 0.5, 1, 2],
+    "noise_variance_multipliers": [0.5, 1, 2, 4],
+    "lookup_points": 65536,
+    "lookup_abs_z": 30,
+    "quiet_scale_floor_percentile": 10
+  },
+  "selection": {
+    "roi_radius_px": 4,
+    "minimum_peak_retention": 0.75,
+    "minimum_area_retention": 0.75,
+    "minimum_late_retention": 0.75,
+    "minimum_waveform_correlation": 0.95,
+    "maximum_quiet_signal_rms_ratio": 0.75
+  },
+  "visualization": {
+    "compression": "zlib",
+    "signed_absolute_percentile": 99.9,
+    "positive_upper_percentile": 99.5,
+    "sample_frame_stride": 4,
+    "sample_row_stride": 4,
+    "sample_column_stride": 4
+  },
+  "resources": {
+    "device": "cpu",
+    "cpu_threads": 2,
+    "max_ram_mib": 8192,
+    "min_free_disk_mib": 4096,
+    "max_output_mib": 2048
+  }
+}

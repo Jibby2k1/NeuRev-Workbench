@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_information_source_separation_v1",
+  "output_dir": "../Outputs/InformationSourceSeparation/spon_ca_burst_information_source_separation_v1",
+  "source_video": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+  "generated": {
+    "case_ids": [
+      "isolated", "overlap", "synchronous", "correlated", "fast_onset",
+      "slow_plateau", "similar_persistence", "illumination_drift",
+      "motion_edge", "saturation", "heteroscedastic_noise", "pure_noise",
+      "unresolved"
+    ],
+    "seeds": [7, 13, 19, 29, 37],
+    "frame_count": 256,
+    "height_px": 16,
+    "width_px": 16,
+    "snr_levels": [4.0, 8.0, 16.0],
+    "frame_period_ms": 20.0
+  },
+  "semi_synthetic": {
+    "enabled": false,
+    "quiet_start_ui": 1800,
+    "quiet_end_ui": 1899,
+    "crop_size_px": 16,
+    "crop_origins_xy": [[320, 80], [400, 180], [500, 260]],
+    "injection_amplitudes": [0.5, 1.0, 2.0]
+  },
+  "methods": {
+    "pca_reference": {
+      "enabled": true,
+      "ranks": [4, 8, 12]
+    },
+    "multilag_sobi": {
+      "enabled": true,
+      "ranks": [4, 8, 12],
+      "lag_sets": [[1, 2, 4], [1, 2, 4, 8, 15], [1, 2, 4, 8, 15, 31]],
+      "covariance_shrinkages": [0.0, 0.02, 0.1]
+    },
+    "kernel_hsic_pairwise_rotation": {
+      "enabled": true,
+      "ranks": [4, 8, 12],
+      "bandwidth_scales": [0.5, 1.0, 2.0],
+      "angle_step_degrees": 5.0,
+      "max_sweeps": 8,
+      "max_fit_samples": 256
+    },
+    "knn_mi_pairwise_rotation": {
+      "enabled": true,
+      "ranks": [4, 6, 8],
+      "neighbors": [3, 5, 10],
+      "angle_step_degrees": 5.0,
+      "max_sweeps": 8,
+      "max_fit_samples": 512
+    },
+    "caiman_cnmf_reference_adapter": {
+      "enabled": true,
+      "backend": "caiman",
+      "required": false,
+      "expected_version": "unfrozen_pending_install_authorization"
+    },
+    "group_energy_isa": {
+      "enabled": false,
+      "status": "gated_until_sobi_and_information_rotators_pass_generated_cases"
+    },
+    "spatial_noisy_parzen_infomax": {
+      "enabled": false,
+      "status": "gated_until_attenuation_and_unresolved_fixtures_pass"
+    }
+  },
+  "selection": {
+    "closure_tolerance": 1e-5,
+    "minimum_peak_retention": 0.9,
+    "minimum_area_retention": 0.9,
+    "minimum_waveform_correlation": 0.95,
+    "maximum_timing_error_frames": 1,
+    "equivalence_margin": 0.01,
+    "require_correct_unresolved": true
+  },
+  "resources": {
+    "cpu_threads": 2,
+    "max_ram_mib": 4096,
+    "min_free_disk_mib": 4096,
+    "max_output_mib": 1024
+  }
+}
