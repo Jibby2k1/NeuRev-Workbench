@@ -193,6 +193,25 @@ def add_experiment_subcommands(subparsers) -> None:
     representation_run.add_argument("--config", required=True)
     representation_run.add_argument("--preflight-dir", type=Path, required=True)
     representation_run.set_defaults(func=_run_representation_benchmark)
+    dependent = workflows.add_parser(
+        "dependent-multiscale",
+        help="Build and audit reversible dependent multiscale decompositions.",
+    )
+    dependent_actions = dependent.add_subparsers(dest="experiment_action", required=True)
+    dependent_synthetic = dependent_actions.add_parser("synthetic", help="Run generated-only W3 baselines.")
+    dependent_synthetic.add_argument("--output-dir", type=Path, required=True)
+    dependent_synthetic.set_defaults(func=_run_dependent_multiscale_synthetic)
+    dependent_preflight = dependent_actions.add_parser("preflight", help="Write a guarded read-only-source audit.")
+    dependent_preflight.add_argument("--config", required=True)
+    dependent_preflight.set_defaults(func=_run_dependent_multiscale_preflight)
+    dependent_smoke = dependent_actions.add_parser("smoke", help="Run the tiny generated suite without artifacts.")
+    dependent_smoke.set_defaults(func=_run_dependent_multiscale_smoke)
+    dependent_run = dependent_actions.add_parser("run", help="Require reviewed preflight and explicit real-data authorization.")
+    dependent_run.add_argument("--config", required=True)
+    dependent_run.set_defaults(func=_run_dependent_multiscale)
+    dependent_report = dependent_actions.add_parser("report", help="Read completed metrics without writes.")
+    dependent_report.add_argument("--run-dir", type=Path, required=True)
+    dependent_report.set_defaults(func=_run_dependent_multiscale_report)
     architecture = workflows.add_parser(
         "parzen-architecture-visuals",
         help="Compare four stochastic-Parzen state architectures on Spon Ca.",
@@ -757,6 +776,45 @@ def _run_latent_dynamics(args) -> int:
 def _run_latent_dynamics_feature_benchmark(args) -> int:
     from neurobench.experiments.latent_dynamics.runner import feature_benchmark
     payload = feature_benchmark(args.run_dir)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_dependent_multiscale_synthetic(args) -> int:
+    from neurobench.experiments.hierarchical_parzen_ica.dependent_multiscale_program import synthetic
+    payload = synthetic(args.output_dir)
+    print(json.dumps(payload, indent=2, sort_keys=True, default=str))
+    return 0
+
+
+def _run_dependent_multiscale_preflight(args) -> int:
+    _configure_resource_environment_from_manifest(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.dependent_multiscale_config import DependentMultiscaleConfig
+    from neurobench.experiments.hierarchical_parzen_ica.dependent_multiscale_program import preflight
+    payload = preflight(DependentMultiscaleConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_dependent_multiscale_smoke(args) -> int:
+    from neurobench.experiments.hierarchical_parzen_ica.dependent_multiscale_program import generated_smoke
+    payload = generated_smoke()
+    print(json.dumps(payload, indent=2, sort_keys=True, default=str))
+    return 0
+
+
+def _run_dependent_multiscale(args) -> int:
+    _configure_resource_environment_from_manifest(args.config)
+    from neurobench.experiments.hierarchical_parzen_ica.dependent_multiscale_config import DependentMultiscaleConfig
+    from neurobench.experiments.hierarchical_parzen_ica.dependent_multiscale_program import run
+    payload = run(DependentMultiscaleConfig.load(args.config))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_dependent_multiscale_report(args) -> int:
+    from neurobench.experiments.hierarchical_parzen_ica.dependent_multiscale_program import report
+    payload = report(args.run_dir)
     print(json.dumps(payload, indent=2, sort_keys=True))
     return 0
 
