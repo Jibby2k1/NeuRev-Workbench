@@ -39,6 +39,24 @@ class SeparationFit:
 
 
 @dataclass(frozen=True)
+class CSObjectiveResult:
+    """Weighted Cauchy--Schwarz Parzen information-potential result."""
+
+    objective: float
+    v_joint: float
+    v_marginal_1: float
+    v_marginal_2: float
+    v_product: float
+    v_cross: float
+    numerical_clamps: int
+    clamped_terms: tuple[str, ...]
+    sample_count: int
+    positive_weight_count: int
+    weight_sum: float
+    block_rows: int
+
+
+@dataclass(frozen=True)
 class SharedBackgroundNMF:
     background: np.ndarray
     activity: np.ndarray
@@ -237,32 +255,132 @@ def fit_infomax_tanh_ica(
     )
 
 
-def cs_parzen_independence(outputs: np.ndarray, bandwidth: float, *, block_rows: int = 256) -> tuple[float, dict[str, Any]]:
+def cs_parzen_objective(
+    y: np.ndarray,
+    bandwidth: float,
+    *,
+    weights: np.ndarray | None = None,
+    block_rows: int = 256,
+    accumulator_dtype: np.dtype = np.float64,
+    kernel_dtype: np.dtype = np.float64,
+) -> CSObjectiveResult:
+    """Evaluate the exact weighted, blockwise two-output CS-Parzen objective.
+
+    y follows the public [N, 2] convention. Weighted centering and scaling
+    preserve the legacy marginal standardization and make zero-weight exclusion
+    and integer-repetition semantics exact. Kernel blocks are the only
+    quadratic-sized temporaries.
+    """
+    values = np.asarray(y, dtype=np.float64)
+    if values.ndim != 2 or values.shape[1] != 2 or not values.size:
+        raise ValueError("y must be a non-empty array with shape [N,2]")
+    if not np.isfinite(values).all():
+        raise ValueError("y must be finite")
+    if not np.isfinite(bandwidth) or bandwidth <= 0 or block_rows < 1:
+        raise ValueError("bandwidth and block_rows must be positive")
+    accumulator = np.dtype(accumulator_dtype)
+    kernel = np.dtype(kernel_dtype)
+    if accumulator.kind != "f" or kernel.kind != "f":
+        raise ValueError("accumulator_dtype and kernel_dtype must be floating point")
+    if weights is None:
+        sample_weights = np.ones(values.shape[0], dtype=np.float64)
+    else:
+        sample_weights = np.asarray(weights, dtype=np.float64)
+        if sample_weights.shape != (values.shape[0],):
+            raise ValueError("weights must have shape [N]")
+        if not np.isfinite(sample_weights).all():
+            raise ValueError("weights must be finite")
+        if np.any(sample_weights < 0):
+            raise ValueError("weights must be nonnegative")
+    weight_sum = float(sample_weights.sum(dtype=accumulator))
+    if not np.isfinite(weight_sum) or weight_sum <= 0:
+        raise ValueError("weights must have a positive finite sum")
+
+    normalized = sample_weights / weight_sum
+    mean = normalized @ values
+    centered = values - mean
+    variance = normalized @ (centered * centered)
+    standardized = centered / np.sqrt(np.maximum(variance, 1e-24))
+    u, v = standardized.T
+    joint_num = accumulator.type(0)
+    marginal_1_num = accumulator.type(0)
+    marginal_2_num = accumulator.type(0)
+    cross_num = accumulator.type(0)
+    for start in range(0, len(values), block_rows):
+        stop = min(len(values), start + block_rows)
+        block_weights = sample_weights[start:stop]
+        kernel_1 = np.exp(
+            -0.5 * ((u[start:stop, None] - u[None, :]) / bandwidth) ** 2
+        ).astype(kernel, copy=False)
+        kernel_2 = np.exp(
+            -0.5 * ((v[start:stop, None] - v[None, :]) / bandwidth) ** 2
+        ).astype(kernel, copy=False)
+        kernel_1_weights = kernel_1 @ sample_weights
+        kernel_2_weights = kernel_2 @ sample_weights
+        joint_num += np.dot(block_weights, (kernel_1 * kernel_2) @ sample_weights)
+        marginal_1_num += np.dot(block_weights, kernel_1_weights)
+        marginal_2_num += np.dot(block_weights, kernel_2_weights)
+        cross_num += np.dot(block_weights, kernel_1_weights * kernel_2_weights)
+
+    squared_sum = weight_sum * weight_sum
+    v_joint = float(joint_num / squared_sum)
+    v_marginal_1 = float(marginal_1_num / squared_sum)
+    v_marginal_2 = float(marginal_2_num / squared_sum)
+    v_product = v_marginal_1 * v_marginal_2
+    v_cross = float(cross_num / (squared_sum * weight_sum))
+    terms = {"v_joint": v_joint, "v_product": v_product, "v_cross": v_cross}
+    epsilon = np.finfo(accumulator).tiny
+    clamped = tuple(name for name, value in terms.items() if value <= epsilon)
+    safe = {name: max(value, epsilon) for name, value in terms.items()}
+    objective = -np.log(
+        safe["v_cross"] / np.sqrt(safe["v_joint"] * safe["v_product"])
+    )
+    return CSObjectiveResult(
+        objective=float(objective),
+        v_joint=v_joint,
+        v_marginal_1=v_marginal_1,
+        v_marginal_2=v_marginal_2,
+        v_product=v_product,
+        v_cross=v_cross,
+        numerical_clamps=len(clamped),
+        clamped_terms=clamped,
+        sample_count=len(values),
+        positive_weight_count=int(np.count_nonzero(sample_weights)),
+        weight_sum=weight_sum,
+        block_rows=block_rows,
+    )
+
+
+def cs_parzen_independence(
+    outputs: np.ndarray,
+    bandwidth: float,
+    *,
+    weights: np.ndarray | None = None,
+    block_rows: int = 256,
+    kernel_dtype: np.dtype = np.float64,
+) -> tuple[float, dict[str, Any]]:
+    """Compatibility wrapper retaining the legacy [2,N] API."""
     y = _finite_array(outputs, "outputs", 2)
-    if y.shape[0] != 2 or bandwidth <= 0 or block_rows < 1:
-        raise ValueError("outputs must be [2,N], bandwidth/block_rows positive")
-    standardized = (y - y.mean(axis=1, keepdims=True)) / np.maximum(y.std(axis=1, keepdims=True), 1e-12)
-    u, v = standardized
-    n = y.shape[1]
-    joint_sum = u_sum = v_sum = cross_rows = 0.0
-    clamps = 0
-    for start in range(0, n, block_rows):
-        stop = min(n, start + block_rows)
-        ku = np.exp(-0.5 * ((u[start:stop, None] - u[None, :]) / bandwidth) ** 2)
-        kv = np.exp(-0.5 * ((v[start:stop, None] - v[None, :]) / bandwidth) ** 2)
-        joint_sum += float(np.sum(ku * kv))
-        u_sum += float(np.sum(ku)); v_sum += float(np.sum(kv))
-        cross_rows += float(np.sum(ku.mean(axis=1) * kv.mean(axis=1)))
-    eps = np.finfo(float).tiny
-    v_joint = joint_sum / (n * n)
-    v_product = (u_sum / (n * n)) * (v_sum / (n * n))
-    v_cross = cross_rows / n
-    raw = (v_joint, v_product, v_cross)
-    safe = tuple(max(value, eps) for value in raw)
-    clamps = sum(value <= eps for value in raw)
-    objective = -np.log(safe[2] / np.sqrt(safe[0] * safe[1]))
-    return float(objective), {"v_joint": raw[0], "v_product": raw[1], "v_cross": raw[2],
-                              "numerical_clamps": clamps, "sample_count": n, "block_rows": block_rows}
+    if y.shape[0] != 2:
+        raise ValueError("outputs must have shape [2,N]")
+    result = cs_parzen_objective(
+        y.T, bandwidth, weights=weights, block_rows=block_rows,
+        kernel_dtype=kernel_dtype,
+    )
+    diagnostics = {
+        "v_joint": result.v_joint,
+        "v_marginal_1": result.v_marginal_1,
+        "v_marginal_2": result.v_marginal_2,
+        "v_product": result.v_product,
+        "v_cross": result.v_cross,
+        "numerical_clamps": result.numerical_clamps,
+        "clamped_terms": list(result.clamped_terms),
+        "sample_count": result.sample_count,
+        "positive_weight_count": result.positive_weight_count,
+        "weight_sum": result.weight_sum,
+        "block_rows": result.block_rows,
+    }
+    return result.objective, diagnostics
 
 
 def fit_cs_parzen_ica(
@@ -274,6 +392,9 @@ def fit_cs_parzen_ica(
     screen_step_degrees: float = 3.0,
     refine_half_width_degrees: float = 3.0,
     refine_step_degrees: float = 0.25,
+    screen_weights: np.ndarray | None = None,
+    confirm_weights: np.ndarray | None = None,
+    kernel_dtype: np.dtype = np.float64,
 ) -> SeparationFit:
     screen = _finite_array(screen_whitened, "screen_whitened", 2)
     confirm = screen if confirm_whitened is None else _finite_array(confirm_whitened, "confirm_whitened", 2)
@@ -282,18 +403,27 @@ def fit_cs_parzen_ica(
     coarse = np.arange(0, 90, screen_step_degrees)
     rows = []
     for angle in coarse:
-        objective, diagnostics = cs_parzen_independence(_rotation(angle) @ screen, bandwidth, block_rows=block_rows)
+        objective, diagnostics = cs_parzen_independence(
+            _rotation(angle) @ screen, bandwidth, weights=screen_weights,
+            block_rows=block_rows, kernel_dtype=kernel_dtype,
+        )
         rows.append({"scope": "screen", "angle_degrees": float(angle), "objective": objective, **diagnostics})
     best_coarse = min(rows, key=lambda row: row["objective"])["angle_degrees"]
     refine = np.arange(best_coarse - refine_half_width_degrees, best_coarse + refine_half_width_degrees + refine_step_degrees / 2, refine_step_degrees) % 90
     for angle in sorted(set(float(x) for x in refine)):
-        objective, diagnostics = cs_parzen_independence(_rotation(angle) @ screen, bandwidth, block_rows=block_rows)
+        objective, diagnostics = cs_parzen_independence(
+            _rotation(angle) @ screen, bandwidth, weights=screen_weights,
+            block_rows=block_rows, kernel_dtype=kernel_dtype,
+        )
         rows.append({"scope": "refine", "angle_degrees": angle, "objective": objective, **diagnostics})
     best = min((row for row in rows if row["scope"] == "refine"), key=lambda row: row["objective"])
     confirm_angles = sorted({(best["angle_degrees"] + delta) % 90 for delta in (-refine_step_degrees, 0, refine_step_degrees)})
     confirmed = []
     for angle in confirm_angles:
-        objective, diagnostics = cs_parzen_independence(_rotation(angle) @ confirm, bandwidth, block_rows=block_rows)
+        objective, diagnostics = cs_parzen_independence(
+            _rotation(angle) @ confirm, bandwidth, weights=confirm_weights,
+            block_rows=block_rows, kernel_dtype=kernel_dtype,
+        )
         row = {"scope": "confirm", "angle_degrees": float(angle), "objective": objective, **diagnostics}
         rows.append(row); confirmed.append(row)
     winner = min(confirmed, key=lambda row: row["objective"])

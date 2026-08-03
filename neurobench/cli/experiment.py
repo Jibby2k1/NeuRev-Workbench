@@ -105,6 +105,27 @@ def add_experiment_subcommands(subparsers) -> None:
     fusion_run.add_argument("--config", required=True)
     fusion_run.add_argument("--preflight-dir", type=Path, required=True)
     fusion_run.set_defaults(func=_run_pairwise_fusion)
+    event_weighted = workflows.add_parser(
+        "event-weighted-cs-parzen",
+        help="Preflight or run leave-one-burst-out event-mass CS-Parzen diagnostics.",
+    )
+    event_actions = event_weighted.add_subparsers(
+        dest="experiment_action", required=True
+    )
+    event_preflight = event_actions.add_parser(
+        "preflight", help="Write collision-safe split, label, and resource audits."
+    )
+    event_preflight.add_argument("--config", required=True)
+    event_preflight.add_argument("--artifact-dir", type=Path, required=True)
+    event_preflight.set_defaults(func=_run_event_weighted_preflight)
+    event_run = event_actions.add_parser(
+        "run", help="Run the reviewed CPU sweep; full Spon data needs explicit authorization."
+    )
+    event_run.add_argument("--config", required=True)
+    event_run.add_argument("--preflight-dir", type=Path, required=True)
+    event_run.add_argument("--authorize-full-spon", action="store_true")
+    event_run.add_argument("--resume", action="store_true")
+    event_run.set_defaults(func=_run_event_weighted_cs_parzen)
     soma = workflows.add_parser(
         "soma-excitation",
         help="Evaluate dark-soma zones and frozen model transfer.",
@@ -607,6 +628,38 @@ def _run_pairwise_fusion(args) -> int:
     return 0
 
 
+def _run_event_weighted_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.event_weighted_cs_parzen import (
+        EventWeightedCSParzenConfig,
+        preflight,
+    )
+
+    payload = preflight(
+        EventWeightedCSParzenConfig.load(args.config),
+        artifact_dir=args.artifact_dir,
+    )
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_event_weighted_cs_parzen(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.event_weighted_cs_parzen import (
+        EventWeightedCSParzenConfig,
+        run,
+    )
+
+    payload = run(
+        EventWeightedCSParzenConfig.load(args.config),
+        preflight_dir=args.preflight_dir,
+        authorize_full_spon=args.authorize_full_spon,
+        resume=args.resume,
+    )
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
 def _run_soma_experiment(args) -> int:
     _configure_resource_environment_from_manifest(args.config)
     from neurobench.experiments.soma_excitation.runner import (
@@ -667,9 +720,19 @@ def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
 
 def _configure_cuda_resource_environment(config_path: str | Path) -> int:
     """Set bounded CPU library threads without hiding the requested CUDA device."""
-    payload = json.loads(Path(config_path).expanduser().read_text(encoding="utf-8"))
+    source = Path(config_path).expanduser()
+    text = source.read_text(encoding="utf-8")
+    try:
+        payload = json.loads(text)
+    except json.JSONDecodeError:
+        import yaml
+
+        payload = yaml.safe_load(text)
+    if not isinstance(payload, dict):
+        raise ValueError("resource configuration must be a JSON/YAML mapping")
     resources = payload.get("resources", {})
-    raw = resources.get("cpu_threads", 4)
+    compute = payload.get("compute", {})
+    raw = resources.get("cpu_threads", compute.get("max_worker_processes", 4))
     if isinstance(raw, bool) or not isinstance(raw, int) or not 1 <= raw <= 24:
         raise ValueError("resources.cpu_threads must be an integer between 1 and 24")
     for name in _THREAD_ENVIRONMENT_VARIABLES:

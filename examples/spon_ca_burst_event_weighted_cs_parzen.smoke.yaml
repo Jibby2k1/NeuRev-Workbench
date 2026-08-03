@@ -1,0 +1,68 @@
+schema_version: 1
+experiment_id: spon_ca_burst_event_weighted_cs_parzen_smoke_v1
+source:
+  movie_path: ../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy
+  labels_path: ../Inputs/Spon Ca Burst/labels/labels_normalized.tsv
+  baseline_evidence_dir: ../Outputs/PairwiseSeparation/spon_ca_burst_basic_parzen_ica_diagnostic_v1
+  axes: TYX
+  ui_one_based: true
+  review_interval_ui: [1800, 2359]
+  quiet_interval_ui: [1800, 1899]
+  burst_intervals_ui:
+    1: [2003, 2026]
+    2: [2040, 2063]
+    3: [2122, 2149]
+    4: [2254, 2300]
+preprocessing:
+  gaussian_sigma_px: 1.0
+  ema_alpha: 0.4
+  motion_correction: none
+sampling:
+  seed: 20260727
+  screen_samples: 16
+  confirmation_samples: 32
+  heldout_guard_frames: 10
+  event_roi_radius_px: 3
+  event_screen_max_samples_per_event: 4
+  event_confirmation_max_samples_per_event: 8
+  reuse_sample_indices_across_alpha: true
+  merge_duplicate_indices: true
+  equal_mass_per_event: true
+  phase_balancing: false
+  bad_frames_ui: []
+weighting:
+  modes: [frame_balanced, roi_balanced]
+  alpha_grid: [0.0, 0.10]
+whitening:
+  primary_mode: natural_fixed
+  run_weighted_ablation: true
+  weighted_ablation_alphas: [0.0, 0.10]
+  eigenvalue_floor_ratio: 1.0e-6
+parzen:
+  bandwidth: 0.35
+  kernel_block_rows: 16
+  kernel_dtype: float32
+  accumulator_dtype: float64
+angle_search:
+  range_degrees: [0.0, 90.0]
+  coarse_step_degrees: 30.0
+  refine_half_width_degrees: 1.0
+  refine_step_degrees: 1.0
+compute:
+  device: cpu
+  max_parallel_folds: 1
+  max_worker_processes: 1
+  max_peak_ram_gb: 32
+  max_peak_vram_gb: 4
+evaluation:
+  primary_z_threshold: 3.0
+  quiet_mad_floor_percentile: 10.0
+  nms_distance_px: 6
+  primary_match_radius_px: 6
+  quiet_false_peaks_per_map: 1.0
+outputs:
+  root_dir: ../Outputs/PairwiseSeparation/spon_ca_burst_event_weighted_cs_parzen_smoke_v1
+  render_selected_videos_only: true
+  selected_video_alphas: [0.0, 0.10]
+  representative_frames_ui: [1900, 2003, 2040, 2122, 2254]
+fold_ids: [1]
