@@ -126,6 +126,33 @@ def add_experiment_subcommands(subparsers) -> None:
     event_run.add_argument("--authorize-full-spon", action="store_true")
     event_run.add_argument("--resume", action="store_true")
     event_run.set_defaults(func=_run_event_weighted_cs_parzen)
+    msln = workflows.add_parser(
+        "msln-msica",
+        help="Preflight, run, or summarize signed multi-scale normalization and multi-context ICA.",
+    )
+    msln_actions = msln.add_subparsers(dest="experiment_action", required=True)
+    msln_preflight = msln_actions.add_parser(
+        "preflight", help="Validate inputs, resources, contexts, and a tiny numerical smoke."
+    )
+    msln_preflight.add_argument("--config", required=True)
+    msln_preflight.set_defaults(func=_run_msln_msica_preflight)
+    msln_run = msln_actions.add_parser(
+        "run", help="Run after an exact matching preflight; full Spon data requires authorization."
+    )
+    msln_run.add_argument("--config", required=True)
+    msln_run.add_argument("--device", choices=("cpu", "cuda", "auto"))
+    msln_run.add_argument("--fold", type=int)
+    msln_run.add_argument("--stage", choices=("msln", "per-context-ica", "cross-context", "energy", "routing", "fusion", "all"), default="all")
+    msln_run.add_argument("--resume", action="store_true")
+    msln_run.add_argument("--no-video", action="store_true")
+    msln_run.add_argument("--dry-run", action="store_true")
+    msln_run.add_argument("--authorize-full-spon", action="store_true")
+    msln_run.set_defaults(func=_run_msln_msica)
+    msln_summary = msln_actions.add_parser(
+        "summarize", help="Read a completed MSLN/MS-ICA root without refitting."
+    )
+    msln_summary.add_argument("--output-root", type=Path, required=True)
+    msln_summary.set_defaults(func=_summarize_msln_msica)
     soma = workflows.add_parser(
         "soma-excitation",
         help="Evaluate dark-soma zones and frozen model transfer.",
@@ -660,6 +687,49 @@ def _run_event_weighted_cs_parzen(args) -> int:
     return 0
 
 
+def _run_msln_msica_preflight(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.msln_msica.config import MSLNMSICAConfig
+    from neurobench.experiments.msln_msica.preflight import preflight
+
+    config = MSLNMSICAConfig.load(args.config)
+    payload = preflight(config)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_msln_msica(args) -> int:
+    _configure_cuda_resource_environment(args.config)
+    from neurobench.experiments.msln_msica.config import MSLNMSICAConfig
+    from neurobench.experiments.msln_msica.preflight import matching_preflight
+    from neurobench.experiments.msln_msica.runner import run
+
+    config = MSLNMSICAConfig.load(args.config)
+    if args.device is not None and args.device != config.compute.device:
+        raise ValueError("--device may only confirm the frozen configured device")
+    if args.dry_run:
+        payload = matching_preflight(config)
+    else:
+        payload = run(
+            config,
+            authorize_full_spon=bool(args.authorize_full_spon),
+            resume=bool(args.resume),
+            no_video=bool(args.no_video),
+            fold=args.fold,
+            stage=args.stage,
+        )
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _summarize_msln_msica(args) -> int:
+    from neurobench.experiments.msln_msica.runner import summarize
+
+    payload = summarize(args.output_root)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
 def _run_soma_experiment(args) -> int:
     _configure_resource_environment_from_manifest(args.config)
     from neurobench.experiments.soma_excitation.runner import (
@@ -732,7 +802,9 @@ def _configure_cuda_resource_environment(config_path: str | Path) -> int:
         raise ValueError("resource configuration must be a JSON/YAML mapping")
     resources = payload.get("resources", {})
     compute = payload.get("compute", {})
-    raw = resources.get("cpu_threads", compute.get("max_worker_processes", 4))
+    raw = resources.get(
+        "cpu_threads", compute.get("cpu_threads", compute.get("max_worker_processes", 4))
+    )
     if isinstance(raw, bool) or not isinstance(raw, int) or not 1 <= raw <= 24:
         raise ValueError("resources.cpu_threads must be an integer between 1 and 24")
     for name in _THREAD_ENVIRONMENT_VARIABLES:

@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Sequence
+from typing import Any, Literal, Sequence
 
 import numpy as np
 
@@ -263,6 +263,7 @@ def cs_parzen_objective(
     block_rows: int = 256,
     accumulator_dtype: np.dtype = np.float64,
     kernel_dtype: np.dtype = np.float64,
+    backend: Literal["cpu", "cuda"] = "cpu",
 ) -> CSObjectiveResult:
     """Evaluate the exact weighted, blockwise two-output CS-Parzen objective.
 
@@ -271,6 +272,22 @@ def cs_parzen_objective(
     and integer-repetition semantics exact. Kernel blocks are the only
     quadratic-sized temporaries.
     """
+    if backend == "cuda":
+        if np.dtype(accumulator_dtype) != np.dtype(np.float64):
+            raise ValueError("CUDA CS-Parzen requires float64 scalar accumulation")
+        from neurobench.algorithms.msln_msica_cuda import (
+            cs_parzen_objective_cuda,
+        )
+
+        return cs_parzen_objective_cuda(
+            y,
+            bandwidth,
+            weights=weights,
+            block_rows=block_rows,
+            kernel_dtype=kernel_dtype,
+        )
+    if backend != "cpu":
+        raise ValueError("backend must be cpu or cuda")
     values = np.asarray(y, dtype=np.float64)
     if values.ndim != 2 or values.shape[1] != 2 or not values.size:
         raise ValueError("y must be a non-empty array with shape [N,2]")
@@ -358,6 +375,7 @@ def cs_parzen_independence(
     weights: np.ndarray | None = None,
     block_rows: int = 256,
     kernel_dtype: np.dtype = np.float64,
+    backend: Literal["cpu", "cuda"] = "cpu",
 ) -> tuple[float, dict[str, Any]]:
     """Compatibility wrapper retaining the legacy [2,N] API."""
     y = _finite_array(outputs, "outputs", 2)
@@ -365,7 +383,7 @@ def cs_parzen_independence(
         raise ValueError("outputs must have shape [2,N]")
     result = cs_parzen_objective(
         y.T, bandwidth, weights=weights, block_rows=block_rows,
-        kernel_dtype=kernel_dtype,
+        kernel_dtype=kernel_dtype, backend=backend,
     )
     diagnostics = {
         "v_joint": result.v_joint,
@@ -379,6 +397,7 @@ def cs_parzen_independence(
         "positive_weight_count": result.positive_weight_count,
         "weight_sum": result.weight_sum,
         "block_rows": result.block_rows,
+        "backend": backend,
     }
     return result.objective, diagnostics
 
@@ -395,6 +414,7 @@ def fit_cs_parzen_ica(
     screen_weights: np.ndarray | None = None,
     confirm_weights: np.ndarray | None = None,
     kernel_dtype: np.dtype = np.float64,
+    backend: Literal["cpu", "cuda"] = "cpu",
 ) -> SeparationFit:
     screen = _finite_array(screen_whitened, "screen_whitened", 2)
     confirm = screen if confirm_whitened is None else _finite_array(confirm_whitened, "confirm_whitened", 2)
@@ -405,7 +425,7 @@ def fit_cs_parzen_ica(
     for angle in coarse:
         objective, diagnostics = cs_parzen_independence(
             _rotation(angle) @ screen, bandwidth, weights=screen_weights,
-            block_rows=block_rows, kernel_dtype=kernel_dtype,
+            block_rows=block_rows, kernel_dtype=kernel_dtype, backend=backend,
         )
         rows.append({"scope": "screen", "angle_degrees": float(angle), "objective": objective, **diagnostics})
     best_coarse = min(rows, key=lambda row: row["objective"])["angle_degrees"]
@@ -413,7 +433,7 @@ def fit_cs_parzen_ica(
     for angle in sorted(set(float(x) for x in refine)):
         objective, diagnostics = cs_parzen_independence(
             _rotation(angle) @ screen, bandwidth, weights=screen_weights,
-            block_rows=block_rows, kernel_dtype=kernel_dtype,
+            block_rows=block_rows, kernel_dtype=kernel_dtype, backend=backend,
         )
         rows.append({"scope": "refine", "angle_degrees": angle, "objective": objective, **diagnostics})
     best = min((row for row in rows if row["scope"] == "refine"), key=lambda row: row["objective"])
@@ -422,7 +442,7 @@ def fit_cs_parzen_ica(
     for angle in confirm_angles:
         objective, diagnostics = cs_parzen_independence(
             _rotation(angle) @ confirm, bandwidth, weights=confirm_weights,
-            block_rows=block_rows, kernel_dtype=kernel_dtype,
+            block_rows=block_rows, kernel_dtype=kernel_dtype, backend=backend,
         )
         row = {"scope": "confirm", "angle_degrees": float(angle), "objective": objective, **diagnostics}
         rows.append(row); confirmed.append(row)
@@ -432,7 +452,8 @@ def fit_cs_parzen_ica(
         method_id="cs_parzen_ica", demixing=w, mixing=w.T, objective=float(winner["objective"]),
         converged=True, iterations=len(rows), activity_component=None, activity_sign=None,
         diagnostics={"selected_angle_degrees": winner["angle_degrees"], "objective_by_angle": rows,
-                     "bandwidth": bandwidth, "kernel_block_rows": block_rows},
+                     "bandwidth": bandwidth, "kernel_block_rows": block_rows,
+                     "backend": backend},
     )
 
 
