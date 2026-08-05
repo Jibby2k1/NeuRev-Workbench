@@ -12,7 +12,7 @@ from typing import Literal
 import numpy as np
 
 
-Kind = Literal["raw", "signed", "energy", "dominant", "interaction"]
+Kind = Literal["raw", "signed", "energy", "neutral_energy", "dominant", "interaction"]
 
 
 @dataclass(frozen=True)
@@ -51,14 +51,22 @@ def _rgb(values: np.ndarray, layer: Layer, width: int, height: int) -> np.ndarra
     else:
         low, high = layer.limits or (0.0, 1.0)
         normalized = np.clip((array - low) / (high - low), 0.0, 1.0)
-        cmap = (
-            "gray"
-            if layer.kind in {"raw", "interaction"}
-            else "coolwarm"
-            if layer.kind == "signed"
-            else "inferno"
+        if layer.kind == "neutral_energy":
+            from matplotlib.colors import LinearSegmentedColormap
+            cmap = LinearSegmentedColormap.from_list(
+                "neutral_orange", ["#000000", "#4a4a4a", "#b8b8b8", "#d47a22", "#ffd29a"]
+            )
+        else:
+            cmap = (
+                "gray" if layer.kind in {"raw", "interaction"}
+                else "coolwarm" if layer.kind == "signed" else "inferno"
+            )
+        mapped = (
+            colormaps[cmap](normalized)
+            if isinstance(cmap, str)
+            else cmap(normalized)
         )
-        rgb = (colormaps[cmap](normalized)[..., :3] * 255).astype(np.uint8)
+        rgb = (mapped[..., :3] * 255).astype(np.uint8)
         resampling = Image.Resampling.BILINEAR
     return np.asarray(
         Image.fromarray(rgb, mode="RGB").resize((width, height), resampling)
