@@ -157,3 +157,88 @@ winner. Use
 [`docs/research/msln_msica_joint_residual_v2_package/`](../research/msln_msica_joint_residual_v2_package/README.md)
 for the paper and presentation handoff; generated videos and figures remain
 ignored and are represented there by explicit placeholders.
+
+## Block-order and cascade program v3
+
+The paired GPU block-order study is rooted at
+`Outputs/HierarchicalParzenICA/spon_ca_burst_msln_msica_block_switch_v3`.
+It compared `Raw -> MSLN -> MSICA` with `Raw -> MSICA -> MSLN` under the
+same 30 contexts, candidate budgets, NMS/matching radii, and CUDA contract.
+The broad `joint_s15_g3_t31_g1` persistence lane retained 58/79 known
+positives in the control order and 57/79 in the switched order at budget 58
+per burst. Raw MSICA selected Parzen bandwidth 0.2 but was unstable across 16
+blocked bootstraps (40.10 degree circular SD; 0.3125 component-swap fraction).
+
+The cascade root is
+`Outputs/HierarchicalParzenICA/spon_ca_burst_msln_msica_cascade_v3`. Its
+preregistered raw-MSICA stability gate failed, so the planned
+`MSICA -> MSLN -> MSICA` cascade was not executed. This stopped outcome is a
+scientific result rather than an incomplete computation. Retain the existing
+broad `Raw -> MSLN -> MSICA` persistence representation; do not deepen the
+cascade without a redesigned or regularized first-stage separation.
+
+The cross-experiment conclusion is
+`Outputs/HierarchicalParzenICA/spon_ca_burst_msln_msica_order_program_v3_summary/CONCLUSIVE_REPORT.md`.
+Reproduce the program with:
+
+```bash
+.venv-neurobench/bin/python -m neurobench.experiments.msln_msica.order_program preflight \
+  --config examples/spon_ca_burst_msln_msica_order_program_v3.example.json
+.venv-neurobench/bin/python -m neurobench.experiments.msln_msica.order_program gpu-preflight \
+  --config examples/spon_ca_burst_msln_msica_order_program_v3.example.json
+.venv-neurobench/bin/python -m neurobench.experiments.msln_msica.order_program run-block-switch \
+  --config examples/spon_ca_burst_msln_msica_order_program_v3.example.json --authorize-full-spon
+.venv-neurobench/bin/python -m neurobench.experiments.msln_msica.order_program run-cascade \
+  --config examples/spon_ca_burst_msln_msica_order_program_v3.example.json --authorize-full-spon
+.venv-neurobench/bin/python -m neurobench.experiments.msln_msica.order_program conclude \
+  --config examples/spon_ca_burst_msln_msica_order_program_v3.example.json
+```
+
+## Broad cascade program v4
+
+The user-authorized v4 program deliberately overrode the v3 early-stop for a
+broad diagnostic test. Its completed root is:
+
+```text
+Outputs/HierarchicalParzenICA/spon_ca_burst_msln_msica_cascade_program_v4
+```
+
+The label-free screen evaluated every one of the 30 first-stage contexts, all
+900 ordered first/second-context pairs, both persistence and innovation
+branches, and five MSICA2 bandwidths. It also evaluated switched-order,
+five-seed ensemble, cross-branch ICA, and parallel-fusion controls over all 30
+contexts. The original-order factorial alone contained 1,800 branch
+combinations and 9,000 MSICA2 fits. All screening preceded label access.
+
+Three finalists per experiment were frozen by event/quiet contrast, then
+recomputed with 4,096/16,384 sample fits, FastICA sensitivity checks, and 16
+blocked-bootstrap replicates for each supported ICA block. Each experiment has
+a concise report, three full float32 maps, and a synchronized 560-frame video.
+
+At the fixed budget-58 guardrail, the strictly label-free rank-1 results were
+39/79 (original shallow), 41/79 (original deep), 47/79 (switched deep), 52/79
+(five-seed ensemble), 46/79 (cross-branch), and 51/79 (parallel mean fusion),
+versus the external Raw Direct anchor of 49/79. The primary defensible result is
+therefore the ensemble's provisional 52/79, a three-match gain. Selecting the
+best protected finalist after opening labels gives exploratory ceilings of
+42, 41, 57, 59, 46, and 53 matches respectively; these are not unbiased winner
+estimates and must not replace the label-free rank-1 comparison.
+
+Individual ensemble ICA fits remained angle/swap unstable, but the three
+finalist deep-energy ensembles had mean cross-seed map correlations of 0.978,
+0.919, and 0.889. This supports energy aggregation as a robustness mechanism,
+not stable biological source identity. The original `MSLN -> MSICA -> MSLN`
+cascades did not beat Raw Direct; adding another MSICA also did not rescue them.
+Cross-branch ICA lost three matches. Parallel fusion gained two matches for its
+label-free winner. The 52/79 ensemble result remains provisional because labels
+are sparse-positive, the comparison is a fixed-budget guardrail, and no
+independent recording has confirmed the selector.
+
+The primary corrected conclusion is in
+`summary/CONCLUSIVE_REPORT_LABEL_FREE_PRIMARY.md` under the completed v4 root.
+The original generated `CONCLUSIVE_REPORT.md` is retained unchanged for audit but
+reports protected-best ceilings as its headline. Reproduce the
+stages with the schema-v4 manifest
+`examples/spon_ca_burst_msln_msica_broad_cascade_v4.example.json` and the
+`broad_cascade` / `broad_finalize` modules. A new confirmation recording or
+output root requires explicit selection; never overwrite this completed root.
