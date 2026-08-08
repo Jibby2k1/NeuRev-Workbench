@@ -12,6 +12,81 @@ The output contract is:
 
 Raw data remain immutable and authoritative. MSLN maps are signed standardized evidence. ICA components are statistical coordinates, not named biological sources without downstream evidence. Squared and tail-calibrated maps are nonnegative activity evidence. `raw * gate(activity)` is display/feature interaction only and is never a reconstruction or cleaned movie. Sparse known-positive labels are used only for protected evaluation, never fitting in the primary fixed-unsupervised track.
 
+## Default zero-anchored visualization
+
+New MSLN/MSICA temperature-sweep videos use a black zero reference by default:
+
+```text
+MSLN display = clip(MSLN, 0, +inf) / global_positive_max
+GN(alpha)    = max(2 ** (alpha * MSLN) - 1, 0)
+GN display   = GN(alpha) / global_max(GN(alpha))
+```
+
+Use one movie-wide scale per panel; per-frame normalization is prohibited.
+Compute arrays in float32 or higher precision, record global extrema as float64
+scalars, and convert to uint8 only during encoding. Titles and metadata must say
+`zero = black` and `visualization only`. The maintained implementation is
+`neurobench.reports.zero_anchored_display`. Opt out only for a diagnostic that
+requires signed polarity, and visibly identify zero and record that scale.
+
+This is a display convention: it does not denoise, modify, or replace the signed
+scientific array. Detector inputs must name their representation explicitly so
+the display-clipped array is never consumed accidentally.
+
+### Proposed expert-benchmark temperature study
+
+Treat the nonlinear map as a candidate representation rather than infer efficacy
+from appearance. Retain Raw Direct, signed MSLN, and positive MSLN as controls.
+Use a preregistered fine alpha grid concentrated around 0.1--0.25 plus broader
+boundary arms. Freeze choices without labels, then open expert labels once for
+matched candidate-budget evaluation.
+
+Report per-burst and macro known-positive recall, candidate burden and budget
+curves, nearest-candidate distance, seed/fold consistency, quiet/event contrast,
+temporal sparsity and event width, plus the standard Expert Annotations / Model
+Annotations / Comparison audit package. Unmatched candidates remain unknown.
+Report scientific arrays separately from zero-anchored displays. A new output
+root, read-only preflight, GPU parity check, and explicit full-Spon authorization
+are required.
+
+### Completed expert benchmark v1
+
+The authorized 64-lane run is complete at:
+
+```text
+Outputs/HierarchicalParzenICA/spon_ca_burst_zero_anchored_temperature_benchmark_v1
+```
+
+It evaluated the positive-MSLN control and 15 alpha values from 0.025 to 1.0
+under max, mean, top-3 mean, and top-5 mean temporal pooling. The max-pooling
+invariance control passed: every monotone temperature arm produced identical
+candidate rankings. CUDA parity error was at most `1.19e-7`.
+
+The preregistered primary mean-pooling leave-one-burst-out result recovered
+49/79 known positives at 58 candidates per burst, exactly tying the historical
+Raw Direct anchor. The broader protected pooling-family analysis also recovered
+49/79. The post-hoc best fixed lane, alpha 0.5 with top-5 mean pooling, reached
+54/79; alpha 0.4 tied it. Treat this five-match gain as a label-informed
+diagnostic ceiling, not a validated improvement. The broad 53/79 top-3 plateau
+suggests that temporal aggregation explains more of the gain than fine alpha
+tuning.
+
+The three-section scientific audit is complete and fully decoded: 27 expert
+ROI close-ups/traces, 131 consolidated model ROI close-ups/traces, 79 nearest
+expert/model trace comparisons, and section-pure full-field videos. Unmatched
+candidates remain unknown. Retain zero anchoring as the visualization default;
+confirm alpha 0.5/top-5 prospectively on independently annotated data before
+promoting it as a detector.
+
+The subsequent annotation-free scale study compared global movie-wide,
+framewise, centered rolling-max, causal exponentially weighted power-mean, and
+causal attack/release displays. The user-selected practical default is now
+`Raw -> MSICA -> MSLN -> GN` with zero anchoring and one global movie-wide
+scale. Adaptive scales remain explicitly labeled visualization diagnostics.
+See
+[`SPON_CA_BURST_GLOBAL_NORM_VISUALIZATION_RESULTS.md`](../research/SPON_CA_BURST_GLOBAL_NORM_VISUALIZATION_RESULTS.md)
+for the consolidated history, scale diagnostics, and current decision.
+
 ## Frozen standard design
 
 The standard manifest is [spon_ca_burst_msln_msica_v1.example.json](../../examples/spon_ca_burst_msln_msica_v1.example.json). Its eight contexts are ordered deterministically:

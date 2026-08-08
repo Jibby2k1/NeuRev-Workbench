@@ -88,6 +88,9 @@ the project.
   LLM/human-navigability audit with staged refactor plan.
 - [Dashboard Code Audit](DASHBOARD_CODE_AUDIT.md): dashboard families,
   organization risks, and dashboard-specific UX/efficiency plan.
+- [Dashboard Revamp Handoff — August 2026](developer/DASHBOARD_REVAMP_HANDOFF_2026_08.md):
+  implemented correction-workspace behavior, editable Figma direction,
+  implementation boundary, next slice, and LLM-efficient reading order.
 - [Workbench Video and Catalog Refactor](developer/WORKBENCH_VIDEO_CATALOG_REFACTOR.md):
   single-canvas annotation layout, unified App/LLM video lookup, preservation
   guardrails, and prioritized bloat reduction.

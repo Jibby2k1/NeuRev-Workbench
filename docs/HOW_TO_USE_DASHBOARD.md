@@ -7,7 +7,9 @@ publishing a traceable annotation revision.
 > Start here if your goal is to inspect results or correct labels. Developers
 > changing dashboard code should use the
 > [single-reviewer implementation specification](developer/SINGLE_REVIEWER_ANNOTATION_DASHBOARD_MVP.md)
-> after reading this guide.
+> after reading this guide. The implemented-versus-proposed visual status is
+> summarized in the
+> [August 2026 dashboard revamp handoff](developer/DASHBOARD_REVAMP_HANDOFF_2026_08.md).
 
 ## At a Glance
 
