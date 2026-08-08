@@ -80,6 +80,7 @@ def causal_joint_msln_cuda(
     quiet_mask: np.ndarray,
     review_crop_frames: int,
     max_vram_bytes: int,
+    scale_floor_override: float | None = None,
 ) -> CUDAJointResult:
     """Compute a causal joint MSLN review map while retaining it on the GPU."""
     cp = _cupy()
@@ -169,11 +170,16 @@ def causal_joint_msln_cuda(
     quiet_review = cp.asarray(quiet[crop:])
     quiet_scales = scale[quiet_review]
     positive = quiet_scales[quiet_scales > 0]
-    fitted_floor = (
-        float(cp.asnumpy(cp.percentile(positive, context.scale_floor_percentile)))
-        if int(positive.size)
-        else 1.0
-    )
+    if scale_floor_override is not None:
+        fitted_floor = float(scale_floor_override)
+        if not np.isfinite(fitted_floor) or fitted_floor <= 0:
+            raise ValueError("scale_floor_override must be finite and positive")
+    else:
+        fitted_floor = (
+            float(cp.asnumpy(cp.percentile(positive, context.scale_floor_percentile)))
+            if int(positive.size)
+            else 1.0
+        )
     fitted_floor = max(fitted_floor, float(np.finfo(np.float32).eps))
     del quiet_scales, positive, quiet_review
     result = numerator / cp.maximum(scale, cp.float32(fitted_floor))
@@ -201,6 +207,7 @@ def causal_joint_msln_cuda(
             "temporal_guard_frames": guard,
             "reference_frame_count": window - guard,
             "scale_floor": fitted_floor,
+            "scale_floor_source": "override" if scale_floor_override is not None else "quiet_calibration",
             "centering_offset": offset,
             "estimated_peak_vram_bytes": estimated_peak,
             "observed_peak_vram_bytes": peak_used,

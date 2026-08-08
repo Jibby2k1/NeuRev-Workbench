@@ -25,6 +25,11 @@ PRODUCTION_MODULES = [
     "60_metrics_report.js",
     "70_dataset_qc.js",
     "80_review_subpages.js",
+    "82_annotation_correction.js",
+    "83_annotation_correction_review_layout.js",
+    "84_annotation_correction_editing.js",
+    "85_annotation_correction_relations.js",
+    "86_annotation_correction_publication.js",
     "90_boot.js",
 ]
 

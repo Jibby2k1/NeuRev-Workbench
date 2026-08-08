@@ -36,6 +36,32 @@ def test_serve_parser_exposes_explicit_current_and_installed_asset_modes():
     assert installed.asset_mode == "installed"
 
 
+
+
+def test_model_proposal_package_parser_exposes_label_free_inputs():
+    from neurobench.cli.main import build_parser
+
+    parser = build_parser(active_command="workbench")
+    args = parser.parse_args(
+        [
+            "workbench",
+            "model-proposal-package",
+            "--source-app-dir",
+            "source-app",
+            "--output-root",
+            "output",
+            "--event-source",
+            "model_proposed",
+            "--json",
+        ]
+    )
+
+    assert args.source_app_dir == Path("source-app")
+    assert args.output_root == Path("output")
+    assert args.event_source == "model_proposed"
+    assert args.json is True
+
+
 def test_status_reports_tampered_css_even_when_html_marker_is_current(tmp_path: Path):
     from neurobench.cli.workbench import workbench_status_command
     from neurobench.workbench.builder import build_workbench

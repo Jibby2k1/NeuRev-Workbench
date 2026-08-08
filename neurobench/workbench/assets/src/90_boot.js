@@ -99,7 +99,7 @@ function routeProductLanding(page){
 function routeReview(hash){
   resetRouteState();
   const reviewSubpage = reviewSubPageFromHash(`#${hash}`);
-  const normal = hash === 'annotate' || hash === 'review';
+  const normal = hash === 'annotate' || hash === 'review' || reviewSubpage === 'correction';
   if(normal){
     appRoot.classList.add('normal-annotation-mode');
     appRoot.classList.toggle('research-context-enabled', researchToolsEnabled());
@@ -113,6 +113,7 @@ function routeReview(hash){
   if(reviewSubpage === 'stencil') renderReviewStencil();
   else if(reviewSubpage === 'overlap') renderReviewOverlap();
   else if(reviewSubpage === 'triage') renderReviewTriage();
+  else if(reviewSubpage === 'correction') renderAnnotationCorrection();
   else resizeOverlay();
   renderAnnotationTaskShell();
   renderNextBestActions();
@@ -147,7 +148,7 @@ function routePage(){
   if(hash === 'annotate' || hash === 'review') return routeReview(hash);
   if(hash === 'results') return routeProductLanding('results');
   if(hash === 'research') return routeProductLanding('research');
-  if(['review-stencil','stencil','anatomy-stencil','review-overlap','overlap','sweep-overlap','candidate-overlay','review-candidate-overlay','review-triage','triage','review-queue'].includes(hash)) return routeReview(hash);
+  if(['review-stencil','stencil','anatomy-stencil','review-overlap','overlap','sweep-overlap','candidate-overlay','review-candidate-overlay','review-triage','triage','review-queue','annotation-correction','review-correction','correction'].includes(hash)) return routeReview(hash);
 
   const page = ['home','workflow'].includes(hash) ? 'home'
     : ['pipelines','architecture','architecture-lab'].includes(hash) ? 'architecture'

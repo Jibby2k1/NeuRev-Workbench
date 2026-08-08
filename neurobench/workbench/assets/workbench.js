@@ -13286,12 +13286,14 @@ function reviewSubPageFromHash(hashText=location.hash){
   if(hash === 'review-stencil' || hash === 'stencil' || hash === 'anatomy-stencil') return 'stencil';
   if(hash === 'review-overlap' || hash === 'overlap' || hash === 'sweep-overlap' || hash === 'candidate-overlay' || hash === 'review-candidate-overlay') return 'overlap';
   if(hash === 'review-triage' || hash === 'triage' || hash === 'review-queue') return 'triage';
+  if(hash === 'annotation-correction' || hash === 'review-correction' || hash === 'correction') return 'correction';
   return 'inspect';
 }
 function reviewPageLabel(subpage){
   if(subpage === 'stencil') return 'Review Stencil';
   if(subpage === 'overlap') return 'Candidate Overlay';
   if(subpage === 'triage') return 'Review Triage';
+  if(subpage === 'correction') return 'Correct Labels';
   return 'Review Inspect';
 }
 function updateReviewSubnav(subpage){
@@ -13299,14 +13301,17 @@ function updateReviewSubnav(subpage){
   document.getElementById('reviewStencilSubtab')?.classList.toggle('active', subpage === 'stencil');
   document.getElementById('reviewOverlapSubtab')?.classList.toggle('active', subpage === 'overlap');
   document.getElementById('reviewTriageSubtab')?.classList.toggle('active', subpage === 'triage');
+  document.getElementById('reviewCorrectionSubtab')?.classList.toggle('active', subpage === 'correction');
   const context = document.querySelector('.stage.reviewOnly .pageContext');
   if(context) context.textContent = `${reviewPageLabel(subpage)} · ${datasetId}`;
   document.getElementById('reviewStencilPage')?.classList.toggle('hidden', subpage !== 'stencil');
   document.getElementById('reviewOverlapPage')?.classList.toggle('hidden', subpage !== 'overlap');
   document.getElementById('reviewTriagePage')?.classList.toggle('hidden', subpage !== 'triage');
+  document.getElementById('reviewCorrectionPage')?.classList.toggle('hidden', subpage !== 'correction');
   appRoot.classList.toggle('review-stencil-mode', subpage === 'stencil');
   appRoot.classList.toggle('review-overlap-mode', subpage === 'overlap');
   appRoot.classList.toggle('review-triage-mode', subpage === 'triage');
+  appRoot.classList.toggle('review-correction-mode', subpage === 'correction');
 }
 function diagnosticAssetUrl(file){ return `diagnostics/${file}`; }
 function polygonArea(points){
@@ -13866,6 +13871,1770 @@ function renderReviewTriage(){
   }
 }
 
+// --- 82_annotation_correction.js ---
+const ANNOTATION_CORRECTION_QUEUES = Object.freeze([
+  ['matched_expert', 'Matched expert'],
+  ['missed_expert', 'Missed expert'],
+  ['model_unknown', 'Model-only unknown'],
+  ['all_expert', 'All expert'],
+  ['all_model', 'All model'],
+  ['recently_edited', 'Recently edited']
+]);
+
+let annotationCorrectionState = {
+  queue: 'matched_expert',
+  processedViewId: 'msica',
+  overlayMode: 'selected_pair',
+  toolMode: 'select',
+  selectedKey: '',
+  frame: 1,
+  playing: false,
+  timer: null,
+  scrubRaf: null,
+  pendingFrame: null,
+  traceStart: null,
+  traceEnd: null,
+  traceHoverFrame: null,
+  traceDragging: false,
+  probeSourceXy: null
+};
+
+function annotationCorrectionPayload(){
+  return data.annotationCorrection || data.annotation_correction || null;
+}
+
+function annotationCorrectionNormalizeItem(item, kind){
+  const sourceXy = item.source_xy || item.sourceXy || [
+    item.centroidX ?? item.x ?? 0,
+    item.centroidY ?? item.y ?? 0
+  ];
+  return {
+    ...item,
+    kind,
+    id: String(item.id),
+    key: kind + ':' + String(item.id),
+    sourceXy: [Number(sourceXy[0]), Number(sourceXy[1])],
+    uiFrame: Number(item.ui_frame || item.uiFrame || 1),
+    events: (item.events || []).map(Number).filter(Number.isFinite),
+    linkedModelId: item.linked_model_id ? String(item.linked_model_id) : '',
+    linkedExpertId: item.linked_expert_id ? String(item.linked_expert_id) : '',
+    reviewState: String(item.review_state || item.reviewState || ''),
+    status: String(item.status || '')
+  };
+}
+
+function annotationCorrectionModel(){
+  const payload = annotationCorrectionPayload();
+  if(!payload) return null;
+  const experts = (payload.expert_rois || payload.expertRois || []).map(
+    item => annotationCorrectionNormalizeItem(item, 'expert')
+  );
+  const models = (payload.model_rois || payload.modelRois || []).map(
+    item => annotationCorrectionNormalizeItem(item, 'model')
+  );
+  for(const match of payload.matches || []){
+    const expert = experts.find(item => item.id === String(match.expert_id || match.expertId));
+    const model = models.find(item => item.id === String(match.model_id || match.modelId));
+    if(expert && model){
+      expert.linkedModelId = model.id;
+      model.linkedExpertId = expert.id;
+    }
+  }
+  const contracts = payload.view_contracts || payload.viewContracts || [];
+  const arrays = payload.arrays_tyx || payload.arraysTyx || {};
+  return {
+    payload,
+    experts,
+    models,
+    contracts,
+    arrays,
+    revision: payload.revision || {},
+    sourceVideoId: String(payload.source_video_id || payload.sourceVideoId || ''),
+    readOnly: payload.read_only !== false
+  };
+}
+
+function annotationCorrectionContract(model, viewId){
+  return model?.contracts.find(item => String(item.view_id || item.viewId) === String(viewId)) || null;
+}
+
+function annotationCorrectionViewId(contract){
+  return String(contract?.view_id || contract?.viewId || '');
+}
+
+function annotationCorrectionShape(contract){
+  const shape = contract?.shape_tyx || contract?.shapeTyx || [1, 1, 1];
+  return [Number(shape[0]) || 1, Number(shape[1]) || 1, Number(shape[2]) || 1];
+}
+
+function annotationCorrectionFrameBounds(contract){
+  const mapping = contract?.frame_mapping || contract?.frameMapping || {kind:'identity', offset:0};
+  const start = Number(mapping.offset || 0) + 1;
+  return [start, start + annotationCorrectionShape(contract)[0] - 1];
+}
+
+function annotationCorrectionFrameIndex(contract, uiFrame){
+  return Number(uiFrame) - annotationCorrectionFrameBounds(contract)[0];
+}
+
+function annotationCorrectionFramePattern(contract){
+  return String(contract?.frame_pattern || contract?.framePattern || '');
+}
+
+function annotationCorrectionFrameUrl(contract, uiFrame){
+  const pattern = annotationCorrectionFramePattern(contract);
+  return pattern && typeof framePatternPath === 'function' ? framePatternPath(pattern, uiFrame) : '';
+}
+
+function annotationCorrectionSourceToView(contract, sourceXy){
+  const transform = contract?.source_to_view || contract?.sourceToView || {kind:'identity'};
+  if(transform.kind !== 'affine') return [Number(sourceXy[0]), Number(sourceXy[1])];
+  const matrix = transform.matrix_3x3 || transform.matrix3x3;
+  return [
+    Number(matrix[0][0]) * sourceXy[0] + Number(matrix[0][1]) * sourceXy[1] + Number(matrix[0][2]),
+    Number(matrix[1][0]) * sourceXy[0] + Number(matrix[1][1]) * sourceXy[1] + Number(matrix[1][2])
+  ];
+}
+
+function annotationCorrectionViewToSource(contract, viewXy){
+  const transform = contract?.source_to_view || contract?.sourceToView || {kind:'identity'};
+  if(transform.kind !== 'affine') return [Number(viewXy[0]), Number(viewXy[1])];
+  const matrix = transform.matrix_3x3 || transform.matrix3x3;
+  const a = Number(matrix[0][0]), b = Number(matrix[0][1]), tx = Number(matrix[0][2]);
+  const c = Number(matrix[1][0]), d = Number(matrix[1][1]), ty = Number(matrix[1][2]);
+  const determinant = a * d - b * c;
+  if(!Number.isFinite(determinant) || Math.abs(determinant) <= 1e-12) return null;
+  const x = Number(viewXy[0]) - tx, y = Number(viewXy[1]) - ty;
+  return [(d * x - b * y) / determinant, (-c * x + a * y) / determinant];
+}
+
+function annotationCorrectionQueueRows(model, queueId){
+  if(!model) return [];
+  if(queueId === 'matched_expert') return model.experts.filter(item => item.linkedModelId);
+  if(queueId === 'missed_expert') return model.experts.filter(item => !item.linkedModelId);
+  if(queueId === 'model_unknown') return model.models.filter(item => !item.linkedExpertId && (item.status || 'unknown') === 'unknown');
+  if(queueId === 'all_expert') return model.experts.slice();
+  if(queueId === 'all_model') return model.models.slice();
+  if(queueId === 'recently_edited') return [...model.experts, ...model.models].filter(item => item.reviewState === 'recently_edited');
+  return [];
+}
+
+function annotationCorrectionSelected(model){
+  return [...(model?.experts || []), ...(model?.models || [])].find(
+    item => item.key === annotationCorrectionState.selectedKey
+  ) || null;
+}
+
+function annotationCorrectionIsModelOnly(model){
+  const state = String(model?.payload?.expert_annotation_state || model?.payload?.expertAnnotationState || '');
+  return model?.payload?.mode === 'model_only' || (!model?.experts?.length && state.startsWith('not_applicable'));
+}
+
+function annotationCorrectionEnsureSelection(model){
+  if(annotationCorrectionIsModelOnly(model)){
+    if(['matched_expert', 'missed_expert', 'all_expert'].includes(annotationCorrectionState.queue)){
+      annotationCorrectionState.queue = annotationCorrectionQueueRows(model, 'model_unknown').length ? 'model_unknown' : 'all_model';
+    }
+    if(annotationCorrectionState.overlayMode === 'selected_pair'){
+      annotationCorrectionState.overlayMode = 'selected_model';
+    }
+  }
+  const rows = annotationCorrectionQueueRows(model, annotationCorrectionState.queue);
+  let selectionChanged = false;
+  if(!annotationCorrectionSelected(model) || !rows.some(item => item.key === annotationCorrectionState.selectedKey)){
+    annotationCorrectionState.selectedKey = rows[0]?.key || model.experts[0]?.key || model.models[0]?.key || '';
+    selectionChanged = true;
+  }
+  if(!annotationCorrectionContract(model, annotationCorrectionState.processedViewId)){
+    annotationCorrectionState.processedViewId = model.contracts.find(
+      item => annotationCorrectionViewId(item) !== 'raw'
+    ) ? annotationCorrectionViewId(model.contracts.find(item => annotationCorrectionViewId(item) !== 'raw')) : 'raw';
+  }
+  const raw = annotationCorrectionContract(model, 'raw') || model.contracts[0];
+  const [minFrame, maxFrame] = annotationCorrectionFrameBounds(raw);
+  if(selectionChanged){
+    const selected = annotationCorrectionSelected(model);
+    if(selected) annotationCorrectionState.frame = selected.uiFrame;
+  }
+  annotationCorrectionState.frame = Math.max(minFrame, Math.min(maxFrame, annotationCorrectionState.frame));
+}
+
+function annotationCorrectionRange(frames, semantics){
+  const values = [];
+  for(const frame of frames || []) for(const row of frame || []) for(const value of row || []){
+    if(Number.isFinite(Number(value))) values.push(Number(value));
+  }
+  if(!values.length) return [0, 1];
+  if(String(semantics).includes('signed')){
+    const bound = Math.max(1e-12, ...values.map(value => Math.abs(value)));
+    return [-bound, bound];
+  }
+  const low = Math.min(...values), high = Math.max(...values);
+  return high > low ? [low, high] : [low, low + 1];
+}
+
+function annotationCorrectionLinkedExpert(model, selected){
+  if(selected?.kind === 'expert') return selected;
+  return model.experts.find(item => item.id === selected?.linkedExpertId) || null;
+}
+
+function annotationCorrectionLinkedModel(model, selected){
+  if(selected?.kind === 'model') return selected;
+  return model.models.find(item => item.id === selected?.linkedModelId) || null;
+}
+
+function annotationCorrectionOverlayItems(model){
+  const selected = annotationCorrectionSelected(model);
+  const expert = annotationCorrectionLinkedExpert(model, selected);
+  const modelItem = annotationCorrectionLinkedModel(model, selected);
+  if(annotationCorrectionState.overlayMode === 'none') return [];
+  if(annotationCorrectionState.overlayMode === 'selected_expert') return expert ? [expert] : [];
+  if(annotationCorrectionState.overlayMode === 'selected_model') return modelItem ? [modelItem] : [];
+  if(annotationCorrectionState.overlayMode === 'all_experts') return model.experts;
+  if(annotationCorrectionState.overlayMode === 'all_models') return model.models;
+  if(annotationCorrectionState.overlayMode === 'all_annotations') return [...model.experts, ...model.models];
+  return [expert, modelItem].filter((item, index, rows) => item && rows.findIndex(row => row.key === item.key) === index);
+}
+
+function annotationCorrectionDrawOverlays(context, model, contract, scale){
+  const selected = annotationCorrectionSelected(model);
+  const items = annotationCorrectionOverlayItems(model);
+
+  for(const item of items){
+    const viewXy = annotationCorrectionSourceToView(contract, item.sourceXy);
+    const px = (viewXy[0] + 0.5) * scale, py = (viewXy[1] + 0.5) * scale;
+    const isSelected = selected?.key === item.key;
+    context.strokeStyle = isSelected ? '#facc15' : item.kind === 'expert' ? '#38d47a' : '#f59e0b';
+    context.setLineDash(item.deleted ? [6, 4] : []);
+    context.lineWidth = isSelected ? 4 : 2.5;
+    const radius = Math.max(7, scale * 0.42);
+    context.beginPath();
+    if(item.kind === 'expert') context.arc(px, py, radius, 0, Math.PI * 2);
+    else context.rect(px - radius, py - radius, radius * 2, radius * 2);
+    context.stroke();
+    context.fillStyle = context.strokeStyle;
+    context.font = 'bold 12px sans-serif';
+    context.fillText(item.id, px + radius + 3, py - radius);
+    context.setLineDash([]);
+  }
+
+  if(annotationCorrectionState.probeSourceXy){
+    const viewXy = annotationCorrectionSourceToView(contract, annotationCorrectionState.probeSourceXy);
+    const px = (viewXy[0] + 0.5) * scale, py = (viewXy[1] + 0.5) * scale;
+    context.strokeStyle = '#e2e8f0';
+    context.lineWidth = 1.5;
+    context.beginPath();
+    context.moveTo(px - 7, py); context.lineTo(px + 7, py);
+    context.moveTo(px, py - 7); context.lineTo(px, py + 7);
+    context.stroke();
+  }
+}
+
+function annotationCorrectionDrawFrame(canvas, model, viewId){
+  if(!canvas || !model) return;
+  const contract = annotationCorrectionContract(model, viewId);
+  const frames = model.arrays[viewId] || [];
+  const shape = annotationCorrectionShape(contract);
+  const scale = Math.max(1, Math.floor(360 / Math.max(shape[1], shape[2])));
+  canvas.width = shape[2] * scale;
+  canvas.height = shape[1] * scale;
+  const context = canvas.getContext('2d');
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = '#0a0f12';
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  const frame = frames[annotationCorrectionFrameIndex(contract, annotationCorrectionState.frame)];
+  if(frame){
+    const semantics = contract?.intensity_semantics || contract?.intensitySemantics || '';
+    const range = annotationCorrectionRange(frames, semantics);
+    for(let y = 0; y < shape[1]; y++) for(let x = 0; x < shape[2]; x++){
+      const value = Number(frame[y]?.[x] || 0);
+      const gray = Math.max(0, Math.min(255, Math.round(255 * (value - range[0]) / (range[1] - range[0]))));
+      context.fillStyle = 'rgb(' + gray + ',' + gray + ',' + gray + ')';
+      context.fillRect(x * scale, y * scale, scale, scale);
+    }
+    annotationCorrectionDrawOverlays(context, model, contract, scale);
+    return;
+  }
+  const url = annotationCorrectionFrameUrl(contract, annotationCorrectionState.frame);
+  if(url && typeof Image !== 'undefined'){
+    canvas.dataset.annotationFrameUrl = url;
+    const image = new Image();
+    image.onload = () => {
+      if(canvas.dataset.annotationFrameUrl !== url) return;
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      annotationCorrectionDrawOverlays(context, model, contract, scale);
+    };
+    image.onerror = () => {
+      if(canvas.dataset.annotationFrameUrl !== url) return;
+      context.fillStyle = '#d7e0e5';
+      context.font = '14px sans-serif';
+      context.fillText('Frame unavailable for ' + viewId, 16, 28);
+    };
+    image.src = url;
+    return;
+  }
+  context.fillStyle = '#d7e0e5';
+  context.font = '14px sans-serif';
+  context.fillText('No frame source for ' + viewId, 16, 28);
+  annotationCorrectionDrawOverlays(context, model, contract, scale);
+}
+
+function annotationCorrectionSeries(model, viewId, sourceXy){
+  const contract = annotationCorrectionContract(model, viewId);
+  const frames = model.arrays[viewId] || [];
+  const viewXy = annotationCorrectionSourceToView(contract, sourceXy);
+  const x = Math.round(viewXy[0]), y = Math.round(viewXy[1]);
+  return frames.map(frame => Number(frame[y]?.[x] || 0));
+}
+
+
+function annotationCorrectionProvidedSeries(item, viewId, kind){
+  const traces = item?.traces || item?.trace_series || item?.traceSeries || {};
+  const view = traces[viewId] || {};
+  const aliases = kind === 'pixel' ? ['pixel', 'pixel_trace', 'pixelTrace'] : ['roi_mean', 'roiMean', 'mean'];
+  for(const alias of aliases) if(Array.isArray(view[alias])) return view[alias].map(Number);
+  return [];
+}
+
+function annotationCorrectionRoiSeries(model, viewId, item){
+  if(!item) return [];
+  const provided = annotationCorrectionProvidedSeries(item, viewId, 'roi_mean');
+  if(provided.length) return provided;
+  const contract = annotationCorrectionContract(model, viewId);
+  const frames = model.arrays[viewId] || [];
+  const geometry = item.geometry || {};
+  const radius = geometry.kind === 'circle' ? Math.max(0, Number(geometry.radius_px || geometry.radiusPx || 0)) : 0;
+  const sourcePoints = [];
+  const minX = Math.floor(item.sourceXy[0] - radius), maxX = Math.ceil(item.sourceXy[0] + radius);
+  const minY = Math.floor(item.sourceXy[1] - radius), maxY = Math.ceil(item.sourceXy[1] + radius);
+  for(let sourceY = minY; sourceY <= maxY; sourceY++) for(let sourceX = minX; sourceX <= maxX; sourceX++){
+    if(radius === 0 || Math.hypot(sourceX - item.sourceXy[0], sourceY - item.sourceXy[1]) <= radius){
+      sourcePoints.push([sourceX, sourceY]);
+    }
+  }
+  if(!sourcePoints.length) sourcePoints.push(item.sourceXy);
+  return frames.map(frame => {
+    const values = sourcePoints.map(sourceXy => {
+      const viewXy = annotationCorrectionSourceToView(contract, sourceXy);
+      return Number(frame[Math.round(viewXy[1])]?.[Math.round(viewXy[0])]);
+    }).filter(Number.isFinite);
+    return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
+  });
+}
+
+function annotationCorrectionTraceWindow(model){
+  const raw = annotationCorrectionContract(model, 'raw') || model.contracts[0];
+  const [firstFrame, lastFrame] = annotationCorrectionFrameBounds(raw);
+  let start = Number(annotationCorrectionState.traceStart);
+  let end = Number(annotationCorrectionState.traceEnd);
+  if(!Number.isFinite(start) || !Number.isFinite(end) || start < firstFrame || end > lastFrame || end <= start){
+    start = firstFrame;
+    end = lastFrame;
+  }
+  annotationCorrectionState.traceStart = start;
+  annotationCorrectionState.traceEnd = end;
+  return [start, end];
+}
+
+function annotationCorrectionTraceFrameAtEvent(event, model){
+  const canvas = event.currentTarget;
+  const bounds = canvas.getBoundingClientRect();
+  const [start, end] = annotationCorrectionTraceWindow(model);
+  const left = 110 / canvas.width * bounds.width;
+  const right = 20 / canvas.width * bounds.width;
+  const ratio = Math.max(0, Math.min(1, (event.clientX - bounds.left - left) / Math.max(1, bounds.width - left - right)));
+  return Math.round(start + ratio * (end - start));
+}
+
+function annotationCorrectionTraceSeriesAtFrame(series, contract, uiFrame){
+  return Number(series[annotationCorrectionFrameIndex(contract, uiFrame)]);
+}
+
+function annotationCorrectionUpdateTraceReadout(model, frame=annotationCorrectionState.traceHoverFrame){
+  const element = document.getElementById('correctionTraceReadout');
+  if(!element) return;
+  const selected = annotationCorrectionSelected(model);
+  const hoverIsSet = frame !== null && frame !== undefined && frame !== '';
+  const uiFrame = hoverIsSet && Number.isFinite(Number(frame)) ? Number(frame) : annotationCorrectionState.frame;
+  const parts = ['UI frame ' + uiFrame];
+  for(const viewId of ['raw', annotationCorrectionState.processedViewId]){
+    const contract = annotationCorrectionContract(model, viewId);
+    const values = annotationCorrectionProvidedSeries(selected, viewId, 'pixel');
+    const value = annotationCorrectionTraceSeriesAtFrame(values, contract, uiFrame);
+    if(Number.isFinite(value)) parts.push(viewId.toUpperCase() + ' pixel ' + value.toFixed(3));
+  }
+  element.textContent = parts.join(' · ');
+}
+
+function annotationCorrectionDrawTraces(canvas, model){
+  if(!canvas || !model) return;
+  canvas.width = Math.max(720, Math.round(canvas.clientWidth || 720));
+  canvas.height = Math.max(120, Math.round(canvas.clientHeight || 180));
+  const context = canvas.getContext('2d');
+  context.fillStyle = '#0f171b';
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  const selected = annotationCorrectionSelected(model);
+  const sourceXy = selected?.sourceXy || annotationCorrectionState.probeSourceXy || [0, 0];
+  const expert = annotationCorrectionLinkedExpert(model, selected);
+  const modelItem = annotationCorrectionLinkedModel(model, selected);
+  const viewIds = ['raw', annotationCorrectionState.processedViewId].filter((value, index, rows) => rows.indexOf(value) === index);
+  const lanes = viewIds.map(viewId => {
+    const providedPixel = annotationCorrectionProvidedSeries(selected, viewId, 'pixel');
+    return {
+      viewId,
+      contract: annotationCorrectionContract(model, viewId),
+      series: [
+        {label:'pixel', color:'#d7e0e5', values:providedPixel.length ? providedPixel : annotationCorrectionSeries(model, viewId, sourceXy)},
+        ...(expert ? [{label:'expert mean', color:'#38d47a', values:annotationCorrectionRoiSeries(model, viewId, expert)}] : []),
+        ...(modelItem ? [{label:'model mean', color:'#f59e0b', values:annotationCorrectionRoiSeries(model, viewId, modelItem)}] : [])
+      ]
+    };
+  });
+  const [windowStart, windowEnd] = annotationCorrectionTraceWindow(model);
+  const left = 110, right = 20, top = 8, laneGap = 12;
+  const laneHeight = Math.max(60, Math.floor((canvas.height - top * 2 - laneGap * Math.max(0, lanes.length - 1)) / Math.max(1, lanes.length)));
+  for(let laneIndex = 0; laneIndex < lanes.length; laneIndex++){
+    const lane = lanes[laneIndex];
+    const fullValues = lane.series[0]?.values || [];
+    const frameStart = annotationCorrectionFrameBounds(lane.contract)[0];
+    const startIndex = Math.max(0, windowStart - frameStart);
+    const endIndex = Math.min(fullValues.length - 1, windowEnd - frameStart);
+    const visibleSeries = lane.series.map(item => ({...item, visible:item.values.slice(startIndex, endIndex + 1)}));
+    const yTop = top + laneIndex * (laneHeight + laneGap);
+    const range = annotationCorrectionRange([[visibleSeries.flatMap(item => item.visible)]], lane.contract?.intensity_semantics || '');
+    context.strokeStyle = '#314149';
+    context.strokeRect(left, yTop, canvas.width - left - right, laneHeight);
+    context.fillStyle = '#d7e0e5';
+    context.font = '12px sans-serif';
+    context.fillText(lane.viewId.toUpperCase(), 12, yTop + 17);
+    context.fillStyle = '#8fa1aa';
+    context.font = '10px sans-serif';
+    const semantics = String(lane.contract?.intensity_semantics || '');
+    context.fillText(semantics.slice(0, 17), 12, yTop + 32);
+    visibleSeries.forEach((series, index) => {
+      context.fillStyle = series.color;
+      context.fillRect(12, yTop + 36 + index * 10, 8, 2);
+      context.fillText(series.label, 25, yTop + 40 + index * 10);
+    });
+    const intervals = selected?.eventIntervals || (selected?.events || []).map(frame => [frame, frame]);
+    for(const interval of intervals){
+      const clippedStart = Math.max(windowStart, Number(interval[0]));
+      const clippedEnd = Math.min(windowEnd, Number(interval[1]));
+      if(clippedEnd < clippedStart) continue;
+      const x0 = left + (canvas.width - left - right) * (clippedStart - windowStart) / Math.max(1, windowEnd - windowStart);
+      const x1 = left + (canvas.width - left - right) * (clippedEnd - windowStart) / Math.max(1, windowEnd - windowStart);
+      context.fillStyle = 'rgba(56, 212, 122, 0.16)';
+      context.fillRect(x0 - 3, yTop, Math.max(6, x1 - x0 + 6), laneHeight);
+    }
+    for(const series of visibleSeries){
+      if(!series.visible.length) continue;
+      context.strokeStyle = series.color;
+      context.lineWidth = series.label === 'pixel' ? 1.25 : 2;
+      context.beginPath();
+      series.visible.forEach((value, index) => {
+        const x = left + (canvas.width - left - right) * index / Math.max(1, series.visible.length - 1);
+        const y = yTop + laneHeight - 7 - (laneHeight - 14) * (value - range[0]) / Math.max(1e-12, range[1] - range[0]);
+        if(index === 0) context.moveTo(x, y); else context.lineTo(x, y);
+      });
+      context.stroke();
+    }
+    const cursorX = left + (canvas.width - left - right) * (annotationCorrectionState.frame - windowStart) / Math.max(1, windowEnd - windowStart);
+    context.strokeStyle = '#facc15';
+    context.lineWidth = 1.5;
+    context.beginPath();
+    context.moveTo(cursorX, yTop); context.lineTo(cursorX, yTop + laneHeight);
+    context.stroke();
+    const hoverFrame = Number(annotationCorrectionState.traceHoverFrame);
+    if(Number.isFinite(hoverFrame) && hoverFrame >= windowStart && hoverFrame <= windowEnd){
+      const hoverX = left + (canvas.width - left - right) * (hoverFrame - windowStart) / Math.max(1, windowEnd - windowStart);
+      context.strokeStyle = 'rgba(226,232,240,0.72)';
+      context.lineWidth = 1;
+      context.beginPath();
+      context.moveTo(hoverX, yTop); context.lineTo(hoverX, yTop + laneHeight);
+      context.stroke();
+    }
+  }
+  annotationCorrectionUpdateTraceReadout(model);
+}
+
+function annotationCorrectionNearest(model, sourceXy){
+  const items = [...model.experts, ...model.models];
+  let best = null, bestDistance = Infinity;
+  for(const item of items){
+    const distance = Math.hypot(item.sourceXy[0] - sourceXy[0], item.sourceXy[1] - sourceXy[1]);
+    if(distance < bestDistance){ best = item; bestDistance = distance; }
+  }
+  return bestDistance <= 2.5 ? best : null;
+}
+
+function annotationCorrectionCanvasClick(event, viewId, model){
+  const canvas = event.currentTarget;
+  const contract = annotationCorrectionContract(model, viewId);
+  const shape = annotationCorrectionShape(contract);
+  const bounds = canvas.getBoundingClientRect();
+  const viewXy = [
+    (event.clientX - bounds.left) * shape[2] / bounds.width,
+    (event.clientY - bounds.top) * shape[1] / bounds.height
+  ];
+  const sourceXy = annotationCorrectionViewToSource(contract, viewXy);
+  if(!sourceXy) return;
+  const nearest = annotationCorrectionNearest(model, sourceXy);
+  if(nearest){
+    annotationCorrectionState.selectedKey = nearest.key;
+    annotationCorrectionState.probeSourceXy = nearest.sourceXy.slice();
+  } else annotationCorrectionState.probeSourceXy = sourceXy;
+  renderAnnotationCorrection();
+}
+
+function annotationCorrectionInspectorHtml(model){
+  const selected = annotationCorrectionSelected(model);
+  if(!selected) return '<p class="hint">Select an expert or model ROI to inspect it.</p>';
+  const linkedId = selected.kind === 'expert' ? selected.linkedModelId : selected.linkedExpertId;
+  const status = selected.kind === 'model' && !linkedId ? 'unknown (not negative)' : linkedId ? 'matched' : 'missed expert';
+  return [
+    '<dl class="correctionInspectorList">',
+    '<div><dt>Selection</dt><dd>' + escapeHtml(selected.kind + ' ' + selected.id) + '</dd></div>',
+    '<div><dt>Status</dt><dd>' + escapeHtml(status) + '</dd></div>',
+    '<div><dt>Canonical x, y</dt><dd>' + selected.sourceXy.map(value => value.toFixed(2)).join(', ') + '</dd></div>',
+    '<div><dt>Frame</dt><dd>UI ' + selected.uiFrame + ' / index ' + (selected.uiFrame - 1) + '</dd></div>',
+    '<div><dt>Linked ROI</dt><dd>' + escapeHtml(linkedId || 'none') + '</dd></div>',
+    '<div><dt>Events</dt><dd>' + escapeHtml(selected.events.join(', ') || 'none') + '</dd></div>',
+    '<div><dt>Geometry</dt><dd>' + escapeHtml(selected.geometry?.kind || 'center') + '</dd></div>',
+    '<div><dt>Trace source</dt><dd>exact pixel + ROI means</dd></div>',
+    '</dl>',
+    '<p class="correctionReadOnlyNote">Slice 2 is inspection-only. No label or geometry mutation is available.</p>'
+  ].join('');
+}
+
+function annotationCorrectionQueueHtml(model){
+  const rows = annotationCorrectionQueueRows(model, annotationCorrectionState.queue);
+  if(!rows.length) return '<p class="hint correctionEmptyQueue">No items in this queue.</p>';
+  return rows.map(item => {
+    const selected = item.key === annotationCorrectionState.selectedKey ? ' active' : '';
+    const baseStatus = item.kind === 'model' && !item.linkedExpertId ? 'unknown' : item.linkedModelId || item.linkedExpertId ? 'matched' : 'missed';
+    const status = item.deleted ? 'tombstoned' : baseStatus + (item.reviewState === 'recently_edited' ? ' · edited' : '');
+    const tombstoned = item.deleted ? ' tombstoned' : '';
+    return '<button type="button" class="correctionQueueItem' + selected + tombstoned + '" data-correction-key="' + escapeHtml(item.key) + '"><span><b>' + escapeHtml(item.id) + '</b><small>' + escapeHtml(item.kind) + '</small></span><span class="correctionQueueStatus">' + escapeHtml(status) + '</span></button>';
+  }).join('');
+}
+
+function annotationCorrectionWorkspaceHtml(model){
+  const selected = annotationCorrectionSelected(model);
+  const rawContract = annotationCorrectionContract(model, 'raw') || model.contracts[0];
+  const maxFrame = annotationCorrectionShape(rawContract)[0];
+  const revision = model.revision;
+  const processedOptions = model.contracts.filter(item => annotationCorrectionViewId(item) !== 'raw').map(item => {
+    const id = annotationCorrectionViewId(item);
+    return '<option value="' + escapeHtml(id) + '"' + (id === annotationCorrectionState.processedViewId ? ' selected' : '') + '>' + escapeHtml(id.toUpperCase()) + '</option>';
+  }).join('');
+  const queueOptions = ANNOTATION_CORRECTION_QUEUES.map(item => {
+    const count = annotationCorrectionQueueRows(model, item[0]).length;
+    return '<option value="' + item[0] + '"' + (item[0] === annotationCorrectionState.queue ? ' selected' : '') + '>' + escapeHtml(item[1]) + ' (' + count + ')</option>';
+  }).join('');
+  return [
+    '<div class="correctionContextBar">',
+      '<div><span class="eyebrow">Single-reviewer correction</span><h2>Inspect synchronized evidence</h2><p>' + escapeHtml(model.sourceVideoId || datasetId) + ' · frozen run ' + escapeHtml(revision.frozenRunId || 'unspecified') + '</p></div>',
+      '<div class="correctionContextMeta"><span class="stageStatus warn">Read only · Slice 2</span><b>' + escapeHtml(revision.revisionId || 'unpublished fixture') + '</b><span>' + escapeHtml(revision.state || 'fixture') + '</span></div>',
+    '</div>',
+    '<div class="correctionWorkspaceGrid">',
+      '<aside class="correctionQueuePanel"><label>Review queue<select id="correctionQueueSelect">' + queueOptions + '</select></label><div id="correctionQueueList">' + annotationCorrectionQueueHtml(model) + '</div></aside>',
+      '<main class="correctionViewerPanel">',
+        '<div class="correctionViewerToolbar">',
+          '<button id="correctionPlayBtn" type="button">' + (annotationCorrectionState.playing ? 'Pause' : 'Play') + '</button>',
+          '<button id="correctionPrevBtn" type="button">Previous</button>',
+          '<button id="correctionNextBtn" type="button">Next</button>',
+          '<label>Frame <input id="correctionFrameSlider" type="range" min="1" max="' + maxFrame + '" value="' + annotationCorrectionState.frame + '"></label>',
+          '<b>UI ' + annotationCorrectionState.frame + ' / index ' + (annotationCorrectionState.frame - 1) + '</b>',
+          '<label>Processed <select id="correctionProcessedSelect">' + processedOptions + '</select></label>',
+          '<label>Overlays <select id="correctionOverlaySelect">',
+            '<option value="selected"' + (annotationCorrectionState.overlayMode === 'selected' ? ' selected' : '') + '>Selected + linked</option>',
+            '<option value="expert"' + (annotationCorrectionState.overlayMode === 'expert' ? ' selected' : '') + '>Expert only</option>',
+            '<option value="model"' + (annotationCorrectionState.overlayMode === 'model' ? ' selected' : '') + '>Model only</option>',
+            '<option value="both"' + (annotationCorrectionState.overlayMode === 'both' ? ' selected' : '') + '>Both</option>',
+          '</select></label>',
+        '</div>',
+        '<div class="correctionCanvasGrid">',
+          '<figure><canvas id="correctionRawCanvas" aria-label="Raw annotation correction view"></canvas><figcaption>Raw · source coordinates</figcaption></figure>',
+          '<figure><canvas id="correctionProcessedCanvas" aria-label="Processed annotation correction view"></canvas><figcaption>' + escapeHtml(annotationCorrectionState.processedViewId.toUpperCase()) + ' · synchronized</figcaption></figure>',
+        '</div>',
+        '<p class="correctionLegend"><span class="expertShape">Expert circle</span><span class="modelShape">Model square</span><span class="selectedShape">Selected yellow</span><span>Image content uses fixed grayscale per view.</span></p>',
+      '</main>',
+      '<aside class="correctionInspectorPanel"><h3>ROI inspector</h3><div id="correctionInspector">' + annotationCorrectionInspectorHtml(model) + '</div></aside>',
+    '</div>',
+    '<section class="correctionTraceDock"><div><h3>Pixel and ROI evidence</h3><p id="correctionTraceSemantics">Exact pixel at ' + escapeHtml(selected ? selected.sourceXy.join(', ') : 'probe') + '; expert and linked-model ROI means; fixed range per stage.</p></div><canvas id="correctionTraceCanvas" role="img" aria-label="Raw and processed selected-pixel traces"></canvas></section>'
+  ].join('');
+}
+
+function annotationCorrectionWire(model){
+  document.getElementById('correctionQueueSelect')?.addEventListener('change', event => {
+    annotationCorrectionState.queue = event.target.value;
+    annotationCorrectionState.selectedKey = '';
+    renderAnnotationCorrection();
+  });
+  for(const button of document.querySelectorAll('[data-correction-key]')) button.addEventListener('click', () => {
+    annotationCorrectionState.selectedKey = button.dataset.correctionKey;
+    const selected = annotationCorrectionSelected(model);
+    if(selected){
+      annotationCorrectionState.frame = selected.uiFrame;
+      annotationCorrectionState.probeSourceXy = selected.sourceXy.slice();
+    }
+    renderAnnotationCorrection();
+  });
+  document.getElementById('correctionProcessedSelect')?.addEventListener('change', event => {
+    annotationCorrectionState.processedViewId = event.target.value;
+    renderAnnotationCorrection();
+  });
+  document.getElementById('correctionOverlaySelect')?.addEventListener('change', event => {
+    annotationCorrectionState.overlayMode = event.target.value;
+    renderAnnotationCorrection();
+  });
+  document.getElementById('correctionFrameSlider')?.addEventListener('input', event => {
+    annotationCorrectionState.frame = Number(event.target.value);
+    renderAnnotationCorrection();
+  });
+  document.getElementById('correctionPrevBtn')?.addEventListener('click', () => {
+    annotationCorrectionState.frame = Math.max(1, annotationCorrectionState.frame - 1);
+    renderAnnotationCorrection();
+  });
+  document.getElementById('correctionNextBtn')?.addEventListener('click', () => {
+    const raw = annotationCorrectionContract(model, 'raw') || model.contracts[0];
+    annotationCorrectionState.frame = Math.min(annotationCorrectionShape(raw)[0], annotationCorrectionState.frame + 1);
+    renderAnnotationCorrection();
+  });
+  document.getElementById('correctionPlayBtn')?.addEventListener('click', () => {
+    annotationCorrectionState.playing = !annotationCorrectionState.playing;
+    if(annotationCorrectionState.timer){
+      clearInterval(annotationCorrectionState.timer);
+      annotationCorrectionState.timer = null;
+    }
+    if(annotationCorrectionState.playing){
+      annotationCorrectionState.timer = setInterval(() => {
+        const currentModel = annotationCorrectionModel();
+        const raw = annotationCorrectionContract(currentModel, 'raw') || currentModel.contracts[0];
+        const count = annotationCorrectionShape(raw)[0];
+        annotationCorrectionState.frame = annotationCorrectionState.frame >= count ? 1 : annotationCorrectionState.frame + 1;
+        renderAnnotationCorrection();
+      }, 650);
+    }
+    renderAnnotationCorrection();
+  });
+  document.getElementById('correctionRawCanvas')?.addEventListener('click', event => annotationCorrectionCanvasClick(event, 'raw', model));
+  document.getElementById('correctionProcessedCanvas')?.addEventListener('click', event => annotationCorrectionCanvasClick(event, annotationCorrectionState.processedViewId, model));
+}
+
+function renderAnnotationCorrection(){
+  const root = document.getElementById('annotationCorrectionWorkspace');
+  if(!root) return;
+  const model = annotationCorrectionModel();
+  if(!model){
+    root.innerHTML = '<section class="correctionEmptyState"><span class="stageStatus warn">Read only · Slice 2</span><h2>No correction evidence attached</h2><p>Attach an annotationCorrection payload with view contracts, expert/model ROIs, matches, and Raw/processed frames to inspect this workspace.</p></section>';
+    return;
+  }
+  annotationCorrectionEnsureSelection(model);
+  root.innerHTML = annotationCorrectionWorkspaceHtml(model);
+  annotationCorrectionWire(model);
+  annotationCorrectionDrawFrame(document.getElementById('correctionRawCanvas'), model, 'raw');
+  annotationCorrectionDrawFrame(document.getElementById('correctionProcessedCanvas'), model, annotationCorrectionState.processedViewId);
+  annotationCorrectionDrawTraces(document.getElementById('correctionTraceCanvas'), model);
+}
+
+// --- 83_annotation_correction_review_layout.js ---
+/* Slice 2 visual layout: spatial review left, scientific review right. */
+
+function annotationCorrectionDrawCloseupMarkers(context, model, contract, selected, x0, y0, cellWidth, cellHeight){
+  const items = [selected];
+  if(selected.kind === 'expert' && selected.linkedModelId){
+    const linked = model.models.find(item => item.id === selected.linkedModelId);
+    if(linked) items.push(linked);
+  }
+  if(selected.kind === 'model' && selected.linkedExpertId){
+    const linked = model.experts.find(item => item.id === selected.linkedExpertId);
+    if(linked) items.push(linked);
+  }
+  for(const item of items){
+    const viewXy = annotationCorrectionSourceToView(contract, item.sourceXy);
+    const px = (viewXy[0] - x0 + 0.5) * cellWidth;
+    const py = (viewXy[1] - y0 + 0.5) * cellHeight;
+    const markerRadius = Math.max(8, Math.min(cellWidth, cellHeight) * 0.38);
+    context.strokeStyle = item.key === selected.key ? '#facc15' : item.kind === 'expert' ? '#38d47a' : '#f59e0b';
+    context.setLineDash(item.deleted ? [6, 4] : []);
+    context.lineWidth = item.key === selected.key ? 4 : 2.5;
+    context.beginPath();
+    if(item.kind === 'expert') context.arc(px, py, markerRadius, 0, Math.PI * 2);
+    else context.rect(px - markerRadius, py - markerRadius, markerRadius * 2, markerRadius * 2);
+    context.stroke();
+    context.setLineDash([]);
+  }
+}
+
+function annotationCorrectionDrawCloseup(canvas, model, viewId){
+  if(!canvas || !model) return;
+  const selected = annotationCorrectionSelected(model);
+  const contract = annotationCorrectionContract(model, viewId);
+  const frames = model.arrays[viewId] || [];
+  const shape = annotationCorrectionShape(contract);
+  canvas.width = 320;
+  canvas.height = 190;
+  const context = canvas.getContext('2d');
+  context.fillStyle = '#0a0f12';
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  if(!selected){
+    context.fillStyle = '#d7e0e5';
+    context.font = '13px sans-serif';
+    context.fillText('Select an ROI to inspect its neighborhood.', 14, 28);
+    return;
+  }
+  const selectedViewXy = annotationCorrectionSourceToView(contract, selected.sourceXy);
+  const radius = Math.max(8, Math.ceil(Number(selected.geometry?.radius_px || selected.geometry?.radiusPx || 1) * 4));
+  const x0 = Math.max(0, Math.floor(selectedViewXy[0]) - radius);
+  const x1 = Math.min(shape[2] - 1, Math.ceil(selectedViewXy[0]) + radius);
+  const y0 = Math.max(0, Math.floor(selectedViewXy[1]) - radius);
+  const y1 = Math.min(shape[1] - 1, Math.ceil(selectedViewXy[1]) + radius);
+  const columns = Math.max(1, x1 - x0 + 1);
+  const rows = Math.max(1, y1 - y0 + 1);
+  const cellWidth = canvas.width / columns;
+  const cellHeight = canvas.height / rows;
+  const frame = frames[annotationCorrectionFrameIndex(contract, annotationCorrectionState.frame)];
+  if(frame){
+    const semantics = contract?.intensity_semantics || contract?.intensitySemantics || '';
+    const range = annotationCorrectionRange(frames, semantics);
+    for(let y = y0; y <= y1; y++) for(let x = x0; x <= x1; x++){
+      const value = Number(frame[y]?.[x] || 0);
+      const gray = Math.max(0, Math.min(255, Math.round(255 * (value - range[0]) / (range[1] - range[0]))));
+      context.fillStyle = 'rgb(' + gray + ',' + gray + ',' + gray + ')';
+      context.fillRect((x - x0) * cellWidth, (y - y0) * cellHeight, cellWidth + 0.5, cellHeight + 0.5);
+    }
+    annotationCorrectionDrawCloseupMarkers(context, model, contract, selected, x0, y0, cellWidth, cellHeight);
+    return;
+  }
+  const url = annotationCorrectionFrameUrl(contract, annotationCorrectionState.frame);
+  if(url && typeof Image !== 'undefined'){
+    canvas.dataset.annotationFrameUrl = url;
+    const image = new Image();
+    image.onload = () => {
+      if(canvas.dataset.annotationFrameUrl !== url) return;
+      context.drawImage(image, x0, y0, columns, rows, 0, 0, canvas.width, canvas.height);
+      annotationCorrectionDrawCloseupMarkers(context, model, contract, selected, x0, y0, cellWidth, cellHeight);
+    };
+    image.onerror = () => {
+      if(canvas.dataset.annotationFrameUrl !== url) return;
+      context.fillStyle = '#d7e0e5';
+      context.font = '13px sans-serif';
+      context.fillText('ROI frame unavailable.', 14, 28);
+    };
+    image.src = url;
+    return;
+  }
+  context.fillStyle = '#d7e0e5';
+  context.font = '13px sans-serif';
+  context.fillText('ROI frame source unavailable.', 14, 28);
+}
+function annotationCorrectionCanvasClick(event, viewId, model){
+  const canvas = event.currentTarget;
+  const contract = annotationCorrectionContract(model, viewId);
+  const shape = annotationCorrectionShape(contract);
+  const bounds = canvas.getBoundingClientRect();
+  const viewXy = [
+    (event.clientX - bounds.left) * shape[2] / bounds.width,
+    (event.clientY - bounds.top) * shape[1] / bounds.height
+  ];
+  const sourceXy = annotationCorrectionViewToSource(contract, viewXy);
+  if(!sourceXy) return;
+  if(annotationCorrectionState.toolMode === 'highlight'){
+    annotationCorrectionState.probeSourceXy = sourceXy;
+  } else {
+    const nearest = annotationCorrectionNearest(model, sourceXy);
+    if(nearest){
+      annotationCorrectionState.selectedKey = nearest.key;
+      annotationCorrectionState.probeSourceXy = nearest.sourceXy.slice();
+      annotationCorrectionState.frame = nearest.uiFrame;
+    } else annotationCorrectionState.probeSourceXy = sourceXy;
+  }
+  renderAnnotationCorrection();
+}
+function annotationCorrectionProcessedOptions(model){
+  return model.contracts.filter(item => annotationCorrectionViewId(item) !== 'raw').map(item => {
+    const id = annotationCorrectionViewId(item);
+    return '<option value="' + escapeHtml(id) + '"' + (id === annotationCorrectionState.processedViewId ? ' selected' : '') + '>' + escapeHtml(id.toUpperCase()) + '</option>';
+  }).join('');
+}
+
+function annotationCorrectionQueueOptions(model){
+  const modelOnly = annotationCorrectionIsModelOnly(model);
+  const queues = modelOnly
+    ? ANNOTATION_CORRECTION_QUEUES.filter(item => ['model_unknown', 'all_model', 'recently_edited'].includes(item[0]) || (item[0] === 'all_expert' && model.experts.length))
+    : ANNOTATION_CORRECTION_QUEUES;
+  return queues.map(item => {
+    const count = annotationCorrectionQueueRows(model, item[0]).length;
+    const label = modelOnly && item[0] === 'model_unknown' ? 'Model proposals' : item[1];
+    return '<option value="' + item[0] + '"' + (item[0] === annotationCorrectionState.queue ? ' selected' : '') + '>' + escapeHtml(label) + ' (' + count + ')</option>';
+  }).join('');
+}
+
+function annotationCorrectionSpatialToolbarHtml(model, minFrame, maxFrame){
+  return [
+    '<div class="correctionViewerToolbar" aria-label="Spatial review tools">',
+      '<span class="correctionFitBadge" title="Both 50% columns fit the visible browser height and width">Auto-fit screen</span>',
+      '<label>Tool <select id="correctionToolSelect"><option value="select"' + (annotationCorrectionState.toolMode === 'select' ? ' selected' : '') + '>Select ROI</option><option value="highlight"' + (annotationCorrectionState.toolMode === 'highlight' ? ' selected' : '') + '>Highlight pixel</option></select></label>',
+      '<button id="correctionPlayBtn" type="button">' + (annotationCorrectionState.playing ? 'Stop' : 'Play') + '</button>',
+      '<button id="correctionPrevBtn" type="button">Previous</button>',
+      '<button id="correctionNextBtn" type="button">Next</button>',
+      '<label class="correctionFrameControl">Frame <input id="correctionFrameSlider" type="range" min="' + minFrame + '" max="' + maxFrame + '" value="' + annotationCorrectionState.frame + '"></label>',
+      '<b id="correctionFrameReadout">UI ' + annotationCorrectionState.frame + ' / index ' + (annotationCorrectionState.frame - 1) + '</b>',
+      '<label>Processed <select id="correctionProcessedSelect">' + annotationCorrectionProcessedOptions(model) + '</select></label>',
+      '<label>Overlay <select id="correctionOverlaySelect">',
+        '<option value="selected_pair"' + (annotationCorrectionState.overlayMode === 'selected_pair' ? ' selected' : '') + '>Selected pair</option>',
+        '<option value="selected_expert"' + (annotationCorrectionState.overlayMode === 'selected_expert' ? ' selected' : '') + '>Selected expert only</option>',
+        '<option value="selected_model"' + (annotationCorrectionState.overlayMode === 'selected_model' ? ' selected' : '') + '>Selected model only</option>',
+        '<option value="none"' + (annotationCorrectionState.overlayMode === 'none' ? ' selected' : '') + '>No annotations</option>',
+        '<option value="all_experts"' + (annotationCorrectionState.overlayMode === 'all_experts' ? ' selected' : '') + '>All expert annotations</option>',
+        '<option value="all_models"' + (annotationCorrectionState.overlayMode === 'all_models' ? ' selected' : '') + '>All model annotations</option>',
+        '<option value="all_annotations"' + (annotationCorrectionState.overlayMode === 'all_annotations' ? ' selected' : '') + '>All annotations</option>',
+      '</select></label>',
+    '</div>'
+  ].join('');
+}
+function annotationCorrectionReviewPanelHtml(model, selected){
+  return [
+    '<aside class="correctionReviewPanel" aria-label="Review process">',
+      '<div class="correctionReviewHeading"><div><span class="eyebrow">Review process</span><h2>' + escapeHtml(selected ? selected.id : 'No ROI selected') + '</h2></div><span class="stageStatus">' + escapeHtml(selected?.kind || 'none') + '</span></div>',
+      '<section class="correctionQueuePanel"><label>Review queue<select id="correctionQueueSelect">' + annotationCorrectionQueueOptions(model) + '</select></label><div id="correctionQueueList">' + annotationCorrectionQueueHtml(model) + '</div></section>',
+      '<section class="correctionInspectorPanel"><h3>Selection summary</h3><div id="correctionInspector">' + annotationCorrectionInspectorHtml(model) + '</div></section>',
+      '<section class="correctionCloseupPanel">',
+        '<div><h3>ROI neighborhood</h3><p>Zoomed out from the ROI and synchronized to the current frame.</p></div>',
+        '<div class="correctionCloseupGrid">',
+          '<figure><canvas id="correctionRawCloseupCanvas" aria-label="Raw ROI neighborhood"></canvas><figcaption>Raw close-up</figcaption></figure>',
+          '<figure><canvas id="correctionProcessedCloseupCanvas" aria-label="Processed ROI neighborhood"></canvas><figcaption>' + escapeHtml(annotationCorrectionState.processedViewId.toUpperCase()) + ' close-up</figcaption></figure>',
+        '</div>',
+      '</section>',
+      '<section class="correctionTraceDock"><div class="correctionTraceHeader"><div><h3>Raw vs processed time series</h3><p id="correctionTraceSemantics">Hover for values; click or drag to select a frame; wheel to zoom horizontally.</p><p id="correctionTraceReadout" class="correctionTraceReadout">UI frame ' + annotationCorrectionState.frame + '</p></div><button id="correctionTraceResetBtn" type="button">Reset zoom</button></div><canvas id="correctionTraceCanvas" role="img" aria-label="Interactive Raw and processed selected-pixel and ROI traces"></canvas></section>',
+    '</aside>'
+  ].join('');
+}
+function annotationCorrectionWorkspaceHtml(model){
+  const selected = annotationCorrectionSelected(model);
+  const rawContract = annotationCorrectionContract(model, 'raw') || model.contracts[0];
+  const [minFrame, maxFrame] = annotationCorrectionFrameBounds(rawContract);
+  const revision = model.revision;
+  const modelOnly = annotationCorrectionIsModelOnly(model);
+  const revisionStatus = model.readOnly ? 'Read only' : 'Draft · token ' + Number(annotationCorrectionState.revisionToken || revision.revisionToken || 0);
+  const eyebrow = modelOnly ? 'Single-reviewer proposal review' : 'Single-reviewer correction';
+  const heading = modelOnly ? 'Review frozen model proposals without expert labels' : 'Inspect and correct synchronized evidence';
+  const context = (model.sourceVideoId || datasetId) + ' · frozen run ' + (revision.frozenRunId || 'unspecified') + (modelOnly ? ' · expert labels pending' : '');
+  return [
+    '<div class="correctionContextBar">',
+      '<div><span class="eyebrow">' + escapeHtml(eyebrow) + '</span><h2>' + escapeHtml(heading) + '</h2><p>' + escapeHtml(context) + '</p></div>',
+      '<div class="correctionContextMeta"><span class="stageStatus' + (model.readOnly ? ' warn' : '') + '">' + escapeHtml(revisionStatus) + '</span><b>' + escapeHtml(revision.revisionId || 'unpublished fixture') + '</b><span>' + escapeHtml(revision.state || 'fixture') + '</span></div>',
+    '</div>',
+    '<div class="correctionWorkspaceGrid correctionWorkspaceSplit correction-fit-screen">',
+      '<main class="correctionViewerPanel">',
+        annotationCorrectionSpatialToolbarHtml(model, minFrame, maxFrame),
+        '<div class="correctionCanvasStack">',
+          '<figure><canvas id="correctionRawCanvas" aria-label="Raw annotation correction view"></canvas><figcaption>Raw · source coordinates</figcaption></figure>',
+          '<figure><canvas id="correctionProcessedCanvas" aria-label="Processed annotation correction view"></canvas><figcaption>' + escapeHtml(annotationCorrectionState.processedViewId.toUpperCase()) + ' · synchronized processed view</figcaption></figure>',
+        '</div>',
+        '<p class="correctionLegend"><span class="expertShape">Expert circle</span><span class="modelShape">Model square</span><span class="selectedShape">Selected yellow</span><span>Fixed grayscale per view.</span></p>',
+      '</main>',
+      annotationCorrectionReviewPanelHtml(model, selected),
+    '</div>'
+  ].join('');
+}
+function annotationCorrectionPreloadFrames(model, frame){
+  if(typeof Image === 'undefined') return;
+  for(const contract of model.contracts){
+    const [firstFrame, lastFrame] = annotationCorrectionFrameBounds(contract);
+    for(const offset of [-2, -1, 1, 2]){
+      const candidate = Math.max(firstFrame, Math.min(lastFrame, Number(frame) + offset));
+      const url = annotationCorrectionFrameUrl(contract, candidate);
+      if(url){ const image = new Image(); image.src = url; }
+    }
+  }
+}
+
+function annotationCorrectionRenderFrameViews(model, {preload=true}={}){
+  const slider = document.getElementById('correctionFrameSlider');
+  if(slider) slider.value = String(annotationCorrectionState.frame);
+  const readout = document.getElementById('correctionFrameReadout');
+  if(readout) readout.textContent = 'UI ' + annotationCorrectionState.frame + ' / index ' + (annotationCorrectionState.frame - 1);
+  const play = document.getElementById('correctionPlayBtn');
+  if(play) play.textContent = annotationCorrectionState.playing ? 'Stop' : 'Play';
+  annotationCorrectionDrawFrame(document.getElementById('correctionRawCanvas'), model, 'raw');
+  annotationCorrectionDrawFrame(document.getElementById('correctionProcessedCanvas'), model, annotationCorrectionState.processedViewId);
+  annotationCorrectionDrawCloseup(document.getElementById('correctionRawCloseupCanvas'), model, 'raw');
+  annotationCorrectionDrawCloseup(document.getElementById('correctionProcessedCloseupCanvas'), model, annotationCorrectionState.processedViewId);
+  annotationCorrectionDrawTraces(document.getElementById('correctionTraceCanvas'), model);
+  if(preload) annotationCorrectionPreloadFrames(model, annotationCorrectionState.frame);
+}
+
+function annotationCorrectionSetFrame(frame, model, {preload=true}={}){
+  const raw = annotationCorrectionContract(model, 'raw') || model.contracts[0];
+  const [firstFrame, lastFrame] = annotationCorrectionFrameBounds(raw);
+  annotationCorrectionState.frame = Math.max(firstFrame, Math.min(lastFrame, Math.round(Number(frame))));
+  annotationCorrectionRenderFrameViews(model, {preload});
+}
+
+function annotationCorrectionQueueFrame(frame, model){
+  annotationCorrectionState.pendingFrame = Number(frame);
+  if(annotationCorrectionState.scrubRaf !== null) return;
+  const schedule = typeof requestAnimationFrame === 'function' ? requestAnimationFrame : callback => setTimeout(callback, 16);
+  annotationCorrectionState.scrubRaf = schedule(() => {
+    annotationCorrectionState.scrubRaf = null;
+    annotationCorrectionSetFrame(annotationCorrectionState.pendingFrame, model, {preload:false});
+  });
+}
+
+function annotationCorrectionZoomTrace(event, model){
+  event.preventDefault();
+  const raw = annotationCorrectionContract(model, 'raw') || model.contracts[0];
+  const [firstFrame, lastFrame] = annotationCorrectionFrameBounds(raw);
+  const [start, end] = annotationCorrectionTraceWindow(model);
+  const anchor = annotationCorrectionTraceFrameAtEvent(event, model);
+  const span = end - start + 1;
+  const nextSpan = Math.max(20, Math.min(lastFrame - firstFrame + 1, Math.round(span * (event.deltaY > 0 ? 1.25 : 0.8))));
+  const ratio = span > 1 ? (anchor - start) / (span - 1) : 0.5;
+  let nextStart = Math.round(anchor - ratio * (nextSpan - 1));
+  nextStart = Math.max(firstFrame, Math.min(lastFrame - nextSpan + 1, nextStart));
+  annotationCorrectionState.traceStart = nextStart;
+  annotationCorrectionState.traceEnd = nextStart + nextSpan - 1;
+  annotationCorrectionDrawTraces(event.currentTarget, model);
+}
+
+function annotationCorrectionWire(model){
+  document.getElementById('correctionQueueSelect')?.addEventListener('change', event => {
+    annotationCorrectionState.queue = event.target.value;
+    annotationCorrectionState.selectedKey = '';
+    renderAnnotationCorrection();
+  });
+  for(const button of document.querySelectorAll('[data-correction-key]')) button.addEventListener('click', () => {
+    annotationCorrectionState.selectedKey = button.dataset.correctionKey;
+    const selected = annotationCorrectionSelected(model);
+    if(selected){
+      annotationCorrectionState.frame = selected.uiFrame;
+      annotationCorrectionState.probeSourceXy = selected.sourceXy.slice();
+    }
+    renderAnnotationCorrection();
+  });
+  document.getElementById('correctionToolSelect')?.addEventListener('change', event => {
+    annotationCorrectionState.toolMode = event.target.value;
+  });
+  document.getElementById('correctionProcessedSelect')?.addEventListener('change', event => {
+    annotationCorrectionState.processedViewId = event.target.value;
+    renderAnnotationCorrection();
+  });
+  document.getElementById('correctionOverlaySelect')?.addEventListener('change', event => {
+    annotationCorrectionState.overlayMode = event.target.value;
+    annotationCorrectionRenderFrameViews(model, {preload:false});
+  });
+  document.getElementById('correctionFrameSlider')?.addEventListener('input', event => {
+    annotationCorrectionQueueFrame(event.target.value, model);
+  });
+  document.getElementById('correctionFrameSlider')?.addEventListener('change', event => {
+    annotationCorrectionSetFrame(event.target.value, model);
+  });
+  document.getElementById('correctionPrevBtn')?.addEventListener('click', () => annotationCorrectionSetFrame(annotationCorrectionState.frame - 1, model));
+  document.getElementById('correctionNextBtn')?.addEventListener('click', () => annotationCorrectionSetFrame(annotationCorrectionState.frame + 1, model));
+  document.getElementById('correctionPlayBtn')?.addEventListener('click', () => {
+    annotationCorrectionState.playing = !annotationCorrectionState.playing;
+    if(annotationCorrectionState.timer){
+      clearInterval(annotationCorrectionState.timer);
+      annotationCorrectionState.timer = null;
+    }
+    if(annotationCorrectionState.playing){
+      annotationCorrectionState.timer = setInterval(() => {
+        const currentModel = annotationCorrectionModel();
+        const raw = annotationCorrectionContract(currentModel, 'raw') || currentModel.contracts[0];
+        const [firstFrame, lastFrame] = annotationCorrectionFrameBounds(raw);
+        const nextFrame = annotationCorrectionState.frame >= lastFrame ? firstFrame : annotationCorrectionState.frame + 1;
+        annotationCorrectionSetFrame(nextFrame, currentModel);
+      }, 100);
+    }
+    annotationCorrectionRenderFrameViews(model, {preload:true});
+  });
+  document.getElementById('correctionRawCanvas')?.addEventListener('click', event => annotationCorrectionCanvasClick(event, 'raw', model));
+  document.getElementById('correctionProcessedCanvas')?.addEventListener('click', event => annotationCorrectionCanvasClick(event, annotationCorrectionState.processedViewId, model));
+  const trace = document.getElementById('correctionTraceCanvas');
+  trace?.addEventListener('pointermove', event => {
+    annotationCorrectionState.traceHoverFrame = annotationCorrectionTraceFrameAtEvent(event, model);
+    if(annotationCorrectionState.traceDragging) annotationCorrectionQueueFrame(annotationCorrectionState.traceHoverFrame, model);
+    else annotationCorrectionDrawTraces(trace, model);
+  });
+  trace?.addEventListener('pointerdown', event => {
+    annotationCorrectionState.traceDragging = true;
+    trace.setPointerCapture?.(event.pointerId);
+    annotationCorrectionSetFrame(annotationCorrectionTraceFrameAtEvent(event, model), model, {preload:false});
+  });
+  trace?.addEventListener('pointerup', event => {
+    annotationCorrectionState.traceDragging = false;
+    trace.releasePointerCapture?.(event.pointerId);
+    annotationCorrectionPreloadFrames(model, annotationCorrectionState.frame);
+  });
+  trace?.addEventListener('pointerleave', () => {
+    if(!annotationCorrectionState.traceDragging){
+      annotationCorrectionState.traceHoverFrame = null;
+      annotationCorrectionDrawTraces(trace, model);
+    }
+  });
+  trace?.addEventListener('wheel', event => annotationCorrectionZoomTrace(event, model), {passive:false});
+  trace?.addEventListener('dblclick', () => {
+    annotationCorrectionState.traceStart = null;
+    annotationCorrectionState.traceEnd = null;
+    annotationCorrectionDrawTraces(trace, model);
+  });
+  document.getElementById('correctionTraceResetBtn')?.addEventListener('click', () => {
+    annotationCorrectionState.traceStart = null;
+    annotationCorrectionState.traceEnd = null;
+    annotationCorrectionDrawTraces(trace, model);
+  });
+}
+
+function renderAnnotationCorrection(){
+  const root = document.getElementById('annotationCorrectionWorkspace');
+  if(!root) return;
+  const model = annotationCorrectionModel();
+  if(!model){
+    root.innerHTML = '<section class="correctionEmptyState"><span class="stageStatus warn">Read only · Slice 2</span><h2>No correction evidence attached</h2><p>Attach an annotationCorrection payload with view contracts, expert/model ROIs, matches, and Raw/processed frames to inspect this workspace.</p></section>';
+    return;
+  }
+  annotationCorrectionEnsureSelection(model);
+  root.innerHTML = annotationCorrectionWorkspaceHtml(model);
+  annotationCorrectionWire(model);
+  annotationCorrectionRenderFrameViews(model);
+}
+
+// --- 84_annotation_correction_editing.js ---
+/* Slice 3 draft editing: append-only expert corrections with local/API autosave. */
+
+const annotationCorrectionReadOnlyModel = annotationCorrectionModel;
+let annotationCorrectionOperationSequence = 0;
+
+Object.assign(annotationCorrectionState, {
+  draftReady: false,
+  draftProjections: {},
+  draftOperations: [],
+  undoStack: [],
+  redoStack: [],
+  revisionToken: 0,
+  saveStatus: 'Draft ready',
+  saving: false,
+  conflict: false,
+  apiLoaded: false,
+  apiLoading: false,
+  apiAvailable: false
+});
+
+function annotationCorrectionDraftKey(model){
+  const revisionId = model?.revision?.revisionId || 'unpublished';
+  return 'neurobench-correction-draft-' + String(datasetId || 'dataset') + '-' + revisionId;
+}
+function annotationCorrectionProjection(item){
+  return {
+    ...(item.revisionProjection
+      ? JSON.parse(JSON.stringify(item.revisionProjection)) : {}),
+    id: item.id,
+    annotation_correction_kind: 'expert',
+    source_xy: item.sourceXy.map(Number),
+    ui_frame: Number(item.uiFrame || 1),
+    events: (item.events || []).map(Number),
+    event_intervals: (item.eventIntervals || (item.events || []).map(frame => [Number(frame), Number(frame)])).map(interval => interval.map(Number)),
+    geometry: JSON.parse(JSON.stringify(item.geometry || {kind:'center'})),
+    linked_model_id: item.linkedModelId || '',
+    promoted_from_model_id: item.promotedFromModelId || '',
+    review_state: item.reviewState || '',
+    notes: item.notes || '',
+    deleted: Boolean(item.deleted)
+  };
+}
+function annotationCorrectionLoadDraft(model){
+  if(annotationCorrectionState.draftReady) return;
+  annotationCorrectionState.revisionToken = Number(model.revision?.revisionToken || 0);
+  for(const item of model.experts) annotationCorrectionState.draftProjections[item.id] = annotationCorrectionProjection(item);
+  if(typeof localStorage !== 'undefined'){
+    try {
+      const saved = JSON.parse(localStorage.getItem(annotationCorrectionDraftKey(model)) || 'null');
+      if(saved && saved.revisionId === model.revision?.revisionId){
+        annotationCorrectionState.draftProjections = saved.projections || annotationCorrectionState.draftProjections;
+        annotationCorrectionState.draftOperations = saved.operations || [];
+        annotationCorrectionState.undoStack = saved.undoStack || [];
+        annotationCorrectionState.redoStack = saved.redoStack || [];
+        annotationCorrectionState.revisionToken = Number(saved.revisionToken || annotationCorrectionState.revisionToken);
+        annotationCorrectionState.saveStatus = 'Recovered browser draft';
+      }
+    } catch (_) {
+      annotationCorrectionState.saveStatus = 'Draft recovery unavailable';
+    }
+  }
+  annotationCorrectionState.draftReady = true;
+}
+function annotationCorrectionApplyProjection(item, projection){
+  if(!projection) return item;
+  item.revisionProjection = JSON.parse(JSON.stringify(projection));
+  item.sourceXy = (projection.source_xy || item.sourceXy).map(Number);
+  item.uiFrame = Number(projection.ui_frame || item.uiFrame || 1);
+  item.events = (projection.events || item.events || []).map(Number);
+  item.eventIntervals = (projection.event_intervals || item.events.map(frame => [frame, frame])).map(interval => interval.map(Number));
+  item.geometry = JSON.parse(JSON.stringify(projection.geometry || item.geometry || {kind:'center'}));
+  item.linkedModelId = String(projection.linked_model_id || '');
+  item.promotedFromModelId = String(projection.promoted_from_model_id || '');
+  item.reviewState = String(projection.review_state || '');
+  item.notes = String(projection.notes || '');
+  item.deleted = Boolean(projection.deleted);
+  return item;
+}
+annotationCorrectionModel = function(){
+  const model = annotationCorrectionReadOnlyModel();
+  if(!model) return model;
+  annotationCorrectionLoadDraft(model);
+  for(const projection of Object.values(annotationCorrectionState.draftProjections)){
+    if(
+      projection?.annotation_correction_kind === 'expert' &&
+      !model.experts.some(item => item.id === String(projection.id))
+    ){
+      model.experts.push(annotationCorrectionNormalizeItem(projection, 'expert'));
+    }
+  }
+  for(const item of model.experts){
+    annotationCorrectionApplyProjection(item, annotationCorrectionState.draftProjections[item.id]);
+  }
+  for(const item of model.models) item.linkedExpertId = '';
+  for(const expert of model.experts){
+    const linked = model.models.find(item => item.id === expert.linkedModelId);
+    if(linked) linked.linkedExpertId = expert.id;
+  }
+  return model;
+};
+
+function annotationCorrectionPersistDraft(model){
+  if(typeof localStorage === 'undefined') return false;
+  try {
+    localStorage.setItem(annotationCorrectionDraftKey(model), JSON.stringify({
+      schema_version: 1,
+      revisionId: model.revision?.revisionId || '',
+      revisionToken: annotationCorrectionState.revisionToken,
+      projections: annotationCorrectionState.draftProjections,
+      operations: annotationCorrectionState.draftOperations,
+      undoStack: annotationCorrectionState.undoStack,
+      redoStack: annotationCorrectionState.redoStack,
+      savedAt: new Date().toISOString()
+    }));
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+function annotationCorrectionOperation(model, selected, type, before, after){
+  annotationCorrectionOperationSequence += 1;
+  const timestamp = new Date().toISOString();
+  return {
+    schema_version: 1,
+    operationId: 'op_' + Date.now().toString(36) + '_' + annotationCorrectionOperationSequence.toString(36),
+    operationType: type,
+    targetId: selected.id,
+    before,
+    after,
+    evidenceViewId: annotationCorrectionState.processedViewId || 'raw',
+    uiFrame: annotationCorrectionState.frame,
+    sourceXy: (after?.source_xy || before?.source_xy || selected.sourceXy).map(Number),
+    reviewerId: String(model.revision?.reviewerId || 'local_reviewer'),
+    timestamp,
+    expectedRevisionToken: annotationCorrectionState.revisionToken
+  };
+}
+async function annotationCorrectionCommit(type, after, {history=null, clearRedo=true}={}){
+  const model = annotationCorrectionModel();
+  const selected = annotationCorrectionSelected(model);
+  if(!selected || selected.kind !== 'expert' || model.readOnly || annotationCorrectionState.saving) return;
+  const before = annotationCorrectionProjection(selected);
+  const operation = annotationCorrectionOperation(model, selected, type, before, after);
+  annotationCorrectionState.saving = true;
+  annotationCorrectionState.saveStatus = 'Saving draft…';
+  annotationCorrectionState.conflict = false;
+  annotationCorrectionState.draftProjections[selected.id] = type === 'tombstone'
+    ? {...before, deleted:true, tombstonedByOperationId:operation.operationId}
+    : JSON.parse(JSON.stringify(after));
+  annotationCorrectionState.draftProjections[selected.id].review_state = 'recently_edited';
+  annotationCorrectionState.draftOperations.push(operation);
+  annotationCorrectionState.revisionToken += 1;
+  if(history) annotationCorrectionState.undoStack.push(history);
+  if(clearRedo) annotationCorrectionState.redoStack = [];
+  annotationCorrectionPersistDraft(model);
+  renderAnnotationCorrection();
+  try {
+    if(annotationCorrectionState.apiAvailable && typeof productRequest === 'function'){
+      const revisionId = encodeURIComponent(model.revision.revisionId);
+      const snapshot = await productRequest('api/annotation-revisions/' + revisionId + '/operations', {
+        method:'POST',
+        json:{operation}
+      });
+      annotationCorrectionState.revisionToken = Number(snapshot.revision?.revisionToken || annotationCorrectionState.revisionToken);
+      const projection = snapshot.annotations?.rois?.[selected.id];
+      if(projection) annotationCorrectionState.draftProjections[selected.id] = projection;
+      annotationCorrectionState.saveStatus = 'Autosaved · token ' + annotationCorrectionState.revisionToken;
+    } else {
+      annotationCorrectionState.saveStatus = annotationCorrectionPersistDraft(model)
+        ? 'Saved in browser · token ' + annotationCorrectionState.revisionToken
+        : 'Browser storage unavailable · export now';
+    }
+  } catch (error) {
+    annotationCorrectionState.conflict = true;
+    annotationCorrectionState.saveStatus = 'Conflict · local edit preserved';
+  } finally {
+    annotationCorrectionState.saving = false;
+    annotationCorrectionPersistDraft(model);
+    renderAnnotationCorrection();
+  }
+}
+function annotationCorrectionInputNumber(id, fallback){
+  const value = Number(document.getElementById(id)?.value);
+  return Number.isFinite(value) ? value : fallback;
+}
+function annotationCorrectionApplyCenter(){
+  const model = annotationCorrectionModel();
+  const selected = annotationCorrectionSelected(model);
+  if(!selected || selected.kind !== 'expert') return;
+  const before = annotationCorrectionProjection(selected);
+  const after = {...before, source_xy:[
+    annotationCorrectionInputNumber('correctionEditX', before.source_xy[0]),
+    annotationCorrectionInputNumber('correctionEditY', before.source_xy[1])
+  ]};
+  annotationCorrectionCommit('move', after, {history:{type:'move', targetId:selected.id, before, after}});
+}
+function annotationCorrectionApplyRadius(){
+  const model = annotationCorrectionModel();
+  const selected = annotationCorrectionSelected(model);
+  if(!selected || selected.kind !== 'expert') return;
+  const before = annotationCorrectionProjection(selected);
+  const radius = Math.max(0.25, annotationCorrectionInputNumber('correctionEditRadius', Number(before.geometry?.radius_px || before.geometry?.radiusPx || 0.75)));
+  const after = {...before, geometry:{kind:'circle', radius_px:radius}};
+  annotationCorrectionCommit('resize', after, {history:{type:'resize', targetId:selected.id, before, after}});
+}
+function annotationCorrectionSaveNotes(){
+  const model = annotationCorrectionModel();
+  const selected = annotationCorrectionSelected(model);
+  if(!selected || selected.kind !== 'expert') return;
+  const before = annotationCorrectionProjection(selected);
+  const after = {...before, notes:String(document.getElementById('correctionEditNotes')?.value || '')};
+  annotationCorrectionCommit('edit-notes', after, {history:{type:'edit-notes', targetId:selected.id, before, after}});
+}
+function annotationCorrectionToggleTombstone(){
+  const model = annotationCorrectionModel();
+  const selected = annotationCorrectionSelected(model);
+  if(!selected || selected.kind !== 'expert') return;
+  const before = annotationCorrectionProjection(selected);
+  const type = before.deleted ? 'restore' : 'tombstone';
+  const after = before.deleted ? {...before, deleted:false} : null;
+  annotationCorrectionCommit(type, after, {history:{type, targetId:selected.id, before, after}});
+}
+function annotationCorrectionSelectExpert(model, targetId){
+  annotationCorrectionState.queue = 'all_expert';
+  annotationCorrectionState.selectedKey = 'expert:' + targetId;
+}
+function annotationCorrectionUndo(){
+  const history = annotationCorrectionState.undoStack.pop();
+  if(!history || annotationCorrectionState.saving) return;
+  const model = annotationCorrectionModel();
+  annotationCorrectionSelectExpert(model, history.targetId);
+  const type = history.type === 'tombstone' ? 'restore'
+    : history.type === 'restore' ? 'tombstone'
+    : history.type === 'link' ? 'unlink'
+    : history.type === 'unlink' ? 'link'
+    : history.type === 'promote' ? 'tombstone'
+    : history.type;
+  const after = type === 'tombstone' ? null : history.before;
+  annotationCorrectionState.redoStack.push(history);
+  annotationCorrectionCommit(type, after, {clearRedo:false});
+}
+function annotationCorrectionRedo(){
+  const history = annotationCorrectionState.redoStack.pop();
+  if(!history || annotationCorrectionState.saving) return;
+  const model = annotationCorrectionModel();
+  annotationCorrectionSelectExpert(model, history.targetId);
+  const type = history.type === 'promote' ? 'restore' : history.type;
+  const after = type === 'tombstone' ? null : history.after;
+  annotationCorrectionCommit(type, after, {history, clearRedo:false});
+}
+function annotationCorrectionExport(){
+  const model = annotationCorrectionModel();
+  const payload = {
+    schema_version: 1,
+    kind: 'annotation_revision_draft_export',
+    revision: {...model.revision, revisionToken:annotationCorrectionState.revisionToken, operationCount:annotationCorrectionState.draftOperations.length},
+    expert_projections: annotationCorrectionState.draftProjections,
+    operations: annotationCorrectionState.draftOperations,
+    exportedAt: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2) + '\n'], {type:'application/json'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = String(model.revision?.revisionId || 'annotation_draft') + '_draft.json';
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(link.href), 0);
+}
+function annotationCorrectionEditControlsHtml(model, selected){
+  if(!selected) return '';
+  if(selected.kind !== 'expert'){
+    return '<p class="correctionReadOnlyNote">Model proposal geometry is frozen. Promotion will be an explicit expert-label operation in the next control set.</p>';
+  }
+  if(model.readOnly){
+    return '<p class="correctionReadOnlyNote">This revision is read-only. Fork a draft before editing.</p>';
+  }
+  const projection = annotationCorrectionProjection(selected);
+  const radius = Number(projection.geometry?.radius_px || projection.geometry?.radiusPx || 0.75);
+  const disabled = annotationCorrectionState.saving ? ' disabled' : '';
+  return [
+    '<div class="correctionEditPanel">',
+      '<div class="correctionEditHeading"><h3>Draft correction</h3><span class="correctionSaveStatus' + (annotationCorrectionState.conflict ? ' conflict' : '') + '">' + escapeHtml(annotationCorrectionState.saveStatus) + '</span></div>',
+      '<div class="correctionEditGrid">',
+        '<label>x <input id="correctionEditX" type="number" step="0.1" value="' + projection.source_xy[0] + '"' + disabled + '></label>',
+        '<label>y <input id="correctionEditY" type="number" step="0.1" value="' + projection.source_xy[1] + '"' + disabled + '></label>',
+        '<button id="correctionApplyCenterBtn" type="button"' + disabled + '>Apply center</button>',
+        '<label>Radius <input id="correctionEditRadius" type="number" min="0.25" step="0.25" value="' + radius + '"' + disabled + '></label>',
+        '<button id="correctionApplyRadiusBtn" type="button"' + disabled + '>Apply radius</button>',
+      '</div>',
+      '<label class="correctionNotesLabel">Notes<textarea id="correctionEditNotes" rows="2"' + disabled + '>' + escapeHtml(projection.notes || '') + '</textarea></label>',
+      '<div class="correctionEditActions">',
+        '<button id="correctionSaveNotesBtn" type="button"' + disabled + '>Save notes</button>',
+        '<button id="correctionTombstoneBtn" type="button"' + disabled + '>' + (projection.deleted ? 'Restore ROI' : 'Tombstone ROI') + '</button>',
+        '<button id="correctionUndoBtn" type="button"' + (!annotationCorrectionState.undoStack.length || annotationCorrectionState.saving ? ' disabled' : '') + '>Undo</button>',
+        '<button id="correctionRedoBtn" type="button"' + (!annotationCorrectionState.redoStack.length || annotationCorrectionState.saving ? ' disabled' : '') + '>Redo</button>',
+        '<button id="correctionExportBtn" type="button">Export draft</button>',
+      '</div>',
+    '</div>'
+  ].join('');
+}
+
+const annotationCorrectionReadOnlyInspectorHtml = annotationCorrectionInspectorHtml;
+annotationCorrectionInspectorHtml = function(model){
+  const selected = annotationCorrectionSelected(model);
+  const summary = annotationCorrectionReadOnlyInspectorHtml(model).replace(
+    '<p class="correctionReadOnlyNote">Slice 2 is inspection-only. No label or geometry mutation is available.</p>',
+    ''
+  );
+  return summary + annotationCorrectionEditControlsHtml(model, selected);
+};
+
+const annotationCorrectionReadOnlyWire = annotationCorrectionWire;
+annotationCorrectionWire = function(model){
+  annotationCorrectionReadOnlyWire(model);
+  document.getElementById('correctionApplyCenterBtn')?.addEventListener('click', annotationCorrectionApplyCenter);
+  document.getElementById('correctionApplyRadiusBtn')?.addEventListener('click', annotationCorrectionApplyRadius);
+  document.getElementById('correctionSaveNotesBtn')?.addEventListener('click', annotationCorrectionSaveNotes);
+  document.getElementById('correctionTombstoneBtn')?.addEventListener('click', annotationCorrectionToggleTombstone);
+  document.getElementById('correctionUndoBtn')?.addEventListener('click', annotationCorrectionUndo);
+  document.getElementById('correctionRedoBtn')?.addEventListener('click', annotationCorrectionRedo);
+  document.getElementById('correctionExportBtn')?.addEventListener('click', annotationCorrectionExport);
+};
+
+
+async function annotationCorrectionLoadRevisionApi(model){
+  if(annotationCorrectionState.apiLoaded || annotationCorrectionState.apiLoading) return;
+  annotationCorrectionState.apiLoading = true;
+  annotationCorrectionState.saving = true;
+  annotationCorrectionState.saveStatus = 'Loading revision…';
+  try {
+    const revisionId = encodeURIComponent(model.revision?.revisionId || '');
+    const snapshot = await productRequest('api/annotation-revisions/' + revisionId, {method:'GET'});
+    const serverToken = Number(snapshot.revision?.revisionToken || 0);
+    const hasLocalHistory = annotationCorrectionState.draftOperations.length > 0;
+    if(hasLocalHistory && annotationCorrectionState.revisionToken !== serverToken){
+      annotationCorrectionState.conflict = true;
+      annotationCorrectionState.apiAvailable = false;
+      annotationCorrectionState.saveStatus = 'Conflict · browser draft preserved';
+    } else {
+      const baseExpertIds = new Set(model.experts.map(item => item.id));
+      for(const [targetId, projection] of Object.entries(snapshot.annotations?.rois || {})){
+        if(baseExpertIds.has(targetId) || projection?.annotation_correction_kind === 'expert'){
+          annotationCorrectionState.draftProjections[targetId] = projection;
+        }
+      }
+      annotationCorrectionState.draftOperations = snapshot.operations || [];
+      annotationCorrectionState.revisionToken = serverToken;
+      annotationCorrectionState.undoStack = annotationCorrectionState.draftOperations.map(operation => ({
+        type:operation.operationType,
+        targetId:operation.targetId,
+        before:operation.before,
+        after:operation.after
+      }));
+      annotationCorrectionState.redoStack = [];
+      annotationCorrectionState.apiAvailable = true;
+      annotationCorrectionState.saveStatus = 'Autosave ready · token ' + serverToken;
+      annotationCorrectionPersistDraft(model);
+    }
+  } catch (_) {
+    annotationCorrectionState.apiAvailable = false;
+    annotationCorrectionState.saveStatus = 'Server revision unavailable · browser draft';
+  } finally {
+    annotationCorrectionState.apiLoaded = true;
+    annotationCorrectionState.apiLoading = false;
+    annotationCorrectionState.saving = false;
+    annotationCorrectionEditableRender();
+  }
+}
+
+const annotationCorrectionEditableRender = renderAnnotationCorrection;
+renderAnnotationCorrection = function(){
+  annotationCorrectionEditableRender();
+  const model = annotationCorrectionModel();
+  if(
+    model?.payload?.revision_api_enabled === true &&
+    typeof productRequest === 'function' &&
+    !annotationCorrectionState.apiLoaded &&
+    !annotationCorrectionState.apiLoading
+  ){
+    annotationCorrectionLoadRevisionApi(model);
+  }
+};
+
+// --- 85_annotation_correction_relations.js ---
+/* Slice 3 control set 2: explicit links, promotions, and event intervals. */
+
+function annotationCorrectionSafeExpertId(value){
+  return String(value || '').trim().replace(/[^A-Za-z0-9_.-]+/g, '_').replace(/^[^A-Za-z0-9]+/, '');
+}
+function annotationCorrectionModelLinkOptions(model, selected){
+  const options = ['<option value="">No model link</option>'];
+  for(const item of model.models){
+    if(item.linkedExpertId && item.linkedExpertId !== selected.id) continue;
+    options.push(
+      '<option value="' + escapeHtml(item.id) + '"' +
+      (item.id === selected.linkedModelId ? ' selected' : '') + '>' +
+      escapeHtml(item.id + (item.status ? ' · ' + item.status : '')) + '</option>'
+    );
+  }
+  return options.join('');
+}
+function annotationCorrectionIntervals(projection){
+  const intervals = projection.event_intervals || (projection.events || []).map(frame => [frame, frame]);
+  return intervals.map(interval => [Number(interval[0]), Number(interval[1])]);
+}
+function annotationCorrectionLinkEventControlsHtml(model, selected){
+  const projection = annotationCorrectionProjection(selected);
+  const disabled = annotationCorrectionState.saving || projection.deleted ? ' disabled' : '';
+  const intervals = annotationCorrectionIntervals(projection);
+  const intervalRows = intervals.length
+    ? intervals.map((interval, index) =>
+        '<span class="correctionIntervalChip">UI ' + interval[0] + '–' + interval[1] +
+        '<button type="button" data-correction-remove-interval="' + index + '"' + disabled + ' aria-label="Remove event interval ' + (index + 1) + '">Remove</button></span>'
+      ).join('')
+    : '<span class="hint">No expert event intervals.</span>';
+  return [
+    '<div class="correctionEditPanel correctionRelationshipPanel">',
+      '<div class="correctionEditHeading"><h3>Model correspondence</h3><span class="correctionAuditLabel">explicit operation</span></div>',
+      '<div class="correctionRelationshipRow">',
+        '<label>Linked model<select id="correctionLinkedModelSelect"' + disabled + '>' + annotationCorrectionModelLinkOptions(model, selected) + '</select></label>',
+        '<button id="correctionApplyLinkBtn" type="button"' + disabled + '>' + (projection.linked_model_id ? 'Apply / unlink' : 'Link model') + '</button>',
+      '</div>',
+    '</div>',
+    '<div class="correctionEditPanel correctionEventPanel">',
+      '<div class="correctionEditHeading"><h3>Event intervals</h3><span class="correctionAuditLabel">UI frames · inclusive</span></div>',
+      '<div class="correctionIntervalList">' + intervalRows + '</div>',
+      '<div class="correctionEventInputs">',
+        '<label>Start <input id="correctionEventStart" type="number" min="1" step="1" value="' + annotationCorrectionState.frame + '"' + disabled + '></label>',
+        '<label>End <input id="correctionEventEnd" type="number" min="1" step="1" value="' + annotationCorrectionState.frame + '"' + disabled + '></label>',
+        '<button id="correctionAddIntervalBtn" type="button"' + disabled + '>Add interval</button>',
+      '</div>',
+    '</div>'
+  ].join('');
+}
+function annotationCorrectionPromotionControlsHtml(model, selected){
+  if(model.readOnly) return '<p class="correctionReadOnlyNote">Fork a draft before promoting a proposal.</p>';
+  if(selected.linkedExpertId){
+    return [
+      '<div class="correctionEditPanel">',
+        '<div class="correctionEditHeading"><h3>Model correspondence</h3><span class="correctionAuditLabel">already linked</span></div>',
+        '<p class="hint">This frozen proposal is linked to expert ' + escapeHtml(selected.linkedExpertId) + '.</p>',
+        '<button id="correctionOpenLinkedExpertBtn" type="button">Open linked expert</button>',
+      '</div>'
+    ].join('');
+  }
+  const proposedId = annotationCorrectionSafeExpertId('E_promoted_' + selected.id);
+  const disabled = annotationCorrectionState.saving ? ' disabled' : '';
+  return [
+    '<div class="correctionEditPanel correctionPromotionPanel">',
+      '<div class="correctionEditHeading"><h3>Promote model proposal</h3><span class="correctionAuditLabel">creates expert ROI</span></div>',
+      '<p class="hint">The model square remains frozen. Promotion creates a separately attributable expert circle at the same canonical center.</p>',
+      '<div class="correctionPromotionInputs">',
+        '<label>Expert ID <input id="correctionPromotionId" type="text" value="' + escapeHtml(proposedId) + '"' + disabled + '></label>',
+        '<label>Radius <input id="correctionPromotionRadius" type="number" min="0.25" step="0.25" value="0.75"' + disabled + '></label>',
+        '<button id="correctionPromoteBtn" type="button"' + disabled + '>Promote proposal</button>',
+      '</div>',
+    '</div>'
+  ].join('');
+}
+
+const annotationCorrectionCoreEditControlsHtml = annotationCorrectionEditControlsHtml;
+annotationCorrectionEditControlsHtml = function(model, selected){
+  if(!selected) return '';
+  if(selected.kind === 'model') return annotationCorrectionPromotionControlsHtml(model, selected);
+  return annotationCorrectionCoreEditControlsHtml(model, selected) +
+    annotationCorrectionLinkEventControlsHtml(model, selected);
+};
+
+function annotationCorrectionApplyLink(){
+  const model = annotationCorrectionModel();
+  const selected = annotationCorrectionSelected(model);
+  if(!selected || selected.kind !== 'expert') return;
+  const before = annotationCorrectionProjection(selected);
+  const linkedModelId = String(document.getElementById('correctionLinkedModelSelect')?.value || '');
+  if(linkedModelId === before.linked_model_id) return;
+  const after = {...before, linked_model_id:linkedModelId};
+  const type = linkedModelId ? 'link' : 'unlink';
+  annotationCorrectionCommit(type, after, {history:{type, targetId:selected.id, before, after}});
+}
+function annotationCorrectionEventBounds(model){
+  const raw = annotationCorrectionContract(model, 'raw') || model.contracts[0];
+  return annotationCorrectionShape(raw)[0];
+}
+function annotationCorrectionSetIntervalStatus(message){
+  annotationCorrectionState.conflict = false;
+  annotationCorrectionState.saveStatus = message;
+  renderAnnotationCorrection();
+}
+function annotationCorrectionAddInterval(){
+  const model = annotationCorrectionModel();
+  const selected = annotationCorrectionSelected(model);
+  if(!selected || selected.kind !== 'expert') return;
+  const start = Number(document.getElementById('correctionEventStart')?.value);
+  const end = Number(document.getElementById('correctionEventEnd')?.value);
+  const maxFrame = annotationCorrectionEventBounds(model);
+  if(!Number.isInteger(start) || !Number.isInteger(end) || start < 1 || end < start || end > maxFrame){
+    annotationCorrectionSetIntervalStatus('Invalid interval · use inclusive UI frames 1–' + maxFrame);
+    return;
+  }
+  const before = annotationCorrectionProjection(selected);
+  const intervals = annotationCorrectionIntervals(before);
+  if(intervals.some(interval => start <= interval[1] && end >= interval[0])){
+    annotationCorrectionSetIntervalStatus('Invalid interval · overlaps existing event');
+    return;
+  }
+  const updated = [...intervals, [start, end]].sort((left, right) => left[0] - right[0]);
+  const after = {...before, event_intervals:updated, events:updated.map(interval => interval[0])};
+  annotationCorrectionCommit('edit-event-interval', after, {
+    history:{type:'edit-event-interval', targetId:selected.id, before, after}
+  });
+}
+function annotationCorrectionRemoveInterval(index){
+  const model = annotationCorrectionModel();
+  const selected = annotationCorrectionSelected(model);
+  if(!selected || selected.kind !== 'expert') return;
+  const before = annotationCorrectionProjection(selected);
+  const intervals = annotationCorrectionIntervals(before);
+  if(index < 0 || index >= intervals.length) return;
+  const updated = intervals.filter((_, rowIndex) => rowIndex !== index);
+  const after = {...before, event_intervals:updated, events:updated.map(interval => interval[0])};
+  annotationCorrectionCommit('edit-event-interval', after, {
+    history:{type:'edit-event-interval', targetId:selected.id, before, after}
+  });
+}
+
+async function annotationCorrectionCommitPromotion(){
+  const model = annotationCorrectionModel();
+  const selected = annotationCorrectionSelected(model);
+  if(!selected || selected.kind !== 'model' || selected.linkedExpertId || model.readOnly || annotationCorrectionState.saving) return;
+  const targetId = annotationCorrectionSafeExpertId(document.getElementById('correctionPromotionId')?.value);
+  if(!targetId){
+    annotationCorrectionSetIntervalStatus('Promotion requires a valid expert ID');
+    return;
+  }
+  if(model.experts.some(item => item.id === targetId) || annotationCorrectionState.draftProjections[targetId]){
+    annotationCorrectionSetIntervalStatus('Promotion ID already exists');
+    return;
+  }
+  const radius = Number(document.getElementById('correctionPromotionRadius')?.value);
+  if(!Number.isFinite(radius) || radius < 0.25){
+    annotationCorrectionSetIntervalStatus('Promotion radius must be at least 0.25 px');
+    return;
+  }
+  const before = {
+    proposal_id:selected.id,
+    source_xy:selected.sourceXy.map(Number),
+    ui_frame:selected.uiFrame,
+    events:(selected.events || []).map(Number),
+    geometry:JSON.parse(JSON.stringify(selected.geometry || {kind:'center'})),
+    status:selected.status || 'unknown'
+  };
+  const after = {
+    id:targetId,
+    annotation_correction_kind:'expert',
+    source_xy:selected.sourceXy.map(Number),
+    ui_frame:selected.uiFrame,
+    events:(selected.events || []).map(Number),
+    event_intervals:(selected.events || []).map(frame => [Number(frame), Number(frame)]),
+    geometry:{kind:'circle', radius_px:radius},
+    linked_model_id:selected.id,
+    promoted_from_model_id:selected.id,
+    review_state:'recently_edited',
+    notes:'',
+    deleted:false
+  };
+  const operation = annotationCorrectionOperation(
+    model,
+    {id:targetId, sourceXy:selected.sourceXy},
+    'promote',
+    before,
+    after
+  );
+  annotationCorrectionState.saving = true;
+  annotationCorrectionState.saveStatus = 'Saving promotion…';
+  annotationCorrectionState.conflict = false;
+  annotationCorrectionState.draftProjections[targetId] = after;
+  annotationCorrectionState.draftOperations.push(operation);
+  annotationCorrectionState.revisionToken += 1;
+  annotationCorrectionState.undoStack.push({type:'promote', targetId, before, after});
+  annotationCorrectionState.redoStack = [];
+  annotationCorrectionSelectExpert(model, targetId);
+  annotationCorrectionPersistDraft(model);
+  renderAnnotationCorrection();
+  try {
+    if(annotationCorrectionState.apiAvailable && typeof productRequest === 'function'){
+      const revisionId = encodeURIComponent(model.revision.revisionId);
+      const snapshot = await productRequest('api/annotation-revisions/' + revisionId + '/operations', {
+        method:'POST',
+        json:{operation}
+      });
+      annotationCorrectionState.revisionToken = Number(snapshot.revision?.revisionToken || annotationCorrectionState.revisionToken);
+      const projection = snapshot.annotations?.rois?.[targetId];
+      if(projection) annotationCorrectionState.draftProjections[targetId] = projection;
+      annotationCorrectionState.saveStatus = 'Promotion autosaved · token ' + annotationCorrectionState.revisionToken;
+    } else {
+      annotationCorrectionState.saveStatus = annotationCorrectionPersistDraft(model)
+        ? 'Promotion saved in browser · token ' + annotationCorrectionState.revisionToken
+        : 'Browser storage unavailable · export now';
+    }
+  } catch (_) {
+    annotationCorrectionState.conflict = true;
+    annotationCorrectionState.saveStatus = 'Conflict · local promotion preserved';
+  } finally {
+    annotationCorrectionState.saving = false;
+    annotationCorrectionPersistDraft(model);
+    renderAnnotationCorrection();
+  }
+}
+function annotationCorrectionOpenLinkedExpert(){
+  const model = annotationCorrectionModel();
+  const selected = annotationCorrectionSelected(model);
+  if(!selected?.linkedExpertId) return;
+  annotationCorrectionSelectExpert(model, selected.linkedExpertId);
+  renderAnnotationCorrection();
+}
+
+const annotationCorrectionCoreWireWithDraft = annotationCorrectionWire;
+annotationCorrectionWire = function(model){
+  annotationCorrectionCoreWireWithDraft(model);
+  document.getElementById('correctionApplyLinkBtn')?.addEventListener('click', annotationCorrectionApplyLink);
+  document.getElementById('correctionAddIntervalBtn')?.addEventListener('click', annotationCorrectionAddInterval);
+  for(const button of document.querySelectorAll('[data-correction-remove-interval]')){
+    button.addEventListener('click', () => annotationCorrectionRemoveInterval(Number(button.dataset.correctionRemoveInterval)));
+  }
+  document.getElementById('correctionPromoteBtn')?.addEventListener('click', annotationCorrectionCommitPromotion);
+  document.getElementById('correctionOpenLinkedExpertBtn')?.addEventListener('click', annotationCorrectionOpenLinkedExpert);
+};
+
+// --- 86_annotation_correction_publication.js ---
+/* Slice 4: attributable review, server draft forks, and immutable publication. */
+function annotationCorrectionSafeRevisionId(value){
+  return String(value || '').trim().replace(/[^A-Za-z0-9_.-]+/g, '_').replace(/^[^A-Za-z0-9]+/, '');
+}
+function annotationCorrectionOperationLabel(type){
+  return ({promote:'Promoted proposal',move:'Moved center',resize:'Resized ROI',tombstone:'Tombstoned ROI',restore:'Restored ROI',link:'Linked model',unlink:'Unlinked model','edit-notes':'Edited notes','edit-event-interval':'Edited events'})[type] || String(type || 'Changed ROI');
+}
+function annotationCorrectionOperationDetail(operation){
+  const before = operation.before || {}, after = operation.after || {};
+  if(operation.operationType === 'move') return (before.source_xy || []).join(', ') + ' → ' + (after.source_xy || []).join(', ');
+  if(operation.operationType === 'resize') return 'radius ' + Number(before.geometry?.radius_px || 0).toFixed(2) + ' → ' + Number(after.geometry?.radius_px || 0).toFixed(2) + ' px';
+  if(['link','unlink'].includes(operation.operationType)) return String(after.linked_model_id || 'no model link');
+  if(operation.operationType === 'edit-event-interval') return String((after.event_intervals || []).length) + ' inclusive interval(s)';
+  if(operation.operationType === 'promote') return 'from ' + String(before.proposal_id || after.promoted_from_model_id || 'model proposal');
+  return 'evidence ' + String(operation.evidenceViewId || 'raw') + ' · UI frame ' + Number(operation.uiFrame || 1);
+}
+function annotationCorrectionDefaultChildId(revision, suffix){
+  return annotationCorrectionSafeRevisionId((revision?.revisionId || 'annotation_revision') + '_' + suffix);
+}
+function annotationCorrectionChangeReviewHtml(model){
+  const operations = annotationCorrectionState.draftOperations || [], counts = {};
+  for(const operation of operations){
+    const label = annotationCorrectionOperationLabel(operation.operationType);
+    counts[label] = (counts[label] || 0) + 1;
+  }
+  const chips = Object.entries(counts).length ? Object.entries(counts).map(([label,count]) =>
+    '<span class="correctionChangeChip"><b>' + count + '</b> ' + escapeHtml(label) + '</span>'
+  ).join('') : '<span class="hint">No operations in this revision yet.</span>';
+  const rows = operations.length ? operations.slice(-6).reverse().map(operation => [
+    '<li><div><b>' + escapeHtml(annotationCorrectionOperationLabel(operation.operationType)) + '</b><span>' + escapeHtml(operation.targetId) + '</span></div>',
+    '<p>' + escapeHtml(annotationCorrectionOperationDetail(operation)) + '</p>',
+    '<small>' + escapeHtml(operation.evidenceViewId || 'raw') + ' · UI ' + Number(operation.uiFrame || 1) + ' · ' + escapeHtml(operation.reviewerId || '') + '</small></li>'
+  ].join('')).join('') : '<li class="correctionEmptyChanges">The child preserves the current projection and provenance.</li>';
+  const apiReady = annotationCorrectionState.apiAvailable && typeof productRequest === 'function';
+  const published = model.revision?.state === 'published' || model.readOnly;
+  const disabled = !apiReady || annotationCorrectionState.saving ? ' disabled' : '';
+  const publishDisabled = published || !apiReady || annotationCorrectionState.saving ? ' disabled' : '';
+  return [
+    '<div class="correctionChangeReview"><div class="correctionEditHeading"><h3>Review changes</h3><span class="correctionAuditLabel">' + operations.length + ' operation' + (operations.length === 1 ? '' : 's') + '</span></div>',
+    '<div class="correctionChangeChips">' + chips + '</div><ol class="correctionChangeList">' + rows + '</ol>',
+    '<p class="correctionPublicationNote">' + (apiReady ? 'Server revision connected. Child IDs are collision-safe.' : 'Live revision API required; browser draft and export remain available.') + '</p>',
+    '<div class="correctionPublicationGrid"><label>Child revision ID<input id="correctionChildRevisionId" type="text" value="' + escapeHtml(annotationCorrectionDefaultChildId(model.revision, published ? 'draft_v1' : 'published_v1')) + '"' + disabled + '></label>',
+    '<label>Reviewer<input id="correctionChildReviewerId" type="text" value="' + escapeHtml(model.revision?.reviewerId || 'local_reviewer') + '"' + disabled + '></label></div>',
+    '<div class="correctionPublicationActions"><button id="correctionForkRevisionBtn" type="button"' + disabled + '>Fork editable draft</button>',
+    '<button id="correctionPublishRevisionBtn" class="primary" type="button"' + publishDisabled + '>Publish immutable child</button></div>',
+    '<p class="hint">Publishing never rewrites this draft. Reevaluation and scientific audits remain separate jobs.</p></div>'
+  ].join('');
+}
+const annotationCorrectionRelationshipInspectorHtml = annotationCorrectionInspectorHtml;
+annotationCorrectionInspectorHtml = model => annotationCorrectionRelationshipInspectorHtml(model) + annotationCorrectionChangeReviewHtml(model);
+
+function annotationCorrectionAdoptRevisionSnapshot(snapshot, status){
+  const payload = annotationCorrectionPayload();
+  if(!payload || !snapshot?.revision) return;
+  const previousKey = annotationCorrectionDraftKey(annotationCorrectionModel());
+  payload.revision = JSON.parse(JSON.stringify(snapshot.revision));
+  payload.read_only = snapshot.revision.state !== 'draft';
+  annotationCorrectionState.draftProjections = Object.fromEntries(Object.entries(snapshot.annotations?.rois || {}).map(([id,item]) => [id,JSON.parse(JSON.stringify(item))]));
+  annotationCorrectionState.draftOperations = (snapshot.operations || []).map(item => JSON.parse(JSON.stringify(item)));
+  annotationCorrectionState.revisionToken = Number(snapshot.revision.revisionToken || 0);
+  annotationCorrectionState.undoStack = annotationCorrectionState.draftOperations.map(operation => ({type:operation.operationType,targetId:operation.targetId,before:operation.before,after:operation.after}));
+  annotationCorrectionState.redoStack = [];
+  Object.assign(annotationCorrectionState,{conflict:false,saving:false,apiLoaded:true,apiLoading:false,apiAvailable:true,saveStatus:status,selectedKey:''});
+  if(typeof localStorage !== 'undefined'){ try { localStorage.removeItem(previousKey); } catch (_) {} }
+  annotationCorrectionPersistDraft(annotationCorrectionModel());
+}
+function annotationCorrectionPublicationInput(){
+  return {
+    revisionId:annotationCorrectionSafeRevisionId(document.getElementById('correctionChildRevisionId')?.value),
+    reviewerId:String(document.getElementById('correctionChildReviewerId')?.value || '').trim()
+  };
+}
+function annotationCorrectionPublicationError(message){
+  Object.assign(annotationCorrectionState,{conflict:true,saving:false,saveStatus:message});
+  renderAnnotationCorrection();
+}
+async function annotationCorrectionForkRevision(){
+  const model = annotationCorrectionModel(), input = annotationCorrectionPublicationInput();
+  if(!input.revisionId || !input.reviewerId) return annotationCorrectionPublicationError('Fork requires child revision ID and reviewer');
+  Object.assign(annotationCorrectionState,{saving:true,saveStatus:'Forking draft…'});
+  renderAnnotationCorrection();
+  try {
+    const snapshot = await productRequest('api/annotation-revisions/' + encodeURIComponent(model.revision.revisionId) + '/fork',{method:'POST',json:{revisionId:input.revisionId,reviewerId:input.reviewerId}});
+    annotationCorrectionAdoptRevisionSnapshot(snapshot,'Editable fork ready · token 0');
+  } catch (_) { return annotationCorrectionPublicationError('Fork failed · current local draft preserved'); }
+  renderAnnotationCorrection();
+}
+async function annotationCorrectionPublishRevision(){
+  const model = annotationCorrectionModel(), input = annotationCorrectionPublicationInput();
+  if(!input.revisionId) return annotationCorrectionPublicationError('Publish requires a child revision ID');
+  Object.assign(annotationCorrectionState,{saving:true,saveStatus:'Validating publication…'});
+  renderAnnotationCorrection();
+  try {
+    const snapshot = await productRequest('api/annotation-revisions/' + encodeURIComponent(model.revision.revisionId) + '/publish',{method:'POST',json:{revisionId:input.revisionId,expectedRevisionToken:annotationCorrectionState.revisionToken}});
+    annotationCorrectionAdoptRevisionSnapshot(snapshot,'Published immutable child');
+  } catch (_) { return annotationCorrectionPublicationError('Publish conflict or collision · draft preserved'); }
+  renderAnnotationCorrection();
+}
+const annotationCorrectionRelationshipWire = annotationCorrectionWire;
+annotationCorrectionWire = function(model){
+  annotationCorrectionRelationshipWire(model);
+  document.getElementById('correctionForkRevisionBtn')?.addEventListener('click',annotationCorrectionForkRevision);
+  document.getElementById('correctionPublishRevisionBtn')?.addEventListener('click',annotationCorrectionPublishRevision);
+};
+
 // --- 90_boot.js ---
 const PAGE_CHROME = {
   datasets: {label:'Datasets', page:'datasets'},
@@ -13968,7 +15737,7 @@ function routeProductLanding(page){
 function routeReview(hash){
   resetRouteState();
   const reviewSubpage = reviewSubPageFromHash(`#${hash}`);
-  const normal = hash === 'annotate' || hash === 'review';
+  const normal = hash === 'annotate' || hash === 'review' || reviewSubpage === 'correction';
   if(normal){
     appRoot.classList.add('normal-annotation-mode');
     appRoot.classList.toggle('research-context-enabled', researchToolsEnabled());
@@ -13982,6 +15751,7 @@ function routeReview(hash){
   if(reviewSubpage === 'stencil') renderReviewStencil();
   else if(reviewSubpage === 'overlap') renderReviewOverlap();
   else if(reviewSubpage === 'triage') renderReviewTriage();
+  else if(reviewSubpage === 'correction') renderAnnotationCorrection();
   else resizeOverlay();
   renderAnnotationTaskShell();
   renderNextBestActions();
@@ -14016,7 +15786,7 @@ function routePage(){
   if(hash === 'annotate' || hash === 'review') return routeReview(hash);
   if(hash === 'results') return routeProductLanding('results');
   if(hash === 'research') return routeProductLanding('research');
-  if(['review-stencil','stencil','anatomy-stencil','review-overlap','overlap','sweep-overlap','candidate-overlay','review-candidate-overlay','review-triage','triage','review-queue'].includes(hash)) return routeReview(hash);
+  if(['review-stencil','stencil','anatomy-stencil','review-overlap','overlap','sweep-overlap','candidate-overlay','review-candidate-overlay','review-triage','triage','review-queue','annotation-correction','review-correction','correction'].includes(hash)) return routeReview(hash);
 
   const page = ['home','workflow'].includes(hash) ? 'home'
     : ['pipelines','architecture','architecture-lab'].includes(hash) ? 'architecture'

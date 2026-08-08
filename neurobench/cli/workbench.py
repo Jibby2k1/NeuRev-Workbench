@@ -120,7 +120,48 @@ def add_workbench_subcommands(subparsers) -> argparse.ArgumentParser:
     )
     add_attach_intermediates_arguments(attach_parser)
     attach_parser.set_defaults(func=attach_intermediates_command)
+
+    proposal_parser = workbench_subparsers.add_parser(
+        "model-proposal-package",
+        help="Build a model-only review dashboard and expert-compatible proposal workbook.",
+    )
+    proposal_parser.add_argument("--source-app-dir", type=Path, required=True)
+    proposal_parser.add_argument("--output-root", type=Path, required=True)
+    proposal_parser.add_argument("--dataset-id")
+    proposal_parser.add_argument("--reviewer-id", default="reviewer_local_1")
+    proposal_parser.add_argument(
+        "--event-source",
+        choices=("supplied", "model_proposed"),
+        default="supplied",
+        help="Declare whether event windows came from acquisition metadata or the model.",
+    )
+    proposal_parser.add_argument("--json", action="store_true")
+    proposal_parser.set_defaults(func=workbench_model_proposal_package_command)
     return parser
+
+
+
+def workbench_model_proposal_package_command(args: argparse.Namespace) -> int:
+    from neurobench.workbench.model_proposals import build_model_proposal_package
+
+    payload = build_model_proposal_package(
+        source_app_dir=args.source_app_dir,
+        output_root=args.output_root,
+        reviewer_id=args.reviewer_id,
+        event_source=args.event_source,
+        dataset_id=args.dataset_id,
+    )
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(f"Model-only dashboard: {payload['app_dir']}")
+        print(f"Proposal workbook: {payload['proposal_workbook']}")
+        print(f"Blinded template: {payload['blinded_template']}")
+        print(
+            f"Candidates: {payload['model_identity_count']} identities / "
+            f"{payload['model_occurrence_count']} occurrences"
+        )
+    return 0
 
 
 def workbench_build_command(args: argparse.Namespace) -> int:

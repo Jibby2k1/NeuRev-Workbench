@@ -11,9 +11,12 @@ from this map.
 
 | Goal | Start Here | Then Read |
 | --- | --- | --- |
+| Design, run, or complete any experiment | `docs/workflows/SCIENTIFIC_AUDIT_OUTPUT_STANDARD.md` | `neurobench/reports/scientific_audit.py`, then the experiment-specific workflow |
+| Use the dashboard to review or correct labels | `docs/HOW_TO_USE_DASHBOARD.md` | `docs/NEURON_WORKBENCH.md`, then the dataset-specific workflow |
 | Run CLI workflows | `neurobench/cli/main.py` | The matching file under `neurobench/cli/` |
 | Use the normal NeuRev workflow | `neurobench workbench baseline`, then `neurobench workbench serve --asset-mode current` | `docs/developer/NEUREV_FIRST_RELEASE_HANDOFF.md`, `neurobench/workbench/baseline.py`, `neurobench/workbench/server.py` |
 | Build or serve the neuron dashboard | `neurobench workbench build/status/serve` | `neurobench/workbench/builder.py`, `neurobench/workbench/server.py`, `docs/developer/WORKBENCH_VIDEO_CATALOG_REFACTOR.md`; installed annotation migration requires `--migrate-annotations` |
+| Develop single-reviewer label correction | `docs/developer/SINGLE_REVIEWER_ANNOTATION_DASHBOARD_MVP.md` | `neurobench/workbench/assets/src/`, `neurobench/workbench/server.py`, `neurobench/workbench/materialize.py`, `neurobench/workbench/label_reconciliation.py` |
 | Query datasets and videos for App/LLM use | `neurobench dataset catalog` | `neurobench/data/catalog.py`, `neurobench llm context --dataset-id ...` |
 | Run Gamma CFAR candidate workflows | `tools/prepare_gamma_cfar_workbench_run.py` | `neurobench/algorithms/cfar.py`, `neurobench/reports/gamma_cfar_sweep.py`, `docs/workflows/raw_video_to_report.md` |
 | Run the Spon dark-soma/excitation case study | `examples/spon_ca_burst_soma_excitation.example.json` | `neurobench/experiments/soma_excitation/`, `docs/workflows/spon_ca_burst_soma_excitation.md` |
@@ -53,7 +56,7 @@ from this map.
 | `neurobench/pipelines/` | Local pipeline execution, artifacts, devices, specs, stages, and sweeps. |
 | `neurobench/programs/` | Stage-gated research-program manifests and read-only readiness audits. |
 | `neurobench/realtime/` | Streaming and latency helpers. |
-| `neurobench/reports/` | Markdown/JSON report builders and renderers. |
+| `neurobench/reports/` | Markdown/JSON report builders, scientific-audit contracts, and renderers. |
 | `neurobench/review/` | Reviewer agreement and provenance utilities. |
 | `neurobench/validation/` | JSON schema loading and validation helpers. |
 | `neurobench/workbench/` | Browser workbench builder, no-write/current and installed serving, preservation baselines, durable local jobs, assets, intermediate exports, ROI sidecars, and materialization. |
@@ -174,6 +177,11 @@ recovery; it is generated.
 - Public CLI commands live under `neurobench/cli/` or thin `tools/` wrappers.
 - Long-running experiments should write under `Outputs/` and record a manifest
   or summary JSON that points to the generated dashboard/report artifacts.
+- Every new experiment resolves the default-on scientific-audit policy during
+  preflight and must pass its three-section audit completion gate unless the
+  user explicitly opts out with a recorded reason. Agents read
+  `llm_context.json`, `summary.json`, `artifact_index.json`, and
+  `validation.json` before opening large media.
 - Reusable algorithms belong in `neurobench/algorithms/`, not in `tools/`.
 - Reusable report/dashboard generation belongs in `neurobench/reports/`,
   `neurobench/workbench/`, or a future `neurobench/dashboards/` package.

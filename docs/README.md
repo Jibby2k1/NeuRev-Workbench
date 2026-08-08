@@ -5,6 +5,10 @@ the project.
 
 ## Start Here
 
+- [How to Use the NeuRev Dashboard](HOW_TO_USE_DASHBOARD.md): concise,
+  researcher-facing instructions for opening a dataset, inspecting Raw and
+  processed evidence, correcting labels, reviewing changes, and publishing an
+  immutable annotation revision.
 - [Fish Intent and Inverse-Control Program](programs/fish_inverse_control/README.md):
   current authority, evidence history, literature grounding, exact experiment
   portfolio, machine audit, and implementation routing.
@@ -35,6 +39,8 @@ the project.
 
 ## Dashboard Pages
 
+- [Dashboard User Guide](HOW_TO_USE_DASHBOARD.md): the normal review sequence,
+  correction workspace screen map, real-data checklist, and troubleshooting.
 - [Pipelines](ARCHITECTURE_LAB.md): compare generated runs, build
   pipeline stacks, configure stage parameters, plan sweeps, and understand
   real-time readiness metadata.
