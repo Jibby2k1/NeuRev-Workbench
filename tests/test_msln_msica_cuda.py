@@ -96,3 +96,22 @@ def test_cuda_joint_refuses_vram_oversubscription() -> None:
             review_crop_frames=3,
             max_vram_bytes=1,
         )
+
+
+def test_cuda_joint_accepts_valid_fixed_scale_floor() -> None:
+    rng = np.random.default_rng(19)
+    values = rng.normal(size=(14, 11, 13)).astype(np.float32)
+    quiet = np.ones(14, dtype=bool)
+    context = JointSTContext("joint_cuda_fixed_floor", 5, 1, 5, 1)
+    calibrated = causal_joint_msln_cuda(
+        values, context, quiet_mask=quiet, review_crop_frames=5,
+        max_vram_bytes=512 * 2**20,
+    )
+    fixed = causal_joint_msln_cuda(
+        values, context, quiet_mask=np.zeros(14, dtype=bool),
+        review_crop_frames=5, max_vram_bytes=512 * 2**20,
+        scale_floor_override=calibrated.scale_floor,
+    )
+    assert fixed.scale_floor == pytest.approx(calibrated.scale_floor)
+    assert fixed.diagnostics["scale_floor_source"] == "override"
+    assert np.isfinite(cp.asnumpy(fixed.values)).all()

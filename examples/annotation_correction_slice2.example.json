@@ -1,0 +1,120 @@
+{
+  "dataset": {
+    "dataset_id": "annotation_correction_slice2_fixture",
+    "name": "Slice 2 correction visual fixture"
+  },
+  "video": {
+    "name": "tiny_fish",
+    "width": 5,
+    "height": 4,
+    "frames": 3,
+    "fps": 2,
+    "framePattern": "frames/frame_%04d.png"
+  },
+  "parameters": {
+    "purpose": "editable annotation correction workspace fixture"
+  },
+  "rois": [],
+  "annotationCorrection": {
+    "schema_version": 1,
+    "source_video_id": "tiny_fish",
+    "read_only": false,
+    "revision": {
+      "revisionId": "ann_slice2_fixture",
+      "parentRevisionId": "ann_import_v1",
+      "state": "draft",
+      "reviewerId": "reviewer_local_1",
+      "frozenRunId": "raw_msica_msln_fixture",
+      "sourceAnnotationsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "createdAt": "2026-08-06T14:30:12Z",
+      "updatedAt": "2026-08-06T14:30:12Z",
+      "revisionToken": 0,
+      "operationCount": 0
+    },
+    "view_contracts": [
+      {
+        "schema_version": 1,
+        "view_id": "raw",
+        "source_video_id": "tiny_fish",
+        "shape_tyx": [3, 4, 5],
+        "source_to_view": {"kind": "identity"},
+        "frame_mapping": {"kind": "identity", "offset": 0},
+        "intensity_semantics": "raw_amplitude"
+      },
+      {
+        "schema_version": 1,
+        "view_id": "msica",
+        "source_video_id": "tiny_fish",
+        "shape_tyx": [3, 4, 5],
+        "source_to_view": {"kind": "identity"},
+        "frame_mapping": {"kind": "identity", "offset": 0},
+        "intensity_semantics": "normalized_unsigned_visualization"
+      },
+      {
+        "schema_version": 1,
+        "view_id": "msln",
+        "source_video_id": "tiny_fish",
+        "shape_tyx": [3, 4, 5],
+        "source_to_view": {"kind": "identity"},
+        "frame_mapping": {"kind": "identity", "offset": 0},
+        "intensity_semantics": "normalized_signed_visualization"
+      }
+    ],
+    "arrays_tyx": {
+      "raw": [
+        [[0, 0, 0, 0, 0], [0, 1, 2, 1, 0], [0, 0, 0, 2, 0], [0, 0, 0, 0, 0]],
+        [[0, 0, 1, 0, 0], [0, 2, 9, 2, 0], [0, 3, 0, 5, 0], [0, 0, 0, 0, 0]],
+        [[0, 0, 0, 0, 0], [0, 1, 3, 1, 0], [0, 2, 0, 2, 0], [0, 0, 0, 0, 0]]
+      ],
+      "msica": [
+        [[0, 0, 0, 0, 0], [0, 0, 1, 0, 0], [0, 0, 0, 1, 0], [0, 0, 0, 0, 0]],
+        [[0, 0, 1, 0, 0], [0, 1, 8, 1, 0], [0, 2, 0, 4, 0], [0, 0, 0, 0, 0]],
+        [[0, 0, 0, 0, 0], [0, 0, 2, 0, 0], [0, 1, 0, 1, 0], [0, 0, 0, 0, 0]]
+      ],
+      "msln": [
+        [[0, 0, 0, 0, 0], [0, -1, 0, -1, 0], [0, 0, 0, 1, 0], [0, 0, 0, 0, 0]],
+        [[0, 0, -1, 0, 0], [0, -1, 6, -1, 0], [0, 2, 0, 3, 0], [0, 0, 0, 0, 0]],
+        [[0, 0, 0, 0, 0], [0, -1, 1, -1, 0], [0, 1, 0, 0, 0], [0, 0, 0, 0, 0]]
+      ]
+    },
+    "expert_rois": [
+      {
+        "id": "E1",
+        "source_xy": [2, 1],
+        "ui_frame": 2,
+        "events": [2],
+        "linked_model_id": "M1",
+        "geometry": {"kind": "circle", "radius_px": 0.75}
+      },
+      {
+        "id": "E2",
+        "source_xy": [1, 2],
+        "ui_frame": 2,
+        "events": [2],
+        "geometry": {"kind": "circle", "radius_px": 0.75}
+      }
+    ],
+    "model_rois": [
+      {
+        "id": "M1",
+        "source_xy": [2, 1],
+        "ui_frame": 2,
+        "events": [2],
+        "linked_expert_id": "E1",
+        "status": "matched",
+        "geometry": {"kind": "center"}
+      },
+      {
+        "id": "M2",
+        "source_xy": [3, 2],
+        "ui_frame": 2,
+        "events": [2],
+        "status": "unknown",
+        "geometry": {"kind": "center"}
+      }
+    ],
+    "matches": [
+      {"expert_id": "E1", "model_id": "M1", "distance_px": 0.0}
+    ]
+  }
+}

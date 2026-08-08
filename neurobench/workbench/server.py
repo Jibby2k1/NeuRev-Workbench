@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timezone
 import hashlib
 import importlib.util
 import json
@@ -56,6 +57,16 @@ from neurobench.data.imports import (
 )
 from neurobench.llm_planning import proposal_set_to_architecture_manifest, validate_proposal_set
 from neurobench.pipeline_catalog import normalize_pipeline
+from neurobench.workbench.annotation_revisions import (
+    RevisionConflictError,
+    append_revision_operation,
+    fork_revision_root,
+    initialize_revision_root,
+    list_revision_roots,
+    publish_revision_root,
+    resolve_revision_root,
+    revision_snapshot,
+)
 from neurobench.workbench.materialize import materialize_virtual_roi_traces
 from neurobench.workbench.label_reconciliation import reconcile_label_table
 from neurobench.validation.schemas import validate_dict
@@ -1360,6 +1371,23 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 include_body=include_body,
             )
             return True
+        if tail == ["annotation-revisions"]:
+            self._send_json(
+                200,
+                {"schema_version": 1, "revisions": list_revision_roots(app_dir / "annotation_revisions")},
+                include_body=include_body,
+            )
+            return True
+        if len(tail) == 2 and tail[0] == "annotation-revisions":
+            try:
+                root = resolve_revision_root(app_dir / "annotation_revisions", tail[1])
+                if not root.is_dir():
+                    self._send_json(404, {"error": "annotation revision not found"}, include_body=include_body)
+                else:
+                    self._send_json(200, revision_snapshot(root), include_body=include_body)
+            except ValueError as exc:
+                self._send_json(400, {"error": str(exc)}, include_body=include_body)
+            return True
         if tail == ["jobs"]:
             self._send_json(200, {"jobs": JOBS.list(), "durable_jobs": durable_job_records_for_app(app_dir)}, include_body=include_body)
             return True
@@ -1519,6 +1547,22 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
             self._send_json(404, {"error": "unknown api endpoint"})
             return
         tail = self._api_tail(parsed.path)
+        revision_action = (
+            tail[2]
+            if tail and len(tail) == 3 and tail[0] == "annotation-revisions"
+            else None
+        )
+        if tail == ("annotation-revisions",) or revision_action in {"operations", "fork", "publish"}:
+            payload = self._read_post_payload()
+            if payload is None:
+                return
+            handler = {
+                "operations": self._handle_revision_append_post,
+                "fork": self._handle_revision_fork_post,
+                "publish": self._handle_revision_publish_post,
+            }.get(revision_action, self._handle_revision_create_post)
+            handler(app_dir, payload, tail or ())
+            return
         if tail and tail[0] == "imports":
             if tail == ("imports", "upload"):
                 self._handle_import_upload_post(app_dir, None, tail)
@@ -1551,6 +1595,114 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
         if payload is None:
             return
         getattr(self, handler_name)(app_dir, payload, tail or ())
+
+
+    def _handle_revision_create_post(self, app_dir: Path, payload: dict[str, Any], tail: tuple[str, ...]) -> None:
+        revision = payload.get("revision")
+        annotations = payload.get("annotations")
+        operations = payload.get("operations") or []
+        if not isinstance(revision, dict) or not isinstance(annotations, dict) or not isinstance(operations, list):
+            self._send_json(400, {"error": "revision, annotations, and operations are required draft objects"})
+            return
+        try:
+            with dataset_lock(app_dataset_id(app_dir)):
+                root = initialize_revision_root(
+                    app_dir / "annotation_revisions",
+                    revision=revision,
+                    annotations=annotations,
+                    operations=operations,
+                )
+            self._send_json(201, revision_snapshot(root))
+        except FileExistsError as exc:
+            self._send_json(409, {"error": str(exc)})
+        except (OSError, ValueError) as exc:
+            self._send_json(400, {"error": str(exc)})
+
+    def _handle_revision_append_post(self, app_dir: Path, payload: dict[str, Any], tail: tuple[str, ...]) -> None:
+        operation = payload.get("operation") if isinstance(payload.get("operation"), dict) else payload
+        try:
+            root = resolve_revision_root(app_dir / "annotation_revisions", tail[1])
+            if not root.is_dir():
+                self._send_json(404, {"error": "annotation revision not found"})
+                return
+            with dataset_lock(app_dataset_id(app_dir)):
+                snapshot = append_revision_operation(root, operation)
+            self._send_json(200, snapshot)
+        except RevisionConflictError as exc:
+            current = None
+            try:
+                current = revision_snapshot(root) if root.is_dir() else None
+            except (OSError, ValueError):
+                pass
+            self._send_json(409, {"error": str(exc), "current": current})
+        except (OSError, ValueError) as exc:
+            self._send_json(400, {"error": str(exc)})
+
+    def _handle_revision_fork_post(self, app_dir: Path, payload: dict[str, Any], tail: tuple[str, ...]) -> None:
+        revision_id = payload.get("revisionId")
+        reviewer_id = payload.get("reviewerId")
+        if not isinstance(revision_id, str) or not isinstance(reviewer_id, str):
+            self._send_json(400, {"error": "revisionId and reviewerId are required strings"})
+            return
+        try:
+            revisions_root = app_dir / "annotation_revisions"
+            source_root = resolve_revision_root(revisions_root, tail[1])
+            if not source_root.is_dir():
+                self._send_json(404, {"error": "annotation revision not found"})
+                return
+            timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+            with dataset_lock(app_dataset_id(app_dir)):
+                root = fork_revision_root(
+                    source_root,
+                    revisions_root,
+                    revision_id=revision_id,
+                    reviewer_id=reviewer_id,
+                    timestamp=timestamp,
+                )
+            self._send_json(201, revision_snapshot(root))
+        except FileExistsError as exc:
+            self._send_json(409, {"error": str(exc)})
+        except (OSError, ValueError) as exc:
+            self._send_json(400, {"error": str(exc)})
+
+    def _handle_revision_publish_post(self, app_dir: Path, payload: dict[str, Any], tail: tuple[str, ...]) -> None:
+        revision_id = payload.get("revisionId")
+        expected_token = payload.get("expectedRevisionToken")
+        if (
+            not isinstance(revision_id, str)
+            or not isinstance(expected_token, int)
+            or isinstance(expected_token, bool)
+        ):
+            self._send_json(400, {"error": "revisionId and integer expectedRevisionToken are required"})
+            return
+        draft_root: Path | None = None
+        try:
+            revisions_root = app_dir / "annotation_revisions"
+            draft_root = resolve_revision_root(revisions_root, tail[1])
+            if not draft_root.is_dir():
+                self._send_json(404, {"error": "annotation revision not found"})
+                return
+            timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+            with dataset_lock(app_dataset_id(app_dir)):
+                root = publish_revision_root(
+                    draft_root,
+                    revisions_root,
+                    revision_id=revision_id,
+                    expected_revision_token=expected_token,
+                    timestamp=timestamp,
+                )
+            self._send_json(201, revision_snapshot(root))
+        except RevisionConflictError as exc:
+            current = None
+            try:
+                current = revision_snapshot(draft_root) if draft_root and draft_root.is_dir() else None
+            except (OSError, ValueError):
+                pass
+            self._send_json(409, {"error": str(exc), "current": current})
+        except FileExistsError as exc:
+            self._send_json(409, {"error": str(exc)})
+        except (OSError, ValueError) as exc:
+            self._send_json(400, {"error": str(exc)})
 
     def _handle_materialize_traces_post(self, app_dir: Path, payload: dict[str, Any], tail: tuple[str, ...]) -> None:
         self._materialize_traces(app_dir, payload)

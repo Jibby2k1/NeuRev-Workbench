@@ -11,6 +11,15 @@ load only the workflow context needed for the current task.
 - Never delete archived experiment logs or overwrite completed output roots.
 - Before a long run, verify inputs, output collision, RAM/disk headroom, active
   processes, GPU memory, and a read-only preflight.
+- Before designing, running, or completing any new experiment, read
+  `docs/workflows/SCIENTIFIC_AUDIT_OUTPUT_STANDARD.md`.
+- Scientific-audit outputs are default-on. A run is not audit-complete until
+  expert-only and model-only full-field videos, close-ups and traces, the
+  figure/table-only matched comparison, detection metadata, LLM context index,
+  and report pass validation. Read the small JSON/CSV index before large media.
+  Only an explicit user opt-out with a recorded reason may suppress the set;
+  unlabeled runs use a frozen candidate-surrogate Model section and mark Expert
+  as not applicable.
 - Prefer bounded chunks, explicit thread counts, atomic metadata, progress
   heartbeats, and resumable/idempotent outputs.
 - Do not restart the stopped grid128 Stage A sweep or launch its Stage B plan
@@ -52,6 +61,7 @@ Read the matching workflow before changing or running an experiment:
 - `docs/workflows/spon_ca_burst_learnable_contrast.md`
 - `docs/workflows/spon_ca_burst_frame_derivatives.md`
 - `docs/workflows/spon_ca_burst_pairwise_separation.md`
+- `docs/workflows/spon_ca_burst_event_weighted_cs_parzen.md`
 - `docs/workflows/spon_ca_burst_pairwise_feature_fusion.md`
 - `docs/workflows/spon_ca_burst_hierarchical_parzen_noisy_ica.md`
 - `docs/workflows/spon_ca_burst_multiscale_information.md`

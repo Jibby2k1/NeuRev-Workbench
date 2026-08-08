@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "source_video_id": "tiny_fish",
+  "view_contracts": [
+    {
+      "schema_version": 1,
+      "view_id": "raw",
+      "source_video_id": "tiny_fish",
+      "shape_tyx": [3, 4, 5],
+      "source_to_view": {"kind": "identity"},
+      "frame_mapping": {"kind": "identity", "offset": 0},
+      "intensity_semantics": "raw_amplitude"
+    },
+    {
+      "schema_version": 1,
+      "view_id": "msica",
+      "source_video_id": "tiny_fish",
+      "shape_tyx": [3, 4, 5],
+      "source_to_view": {"kind": "identity"},
+      "frame_mapping": {"kind": "identity", "offset": 0},
+      "intensity_semantics": "normalized_unsigned_visualization"
+    },
+    {
+      "schema_version": 1,
+      "view_id": "msln",
+      "source_video_id": "tiny_fish",
+      "shape_tyx": [3, 4, 5],
+      "source_to_view": {"kind": "identity"},
+      "frame_mapping": {"kind": "identity", "offset": 0},
+      "intensity_semantics": "normalized_signed_visualization"
+    }
+  ],
+  "arrays_tyx": {
+    "raw": [
+      [[0, 0, 0, 0, 0], [0, 1, 2, 1, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+      [[0, 0, 1, 0, 0], [0, 2, 9, 2, 0], [0, 0, 1, 0, 0], [0, 0, 0, 0, 0]],
+      [[0, 0, 0, 0, 0], [0, 1, 3, 1, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
+    ],
+    "msica": [
+      [[0, 0, 0, 0, 0], [0, 0, 1, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+      [[0, 0, 1, 0, 0], [0, 1, 8, 1, 0], [0, 0, 1, 0, 0], [0, 0, 0, 0, 0]],
+      [[0, 0, 0, 0, 0], [0, 0, 2, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
+    ],
+    "msln": [
+      [[0, 0, 0, 0, 0], [0, -1, 0, -1, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+      [[0, 0, -1, 0, 0], [0, -1, 6, -1, 0], [0, 0, -1, 0, 0], [0, 0, 0, 0, 0]],
+      [[0, 0, 0, 0, 0], [0, -1, 1, -1, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
+    ]
+  },
+  "expert_roi": {"id": "E1", "source_xy": [2, 1], "ui_frame": 2},
+  "model_roi": {"id": "M1", "source_xy": [3, 1], "ui_frame": 2, "status": "unknown"}
+}

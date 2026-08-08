@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Neurobench Annotation Revision Operation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "operationId",
+    "operationType",
+    "targetId",
+    "before",
+    "after",
+    "evidenceViewId",
+    "uiFrame",
+    "sourceXy",
+    "reviewerId",
+    "timestamp",
+    "expectedRevisionToken"
+  ],
+  "properties": {
+    "schema_version": {"const": 1, "type": "integer"},
+    "operationId": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]*$"},
+    "operationType": {
+      "enum": [
+        "create",
+        "move",
+        "resize",
+        "tombstone",
+        "restore",
+        "link",
+        "unlink",
+        "promote",
+        "edit-notes",
+        "edit-event-interval"
+      ]
+    },
+    "targetId": {"type": "string", "minLength": 1},
+    "before": {"type": ["object", "null"]},
+    "after": {"type": ["object", "null"]},
+    "evidenceViewId": {"type": "string", "minLength": 1},
+    "uiFrame": {"type": "integer", "minimum": 1},
+    "sourceXy": {
+      "type": "array",
+      "prefixItems": [{"type": "number"}, {"type": "number"}],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "reviewerId": {"type": "string", "minLength": 1},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "expectedRevisionToken": {"type": "integer", "minimum": 0}
+  }
+}

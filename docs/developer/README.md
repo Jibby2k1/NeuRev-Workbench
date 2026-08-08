@@ -10,7 +10,7 @@
 | Plan hierarchical Parzen/noisy ICA decomposition | [Research note](../research/HIERARCHICAL_PARZEN_NOISY_ICA.md), [Codex package](hierarchical_parzen_noisy_ica/README.md) | planned `neurobench/algorithms/hierarchical_parzen.py`, `neurobench/algorithms/noisy_parzen_ica.py`, and `neurobench/experiments/hierarchical_parzen_noisy_ica/` |
 | Run PCA, spatial ICA, and autoencoder representation benchmarks | [Representation benchmark](../workflows/spon_ca_burst_representation_benchmark.md) | `neurobench/experiments/representation_benchmark/` |
 | Run or implement pairwise binary difference, ICA, CS-divergence, or constrained NMF | [Pairwise workflow](../workflows/spon_ca_burst_pairwise_separation.md), [implementation brief](PAIRWISE_SOURCE_SEPARATION_IMPLEMENTATION_BRIEF.md) | `neurobench/algorithms/pairwise_separation.py`, `neurobench/experiments/pairwise_separation/`, `neurobench/metrics/sparse_detection.py` |
-| Change workbench UI | [Neuron Workbench](../NEURON_WORKBENCH.md) | `neurobench/workbench/assets/src/` |
+| Change workbench UI | [Dashboard user guide](../HOW_TO_USE_DASHBOARD.md), then [Neuron Workbench](../NEURON_WORKBENCH.md) | `neurobench/workbench/assets/src/` |
 | Query/build video review apps | [Workbench video/catalog refactor](WORKBENCH_VIDEO_CATALOG_REFACTOR.md) | `neurobench/data/catalog.py`, `neurobench/workbench/` |
 | Implement the NeuRev first release | [First-release handoff](NEUREV_FIRST_RELEASE_HANDOFF.md) | `neurobench/data/imports.py`, `neurobench/workbench/baseline.py`, `neurobench/workbench/server.py`, `neurobench/workbench/assets/src/` |
 | Review architecture debt | [Codebase audit](../CODEBASE_AUDIT.md) | use the current package map before acting |

@@ -911,12 +911,14 @@ function reviewSubPageFromHash(hashText=location.hash){
   if(hash === 'review-stencil' || hash === 'stencil' || hash === 'anatomy-stencil') return 'stencil';
   if(hash === 'review-overlap' || hash === 'overlap' || hash === 'sweep-overlap' || hash === 'candidate-overlay' || hash === 'review-candidate-overlay') return 'overlap';
   if(hash === 'review-triage' || hash === 'triage' || hash === 'review-queue') return 'triage';
+  if(hash === 'annotation-correction' || hash === 'review-correction' || hash === 'correction') return 'correction';
   return 'inspect';
 }
 function reviewPageLabel(subpage){
   if(subpage === 'stencil') return 'Review Stencil';
   if(subpage === 'overlap') return 'Candidate Overlay';
   if(subpage === 'triage') return 'Review Triage';
+  if(subpage === 'correction') return 'Correct Labels';
   return 'Review Inspect';
 }
 function updateReviewSubnav(subpage){
@@ -924,14 +926,17 @@ function updateReviewSubnav(subpage){
   document.getElementById('reviewStencilSubtab')?.classList.toggle('active', subpage === 'stencil');
   document.getElementById('reviewOverlapSubtab')?.classList.toggle('active', subpage === 'overlap');
   document.getElementById('reviewTriageSubtab')?.classList.toggle('active', subpage === 'triage');
+  document.getElementById('reviewCorrectionSubtab')?.classList.toggle('active', subpage === 'correction');
   const context = document.querySelector('.stage.reviewOnly .pageContext');
   if(context) context.textContent = `${reviewPageLabel(subpage)} · ${datasetId}`;
   document.getElementById('reviewStencilPage')?.classList.toggle('hidden', subpage !== 'stencil');
   document.getElementById('reviewOverlapPage')?.classList.toggle('hidden', subpage !== 'overlap');
   document.getElementById('reviewTriagePage')?.classList.toggle('hidden', subpage !== 'triage');
+  document.getElementById('reviewCorrectionPage')?.classList.toggle('hidden', subpage !== 'correction');
   appRoot.classList.toggle('review-stencil-mode', subpage === 'stencil');
   appRoot.classList.toggle('review-overlap-mode', subpage === 'overlap');
   appRoot.classList.toggle('review-triage-mode', subpage === 'triage');
+  appRoot.classList.toggle('review-correction-mode', subpage === 'correction');
 }
 function diagnosticAssetUrl(file){ return `diagnostics/${file}`; }
 function polygonArea(points){

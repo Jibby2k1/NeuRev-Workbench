@@ -9,6 +9,10 @@ Use this guide when you want to process a video, open the dashboard, review
 candidates, compare parameter settings, or export annotation data for the lab.
 For a map of the full documentation set, see [README.md](README.md).
 
+**New reviewer?** Start with
+[How to Use the NeuRev Dashboard](HOW_TO_USE_DASHBOARD.md). It is the concise
+operational guide; this document is the broader build and feature reference.
+
 For the current cropped resting-video result and an algorithm-first explanation
 of the waveforms, thresholds, and yellow event markers, see
 [RESTING_VIDEO_ALGORITHM_BRIEF.md](RESTING_VIDEO_ALGORITHM_BRIEF.md).

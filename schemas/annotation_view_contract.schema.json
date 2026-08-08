@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Neurobench Annotation View Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "view_id",
+    "source_video_id",
+    "shape_tyx",
+    "source_to_view",
+    "frame_mapping",
+    "intensity_semantics"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "view_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]*$"
+    },
+    "source_video_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "shape_tyx": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "integer",
+          "minimum": 1
+        },
+        {
+          "type": "integer",
+          "minimum": 1
+        },
+        {
+          "type": "integer",
+          "minimum": 1
+        }
+      ],
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "source_to_view": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "const": "identity"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "matrix_3x3"
+          ],
+          "properties": {
+            "kind": {
+              "const": "affine"
+            },
+            "matrix_3x3": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "frame_mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "offset"
+      ],
+      "properties": {
+        "kind": {
+          "const": "identity"
+        },
+        "offset": {
+          "type": "integer"
+        }
+      }
+    },
+    "intensity_semantics": {
+      "enum": [
+        "raw_amplitude",
+        "amplitude_preserving",
+        "normalized_unsigned_visualization",
+        "normalized_signed_visualization",
+        "squared_frame_evidence",
+        "burst_pooled_evidence"
+      ]
+    },
+    "frame_pattern": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

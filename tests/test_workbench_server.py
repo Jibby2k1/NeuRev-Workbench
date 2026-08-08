@@ -680,5 +680,147 @@ class WorkbenchServerTests(unittest.TestCase):
             self.assertEqual(handler.app_dir, root_dir.resolve())
 
 
+    def test_annotation_revision_api_creates_loads_and_appends_with_conflict_snapshot(self):
+        from urllib.error import HTTPError
+        import neurobench.workbench.server as server_module
+
+        with tempfile.TemporaryDirectory() as tmp:
+            app_dir = Path(tmp) / "app"
+            app_dir.mkdir()
+            (app_dir / "index.html").write_text("demo", encoding="utf-8")
+            (app_dir / "review_data.json").write_text(
+                json.dumps({"dataset": {"dataset_id": "demo"}, "video": {"name": "demo", "frames": 1}}),
+                encoding="utf-8",
+            )
+            http_server, _ = server_module.create_workbench_server(
+                app_dir=app_dir,
+                host="127.0.0.1",
+                port=0,
+                asset_mode="installed",
+            )
+            thread = threading.Thread(target=http_server.serve_forever, daemon=True)
+            thread.start()
+            try:
+                host, port = http_server.server_address[:2]
+                base = f"http://{host}:{port}/api/annotation-revisions"
+                revision = {
+                    "schema_version": 1,
+                    "revisionId": "ann_api_draft",
+                    "parentRevisionId": "ann_import_v1",
+                    "state": "draft",
+                    "reviewerId": "reviewer_local_1",
+                    "frozenRunId": "frozen_run_1",
+                    "sourceAnnotationsSha256": "a" * 64,
+                    "createdAt": "2026-08-06T14:30:12Z",
+                    "updatedAt": "2026-08-06T14:30:12Z",
+                    "revisionToken": 0,
+                    "operationCount": 0,
+                }
+                create_body = json.dumps(
+                    {
+                        "revision": revision,
+                        "annotations": {
+                            "rois": {
+                                "E2": {
+                                    "source_xy": [2.0, 1.0],
+                                    "geometry": {"kind": "circle", "radius_px": 1.5},
+                                }
+                            }
+                        },
+                        "operations": [],
+                    }
+                ).encode("utf-8")
+                with urlopen(
+                    Request(base, data=create_body, headers={"Content-Type": "application/json"}, method="POST"),
+                    timeout=5,
+                ) as response:
+                    created = json.loads(response.read())
+                with urlopen(base, timeout=5) as response:
+                    listed = json.loads(response.read())
+                with urlopen(f"{base}/ann_api_draft", timeout=5) as response:
+                    loaded = json.loads(response.read())
+
+                before = created["annotations"]["rois"]["E2"]
+                operation = {
+                    "schema_version": 1,
+                    "operationId": "op_api_move_001",
+                    "operationType": "move",
+                    "targetId": "E2",
+                    "before": before,
+                    "after": {**before, "source_xy": [3.0, 2.0]},
+                    "evidenceViewId": "raw",
+                    "uiFrame": 1,
+                    "sourceXy": [3.0, 2.0],
+                    "reviewerId": "reviewer_local_1",
+                    "timestamp": "2026-08-06T14:31:44Z",
+                    "expectedRevisionToken": 0,
+                }
+                operation_body = json.dumps({"operation": operation}).encode("utf-8")
+                operation_url = f"{base}/ann_api_draft/operations"
+                with urlopen(
+                    Request(operation_url, data=operation_body, headers={"Content-Type": "application/json"}, method="POST"),
+                    timeout=5,
+                ) as response:
+                    updated = json.loads(response.read())
+                stale = dict(operation)
+                stale["operationId"] = "op_api_move_stale"
+                with self.assertRaises(HTTPError) as conflict:
+                    urlopen(
+                        Request(
+                            operation_url,
+                            data=json.dumps({"operation": stale}).encode("utf-8"),
+                            headers={"Content-Type": "application/json"},
+                            method="POST",
+                        ),
+                        timeout=5,
+                    )
+                conflict_payload = json.loads(conflict.exception.read())
+                publish_body = json.dumps(
+                    {"revisionId": "ann_api_published", "expectedRevisionToken": 1}
+                ).encode("utf-8")
+                with urlopen(
+                    Request(
+                        f"{base}/ann_api_draft/publish",
+                        data=publish_body,
+                        headers={"Content-Type": "application/json"},
+                        method="POST",
+                    ),
+                    timeout=5,
+                ) as response:
+                    published = json.loads(response.read())
+                fork_body = json.dumps(
+                    {"revisionId": "ann_api_fork", "reviewerId": "reviewer_local_2"}
+                ).encode("utf-8")
+                with urlopen(
+                    Request(
+                        f"{base}/ann_api_published/fork",
+                        data=fork_body,
+                        headers={"Content-Type": "application/json"},
+                        method="POST",
+                    ),
+                    timeout=5,
+                ) as response:
+                    forked = json.loads(response.read())
+            finally:
+                http_server.shutdown()
+                thread.join(timeout=5)
+                http_server.server_close()
+
+        self.assertEqual(created["revision"]["revisionToken"], 0)
+        self.assertEqual(listed["revisions"][0]["revisionId"], "ann_api_draft")
+        self.assertEqual(loaded["revision"]["revisionId"], "ann_api_draft")
+        self.assertEqual(updated["revision"]["revisionToken"], 1)
+        self.assertEqual(updated["annotations"]["rois"]["E2"]["source_xy"], [3.0, 2.0])
+        self.assertEqual(conflict.exception.code, 409)
+        self.assertEqual(conflict_payload["current"]["revision"]["revisionToken"], 1)
+        self.assertEqual(published["revision"]["state"], "published")
+        self.assertEqual(published["revision"]["parentRevisionId"], "ann_api_draft")
+        self.assertEqual(published["revision"]["revisionToken"], 1)
+        self.assertEqual(forked["revision"]["state"], "draft")
+        self.assertEqual(forked["revision"]["parentRevisionId"], "ann_api_published")
+        self.assertEqual(forked["revision"]["reviewerId"], "reviewer_local_2")
+        self.assertEqual(forked["revision"]["revisionToken"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -242,3 +242,15 @@ stages with the schema-v4 manifest
 `examples/spon_ca_burst_msln_msica_broad_cascade_v4.example.json` and the
 `broad_cascade` / `broad_finalize` modules. A new confirmation recording or
 output root requires explicit selection; never overwrite this completed root.
+
+## Label-free proposal review packages
+
+Completed frozen candidates can be repackaged for review before expert labels
+arrive with `neurobench workbench model-proposal-package`. The reusable
+contract and proof package are documented in
+[unlabeled_model_proposal_review.md](unlabeled_model_proposal_review.md). This
+packaging path performs no refitting: it removes expert-derived fields, creates
+an empty annotation revision, defaults the dashboard to model proposals, and
+writes both blinded and model-assisted XLSX workbooks. A future new recording
+still requires an explicit, collision-safe inference run to produce the frozen
+candidate-bearing source app.

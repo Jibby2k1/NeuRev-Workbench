@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Neurobench Annotation Revision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "revisionId",
+    "parentRevisionId",
+    "state",
+    "reviewerId",
+    "frozenRunId",
+    "sourceAnnotationsSha256",
+    "createdAt",
+    "updatedAt",
+    "revisionToken",
+    "operationCount"
+  ],
+  "properties": {
+    "schema_version": {"const": 1, "type": "integer"},
+    "revisionId": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]*$"},
+    "parentRevisionId": {
+      "type": ["string", "null"],
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]*$"
+    },
+    "state": {"enum": ["draft", "published"]},
+    "reviewerId": {"type": "string", "minLength": 1},
+    "frozenRunId": {"type": "string", "minLength": 1},
+    "sourceAnnotationsSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"},
+    "revisionToken": {"type": "integer", "minimum": 0},
+    "operationCount": {"type": "integer", "minimum": 0}
+  }
+}
