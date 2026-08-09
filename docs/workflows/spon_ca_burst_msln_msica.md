@@ -87,6 +87,18 @@ See
 [`SPON_CA_BURST_GLOBAL_NORM_VISUALIZATION_RESULTS.md`](../research/SPON_CA_BURST_GLOBAL_NORM_VISUALIZATION_RESULTS.md)
 for the consolidated history, scale diagnostics, and current decision.
 
+### Quantized causal coactivity pooling v1
+
+The completed 325-lane GPU experiment tested 8/16/32/64-level quantization,
+causal threshold-conditioned neighborhood pooling, and both combined orders on
+the preferred float GN representation. Protected LOBO selection did not improve
+the 54/79 float control: all-family and neighborhood panels tied 54/79,
+quantization-only reached 52/79, and the integrity-constrained panel reached
+51/79. The frozen hard max/min + Q8 operating point fell to 24/79 and is
+rejected. Do not replace float GN. See
+[`SPON_CA_BURST_QUANTIZED_COACTIVITY_POOLING_V1_RESULTS.md`](../research/SPON_CA_BURST_QUANTIZED_COACTIVITY_POOLING_V1_RESULTS.md)
+for the design, diagnostics, and interpretation.
+
 ## Frozen standard design
 
 The standard manifest is [spon_ca_burst_msln_msica_v1.example.json](../../examples/spon_ca_burst_msln_msica_v1.example.json). Its eight contexts are ordered deterministically:

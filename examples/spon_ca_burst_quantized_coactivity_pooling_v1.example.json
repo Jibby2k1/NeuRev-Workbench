@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_quantized_coactivity_pooling_v1",
+  "source": {
+    "raw_path": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+    "msica_path": "../Outputs/HierarchicalParzenICA/spon_ca_burst_multilag_msica_v5_all_roi_diagnostics/cache/global_msica.npy",
+    "msln_path": "../Outputs/HierarchicalParzenICA/spon_ca_burst_multilag_msica_v5_all_roi_diagnostics/cache/global_msln.npy",
+    "labels_path": "../Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+    "review_interval_ui": [1800, 2359],
+    "quiet_frames": 100,
+    "burst_intervals_ui": {"1": [2003, 2026], "2": [2040, 2063], "3": [2122, 2149], "4": [2254, 2300]}
+  },
+  "design": {
+    "gn_alpha": 0.5,
+    "quantization_levels": [8, 16, 32, 64],
+    "quantization_mappings": ["uniform", "sqrt_companded", "quiet_cdf"],
+    "quantization_dynamics": ["memoryless", "causal_hysteresis"],
+    "quiet_threshold_quantiles": [0.99, 0.999, 0.9999],
+    "spatial_radii_px": [1, 2, 3],
+    "causal_windows_frames": [1, 3, 5],
+    "required_support": [0.25, 0.5, 0.75],
+    "operators": ["hard_max_min", "hard_q90_identity", "soft_q90_identity", "soft_q90_median"],
+    "pooling": "top5_mean",
+    "neighborhood_finalists": 6,
+    "quantization_finalists": 4,
+    "combined_orders": ["quantize_then_support", "support_then_quantize"]
+  },
+  "evaluation": {
+    "candidate_budgets": [20, 40, 58, 80, 100],
+    "guardrail_budget": 58,
+    "nms_distance_px": 6,
+    "match_radius_px": 6,
+    "protected_selection": "leave_one_burst_out",
+    "unmatched_candidates": "unknown"
+  },
+  "compute": {"device": "cuda", "cpu_threads": 4, "workers_per_gpu": 1, "max_peak_vram_gb": 8},
+  "outputs": {"root_dir": "../Outputs/HierarchicalParzenICA/spon_ca_burst_quantized_coactivity_pooling_v1", "fps": 10.0}
+}
