@@ -1,0 +1,29 @@
+\section{Long-history tap sweep}
+We next tested physical FIR lengths of 2, 3, 5, 9, 17, 25, 33, 51, 75, 101, 151, and 201 samples (20 ms to 4 s of causal history). Three seeds and four temporal folds were fitted without labels. Full-rank ICA ceased to be reliable as dimensionality grew: 15/15 fits converged at 2--5 taps, 14/15 at 9, 10/15 at 17 and 25, 2/15 at 33, and 0/15 at every length from 51 through 201. Median conditioning worsened from 130 at two taps to 23,150 at 201 taps, while long-kernel cross-fold cosine similarity was only 0.04--0.09. More unconstrained taps therefore supplied degrees of freedom without supplying an identifiable temporal operator.
+
+To test long physical history without the same parameter explosion, a pre-label amendment represented 51--201 physical taps in low-frequency discrete-cosine bases of rank 8, 16, or 32. A stability gate froze the 201-tap, rank-8 DCT--ICA kernel before label evaluation. The learned kernel was a smooth, six-zero-crossing oscillatory band-pass-like operator: its peak response was 0.75 Hz, while its DC gain was only 0.027. It is not a finer moving-average estimate and should not be interpreted as one.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=.92\linewidth]{long_history_stability.png}
+  \caption{Full-rank temporal ICA loses convergence and becomes progressively ill-conditioned as the number of physical taps increases. The dashed line denotes 12/15 converged fits.}
+  \label{fig:long-stability}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=.95\linewidth]{long_history_frequency.png}
+  \caption{The frozen 201-tap rank-8 DCT--ICA kernel compared with deterministic 101-tap controls. The learned long-history kernel peaks near 0.75 Hz and strongly suppresses DC; exponential and boxcar controls are ordinary low-pass integrators.}
+  \label{fig:long-frequency}
+\end{figure}
+
+At its label-free quiet-calibrated operating point, the frozen long-history lane recovered 36/79 known occurrences with 700 candidates (macro recall 0.4205). Its burst recalls were 0.133, 0, 0.810, and 0.739, revealing severe temporal nonstationarity. The post-hoc operating-point winner, a 101-tap exponential smoother, recovered 73/79 but emitted 1,950 candidates and therefore cannot be called more precise. At matched low candidate budgets, 17-tap full-rank ICA was best: it recovered 48, 55, and 56 known occurrences at budgets of 20, 40, and 60 candidates per burst. At budgets of 100 and 150, a five-tap exponential was best (64 and 66 matches). Thus the data reject the hypothesis that at least 100 freely learned weights are required merely because the recording rate is 50 Hz. Tap count defines history duration, but frequency resolution and meaningful identifiability also depend on basis constraints, sample support, stationarity, and the evaluation budget.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{long_history_fixed_budget.png}
+  \caption{Known-positive macro recall at fixed candidate budgets per burst. The rank-8 DCT--ICA curves are shown for the smooth-basis family. Short ICA dominates the low-budget regime; long deterministic smoothing does not dominate until permissive budgets.}
+  \label{fig:long-budget}
+\end{figure}
+
+The long-history experiment narrows the interpretation of the visually clean positive quiet-$z$ field. Robust pixelwise normalization and rectification remain valuable, but long unconstrained ICA does not expose a progressively clearer physiological timescale. A more defensible next model would estimate a small number of interpretable time constants or a regularized low-order basis, preregistered against matched-budget controls, rather than learning one independent coefficient per 20 ms sample.
