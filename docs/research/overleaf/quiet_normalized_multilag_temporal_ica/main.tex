@@ -1,0 +1,166 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,graphicx,microtype,xcolor,hyperref}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{subcaption}
+\usepackage{siunitx}
+\graphicspath{{figures/}}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black}
+\newcommand{\todo}[1]{\textcolor{red!70!black}{[TODO: #1]}}
+\newcommand{\method}{quiet-normalized multi-lag temporal ICA}
+
+\title{Quiet-Normalized Multi-Lag Temporal Filtering Reveals Sparse Calcium Activity in Low-SNR Whole-Field Imaging\\\large Living manuscript --- preliminary results}
+\author{\todo{Author list and affiliations}}
+\date{Version \today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Detecting sparse calcium events in low-signal-to-noise whole-field recordings is complicated by static anatomy, spatially heterogeneous noise, and temporally persistent background intensity. We evaluated causal temporal embeddings in which each pixel was represented by its current intensity and $K$ preceding samples, then fitted symmetric InfoMax/FastICA without using event labels. A frozen $K=8$ component formed a predominantly positive, low-frequency finite impulse response (FIR) filter using nine samples from the current frame through 160 ms in the past. Robust per-pixel centering and scaling from a quiet interval, followed by positive rectification, produced visually sparse activity evidence and recovered 54 of 79 known sparse-positive occurrences with 726 candidates. A post-hoc $K=16$ diagnostic recovered 60 of 79 occurrences with 639 candidates, but was not the frozen audit operating point. The $K=8$ kernel had DC gain 2.518, peak response at \SI{0}{Hz}, and only 0.248 cosine similarity to a first difference, indicating that its primary action was temporal integration rather than differentiation. These observations motivate a testable hypothesis: much of the apparent improvement arises from the compound action of short-horizon integration, pixelwise robust quiet normalization, and positive rectification, rather than physical source separation by ICA alone. This manuscript records the result, its provenance, and the matched controls required before a stronger mechanistic or detection claim.
+\end{abstract}
+
+\section{Working claims and evidentiary status}
+\paragraph{Supported by the completed run.}
+A quiet-fitted multi-lag ICA component can act as a stable, positive temporal integrator; when followed by robust pixelwise quiet normalization, it yields visually sparse excitation evidence and substantial known-positive recovery. The complete three-section scientific audit passed inventory and media validation.
+
+\paragraph{Not yet established.}
+The experiment does not show that ICA recovered an independent physical neural source, that the method outperforms matched non-ICA temporal smoothers at an equal candidate budget, or that unmatched candidates are false positives. Sparse annotations define known positives, not exhaustive negatives.
+
+\section{Data and conventions}
+The source is the Spon Ca Burst hindbrain-to-tail fluorescence recording with 2,359 frames of size $340\times573$ pixels and a frame period of \SI{20}{ms}. The analyzed review interval comprises UI frames 1800--2359. It contains 79 labeled burst-specific occurrences belonging to 27 recurring ROI identities across four bursts. UI frames are one-based and inclusive; array intervals are zero-based and half-open. Coordinates use $x=$ column and $y=$ row. Labels were excluded from temporal-filter fitting and component selection and used afterward for sparse-positive evaluation and audit geometry.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=.93\linewidth]{label_projection_overlay.png}
+  \caption{Projection of the 27 recurring expert ROI identities onto the quiet-field anatomy. This preflight figure checks coordinate and frame conventions; it is not used for fitting.}
+  \label{fig:projection}
+\end{figure}
+
+\section{Method}
+\subsection{Causal multi-lag embedding}
+At each pixel, the temporal observation vector for order $K$ was
+\begin{equation}
+\mathbf{x}_t=[I_t,I_{t-1},\ldots,I_{t-K}]^\mathsf{T}.
+\end{equation}
+Each learned demixing row was interpreted as a causal FIR kernel,
+\begin{equation}
+y_t=\sum_{k=0}^{K} w_k I_{t-k},
+\end{equation}
+rather than as evidence of independently measured physical sources. Models with $K\in\{1,2,4,8,16\}$ were fitted to 20,000 anatomy-bounded samples from the first 100 quiet review frames. Three deterministic seeds (7, 19, and 37) were used. Component selection was label-free and favored positive skew while considering derivative similarity and DC gain.
+
+\subsection{Frozen $K=8$ FIR component}
+The audit froze $K=8$ before known-label comparison. Its nine unit-norm taps were
+\begin{equation}
+\mathbf{w}=[0.074,0.425,0.027,0.397,0.271,0.131,0.556,0.157,0.481].
+\end{equation}
+All taps were positive. The component had DC gain 2.518, peak frequency \SI{0}{Hz}, first-difference cosine 0.248, second-difference cosine 0.306, and positive skewness 2.423. Seed-to-reference cosine stability was 0.900 and 0.884. Thus the selected component is better described as an uneven short-horizon temporal integrator than as a learned first-difference operator.
+
+\input{frequency_analysis.tex}
+\subsection{Positive quiet-standardized evidence}
+For each pixel independently, we computed the quiet median $m(x,y)$ and robust scale
+\begin{equation}
+s(x,y)=1.4826\,\mathrm{median}_{t\in Q}\left|y_t(x,y)-m(x,y)\right|.
+\end{equation}
+A global lower scale floor $s_{\min}$, defined as the 10th percentile of positive pixel scales, prevented division by extremely small values. Displayed and detected evidence was
+\begin{equation}
+z_t^+(x,y)=\max\left(\frac{y_t(x,y)-m(x,y)}{\max[s(x,y),s_{\min}]},0\right).
+\label{eq:quietz}
+\end{equation}
+This compound operator (i) accumulates temporally persistent brightness, (ii) subtracts stable anatomy pixel by pixel, (iii) equalizes heterogeneous quiet variability, and (iv) suppresses negative excursions. The last two operations can make the output perceptually much cleaner than the signed FIR stage without proving improved specificity.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{ica_kernels_and_frequency.png}
+  \caption{Selected ICA FIR kernels and frequency responses over lag orders. The frozen $K=8$ component has a positive DC response and is not primarily derivative-like.}
+  \label{fig:kernels}
+\end{figure}
+
+\subsection{Quiet-calibrated sparse-positive evaluation}
+Positive quiet-$z$ evidence was max-pooled within each burst. Local maxima were separated by six pixels. The operating-point threshold was calibrated from local maxima in quiet windows without labels. One-to-one matching used a six-pixel radius. Unmatched candidates were retained as unknown rather than counted as negatives; consequently the study estimates known-positive recall but not precision.
+
+\section{Results}
+\subsection{Multi-lag comparison}
+\begin{table}[t]
+\centering
+\caption{Known-positive recovery at each lane's independently quiet-calibrated operating point. Candidate counts differ and must not be interpreted as matched-budget precision. The frozen audit lane is marked with $\dagger$; the post-hoc known-label winner is marked with $\ast$.}
+\label{tab:results}
+\begin{tabular}{lrrr}
+\toprule
+Lane & Macro recall & Matches / 79 & Candidates\\
+\midrule
+First difference & 0.0000 & 0 & 6\\
+Second difference & 0.0000 & 0 & 3\\
+AR innovation, $K=1$ & 0.0000 & 0 & 6\\
+AR innovation, $K=2$ & 0.0000 & 0 & 3\\
+AR innovation, $K=4$ & 0.0228 & 2 & 5\\
+AR innovation, $K=8$ & 0.2328 & 19 & 27\\
+AR innovation, $K=16$ & 0.4171 & 34 & 69\\
+ICA, $K=1$ & 0.6733 & 54 & 278\\
+ICA, $K=2$ & 0.7294 & 58 & 312\\
+ICA, $K=4$ & 0.7134 & 57 & 527\\
+ICA, $K=8^{\dagger}$ & 0.6880 & 54 & 726\\
+ICA, $K=16^{\ast}$ & \textbf{0.7559} & \textbf{60} & 639\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The frozen $K=8$ lane recovered 54/79 known occurrences. The post-hoc $K=16$ lane recovered 60/79, but selecting it by labeled recall makes it a diagnostic ceiling rather than the frozen model result. The very low counts from fixed differences and short-order AR innovations are not proof of inferior representations: their quiet-calibrated thresholds produced radically smaller candidate sets. A defensible efficacy comparison therefore requires matched candidate budgets or matched quiet false-alarm rates.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=.86\linewidth]{heldout_detection_comparison.png}
+  \caption{Known-positive macro recall and candidate counts at the quiet-calibrated operating points. The unequal candidate budgets are scientifically consequential.}
+  \label{fig:detection}
+\end{figure}
+
+\subsection{Why the positive quiet-$z$ field appears unexpectedly clean}
+The visual change is consistent with a compound normalization effect. Stable anatomical brightness contributes strongly to the signed FIR output because the kernel has positive DC gain, but it is subsequently removed by the pixel's own quiet median. Rapid noise is partly averaged by the nine-frame kernel, whereas persistent calcium-like excursions add constructively. Dividing by robust local quiet variability then promotes changes at stable pixels and discounts chronically noisy pixels. Finally, rectification maps every sub-baseline value to black. These mechanisms predict a sparse, high-contrast display even if the ICA kernel itself is replaceable by an ordinary smoother.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{spatial_overview.png}
+  \caption{Four-burst audit overview. Green circles are sparse expert annotations and orange squares are candidates from the frozen label-free $K=8$ lane. Grayscale backgrounds prevent evidence color from being confused with annotations. Unmatched candidates remain unknown.}
+  \label{fig:spatial}
+\end{figure}
+
+\input{long_history_results.tex}
+
+\section{Critical controls and next experiments}
+After the pending human and exhaustive-annotation gates are satisfied, the
+primary mechanistic experiment should factor temporal operator from
+normalization while keeping candidate selection and evaluation identical:
+\begin{enumerate}
+\item raw intensity with and without pixelwise quiet-$z$;
+\item uniform nine-frame moving average with quiet-$z$;
+\item normalized copies of the learned $K=8$ FIR: unit $\ell_2$ norm (current), unit DC gain, and matched equivalent noise bandwidth;
+\item quiet-fitted PCA low-frequency component with quiet-$z$;
+\item the learned $K=8$ ICA FIR with global rather than pixelwise quiet normalization;
+\item the learned FIR without positive rectification, reporting positive and negative excursions separately.
+\end{enumerate}
+All lanes should be frozen without labels, evaluated at matched candidate budgets and matched quiet false-alarm rates, and compared per burst. Kernel stability should be evaluated across additional quiet samples and seeds. A fixed candidate panel should undergo exhaustive expert review to estimate precision and distinguish neural signal, motion, vascular structure, and illumination artifacts. These controls determine whether ICA contributes beyond robust temporal integration and whether the visually clean field reflects biological specificity.
+
+\input{next_research_program.tex}
+\section{Limitations}
+The labels are sparse positives and do not define exhaustive negatives. The same recording supplied quiet fitting and event evaluation, although labels were withheld during fitting. Temporal lags are pseudo-channels from one camera, so ICA identifiability arguments for independent sensors do not directly apply. The selected $K=8$ kernel has moderately high, not perfect, seed stability and a condition number of 1192. Visual sparsity is enhanced by rectification and display scaling. No causal biological propagation, motion invariance, cross-recording generalization, or precision claim is established.
+
+\section{Reproducibility and provenance}
+The numerical run and scientific audit are stored under
+\texttt{Outputs/TemporalIdentification/spon\_ca\_burst\_multilag\_temporal\_identification\_v1}.
+The numerical computation completed in 47.9 seconds using two CPU threads. The audit contains one expert-only and one model-only full-field video, 27 expert close-ups and traces, 398 consolidated model close-ups and traces, and 79 nearest-candidate comparison traces. All 427 videos passed full decoding, frame-count, duration, dimension, and section-specific annotation-color validation. The frozen audit lane is \texttt{ica\_k8}; \texttt{ica\_k16} is explicitly recorded as post-hoc.
+
+\section{Living-paper checklist}
+\begin{itemize}
+\item[$\square$] Add authors, affiliations, imaging preparation, acquisition hardware, and biological protocol.
+\item[$\square$] Finalize the existing 25-observation blinded hard-ROI review and exact re-score.
+\item[$\square$] Create calibration and protected exhaustive-review regions with explicit coverage.
+\item[$\square$] Adjudicate the stored 17-tap ICA versus five-tap exponential disagreement panel.
+\item[$\square$] Run the factorial temporal-operator/normalization control study.
+\item[$\square$] Add matched-budget and matched-quiet-false-alarm comparisons with confidence intervals.
+\item[$\square$] Complete exhaustive review of a frozen candidate panel and report precision.
+\item[$\square$] Test at least one independent recording or a preregistered held-out interval.
+\item[$\square$] Add motion and illumination covariates and artifact-stratified analysis.
+\item[$\square$] Decide final terminology after determining whether ICA adds value beyond smoothing.
+\end{itemize}
+
+\end{document}
