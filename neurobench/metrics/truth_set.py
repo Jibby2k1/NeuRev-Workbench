@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Any, Callable
+from typing import Any
 
 from neurobench.metrics.detection import object_matching_metrics
 from neurobench.metrics.event_quality import event_timing_metrics
@@ -77,3 +77,68 @@ def review_efficiency(*, review_minutes: float, accepted_count: int, unresolved_
         "review_minutes_per_accepted": float(review_minutes) / accepted_count if accepted_count else None,
         "unresolved_fraction": unresolved_count / total_count if total_count else 0.0,
     }
+
+
+def _threshold_curve(
+    ground_truth: Sequence[Mapping[str, Any]],
+    candidates: Sequence[Mapping[str, Any]],
+    *,
+    evaluator: Any,
+    precision_key: str,
+    recall_key: str,
+) -> dict[str, Any]:
+    scores = sorted({float(item["score"]) for item in candidates}, reverse=True)
+    points = []
+    for threshold in scores:
+        selected = [item for item in candidates if float(item["score"]) >= threshold]
+        metrics = evaluator(ground_truth, selected)
+        points.append({"threshold": threshold, "candidate_count": len(selected), "precision": metrics[precision_key], "recall": metrics[recall_key]})
+    points.append({"threshold": None, "candidate_count": 0, "precision": 1.0, "recall": 0.0})
+    ordered = sorted(points, key=lambda item: (item["recall"], -item["precision"]))
+    ap = 0.0
+    previous_recall = 0.0
+    for point in ordered:
+        recall = float(point["recall"])
+        if recall > previous_recall:
+            ap += (recall - previous_recall) * max(float(item["precision"]) for item in ordered if float(item["recall"]) >= recall)
+            previous_recall = recall
+    return {"points": points, "average_precision": ap}
+
+
+def exhaustive_object_pr_curve(
+    ground_truth: Sequence[Mapping[str, Any]],
+    candidates: Sequence[Mapping[str, Any]],
+    *, coverage_mode: str,
+    iou_threshold: float = 0.25,
+    centroid_tolerance_px: float | None = None,
+) -> dict[str, Any]:
+    authorize_metric(coverage_mode, "object_ap")
+    truth = [item for item in ground_truth if item.get("disposition") == "neuron"]
+    result = _threshold_curve(
+        truth,
+        candidates,
+        evaluator=lambda gt, pred: object_matching_metrics(gt, pred, iou_threshold=iou_threshold, centroid_tolerance_px=centroid_tolerance_px),
+        precision_key="object_precision",
+        recall_key="object_recall",
+    )
+    result.update({"coverage_mode": coverage_mode, "unresolved_excluded_count": sum(item.get("disposition") == "unresolved" for item in ground_truth)})
+    return result
+
+
+def exhaustive_event_pr_curve(
+    ground_truth: Sequence[Mapping[str, Any]],
+    candidates: Sequence[Mapping[str, Any]],
+    *, coverage_mode: str,
+    onset_tolerance_frames: int = 2,
+) -> dict[str, Any]:
+    authorize_metric(coverage_mode, "event_ap")
+    truth = [item for item in ground_truth if item.get("disposition") == "event"]
+    result = _threshold_curve(
+        truth,
+        candidates,
+        evaluator=lambda gt, pred: event_timing_metrics(gt, pred, onset_tolerance_frames=onset_tolerance_frames),
+        precision_key="event_precision",
+        recall_key="event_recall",
+    )
+    result.update({"coverage_mode": coverage_mode, "unresolved_excluded_count": sum(item.get("disposition") == "unresolved" for item in ground_truth)})
+    return result

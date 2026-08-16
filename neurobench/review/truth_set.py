@@ -6,6 +6,7 @@ import hashlib
 import json
 import math
 import random
+import re
 from typing import Any, Mapping, Sequence
 
 
@@ -138,12 +139,12 @@ def deterministic_second_review_sample(
 def assert_blinded_payload(payload: Any) -> None:
     """Reject detector identity, scores, ranks, or source filenames anywhere in public JSON."""
     forbidden_keys = {"source_lane_id", "lane_id", "score", "rank", "source_candidate_id", "candidate_source_key"}
-    forbidden_fragments = {"raw_direct", "fullrank_ica", "exponential_w5", "coherence_w15", "candidate_source_key.json"}
+    forbidden_fragments = {"raw_direct", "fullrank_ica", "exponential_w5", "coherence_w15", "candidate_source_key"}
 
     def walk(value: Any, path: str = "root") -> None:
         if isinstance(value, Mapping):
             for key, child in value.items():
-                normalized = str(key).lower()
+                normalized = re.sub(r"[^a-z0-9]+", "_", str(key).lower()).strip("_")
                 if normalized in forbidden_keys:
                     raise ValueError(f"blinding leak at {path}.{key}")
                 walk(child, f"{path}.{key}")
@@ -151,7 +152,7 @@ def assert_blinded_payload(payload: Any) -> None:
             for index, child in enumerate(value):
                 walk(child, f"{path}[{index}]")
         elif isinstance(value, str):
-            normalized = value.lower()
+            normalized = re.sub(r"[^a-z0-9]+", "_", value.lower()).strip("_")
             if any(fragment in normalized for fragment in forbidden_fragments):
                 raise ValueError(f"blinding leak at {path}")
 

@@ -30,7 +30,7 @@ def test_opaque_ids_are_stable_and_public_rows_have_no_source_fields() -> None:
 
 
 @pytest.mark.parametrize("payload", [
-    {"score": 2.0}, {"rank": 1}, {"lane_id": "secret"}, {"css_class": "fullrank_ica_w17_marker"}, {"filename": "candidate_source_key.json"}
+    {"score": 2.0}, {"rank": 1}, {"lane_id": "secret"}, {"css_class": "fullrank_ica_w17_marker"}, {"filename": "candidate_source_key.json"}, {"label": "Raw Direct"}
 ])
 def test_blinding_audit_rejects_identity_score_rank_filename_or_css(payload: dict) -> None:
     with pytest.raises(ValueError, match="blinding leak"):

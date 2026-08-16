@@ -15,6 +15,9 @@ from neurobench.models.truth_set import TruthSetManifest, validate_event_record,
 from neurobench.review.truth_set import assert_blinded_payload, build_candidate_union, deterministic_second_review_sample, sha256_payload
 
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+
 def _json_text(payload: Any) -> str:
     return json.dumps(payload, indent=2, sort_keys=True) + "\n"
 
@@ -92,6 +95,9 @@ def build_truth_set_package(manifest_path: str | Path, output_root: str | Path) 
         raise ValueError("truth-set preflight failed: " + ", ".join(item["name"] for item in preflight["checks"] if not item["passed"]))
     manifest = TruthSetManifest.from_dict(json.loads(manifest_file.read_text(encoding="utf-8"))).to_dict()
     target = Path(output_root).expanduser().resolve()
+    outputs_root = (PROJECT_ROOT / "Outputs").resolve()
+    if PROJECT_ROOT in target.parents and outputs_root not in target.parents:
+        raise ValueError("truth-set generated outputs inside the repository must live under ignored Outputs/")
     if target.exists():
         raise FileExistsError(f"Refusing truth-set output collision: {target}")
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -362,8 +368,19 @@ def unseal_protected(root: str | Path, *, reviewer_id: str, reason: str, timesta
         raise ValueError("frozen lane manifest changed after protected lock")
     if not reviewer_id.strip() or not reason.strip():
         raise ValueError("unseal reviewer and reason are required")
-    lock.update({"state": "unsealed", "unsealed_at": timestamp or datetime.now(timezone.utc).isoformat(), "unsealed_by": reviewer_id, "unseal_reason": reason})
+    unsealed_at = timestamp or datetime.now(timezone.utc).isoformat()
+    lock.update({"state": "unsealed", "unsealed_at": unsealed_at, "unsealed_by": reviewer_id, "unseal_reason": reason})
     _write_json(path, lock)
+    manifest_path = package / "truth_set_manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["protected_lock_state"] = "unsealed"
+    manifest["blinding_state"] = "unsealed"
+    manifest["timestamps"]["unsealed_at"] = unsealed_at
+    manifest["timestamps"]["updated_at"] = unsealed_at
+    for region in manifest["regions"]:
+        if region["role"] == "protected":
+            region["protected_lock"].update({"locked": True, "unsealed": True, "unsealed_at": unsealed_at, "unsealed_by": reviewer_id, "unseal_reason": reason})
+    _write_json(manifest_path, manifest)
     return lock
 
 
@@ -380,6 +397,7 @@ def publish_truth_set(root: str | Path, *, timestamp: str | None = None) -> dict
     publication_time = timestamp or datetime.now(timezone.utc).isoformat()
     manifest["review_pass_state"] = "published"
     manifest["timestamps"]["published_at"] = publication_time
+    manifest["timestamps"]["updated_at"] = publication_time
     for region in manifest["regions"]:
         region["review_status"] = "published"
     _write_json(manifest_path, manifest)

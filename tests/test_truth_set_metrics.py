@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from neurobench.metrics.truth_set import CoverageAuthorizationError, authorize_metric, exhaustive_event_metrics, exhaustive_object_metrics, known_positive_recall_at_k, review_efficiency
+from neurobench.metrics.truth_set import CoverageAuthorizationError, authorize_metric, exhaustive_event_metrics, exhaustive_event_pr_curve, exhaustive_object_metrics, exhaustive_object_pr_curve, known_positive_recall_at_k, review_efficiency
 
 
 @pytest.mark.parametrize("coverage", ["candidate_assisted", "sparse_positive"])
@@ -35,3 +35,14 @@ def test_review_efficiency_reports_time_and_unresolved_fraction() -> None:
     result = review_efficiency(review_minutes=30, accepted_count=6, unresolved_count=2, total_count=10)
     assert result["review_minutes_per_accepted"] == 5
     assert result["unresolved_fraction"] == 0.2
+
+
+def test_exhaustive_object_and_event_pr_curves_compute_ap() -> None:
+    objects = [{"id": "n", "disposition": "neuron", "x": 1, "y": 1}]
+    object_candidates = [{"id": "p", "x": 1, "y": 1, "score": 0.9}, {"id": "fp", "x": 9, "y": 9, "score": 0.1}]
+    object_result = exhaustive_object_pr_curve(objects, object_candidates, coverage_mode="exhaustive", centroid_tolerance_px=1)
+    events = [{"event_id": "e", "object_id": "o", "frame": 3, "disposition": "event"}]
+    event_candidates = [{"event_id": "p", "object_id": "o", "frame": 3, "score": 0.8}]
+    event_result = exhaustive_event_pr_curve(events, event_candidates, coverage_mode="exhaustive")
+    assert object_result["average_precision"] == 1.0
+    assert event_result["average_precision"] == 1.0
