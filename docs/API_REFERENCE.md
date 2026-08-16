@@ -504,6 +504,38 @@ Discovery, ranking, and triage helpers for candidate neurons.
 - Signature: `validate_candidate_feature_table(rows: Sequence[Mapping[str, Any]]) -> None`
 - Summary: Validate the public candidate feature row contract.
 
+## `neurobench.experiments.event_weighted_cs_parzen`
+
+Event-balanced two-frame CS-Parzen ICA diagnostic workflow.
+
+### `EventWeightedConfigError`
+
+- Kind: `class`
+- Source: `neurobench.experiments.event_weighted_cs_parzen.config`
+- Signature: `class EventWeightedConfigError`
+- Summary: No docstring summary available.
+
+### `EventWeightedCSParzenConfig`
+
+- Kind: `class`
+- Source: `neurobench.experiments.event_weighted_cs_parzen.config`
+- Signature: `class EventWeightedCSParzenConfig`
+- Summary: No docstring summary available.
+
+### `preflight`
+
+- Kind: `module`
+- Source: `neurobench.experiments.event_weighted_cs_parzen.preflight`
+- Signature: `neurobench.experiments.event_weighted_cs_parzen.preflight`
+- Summary: Collision-safe, read-only-source preflight for event-weighted CS-Parzen.
+
+### `run`
+
+- Kind: `function`
+- Source: `neurobench.experiments.event_weighted_cs_parzen.runner`
+- Signature: `run(config: EventWeightedCSParzenConfig, *, preflight_dir: str | Path, authorize_full_spon: bool=False, resume: bool=False) -> dict[str, Any]`
+- Summary: No docstring summary available.
+
 ## `neurobench.experiments.hard_roi_adjudication`
 
 Versioned hard-ROI review and frozen re-evaluation workflow.
@@ -599,6 +631,17 @@ No docstring summary available.
 - Kind: `function`
 - Source: `neurobench.experiments.learnable_contrast.core`
 - Signature: `run(config: Config) -> dict[str, Any]`
+- Summary: No docstring summary available.
+
+## `neurobench.experiments.msln_msica`
+
+Multi-scale local normalization and multi-context ICA experiment.
+
+### `MSLNMSICAConfig`
+
+- Kind: `class`
+- Source: `neurobench.experiments.msln_msica.config`
+- Signature: `class MSLNMSICAConfig`
 - Summary: No docstring summary available.
 
 ## `neurobench.experiments.pairwise_separation`
@@ -1004,12 +1047,33 @@ Scientific metrics for Neurobench candidate, event, and run evaluation.
 
 Dataclass models for public Neurobench artifacts.
 
+### `AnnotationOperation`
+
+- Kind: `class`
+- Source: `neurobench.models.annotation_revision`
+- Signature: `class AnnotationOperation`
+- Summary: One attributable, append-only change in an annotation draft.
+
+### `AnnotationRevision`
+
+- Kind: `class`
+- Source: `neurobench.models.annotation_revision`
+- Signature: `class AnnotationRevision`
+- Summary: Immutable metadata envelope for a draft or published revision root.
+
 ### `AnnotationSet`
 
 - Kind: `class`
 - Source: `neurobench.models.annotations`
 - Signature: `class AnnotationSet`
 - Summary: Versioned annotation payload normalized to schema v3.
+
+### `AnnotationViewContract`
+
+- Kind: `class`
+- Source: `neurobench.models.annotation_revision`
+- Signature: `class AnnotationViewContract`
+- Summary: Coordinate and intensity contract for one selectable video representation.
 
 ### `ArtifactRecord`
 
