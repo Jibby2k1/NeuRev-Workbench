@@ -45,6 +45,8 @@ SCHEMA_ALIASES = {
     "annotation_revision": "annotation_revision.schema.json",
     "annotation_operation": "annotation_operation.schema.json",
     "annotation_view_contract": "annotation_view_contract.schema.json",
+    "truth_set_manifest": "truth_set_manifest.schema.json",
+    "truth_set_region": "truth_set_region.schema.json",
     "review_data": "review_data.schema.json",
     "metrics_report": "metrics_report.schema.json",
     "metrics": "metrics_report.schema.json",

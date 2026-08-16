@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "truth_set_region.schema.json",
+  "title": "NeuRev truth-set region",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "region_id", "role", "selection_mode", "selection_rationale", "enriched", "spatial_bounds_px", "ui_frame_interval", "array_frame_interval", "coverage_mode", "review_status", "coverage_mask", "reviewer_ids", "raw_first_complete", "candidate_union_disposition_count", "unresolved_count", "second_review_sample_count", "protected_lock"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "region_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]*$"},
+    "role": {"enum": ["calibration", "protected", "random_audit"]},
+    "selection_mode": {"type": "string", "minLength": 1},
+    "selection_seed": {"type": ["integer", "null"]},
+    "selection_rationale": {"type": "string", "minLength": 1},
+    "enriched": {"type": "boolean"},
+    "spatial_bounds_px": {
+      "type": "object", "additionalProperties": false,
+      "required": ["x_min", "y_min", "x_max_exclusive", "y_max_exclusive"],
+      "properties": {"x_min": {"type": "integer", "minimum": 0}, "y_min": {"type": "integer", "minimum": 0}, "x_max_exclusive": {"type": "integer", "minimum": 1}, "y_max_exclusive": {"type": "integer", "minimum": 1}}
+    },
+    "ui_frame_interval": {"type": "array", "prefixItems": [{"type": "integer", "minimum": 1}, {"type": "integer", "minimum": 1}], "minItems": 2, "maxItems": 2},
+    "array_frame_interval": {"type": "array", "prefixItems": [{"type": "integer", "minimum": 0}, {"type": "integer", "minimum": 1}], "minItems": 2, "maxItems": 2},
+    "coverage_mode": {"enum": ["exhaustive", "candidate_assisted", "sparse_positive"]},
+    "review_status": {"enum": ["planned", "raw_first_in_progress", "raw_first_locked", "candidate_assisted_in_progress", "candidate_assisted_locked", "second_review", "adjudication", "adjudicated", "published"]},
+    "coverage_mask": {"type": "object", "additionalProperties": false, "required": ["path", "sha256"], "properties": {"path": {"type": "string", "minLength": 1}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}},
+    "reviewer_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "raw_first_complete": {"type": "boolean"},
+    "candidate_union_disposition_count": {"type": "integer", "minimum": 0},
+    "candidate_union_count": {"type": "integer", "minimum": 0, "default": 0},
+    "unresolved_count": {"type": "integer", "minimum": 0},
+    "second_review_sample_count": {"type": "integer", "minimum": 0},
+    "protected_lock": {
+      "type": "object", "additionalProperties": false,
+      "required": ["locked", "unsealed", "locked_at", "unsealed_at", "unsealed_by", "unseal_reason"],
+      "properties": {"locked": {"type": "boolean"}, "unsealed": {"type": "boolean"}, "locked_at": {"type": ["string", "null"]}, "unsealed_at": {"type": ["string", "null"]}, "unsealed_by": {"type": ["string", "null"]}, "unseal_reason": {"type": ["string", "null"]}}
+    }
+  }
+}

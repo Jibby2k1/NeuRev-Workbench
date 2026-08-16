@@ -1,0 +1,3 @@
+SYNTHETIC NEUREV TRUTH SET VIDEO FIXTURE
+frames=12 width=16 height=12 fps=50
+No scientific image data are contained in this fixture.
