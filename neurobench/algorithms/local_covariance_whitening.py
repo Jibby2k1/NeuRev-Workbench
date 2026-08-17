@@ -42,8 +42,11 @@ class WhiteningFeatureBank:
         for context in self.source_contexts:
             if context.get("display_clipped", False) or context.get("squared", False):
                 raise ValueError("display-clipped or squared arrays cannot enter the feature bank")
-            if context.get("scientific_array", "signed_msln") != "signed_msln":
-                raise ValueError("feature bank requires signed scientific MSLN arrays")
+            scientific_array = context.get("scientific_array", "signed_msln")
+            if scientific_array not in {"signed_msln", "centered_residual_numerator"}:
+                raise ValueError(
+                    "feature bank requires signed MSLN or centered-residual scientific arrays"
+                )
 
 
 @dataclass(frozen=True)

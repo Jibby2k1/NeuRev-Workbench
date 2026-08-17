@@ -64,6 +64,26 @@ def test_unresolved_fit_is_explicit() -> None:
     assert fit.diagnostics["identity_is_placeholder_not_success"] is True
 
 
+def test_centered_residual_is_a_valid_signed_scientific_feature() -> None:
+    values = np.ones((3, 2, 2, 1), dtype=np.float32)
+    bank = WhiteningFeatureBank(
+        ("residual",), values, np.ones(3, dtype=bool),
+        ({"scientific_array": "centered_residual_numerator"},),
+        {"feature_order_frozen": True},
+    )
+    assert bank.source_contexts[0]["scientific_array"] == "centered_residual_numerator"
+
+
+def test_nonlinear_or_display_feature_is_rejected() -> None:
+    values = np.ones((3, 2, 2, 1), dtype=np.float32)
+    with pytest.raises(ValueError, match="signed MSLN or centered-residual"):
+        WhiteningFeatureBank(
+            ("energy",), values, np.ones(3, dtype=bool),
+            ({"scientific_array": "mahalanobis_energy"},),
+            {"feature_order_frozen": True},
+        )
+
+
 def test_deterministic_sample_gathering_and_contiguous_partitions() -> None:
     values = np.arange(12 * 6 * 6 * 2, dtype=np.float32).reshape(12, 6, 6, 2)
     bank = _bank(values)
