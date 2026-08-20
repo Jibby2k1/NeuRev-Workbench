@@ -241,6 +241,29 @@ def add_experiment_subcommands(subparsers) -> None:
     representation_run.add_argument("--config", required=True)
     representation_run.add_argument("--preflight-dir", type=Path, required=True)
     representation_run.set_defaults(func=_run_representation_benchmark)
+    learned_operator = workflows.add_parser(
+        "learned-operator",
+        help="Preflight, run one authorized stage, or inspect learned-operator program state.",
+    )
+    learned_actions = learned_operator.add_subparsers(dest="experiment_action", required=True)
+    learned_preflight = learned_actions.add_parser("preflight", help="Write a collision-safe stage preflight.")
+    learned_preflight.add_argument("--config", required=True)
+    learned_preflight.add_argument("--artifact-dir", type=Path, required=True)
+    learned_preflight.add_argument("--stage", default="S0_BASELINE")
+    learned_preflight.set_defaults(func=_run_learned_operator_preflight)
+    learned_status = learned_actions.add_parser("status", help="Read compact program state and decisions.")
+    learned_status.add_argument("--program-dir", type=Path, required=True)
+    learned_status.set_defaults(func=_learned_operator_status)
+    learned_run = learned_actions.add_parser("run-stage", help="Run exactly one stage after its matching preflight.")
+    learned_run.add_argument("--config", required=True)
+    learned_run.add_argument("--preflight-dir", type=Path, required=True)
+    learned_run.add_argument("--stage", required=True)
+    learned_run.add_argument("--prefix-size", type=int, choices=(8, 16, 32, 64))
+    learned_run.add_argument("--outer-fold", type=int, choices=(1, 2, 3, 4))
+    learned_run.add_argument("--seed", type=int)
+    learned_run.add_argument("--smoke", action="store_true")
+    learned_run.add_argument("--diagnostic-rescue", action="store_true")
+    learned_run.set_defaults(func=_run_learned_operator_stage)
     dependent = workflows.add_parser(
         "dependent-multiscale",
         help="Build and audit reversible dependent multiscale decompositions.",
@@ -968,6 +991,36 @@ def _run_representation_benchmark(args) -> int:
     from neurobench.experiments.representation_benchmark.runner import run
     payload = run(RepresentationBenchmarkConfig.load(args.config), preflight_dir=args.preflight_dir)
     print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_learned_operator_preflight(args) -> int:
+    _configure_resource_environment_from_manifest(args.config)
+    from neurobench.experiments.learned_operator_selection.config import LearnedOperatorConfig
+    from neurobench.experiments.learned_operator_selection.decisions import Stage
+    from neurobench.experiments.learned_operator_selection.preflight import preflight
+    payload = preflight(LearnedOperatorConfig.load(args.config), artifact_dir=args.artifact_dir, stage=Stage(args.stage))
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _run_learned_operator_stage(args) -> int:
+    _configure_resource_environment_from_manifest(args.config)
+    from neurobench.experiments.learned_operator_selection.config import LearnedOperatorConfig
+    from neurobench.experiments.learned_operator_selection.decisions import Stage
+    from neurobench.experiments.learned_operator_selection.runner import run_stage
+    payload = run_stage(
+        LearnedOperatorConfig.load(args.config), preflight_dir=args.preflight_dir,
+        stage=Stage(args.stage), prefix_size=args.prefix_size, outer_fold=args.outer_fold,
+        seed=args.seed, smoke=args.smoke, diagnostic_rescue=args.diagnostic_rescue,
+    )
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _learned_operator_status(args) -> int:
+    from neurobench.experiments.learned_operator_selection.runner import status
+    print(json.dumps(status(args.program_dir), indent=2, sort_keys=True))
     return 0
 
 

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_learned_operator_selection_v1",
+  "source_video": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+  "labels_tsv": "../Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+  "label_summary": "../Inputs/Spon Ca Burst/labels/label_summary.json",
+  "output_dir": "../Outputs/LearnedOperatorSelection/spon_ca_burst_learned_operator_selection_v1",
+  "frames": {"review_start_ui": 1800, "review_end_ui": 2359, "quiet_start_ui": 1800, "quiet_end_ui": 1899, "frame_period_ms": 20.0},
+  "evaluation": {
+    "temporal_pool": "lme0.25", "nms_distance_px": 6, "match_radius_px": 6,
+    "fixed_candidates_per_burst": 58, "quiet_false_peaks_per_map": 1.0,
+    "expected_q1_macro_kpr": 0.6056159420289855, "expected_q1_matches": 49,
+    "expected_q1_candidates": 232, "expected_fixed_matches": 52,
+    "expected_fixed_macro_kpr": 0.6572463768115942, "exact_tolerance": 1e-12
+  },
+  "design": {"sampler": "scrambled_sobol", "master_seed": 20260819, "master_size": 64, "allowed_prefix_sizes": [8, 16, 32, 64], "default_max_prefix_size": 32, "lhs_confirmation_size": 16},
+  "operator_bounds": {
+    "spatial_width_px": [3, 21], "temporal_width_frames": [3, 33],
+    "spatial_whitening_exponent": [0.0, 1.0], "temporal_whitening_exponent": [0.0, 1.0],
+    "shrinkage": [0.0001, 0.5], "eigen_floor_ratio": [0.000001, 0.01],
+    "raw_preserving_blend": [0.0, 1.0], "maximum_joint_dimension": 128,
+    "maximum_condition_number": 1000000.0, "minimum_effective_rank_fraction": 0.25
+  },
+  "stage_gates": {"minimum_macro_delta": 0.02, "minimum_pooled_match_delta": 2, "minimum_nonnegative_bursts": 3, "maximum_rescues_per_branch": 1, "permitted_ica_ranks": [8, 16]},
+  "model_seeds": {"screen": [7, 13, 19], "confirmation": [7, 13, 19, 29, 37]},
+  "scientific_audit": {"enabled": false, "opt_out_reason": "User explicitly requested essential-metrics-only sequential screening on 2026-08-19. Full scientific audit is mandatory for promoted finalists."},
+  "resources": {"device": "cpu", "cpu_threads": 4, "max_ram_mib": 4096, "min_free_disk_mib": 4096, "max_output_mib": 2048, "gpu_reserve_mib": 2048}
+}
