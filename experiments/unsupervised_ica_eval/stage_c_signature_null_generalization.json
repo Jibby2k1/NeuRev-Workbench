@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "source_assay": "Outputs/UnsupervisedICAEval/two_frame_external_assay_v1",
+  "canonical_labels": "Outputs/HardROIAdjudication/spon_ca_burst_hard_roi_adjudication_final_v1/adjudication_final.tsv",
+  "roi_radius_px": 2,
+  "annulus_inner_radius_px": 3,
+  "annulus_outer_radius_px": 6,
+  "trace_pre_frames": 20,
+  "trace_post_frames": 20,
+  "cross_validation_folds": 5,
+  "same_roi_shift_draws": 199,
+  "roi_bootstrap_draws": 5000,
+  "random_seed": 20260820,
+  "output_root": "Outputs/UnsupervisedICAEval/raw_signature_null_generalization_v1"
+}

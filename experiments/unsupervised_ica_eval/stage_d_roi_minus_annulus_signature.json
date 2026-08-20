@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "source_assay": "Outputs/UnsupervisedICAEval/raw_signature_null_generalization_v1",
+  "roi_radius_px": 2,
+  "background_annulus_inner_radius_px": 3,
+  "background_annulus_outer_radius_px": 6,
+  "control_outer_ring_inner_radius_px": 7,
+  "control_outer_ring_outer_radius_px": 10,
+  "trace_pre_frames": 20,
+  "trace_post_frames": 20,
+  "cross_validation_folds": 5,
+  "same_roi_shift_draws": 199,
+  "roi_bootstrap_draws": 5000,
+  "random_seed": 20260820,
+  "output_root": "Outputs/UnsupervisedICAEval/roi_minus_annulus_signature_v1"
+}

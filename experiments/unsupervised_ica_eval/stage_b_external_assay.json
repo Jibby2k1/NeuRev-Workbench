@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "frozen_representation": "Outputs/UnsupervisedICAEval/two_frame_stage_a_v1/frozen_representation.json",
+  "canonical_labels": "Outputs/HardROIAdjudication/spon_ca_burst_hard_roi_adjudication_final_v1/adjudication_final.tsv",
+  "roi_radius_px": 2,
+  "trace_pre_frames": 20,
+  "trace_post_frames": 20,
+  "label_shift_count": 199,
+  "label_shift_seed": 20260820,
+  "output_root": "Outputs/UnsupervisedICAEval/two_frame_external_assay_v1",
+  "labels_are_sparse_positive": true,
+  "precision_authorized": false
+}

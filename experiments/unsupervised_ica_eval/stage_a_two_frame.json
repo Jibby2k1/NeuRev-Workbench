@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "discovery_frames_zero_based_half_open": [0, 560],
+  "spatial_stride": 4,
+  "maximum_samples": 250000,
+  "seeds": [0, 1, 2, 3, 4],
+  "top_fraction": 0.01,
+  "labels_used": false,
+  "output_root": "Outputs/UnsupervisedICAEval/two_frame_stage_a_v1"
+}

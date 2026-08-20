@@ -1,0 +1,42 @@
+{
+  "canonical_rois": 26,
+  "delta_vs_matched_annulus": {
+    "ci95_high": 0.0008473598158131104,
+    "ci95_low": -0.027744145114669085,
+    "mean": -0.01311490199479872,
+    "sign_flip_p_upper": 0.9523
+  },
+  "delta_vs_same_roi_shift": {
+    "ci95_high": 0.9044508171400959,
+    "ci95_low": 0.7267145972266031,
+    "mean": 0.8249400218803868,
+    "sign_flip_p_upper": 0.0001
+  },
+  "folds": 5,
+  "held_out_event_correlation": {
+    "mean": 0.8255504023799323,
+    "median": 0.9330185027722995
+  },
+  "limitations": [
+    "All folds use one recording and four shared burst intervals.",
+    "Labels define assay windows; this is external validation, not label-free template discovery.",
+    "Sparse positives do not identify precision.",
+    "Full scientific-audit media and a frozen full-field candidate panel remain incomplete."
+  ],
+  "normalization": "subtract pre-event median and divide by pre-event MAD x 1.4826; no peak alignment or peak scaling",
+  "occurrences": 79,
+  "schema_version": 1,
+  "scope": "label-anchored Raw activation morphology within one recording",
+  "signature_evidence_level": "S0_no_reproducible_signature",
+  "status": "signature_null_generalization_complete_audit_incomplete",
+  "window": {
+    "event_duration": 47,
+    "post": 20,
+    "pre": 20,
+    "total": 87
+  },
+  "within_roi_pairwise_correlation": {
+    "mean": 0.4257638259612354,
+    "median": 0.3719997955051316
+  }
+}
