@@ -1,0 +1,283 @@
+\section{Staged research program after the long-history benchmark}
+\label{sec:research-program}
+
+The long-history study changes the research objective. The immediate problem
+is no longer finding a temporal lane with high known-positive recall; it is
+determining whether compact candidates are biologically correct at scarce
+review budgets. Sparse-positive labels cannot classify unmatched detections,
+so candidate count is only selectivity pressure. The next program therefore
+places a bounded truth-set and blinded candidate adjudication before any new
+model search.
+
+\subsection{Evidence-constrained working model}
+
+Across the completed studies, useful gains repeatedly arise from short temporal
+integration, robust per-pixel quiet normalization, and local spatial context.
+Increasing model freedom has not produced equally stable evidence. Table
+\ref{tab:frontier} summarizes the landmarks that constrain the next decisions;
+rows use different carriers and operating-point contracts and are not a
+leaderboard.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Decision landmarks after the temporal and spatial audits. ``B'' is
+the candidate budget per burst. Unmatched candidates remain unknown.}
+\label{tab:frontier}
+\begin{tabular}{p{.24\linewidth}p{.42\linewidth}p{.25\linewidth}}
+\toprule
+Finding & Evidence & Decision \\
+\midrule
+Compact temporal ICA & \texttt{fullrank\_ica\_w17} recovered 48/79, 55/79,
+and 56/79 at B20, B40, and B60 & Primary compact temporal candidate \\
+Deterministic integration & \texttt{exponential\_w5} recovered 55/79 at B60
+and 64/79 at B100 & Primary simple comparator \\
+Long temporal ICA & Full-rank fits had 0/15 convergence at every 51--201 tap
+length; frozen DCT--ICA recovered 36/79 with 700 candidates & Stop long free-tap
+sweeps \\
+Local coherence & Family-frozen \texttt{coherence\_w15} recovered 48/79 at
+B20 versus 43/79 for its carrier and improved all four bursts & Compact spatial
+confirmation candidate \\
+Latent dynamics & Offline smoother amplitude recovered 55/79 with 320
+candidates and won all four bursts & Noncausal ceiling; preservation gates
+remain incomplete \\
+Model expansion & A bounded linear ranker tied a residual MLP; protected
+quantization and hard pooling did not improve the reference & Do not widen MLP,
+quantization, or global-fusion grids \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The central falsifiable hypothesis is that the apparent temporal-ICA advantage
+can largely be explained by an ordinary short integrator followed by quiet
+normalization. A second hypothesis is that causal neighborhood coherence adds
+orthogonal information at the top of the candidate list. The program must also
+remain open to a third outcome: many apparent false positives may be real but
+previously unlabeled neurons.
+
+\subsection{Estimands and protected endpoints}
+
+The legacy 79 occurrences support known-positive recall at fixed budgets, not
+ordinary precision. A new exhaustive region must support object- and event-
+level precision--recall curves, average precision (AP), precision at fixed
+recall, false events per field-minute, centroid/footprint error, duplicate,
+split, and merge rates, and calibration with abstention. Peak amplitude,
+temporal area, onset/peak timing, and trace shape remain separate scientific-
+signal guards.
+
+Budgets 20 and 40 per burst are primary because they represent scarce review
+attention; budget 58 is secondary and budgets 80 and 100 are screening
+endpoints. Uncertainty is grouped by recurring ROI identity and burst. Adjacent
+frames are not treated as independent observations. Lane definitions,
+normalization, temporal pooling, NMS, matching, ranking ties, and analysis code
+are frozen before protected labels are opened.
+
+\subsection{Gate 0: finish the existing hard-observation review}
+
+The detector-blinded materials for 25 observations are already available under
+\path{Outputs/HardROIAdjudication/}. All rows for ROI 007, 008, 010, 014, 015,
+017, 019, 020, and 023 must receive a final anatomical/activity disposition,
+canonical identity, morphology/context, reviewer provenance, and a complete
+onset--peak--end triple whenever timing changes. Only rows explicitly marked
+\texttt{adjudicated} enter the non-provisional exact CPU re-score.
+
+This gate can clarify identity conflicts, temporal misses, localization misses,
+NMS suppression, and proposal misses. It cannot estimate precision because the
+panel was selected from known difficult observations.
+
+\subsection{Experiment 1: bounded exhaustive truth and stored-candidate test}
+
+\paragraph{Region design.}
+Select one morphology-rich calibration tile and one non-overlapping protected
+tile in the anatomically relevant right field. The calibration tile may include
+known hard identities, but that enrichment is recorded. The protected tile is
+chosen with a deterministic seed from a label-free tissue/quality mask, without
+detector scores or known-label outcomes. A raw-only pilot estimates reviewer
+minutes; final tile dimensions, expected to be approximately 96--128 pixels per
+side, are frozen from anatomy, visibility, and workload alone.
+
+\paragraph{Blinded review.}
+First review synchronized raw, fixed positive-change, and trace views without
+model markers. Mark every visible object/event. Next reveal a randomized,
+model-blinded union of frozen candidates to catch omissions. Re-review all
+unresolved examples and at least 20\% of accepted/rejected examples after a
+washout period or with a second reviewer. Each object receives a persistent
+identity and footprint; each event separately records neuron, artifact,
+background, or unresolved status, center/membrane morphology,
+isolated/crowded context, visibility, timing, and motion/illumination/vascular
+flags. Coverage masks are explicit.
+
+\paragraph{Stored temporal disagreement.}
+Before fitting a new model, use the completed long-history scores to compare
+\texttt{fullrank\_ica\_w17} and \texttt{exponential\_w5}. Freeze the common set,
+each lane's unique candidates, a Raw Direct reference, and a raw-discovery
+sample at B20, B40, B60, and B100. Candidate order is randomized and lane
+identity hidden. The primary comparison is exhaustive-region AP and precision
+at matched recall; sparse-label recovery is secondary.
+
+A provisional preregistration target is an AP gain of at least 0.03 plus a
+precision-at-matched-recall gain of at least 0.05, without material loss in
+three or more bursts. The exact thresholds must be frozen before protected
+review and accompanied by grouped intervals and raw paired disagreements. If
+the lanes are practically equivalent, the deterministic exponential is
+preferred for simplicity and streaming reliability.
+
+\subsection{Experiment 2: unified compact causal confirmation}
+
+After the truth gate, evaluate a single prespecified panel under identical
+carrier, temporal-pooling, candidate, NMS, matching, and budget semantics:
+
+\begin{enumerate}
+  \item Raw Direct;
+  \item the frozen quiet-standardized carrier;
+  \item \texttt{fullrank\_ica\_w17} with positive per-pixel quiet
+        normalization;
+  \item \texttt{exponential\_w5} with the identical normalization;
+  \item \texttt{coherence\_w15} under its frozen carrier semantics;
+  \item standalone \texttt{propagation\_lag2\_w15}, described as temporal
+        recurrence rather than causal biological propagation;
+  \item causal latent-filter amplitude under the frozen state model.
+\end{enumerate}
+
+The offline RTS smoother is a noncausal ceiling, not a promotable lane. Float
+global normalization remains a visualization transform; its post-hoc
+temperature/pooling ceiling does not enter primary selection.
+
+If the temporal comparison remains unresolved, use a small mechanism
+factorial: identity, five-frame boxcar, five-frame exponential, and frozen
+17-tap ICA, each with global robust or per-pixel quiet robust normalization.
+Positive-only versus two-sided scoring is added only for the two finalists.
+This isolates operator and normalization effects without another kernel search.
+
+The comparison hierarchy is temporal ICA versus exponential, survivor versus
+the carrier, and then prespecified coherence and recurrence additions. A lane
+advances only if it improves exhaustive-region AP/precision; recovers at least
+four additional known occurrences at B20 or B40 with non-worse behavior in at
+least three bursts unless the exhaustive endpoint supplies the stronger
+predeclared decision; preserves amplitude, area, and timing; remains stable to
+ROI-grouped resampling and nearby NMS radii; and completes the required
+three-section scientific audit. A null result freezes the simplest baseline
+and stops model expansion.
+
+\subsection{Conditional Experiment 3 branches}
+
+Only the branch earned by Experiment 2 should run first.
+
+\paragraph{Interpretable time constants.}
+If a temporal integrator wins, replace a free coefficient per frame with a
+small nonnegative bank of fixed causal exponentials, for example 40, 80, 160,
+320, 640, and 1280 ms, plus a simplex-constrained mixture. Compare the
+individual filters and mixture with the frozen five-frame exponential,
+17-tap ICA, boxcar controls, causal latent amplitude, and the smoother ceiling.
+Reject the branch if selected weights vary across temporal folds, gains appear
+only at permissive budgets, or timing exceeds the signal guard.
+
+\paragraph{Morphology-conditional ranking.}
+If coherence or recurrence wins and exhaustive negatives exist, retain the
+carrier as an immutable skip and fit only a bounded linear model, a monotone
+additive model, and at most one center-versus-membrane gate. Inputs are limited
+to coherence, recurrence, center/annulus response, cross-scale agreement,
+crowding, and an artifact/motion flag. Optimize AP and B20/B40 ordering on the
+calibration region with burst and identity grouping, then open the protected
+region once. Stop if gains occur only at B58, if the gate tracks acquisition
+field rather than morphology, or if one frozen feature is equivalent.
+
+\paragraph{Causal rise/decay dynamics.}
+If the smoother remains a useful ceiling and the causal filter approaches it,
+test one compact rise/decay or innovation-gated state model against the frozen
+scalar AR(1), not a broad Kalman grid. Preserve the raw/quiet-standardized trace
+as a skip. Require perturbation stability, amplitude/area preservation, peak
+error no greater than one frame, and measured causal latency.
+
+\subsection{Independent recording and streaming gates}
+
+A general detector claim requires at least one recording excluded from fitting,
+family selection, thresholding, reviewer training, and figure selection. The
+exact finalist, two baselines, preprocessing, field boundaries, quiet-window
+rules, budgets, calibration, abstention, and audit manifest are frozen before
+opening confirmation labels. Split by fish where possible and session/day
+otherwise; a held-out interval from the present movie is not an independent
+recording.
+
+Only a method that passes this gate enters a frame-by-frame benchmark. Measure
+p50/p95/p99 end-to-end latency, peak RSS/VRAM, warm-up, missed-frame behavior,
+checkpoint recovery, and fallback output. The target is p99 below the 20 ms
+frame period, with a p95 target below 15 ms for headroom. An offline method must
+retain a simpler causal fallback.
+
+\subsection{Resource-bounded PC schedule}
+
+The planning snapshot on 2026-08-12 recorded a 24-core/32-thread Intel
+i9-14900K, 78 GiB RAM with 58 GiB available, an RTX 4070 SUPER with 12,282 MiB
+VRAM, and approximately 1.8 TiB free disk. The GPU was active, so the snapshot
+did not authorize a run. The prior long-history numerical stage completed 57
+detection lanes in 675.9 s; the feature audit used 232.5 s and 4.4 GiB peak
+RSS. Completed audited roots were approximately 0.8 GiB, but media rendering
+can dominate time because an audit may contain hundreds of videos.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Serial execution queue. Time ranges are planning envelopes and are
+replaced by smoke-run extrapolation before launch. Every computational run
+requires explicit user selection.}
+\label{tab:pc-schedule}
+\begin{tabular}{p{.11\linewidth}p{.30\linewidth}p{.20\linewidth}p{.27\linewidth}}
+\toprule
+Order & Work & Envelope & Resource policy \\
+\midrule
+Q0--Q1 & Freeze manifests; finish hard-observation review & Human-gated & No
+heavy compute \\
+Q2--Q4 & Truth-set pilot, stored panel assembly, blinded review & 15--45 min
+compute plus reviewer time & Two CPU threads; one encoder \\
+Q5 & Compact smoke and ETA calibration & 15--30 min & Serial chunks; bounded
+GPU only if required \\
+Q6 & Unified numerical confirmation & Target $<60$ min before audit & One
+process; checkpoint by burst/fold \\
+Q7 & Full scientific-audit media & Reserve 1--3 h and at least 5 GiB & One
+encoder; no fitting overlap \\
+Q8--Q9 & One earned branch; independent confirmation & Re-estimate separately &
+Fresh roots and preflights \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+CPU work defaults to two numerical-library threads, one low-priority process,
+atomic per-burst/fold checkpoints, and no multiprocessing fan-out. GPU work
+defaults to one worker, a 4 GiB allocation cap, at most eight-frame projection
+chunks, and CPU-backed output maps. Audit production uses one encoder and
+resumable per-ROI media.
+
+Every launch revalidates input hashes and shapes, projection geometry, exact
+combination count, output non-collision, git provenance, active processes,
+memory, swap, disk, VRAM, and a read-only preflight. The default readiness
+thresholds are at least 32 GiB available host memory, less than 0.5 GiB swap in
+use, at least 100 GiB free disk plus four times the projected artifact size,
+and at least 8 GiB free VRAM with sustained low utilization for GPU work. A
+tiny smoke precedes a full run. Heartbeats are written every 30--60 s.
+
+Stop if available RAM falls below 24 GiB, swap exceeds 1 GiB, GPU temperature
+remains at or above 80 C for 60 s, an NVIDIA Xid/OOM occurs, a heartbeat stalls
+for five minutes, an input digest changes, an output collision appears, or
+desktop responsiveness degrades. A stop preserves checkpoints and records the
+run as incomplete.
+
+\subsection{Expected outcomes and claims boundary}
+
+The expected, but not assumed, result is that deterministic short integration
+will explain much of the temporal-ICA improvement and that coherence or
+recurrence will help at tight budgets. If the exponential and ICA lanes are
+equivalent, simplicity wins. If 17-tap ICA has a protected low-budget precision
+edge, only the interpretable time-constant branch is justified. If spatial
+context wins, the next model is a tiny morphology-conditional ranker. If many
+unmatched candidates are accepted neurons, the annotation set expands and all
+frozen baselines are recomputed. If artifacts dominate, acquisition and
+nuisance modeling take priority. If no compact lane passes, the null result
+stops local model search and motivates an independent recording.
+
+Until these gates pass, the study does not claim precision, physical source
+separation, biological propagation, cross-recording generalization, or
+real-time readiness. Longer-term persistent-identity/event inference, domain
+calibration, genuine multi-view source separation, left/right intent, and
+inverse control remain downstream programs rather than extensions authorized by
+this benchmark.

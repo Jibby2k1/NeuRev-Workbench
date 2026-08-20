@@ -6,6 +6,7 @@ from neurobench.algorithms.multiscale_local_normalization import (
     SequentialSTContext,
     SpatialMSLNContext,
     TemporalMSLNContext,
+    causal_joint_centered_residual,
     causal_joint_msln,
     robust_center_scale,
     sequential_msln,
@@ -96,3 +97,28 @@ def test_joint_spatiotemporal_future_frames_do_not_change_past() -> None:
     left = causal_joint_msln(base, context, scale_floor=1.0)
     right = causal_joint_msln(changed, context, scale_floor=1.0)
     np.testing.assert_allclose(left.values[:9], right.values[:9])
+
+
+def test_joint_centered_residual_matches_msln_numerator_when_scale_is_one() -> None:
+    rng = np.random.default_rng(18)
+    video = rng.normal(size=(12, 9, 9)).astype(np.float32)
+    context = JointSTContext("joint_s5_g1_t5_g1", 5, 1, 5, 1)
+    centered = causal_joint_centered_residual(video, context)
+    standardized = causal_joint_msln(video, context, scale_floor=1.0)
+    assert centered.diagnostics["scientific_array"] == "centered_residual_numerator"
+    np.testing.assert_array_equal(centered.valid_frames, standardized.valid_frames)
+    # When every computed local scale is below the explicit unit floor, MSLN
+    # divides by one and must exactly reproduce the shared numerator.
+    low_amplitude = video * np.float32(1e-3)
+    centered_low = causal_joint_centered_residual(low_amplitude, context)
+    standardized_low = causal_joint_msln(low_amplitude, context, scale_floor=1.0)
+    np.testing.assert_allclose(centered_low.values, standardized_low.values, atol=1e-7)
+
+
+def test_joint_centered_residual_is_affine_scale_equivariant() -> None:
+    rng = np.random.default_rng(19)
+    video = rng.normal(size=(12, 9, 9)).astype(np.float32)
+    context = JointSTContext("joint_s7_g1_t5_g1", 7, 1, 5, 1)
+    base = causal_joint_centered_residual(video, context)
+    transformed = causal_joint_centered_residual(video * 3.0 + 11.0, context)
+    np.testing.assert_allclose(transformed.values, base.values * 3.0, rtol=2e-5, atol=2e-5)

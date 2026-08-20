@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_center_whiten_ica_v1",
+  "source": {
+    "movie_path": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+    "axes": "TYX",
+    "ui_one_based": true,
+    "review_interval_ui": [1800, 2359],
+    "quiet_interval_ui": [1800, 1899],
+    "burst_intervals_ui": {
+      "1": [2003, 2026],
+      "2": [2040, 2063],
+      "3": [2122, 2149],
+      "4": [2254, 2300]
+    }
+  },
+  "screen": {
+    "maximum_stage_a": 4,
+    "maximum_stage_b": 6,
+    "maximum_finalists": 4,
+    "maximum_ica_samples": 65536,
+    "sample_seed": 20260815,
+    "save_diagnostics": false,
+    "audit_opt_out_reason": "User requested a metrics-only first-pass architecture screen on 2026-08-15; full diagnostics are mandatory for the frozen finalists."
+  },
+  "compute": {
+    "device": "cuda",
+    "cpu_threads": 4,
+    "workers": 1,
+    "frame_chunk": 4,
+    "maximum_peak_ram_gb": 12,
+    "maximum_peak_vram_gb": 4
+  },
+  "outputs": {
+    "root_dir": "../Outputs/CenterWhitenICA/spon_ca_burst_center_whiten_ica_v1"
+  }
+}

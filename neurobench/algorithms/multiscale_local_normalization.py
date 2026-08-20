@@ -120,6 +120,25 @@ class MSLNResult:
             raise ValueError("invalid MSLN result")
 
 
+@dataclass(frozen=True)
+class CenteredResidualResult:
+    """Causal locally centered numerator without local scale division."""
+
+    values: np.ndarray
+    valid_frames: np.ndarray
+    diagnostics: dict[str, object]
+
+    def __post_init__(self) -> None:
+        if (
+            self.values.ndim != 3
+            or self.values.dtype != np.float32
+            or not np.isfinite(self.values).all()
+            or self.valid_frames.shape != (len(self.values),)
+            or self.valid_frames.dtype != np.bool_
+        ):
+            raise ValueError("invalid centered residual result")
+
+
 def _validate_id(value: str) -> None:
     if not value or any(character not in "abcdefghijklmnopqrstuvwxyz0123456789_" for character in value):
         raise ValueError("context IDs must use lowercase ASCII letters, digits, and underscores")
@@ -411,14 +430,11 @@ def sequential_msln(
     )
 
 
-def causal_joint_msln(
+def _causal_joint_center_scale(
     values: np.ndarray,
     context: JointSTContext,
-    *,
-    scale_floor: float | None = None,
-    quiet_mask: np.ndarray | None = None,
-) -> MSLNResult:
-    """Normalize against one causal 3-D annulus-by-time reference."""
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, dict[str, object]]:
+    """Return the shared joint numerator, local scale, validity, and metadata."""
     source = np.asarray(values)
     if source.ndim != 3 or not source.size:
         raise ValueError("values must be a finite non-empty TYX array")
@@ -495,6 +511,55 @@ def causal_joint_msln(
             local_scale[frame] = np.sqrt(variance).astype(np.float32)
             valid[frame] = True
 
+    diagnostics: dict[str, object] = {
+        "context_id": context.context_id,
+        "kind": "causal_joint_spatiotemporal",
+        "estimator": context.estimator,
+        "spatial_outer_width_px": context.spatial_outer_width_px,
+        "spatial_guard_width_px": context.spatial_guard_width_px,
+        "temporal_window_frames": window,
+        "temporal_guard_frames": temporal_guard,
+        "reference_frame_count": reference_frames,
+        "reference_count_min": int(np.min(spatial_count) * reference_frames),
+        "reference_count_max": int(np.max(spatial_count) * reference_frames),
+        "causal": True,
+        "current_frame_excluded": True,
+        "boundary_corrected": True,
+        "centering_offset": offset,
+        "invalid_prefix_frames": window,
+    }
+    numerator[~valid] = 0
+    if not np.isfinite(numerator).all() or not np.isfinite(local_scale).all():
+        raise ValueError("joint centering produced non-finite values")
+    return numerator, local_scale, valid, diagnostics
+
+
+def causal_joint_centered_residual(
+    values: np.ndarray,
+    context: JointSTContext,
+) -> CenteredResidualResult:
+    """Subtract the causal annulus-by-time mean without local standardization."""
+    numerator, _, valid, diagnostics = _causal_joint_center_scale(values, context)
+    return CenteredResidualResult(
+        values=numerator,
+        valid_frames=valid,
+        diagnostics={**diagnostics, "scientific_array": "centered_residual_numerator"},
+    )
+
+
+def causal_joint_msln(
+    values: np.ndarray,
+    context: JointSTContext,
+    *,
+    scale_floor: float | None = None,
+    quiet_mask: np.ndarray | None = None,
+) -> MSLNResult:
+    """Normalize against one causal 3-D annulus-by-time reference."""
+    source = np.asarray(values)
+    numerator, local_scale, valid, diagnostics = _causal_joint_center_scale(
+        source, context
+    )
+    frames = len(source)
     calibration_mask = valid[:, None, None]
     supplied = _quiet_mask_for(source, quiet_mask)
     if supplied is not None:
@@ -522,21 +587,5 @@ def causal_joint_msln(
         values=numerator,
         valid_frames=valid,
         scale_floor=fitted_floor,
-        diagnostics={
-            "context_id": context.context_id,
-            "kind": "causal_joint_spatiotemporal",
-            "estimator": context.estimator,
-            "spatial_outer_width_px": context.spatial_outer_width_px,
-            "spatial_guard_width_px": context.spatial_guard_width_px,
-            "temporal_window_frames": window,
-            "temporal_guard_frames": temporal_guard,
-            "reference_frame_count": reference_frames,
-            "reference_count_min": int(np.min(spatial_count) * reference_frames),
-            "reference_count_max": int(np.max(spatial_count) * reference_frames),
-            "causal": True,
-            "current_frame_excluded": True,
-            "boundary_corrected": True,
-            "centering_offset": offset,
-            "invalid_prefix_frames": window,
-        },
+        diagnostics={**diagnostics, "scientific_array": "signed_msln"},
     )

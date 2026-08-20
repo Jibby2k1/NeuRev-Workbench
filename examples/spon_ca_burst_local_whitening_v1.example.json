@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_local_whitening_v1",
+  "source": {
+    "movie_path": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+    "labels_path": "../Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+    "axes": "TYX",
+    "ui_one_based": true,
+    "review_interval_ui": [1800, 2359],
+    "quiet_interval_ui": [1800, 1899],
+    "burst_intervals_ui": {
+      "1": [2003, 2026],
+      "2": [2040, 2063],
+      "3": [2122, 2149],
+      "4": [2254, 2300]
+    }
+  },
+  "feature_bank": {
+    "context_ids": [
+      "joint_s5_g1_t15_g1",
+      "joint_s15_g3_t23_g1",
+      "joint_s15_g3_t31_g1"
+    ],
+    "scientific_array": "signed_msln",
+    "feature_order_frozen": true
+  },
+  "quiet_partition": {
+    "fit_fraction": 0.5,
+    "calibration_fraction": 0.25,
+    "holdout_fraction": 0.25,
+    "mode": "contiguous_blocks"
+  },
+  "covariance": {
+    "primary_estimator": "oas",
+    "control_estimators": ["fixed_ridge"],
+    "ridge_ratios": [0.05],
+    "eigenvalue_floor_ratio": 1e-5,
+    "maximum_condition_number": 10000.0,
+    "modes": [
+      "identity",
+      "global_diagonal",
+      "global_full_zca",
+      "local_diagonal",
+      "local_full_zca"
+    ]
+  },
+  "tiles": {
+    "primary_size_px": 64,
+    "sensitivity_sizes_px": [32, 128],
+    "overlap_fraction": 0.5,
+    "blend": "hann",
+    "boundary_mode": "crop",
+    "minimum_raw_samples": 64,
+    "maximum_fit_samples": 65536,
+    "spatial_subsample": 2,
+    "temporal_subsample": 1
+  },
+  "screen": {
+    "freeze_without_spatial_labels": true,
+    "maximum_primary_lanes": 1,
+    "maximum_diagnostic_lanes": 2,
+    "selection_terms": [
+      "heldout_whiteness",
+      "quiet_tail_stability",
+      "block_candidate_recurrence",
+      "carrier_morphology_consistency",
+      "tile_boundary_score"
+    ]
+  },
+  "evaluation": {
+    "candidate_budgets": [20, 40, 58, 80, 100],
+    "guardrail_budget": 58,
+    "nms_distance_px": 6,
+    "match_radius_px": 6,
+    "unlabeled_candidates": "unknown",
+    "winner_basis": "label_free_freeze_then_sparse_positive_guardrail"
+  },
+  "scientific_audit": {
+    "enabled": true
+  },
+  "compute": {
+    "device": "cpu",
+    "cpu_threads": 4,
+    "workers": 1,
+    "frame_chunk": 8,
+    "maximum_peak_ram_gb": 16,
+    "maximum_peak_vram_gb": 4
+  },
+  "outputs": {
+    "root_dir": "../Outputs/LocalWhitening/spon_ca_burst_local_whitening_v1",
+    "representative_frames_ui": [1900, 2003, 2040, 2122, 2254],
+    "fps": 10.0
+  }
+}
