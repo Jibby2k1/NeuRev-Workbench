@@ -1378,6 +1378,13 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 include_body=include_body,
             )
             return True
+        if tail == ["truth-set"]:
+            payload_path = app_dir / "truth_set" / "review" / "review_payload.json"
+            if not payload_path.is_file():
+                self._send_json(404, {"error": "truth-set review payload not found"}, include_body=include_body)
+            else:
+                self._send_json(200, json.loads(payload_path.read_text(encoding="utf-8")), include_body=include_body)
+            return True
         if len(tail) == 2 and tail[0] == "annotation-revisions":
             try:
                 root = resolve_revision_root(app_dir / "annotation_revisions", tail[1])

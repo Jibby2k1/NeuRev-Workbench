@@ -137,6 +137,25 @@ def add_workbench_subcommands(subparsers) -> argparse.ArgumentParser:
     )
     proposal_parser.add_argument("--json", action="store_true")
     proposal_parser.set_defaults(func=workbench_model_proposal_package_command)
+
+    truth_parser = workbench_subparsers.add_parser(
+        "truth-set",
+        help="Preflight, build, and audit bounded detector-blinded truth-set packages.",
+    )
+    truth_actions = truth_parser.add_subparsers(dest="truth_set_command", required=True)
+    truth_preflight = truth_actions.add_parser("preflight", help="Validate inputs and policy without writing outputs.")
+    truth_preflight.add_argument("--manifest", type=Path, required=True)
+    truth_preflight.add_argument("--json", action="store_true")
+    truth_preflight.set_defaults(func=workbench_truth_set_preflight_command)
+    truth_build = truth_actions.add_parser("build-package", help="Build a collision-safe initial raw-first package.")
+    truth_build.add_argument("--manifest", type=Path, required=True)
+    truth_build.add_argument("--output-root", type=Path, required=True)
+    truth_build.add_argument("--json", action="store_true")
+    truth_build.set_defaults(func=workbench_truth_set_build_command)
+    truth_audit = truth_actions.add_parser("audit", help="Run the read-only A0 machine gate.")
+    truth_audit.add_argument("--truth-set-root", type=Path, required=True)
+    truth_audit.add_argument("--json", action="store_true")
+    truth_audit.set_defaults(func=workbench_truth_set_audit_command)
     return parser
 
 
@@ -162,6 +181,40 @@ def workbench_model_proposal_package_command(args: argparse.Namespace) -> int:
             f"{payload['model_occurrence_count']} occurrences"
         )
     return 0
+
+
+def _print_truth_set_result(payload: dict, *, as_json: bool) -> None:
+    if as_json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(f"truth set: {payload.get('truth_set_id', '')}")
+        if "passed" in payload:
+            print(f"preflight: {'passed' if payload['passed'] else 'failed'}")
+        if "decision" in payload:
+            print(f"A0: {payload['decision']}")
+        if payload.get("a0"):
+            print(f"A0: {payload['a0']['decision']}")
+
+
+def workbench_truth_set_preflight_command(args: argparse.Namespace) -> int:
+    from neurobench.workbench.truth_set import preflight_truth_set
+    payload = preflight_truth_set(args.manifest)
+    _print_truth_set_result(payload, as_json=args.json)
+    return 0 if payload["passed"] else 2
+
+
+def workbench_truth_set_build_command(args: argparse.Namespace) -> int:
+    from neurobench.workbench.truth_set import build_truth_set_package
+    payload = build_truth_set_package(args.manifest, args.output_root)
+    _print_truth_set_result(payload, as_json=args.json)
+    return 0
+
+
+def workbench_truth_set_audit_command(args: argparse.Namespace) -> int:
+    from neurobench.workbench.truth_set import audit_truth_set_root
+    payload = audit_truth_set_root(args.truth_set_root)
+    _print_truth_set_result(payload, as_json=args.json)
+    return 0 if payload["decision"] == "advance" else 2
 
 
 def workbench_build_command(args: argparse.Namespace) -> int:

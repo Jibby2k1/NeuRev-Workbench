@@ -1,0 +1,34 @@
+\subsection{Frequency-domain interpretation}
+For sampling rate $f_s=\SI{50}{Hz}$, the response is
+\begin{equation}
+H(f)=\sum_{k=0}^{8}w_k\exp\left(-i2\pi f k/f_s\right).
+\end{equation}
+ICA sign and scale are arbitrary, so we orient the kernel to positive DC and use either unit-$\ell_2$ normalization (noise-gain convention) or unit-DC normalization (averaging convention). The unit-DC taps are
+\begin{equation}
+[0.029,0.169,0.011,0.158,0.108,0.052,0.221,0.062,0.191].
+\end{equation}
+The appropriate low-frequency delay is the DC-normalized centroid,
+\begin{equation}
+\tau_g(0)=\frac{\sum_k k w_k}{\sum_k w_k}=4.642\ \text{frames}=\SI{92.8}{ms}.
+\end{equation}
+The previously reported raw moment 11.689 is not a delay because the unit-$\ell_2$ taps do not sum to one. The energy centroid is 4.911 frames (\SI{98.2}{ms}), the first $-3$ dB crossing is \SI{2.543}{Hz}, and the one-sided equivalent noise bandwidth is \SI{3.942}{Hz}. Relative to DC, amplitude is 0.951 at \SI{1}{Hz}, 0.812 at \SI{2}{Hz}, 0.608 at \SI{3}{Hz}, and 0.165 at \SI{5}{Hz}.
+
+The filter is not a monotone low-pass. Uneven taps produce response minima near 5.65, 11.44, and \SI{15.79}{Hz}, plus a secondary lobe near \SI{20.77}{Hz} with amplitude 0.486 relative to DC ($-6.26$ dB). A nine-frame boxcar has nearly the same response below \SI{3}{Hz} but much stronger rejection near \SI{20}{Hz}. Thus the learned operator can retain or reshape some fast fluctuations while integrating slow signals.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{k8_fir_interpretation.png}
+\caption{Time- and frequency-domain interpretation of the frozen $K=8$ kernel. Dominant low-frequency integration has approximately \SI{93}{ms} delay, but uneven taps create ripple and a high-frequency secondary lobe relative to a boxcar.}
+\label{fig:k8interpretation}
+\end{figure}
+
+\input{frequency_key_comparison.tex}
+\subsection{Cross-seed stability}
+The three $K=8$ fits agree more strongly on low-frequency behavior than on individual taps or high-frequency rejection. DC delays were 4.642, 4.730, and 4.353 frames (87.1--\SI{94.6}{ms}); first $-3$ dB crossings were 2.543, 2.908, and \SI{2.446}{Hz}. Equivalent noise bandwidth ranged from 3.942 to \SI{5.409}{Hz}. In contrast, the Nyquist/DC ratio ranged from 0.119 to 0.410. We therefore interpret short-horizon integration and approximate delay as reproducible properties, but do not assign biological meaning to individual tap peaks or high-frequency lobes.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{k8_seed_frequency_stability.png}
+\caption{Tap and response variability across three deterministic $K=8$ ICA seeds after positive-DC orientation and DC normalization. Slow-signal integration is consistent; detailed ripple is less stable.}
+\label{fig:k8seeds}
+\end{figure}

@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "truth_set_id": "spon_ca_burst_synthetic_truth_set_v1",
+  "predecessor_truth_set_id": null,
+  "dataset_id": "synthetic_spon_ca_burst_fixture",
+  "source_video": {
+    "id": "synthetic_tiny_video",
+    "path": "../tests/fixtures/truth_set/tiny_video.synthetic.txt",
+    "sha256": "31937726f7c3e842a29e4ac531b1482b1e67d93b37cada0a9a4c2bd118c4c349",
+    "width_px": 16,
+    "height_px": 12,
+    "frame_count": 12,
+    "frame_rate_hz": 50.0,
+    "coordinate_convention": "x=column,y=row;ui=one-based-inclusive;array=zero-based-half-open"
+  },
+  "annotation_revisions": {
+    "base_revision_id": "synthetic_base_revision",
+    "base_revision_path": "../tests/fixtures/truth_set/synthetic_base_revision.json",
+    "base_revision_sha256": "a6a22a5d03ea41875b85442d414194f3e27e36755f3e21b66889869983e73fb4",
+    "published_revision_ids": ["synthetic_raw_first_publication"],
+    "published_revisions": [
+      {"revision_id": "synthetic_raw_first_publication", "path": "../tests/fixtures/truth_set/synthetic_raw_first_publication.json", "sha256": "cce950d36846eb351dda6422eab7140f464cce178bc2f5efc45e4f82eee61f2b"}
+    ]
+  },
+  "calibration_region_ids": ["calibration_synthetic"],
+  "protected_region_ids": ["protected_synthetic"],
+  "frozen_candidate_panel": {
+    "panel_id": "synthetic_raw_ica_exp_panel_v1",
+    "sha256": "312f29849e7040f95701cab455d92e88b29a9b180523b1d2706f247dbfe34b02",
+    "lane_artifacts": [
+      {"lane_id": "Raw Direct", "artifact_path": "../tests/fixtures/truth_set/raw_direct_candidates.synthetic.json", "artifact_sha256": "5ae359831fad7d328539f188733dcf255656b1dbcef6a9f6a54eb0a431ab3048", "score_array_path": "../tests/fixtures/truth_set/raw_direct_candidates.synthetic.json", "score_array_sha256": "5ae359831fad7d328539f188733dcf255656b1dbcef6a9f6a54eb0a431ab3048"},
+      {"lane_id": "fullrank_ica_w17", "artifact_path": "../tests/fixtures/truth_set/fullrank_ica_w17_candidates.synthetic.json", "artifact_sha256": "36d113e15de65034f50806c6b4dc1a846ae00a1e8ea65806086f8384703c5870", "score_array_path": "../tests/fixtures/truth_set/fullrank_ica_w17_candidates.synthetic.json", "score_array_sha256": "36d113e15de65034f50806c6b4dc1a846ae00a1e8ea65806086f8384703c5870"},
+      {"lane_id": "exponential_w5", "artifact_path": "../tests/fixtures/truth_set/exponential_w5_candidates.synthetic.json", "artifact_sha256": "924d461c16633bcf06ddfeb721400bd5fb3a62f5943d56a565e40b02cb29abf0", "score_array_path": "../tests/fixtures/truth_set/exponential_w5_candidates.synthetic.json", "score_array_sha256": "924d461c16633bcf06ddfeb721400bd5fb3a62f5943d56a565e40b02cb29abf0"}
+    ]
+  },
+  "frozen_analysis_policy": {
+    "sha256": "42125160e269f08299624bf8865533b999133aec2e88d8d29827c7ead4374a69",
+    "candidate_budgets": [20, 40],
+    "nms_radius_px": 2.0,
+    "matching_radius_px": 1.5,
+    "temporal_matching_radius_frames": 1,
+    "candidate_randomization_seed": 41023,
+    "second_review_seed": 9182,
+    "temporal_pooling": "synthetic_fixed_max",
+    "tie_handling": "score_desc_then_y_x_source_id"
+  },
+  "blinding_state": "raw_first",
+  "review_pass_state": "raw_first",
+  "review_provenance": {
+    "reviewer_ids": ["synthetic_reviewer_a", "synthetic_reviewer_b"],
+    "adjudicator_ids": ["synthetic_adjudicator"]
+  },
+  "coverage_status": "incomplete",
+  "protected_lock_state": "locked",
+  "timestamps": {
+    "created_at": "2026-08-15T12:00:00Z",
+    "updated_at": "2026-08-15T12:00:00Z",
+    "locked_at": "2026-08-15T12:00:00Z",
+    "unsealed_at": null,
+    "published_at": null
+  },
+  "regions": [
+    {
+      "schema_version": 1,
+      "region_id": "calibration_synthetic",
+      "role": "calibration",
+      "selection_mode": "synthetic_fixture",
+      "selection_seed": 11,
+      "selection_rationale": "Synthetic enriched calibration region; production coordinates require human selection.",
+      "enriched": true,
+      "spatial_bounds_px": {"x_min": 0, "y_min": 0, "x_max_exclusive": 8, "y_max_exclusive": 6},
+      "ui_frame_interval": [1, 6],
+      "array_frame_interval": [0, 6],
+      "coverage_mode": "exhaustive",
+      "review_status": "planned",
+      "coverage_mask": {"path": "../tests/fixtures/truth_set/calibration_mask.synthetic.txt", "sha256": "8f3360660acdf9ceeb2a9865cd5f294effe0f565f587574e6c1dcc4f7d7dbc51"},
+      "reviewer_ids": ["synthetic_reviewer_a"],
+      "raw_first_complete": false,
+      "candidate_union_count": 2,
+      "candidate_union_disposition_count": 0,
+      "unresolved_count": 0,
+      "second_review_sample_count": 0,
+      "protected_lock": {"locked": false, "unsealed": false, "locked_at": null, "unsealed_at": null, "unsealed_by": null, "unseal_reason": null}
+    },
+    {
+      "schema_version": 1,
+      "region_id": "protected_synthetic",
+      "role": "protected",
+      "selection_mode": "synthetic_fixture",
+      "selection_seed": 29,
+      "selection_rationale": "Synthetic label-free protected region; production coordinates require human selection from a tissue-quality mask.",
+      "enriched": false,
+      "spatial_bounds_px": {"x_min": 8, "y_min": 6, "x_max_exclusive": 16, "y_max_exclusive": 12},
+      "ui_frame_interval": [7, 12],
+      "array_frame_interval": [6, 12],
+      "coverage_mode": "exhaustive",
+      "review_status": "planned",
+      "coverage_mask": {"path": "../tests/fixtures/truth_set/protected_mask.synthetic.txt", "sha256": "8a53e72c3fc0c664968dc99204c29d2911b920b20555d00257c601cd92a5c669"},
+      "reviewer_ids": ["synthetic_reviewer_a", "synthetic_reviewer_b"],
+      "raw_first_complete": false,
+      "candidate_union_count": 2,
+      "candidate_union_disposition_count": 0,
+      "unresolved_count": 0,
+      "second_review_sample_count": 0,
+      "protected_lock": {"locked": true, "unsealed": false, "locked_at": "2026-08-15T12:00:00Z", "unsealed_at": null, "unsealed_by": null, "unseal_reason": null}
+    }
+  ],
+  "candidates": [
+    {"source_lane_id": "Raw Direct", "source_candidate_id": "raw_001", "region_id": "calibration_synthetic", "x_px": 2.0, "y_px": 2.0, "ui_frame_interval": [2, 3], "score": 9.0},
+    {"source_lane_id": "fullrank_ica_w17", "source_candidate_id": "ica_001", "region_id": "calibration_synthetic", "x_px": 2.4, "y_px": 2.2, "ui_frame_interval": [2, 3], "score": 8.5},
+    {"source_lane_id": "exponential_w5", "source_candidate_id": "exp_002", "region_id": "calibration_synthetic", "x_px": 6.0, "y_px": 4.0, "ui_frame_interval": [5, 5], "score": 7.0},
+    {"source_lane_id": "Raw Direct", "source_candidate_id": "raw_003", "region_id": "protected_synthetic", "x_px": 10.0, "y_px": 8.0, "ui_frame_interval": [8, 9], "score": 6.0},
+    {"source_lane_id": "exponential_w5", "source_candidate_id": "exp_003", "region_id": "protected_synthetic", "x_px": 10.4, "y_px": 8.1, "ui_frame_interval": [8, 9], "score": 5.5},
+    {"source_lane_id": "fullrank_ica_w17", "source_candidate_id": "ica_004", "region_id": "protected_synthetic", "x_px": 14.0, "y_px": 10.0, "ui_frame_interval": [11, 12], "score": 4.0}
+  ]
+}
