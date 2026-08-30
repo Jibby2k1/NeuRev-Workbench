@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neurev.org/research/schemas/experiment.schema.json",
+  "title": "NeuRev experiment record",
+  "description": "Canonical experiment intent, frozen design, lifecycle, outcome, and scientific boundaries.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "id",
+    "origin",
+    "program_id",
+    "title",
+    "question",
+    "objective",
+    "rationale",
+    "lifecycle",
+    "outcome",
+    "evidence_tier",
+    "review_state",
+    "falsifiers",
+    "design",
+    "gates",
+    "claim_ids",
+    "decision_ids",
+    "visibility"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "record_type": {"const": "experiment"},
+    "id": {"$ref": "#/$defs/experiment_id"},
+    "origin": {"$ref": "#/$defs/origin"},
+    "program_id": {"$ref": "#/$defs/program_id"},
+    "title": {"$ref": "#/$defs/title"},
+    "question": {"$ref": "#/$defs/nonempty_text"},
+    "objective": {"$ref": "#/$defs/nonempty_text"},
+    "rationale": {"$ref": "#/$defs/nonempty_text"},
+    "lifecycle": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "preregistered",
+        "running",
+        "computed",
+        "validated",
+        "reviewed",
+        "closed",
+        "paused",
+        "cancelled",
+        "invalidated"
+      ]
+    },
+    "outcome": {
+      "type": "string",
+      "enum": ["not_evaluated", "supported", "rejected", "mixed", "inconclusive"]
+    },
+    "evidence_tier": {"$ref": "#/$defs/evidence_tier"},
+    "review_state": {"$ref": "#/$defs/review_state"},
+    "falsifiers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonempty_text"}
+    },
+    "design": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary"],
+      "properties": {
+        "summary": {"$ref": "#/$defs/nonempty_text"},
+        "protocol_path": {"$ref": "#/$defs/repository_path"},
+        "unit_of_analysis": {"$ref": "#/$defs/nonempty_text"},
+        "comparison": {"$ref": "#/$defs/nonempty_text"},
+        "data_scope": {"$ref": "#/$defs/nonempty_text"},
+        "grouping_or_blocking": {"$ref": "#/$defs/nonempty_text"},
+        "sample_plan": {"$ref": "#/$defs/nonempty_text"},
+        "randomization": {"$ref": "#/$defs/nonempty_text"},
+        "blinding": {"$ref": "#/$defs/nonempty_text"},
+        "analysis_plan": {"$ref": "#/$defs/nonempty_text"}
+      }
+    },
+    "gates": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/planned_gate"}
+    },
+    "preregistration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frozen_on", "protocol_sha256", "code_commit"],
+      "properties": {
+        "frozen_on": {"$ref": "#/$defs/date_time"},
+        "protocol_sha256": {"$ref": "#/$defs/sha256"},
+        "code_commit": {"$ref": "#/$defs/git_sha"},
+        "notes": {"$ref": "#/$defs/nonempty_text"}
+      }
+    },
+    "claim_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/claim_id"}
+    },
+    "decision_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/decision_id"}
+    },
+    "run_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/run_id"}
+    },
+    "evidence_capsule_id": {"$ref": "#/$defs/evidence_capsule_id"},
+    "depends_on_experiment_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/experiment_id"}
+    },
+    "supersedes_experiment_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/experiment_id"}
+    },
+    "visibility": {"$ref": "#/$defs/visibility"},
+    "legacy_id": {"type": "string", "minLength": 1},
+    "legacy_status": {"$ref": "#/$defs/legacy_status"},
+    "created_on": {"$ref": "#/$defs/date"},
+    "updated_on": {"$ref": "#/$defs/date"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "origin": {
+            "properties": {"kind": {"const": "native"}},
+            "required": ["kind"]
+          }
+        },
+        "required": ["origin"]
+      },
+      "then": {
+        "properties": {
+          "design": {"required": ["summary", "unit_of_analysis", "comparison", "data_scope"]},
+          "falsifiers": {"minItems": 1},
+          "gates": {"minItems": 1}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "experiment_id": {"type": "string", "pattern": "^NREV-EXP-[0-9]{4,}$"},
+    "origin": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {"kind": {"const": "native"}}
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "source_path", "source_sha256", "recorded_on", "missing_fields"],
+          "properties": {
+            "kind": {"const": "migrated_legacy"},
+            "source_path": {"$ref": "#/$defs/repository_path"},
+            "source_sha256": {"$ref": "#/$defs/sha256"},
+            "recorded_on": {"$ref": "#/$defs/date"},
+            "missing_fields": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {"$ref": "#/$defs/nonempty_text"}
+            }
+          }
+        }
+      ]
+    },
+    "program_id": {"type": "string", "pattern": "^NREV-PRG-[0-9]{4,}$"},
+    "claim_id": {"type": "string", "pattern": "^NREV-CLM-[0-9]{4,}$"},
+    "decision_id": {"type": "string", "pattern": "^NREV-DEC-[0-9]{4,}$"},
+    "run_id": {"type": "string", "pattern": "^NREV-RUN-[A-Z0-9][A-Z0-9-]{2,63}$"},
+    "evidence_capsule_id": {
+      "type": "string",
+      "pattern": "^NREV-EVC-[A-Z0-9][A-Z0-9-]{2,63}$"
+    },
+    "title": {"type": "string", "minLength": 3, "maxLength": 160},
+    "nonempty_text": {"type": "string", "minLength": 1},
+    "evidence_tier": {
+      "type": "string",
+      "enum": [
+        "none",
+        "descriptive",
+        "current_recording",
+        "computational_simulation",
+        "reviewed_current_recording",
+        "external_review",
+        "independent_recording",
+        "causal_intervention",
+        "evidence_synthesis"
+      ]
+    },
+    "review_state": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "not_required",
+        "pending",
+        "in_review",
+        "changes_requested",
+        "approved",
+        "adjudication_required",
+        "adjudicated"
+      ]
+    },
+    "planned_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "criterion", "required"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{1,63}$"},
+        "criterion": {"$ref": "#/$defs/nonempty_text"},
+        "stage": {"type": "string", "enum": ["preflight", "execution", "analysis", "review", "publication"]},
+        "required": {"type": "boolean"}
+      }
+    },
+    "visibility": {"type": "string", "enum": ["public", "internal", "restricted"]},
+    "legacy_status": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Original free-form status retained only for migration provenance."
+    },
+    "date": {"type": "string", "format": "date"},
+    "date_time": {"type": "string", "format": "date-time"},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "git_sha": {"type": "string", "pattern": "^[a-f0-9]{7,40}$"},
+    "repository_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:[\\\\/])(?![A-Za-z][A-Za-z0-9+.-]*:)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    }
+  }
+}

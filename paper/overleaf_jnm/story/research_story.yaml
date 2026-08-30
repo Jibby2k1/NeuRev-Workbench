@@ -1,0 +1,609 @@
+# Generated from research/registry; do not edit by hand.
+schema_version: 1
+canonical_document: main.tex
+documents:
+  technical:
+    entrypoint: main_technical.tex
+    purpose: Evidence-complete journal manuscript with full methods and boundaries.
+  overview:
+    entrypoint: main_overview.tex
+    purpose: High-level narrative for collaborators and interdisciplinary readers.
+  experiments:
+    entrypoint: main_experiment_story.tex
+    purpose: Chronological question-design-result-decision experiment record.
+  supplement:
+    entrypoint: supplement_main.tex
+    purpose: Extended methods and supporting analyses.
+claims:
+- id: shared_burst_waveform
+  statement: Raw traces contain a strong event-aligned population waveform that is also expressed in nearby tissue.
+  status: established_current_recording
+  scope: 106 confirmed occurrences at 50 sites in one recording.
+  evidence:
+  - figures/final/fig04_population_trace_summary.png
+  - figures/final/fig05_pipeline_diagnostic_table.tsv
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0003.json
+- id: trace_phenotypes
+  statement: Two descriptive trace phenotypes summarize recurrent within-recording variation.
+  status: exploratory
+  scope: T1 has 38 sites and T2 has 12 sites; these are not biological neuron types.
+  evidence:
+  - figures/final/fig04_trace_taxonomy_experiment.json
+  - figures/final/fig04_trace_taxonomy_site_assignments.tsv
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0002.json
+- id: full_trace_feature_roles
+  statement: Event amplitude is strongest for known-center temporal retrieval, while spatial context contributes localized
+    structure and full-field proposal or ranking value.
+  status: exploratory_supported_current_recording
+  scope: 106 confirmed occurrences at 50 immutable sites in one previously analyzed recording; displaced tissue and guarded
+    quiet frames have unknown biology.
+  evidence:
+  - figures/final/fig08_full_trace_feature_panel.png
+  - figures/final/fig09_automated_feature_validation.png
+  - generated_analysis/automated_feature_validation_v1/temporal_retrieval_summary.tsv
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0004.json
+  - ../../research/evidence/NREV-EXP-0005.json
+- id: automated_feature_complementarity
+  statement: A role-specific feature set improves cross-fitted detector-recovery point estimates over a carrier-only model,
+    but the site-bootstrap uncertainty gate is not passed.
+  status: exploratory_unresolved
+  scope: 94 recovered and 12 missed original geometries at detector budget 58; site-bootstrap log-loss improvement interval
+    crosses zero.
+  evidence:
+  - figures/final/fig09_automated_feature_validation.png
+  - generated_analysis/automated_feature_validation_v1/recovery_model_summary.tsv
+  - generated_analysis/automated_feature_validation_v1/recovery_model_ablation.tsv
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0005.json
+- id: feature_role_decomposition
+  statement: Early-budget coherence and lag gains are larger in native proposal streams than on a common proposal universe,
+    while a fixed kinetic filter and lag add distinct exploratory recovery value.
+  status: exploratory_supported_current_recording
+  scope: 106 occurrences at 50 immutable sites; 12 all-lane B58 misses; 20 repeated site-grouped splits and four leave-one-burst-out
+    kinetic folds.
+  evidence:
+  - figures/final/fig11_feature_deep_dives.png
+  - generated_analysis/feature_deep_dives_v1/proposal_ranking_decomposition.tsv
+  - generated_analysis/feature_deep_dives_v1/recovery_complementarity.tsv
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0006.json
+- id: identity_aware_miss_interpretation
+  statement: Most apparent local recentering improvements among the all-lane misses cross an existing identity boundary and
+    therefore cannot be treated as safe coordinate corrections.
+  status: established_reviewed_current_recording
+  scope: Canonical-v8 interpretation audit of the 12 canonical-v7 all-lane B58 misses; 2 same-identity collisions, 6 other-identity
+    collisions, and 4 identity-clear hypotheses under a fixed six-pixel guard.
+  evidence:
+  - ../../docs/research/SPON_CA_BURST_IDENTITY_AWARE_RECENTER_AUDIT_V8_RESULTS.md
+  - tables/identity_aware_recenter_v8.tex
+  - figures/final/fig13_identity_aware_feature_inspection_v8.png
+  - generated_analysis/identity_aware_feature_inspection_v8/summary.json
+  - generated_analysis/identity_aware_validation_suite_v2/summary.json
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0007.json
+- id: expanded_automated_feature_validation
+  statement: Identity-grouped recovery prediction, stability selection, conditional importance, selective risk, and recovered-only
+    anomaly detection support a compact observability-context stack beyond carrier amplitude alone.
+  status: exploratory_supported_current_recording
+  scope: 106 occurrences at 50 sites in one recording; 12 misses; 100 site-bootstrap sparse fits; synthetic tests are one-dimensional
+    and cross-burst transfer has only one identity-clear pair.
+  evidence:
+  - figures/final/fig14_expanded_automated_validation.png
+  - generated_analysis/expanded_automated_validation_v3/summary.json
+  - ../../docs/research/SPON_CA_BURST_EXPANDED_AUTOMATED_VALIDATION_V3_RESULTS.md
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0008.json
+- id: realistic_movie_spatial_context
+  statement: Spatial context improves source-pixel discrimination over pixel variance in a paired truth-known movie stress
+    test spanning proximity, amplitude imbalance, temporal correlation, and non-circular footprints.
+  status: established_computational_simulation
+  scope: 432 paired simulator cells across 12 seeds; mean AUC gain 0.104 and 94.9 percent win fraction; not biological external
+    validation.
+  evidence:
+  - ../../Outputs/NeuronIdentifiability/realistic_movie_identity_stress_test_v1/summary.json
+  - ../../docs/research/SPON_CA_BURST_MAJOR_NEXT_STEPS_V1_RESULTS.md
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0009.json
+- id: realistic_movie_detector_roles
+  statement: In exact-truth movie detection, the combined carrier-context-kinetic stack improves compact-budget identity recovery
+    and held-seed calibration, while spatial context most strongly improves localization and duplicate suppression.
+  status: established_computational_simulation
+  scope: 432 movies, four frozen score stacks, proposal budgets 2, 4, and 8, three-pixel one-to-one identity matching; simulation
+    is not biological transfer.
+  evidence:
+  - ../../Outputs/NeuronIdentifiability/realistic_movie_detector_benchmark_v3/summary.json
+  - ../../docs/research/SPON_CA_BURST_REALISTIC_MOVIE_DETECTOR_V3_RESULTS.md
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0010.json
+- id: generator_family_robustness
+  statement: Spatial context is the most robust frozen proposal score under held-out neuropil, bleaching, nonrigid-motion,
+    empirical-noise, and compound-shift generator families, whereas naive equal-weight fusion retains better calibration but
+    loses operating-point robustness.
+  status: established_computational_simulation
+  scope: 108 exact-truth movies across six generator families, six seeds per family, and source counts 2, 4, and 8; empirical
+    noise scale estimated label-free from one untouched 060126 recording.
+  evidence:
+  - ../../Outputs/NeuronIdentifiability/realistic_movie_generator_family_holdout_v4/summary.json
+  - ../../docs/research/SPON_CA_BURST_GENERATOR_FAMILY_HOLDOUT_V4_RESULTS.md
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0011.json
+- id: prospective_gated_fusion
+  statement: A development-family-trained gated fusion does not improve aggregate F1 over frozen spatial context when thresholds
+    are calibrated without labels on source-free development movies and evaluated on untouched generator families.
+  status: established_computational_negative_result
+  scope: 54 untouched-family movies with 2, 4, or 8 sources; three development families for gate fitting and null calibration;
+    target false-alarm rates 1, 2, and 4 per movie.
+  evidence:
+  - ../../Outputs/NeuronIdentifiability/label_free_false_alarm_gated_fusion_v5/summary.json
+  - ../../docs/research/SPON_CA_BURST_LABEL_FREE_FALSE_ALARM_V5_RESULTS.md
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0012.json
+- id: automated_challenge_boundaries
+  statement: A twelve-family exact-truth challenge suite identifies spatial-context robustness alongside concrete limits in
+    weak-neighbor identifiability, deployable stopping, parameter stability, and kinetic direction selectivity.
+  status: established_computational_mixed_result
+  scope: Six seeds per condition across null normalization, suppression, source-count stopping, weak-neighbor, colored noise,
+    motion, morphology, severity, OOD, cross-simulator, stability, and negative-control tests.
+  evidence:
+  - ../../Outputs/NeuronIdentifiability/automated_challenge_suite_v7/summary.json
+  - ../../docs/research/SPON_CA_BURST_AUTOMATED_CHALLENGE_SUITE_V7_RESULTS.md
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0013.json
+- id: targeted_v8_rejections
+  statement: Parameter-consensus stopping, unconstrained rank-two NMF deblending, and a simple forward-minus-reverse kinetic
+    contrast do not improve their frozen comparators under prospective exact-truth tests.
+  status: established_computational_negative_result
+  scope: Six-seed targeted development package with disjoint artifact definitions, one-to-one weak-identity matching, and
+    explicit forward and reversed kinetic gates.
+  evidence:
+  - ../../Outputs/NeuronIdentifiability/targeted_automated_development_v8/summary.json
+  - ../../docs/research/SPON_CA_BURST_TARGETED_AUTOMATED_DEVELOPMENT_V8_RESULTS.md
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0014.json
+- id: constrained_generative_rejection
+  statement: A frozen constrained joint spatial-temporal factorization does not improve close-source identity recovery over
+    spatial context, and component-specific forward-versus-reversed likelihoods remain non-directional after circularity-safe
+    auditing.
+  status: established_computational_negative_result
+  scope: New ellipse development grid followed by one-shot locked v8 crescent evaluation; six seeds; corrected kinetic audit
+    uses unconstrained component coefficients.
+  evidence:
+  - ../../Outputs/NeuronIdentifiability/joint_generative_deblending_v10/summary.json
+  - ../../docs/research/SPON_CA_BURST_JOINT_GENERATIVE_DEBLENDING_V10_RESULTS.md
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0015.json
+- id: temporal_transform_invertibility
+  statement: The frozen six-component temporal transform is numerically invertible at the audited sites.
+  status: established_computational
+  scope: Maximum sitewise embedding inversion RMS is 5.69e-12; this is not denoising validation.
+  evidence:
+  - figures/final/fig06_ica_model_internals.json
+  - figures/final/fig06_ica_model_internals.npz
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0018.json
+- id: ls_denominator_behavior
+  statement: Local-standardization scaling at audited centers is governed by measured local variability rather than the global
+    floor.
+  status: established_audited_centers
+  scope: 50 centers over 560 frames; no full-field floor-inactivity claim.
+  evidence:
+  - figures/final/fig07_ls_denominator_diagnostics.json
+  - figures/final/fig07_ls_denominator_diagnostics.npz
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0019.json
+- id: biological_source_identity
+  statement: Pipeline outputs identify one-to-one biological neuronal sources.
+  status: unresolved
+  scope: Stable measurement representations do not establish biological source identity.
+  evidence:
+  - PIPELINE_DIAGNOSTIC_AUDIT.md
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0003.json
+  - ../../research/evidence/NREV-EXP-0018.json
+- id: full_field_precision
+  statement: Full-field detection precision is known.
+  status: unresolved
+  scope: Sparse positives do not make unmatched candidates verified negatives.
+  evidence:
+  - sections/02_materials_and_methods.tex
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0016.json
+  - ../../research/evidence/NREV-EXP-0017.json
+- id: new_candidate_single_reviewer_labels
+  statement: Review of previously unmatched candidates expands the provisional appearance envelope to include small, discreet,
+    low-SNR, and crescent-shaped neuron calls, while artifact-adjacent and neighbor-confounded sites remain unresolved.
+  status: provisional_single_reviewer
+  scope: 18 selected unmatched sites in one recording; 9 definite, 4 probable, 4 uncertain, and 1 artifact-or-noise call;
+    no existing decisions changed.
+  evidence:
+  - ../../Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/user_review_v1.tsv
+  - ../../Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/review_summary_v1.json
+  - ../../docs/research/SPON_CA_BURST_NEW_CANDIDATE_REVIEW_V1_RESULTS.md
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0016.json
+- id: external_bounded_review_readiness
+  statement: A staged portable Raw-first then assisted review package is ready for two independent reviewers, with public/private
+    separation, locked exports, blinding checks, agreement analysis, and mandatory adjudication.
+  status: implementation_complete_human_evidence_pending
+  scope: One frozen enriched 192 by 192 region and 18 assisted candidates in the current recording; no independent annotations
+    or detector metric yet.
+  evidence:
+  - ../../Outputs/NeuronIdentifiability/external_blinded_bounded_review_v2/experiment_contract.json
+  - ../../Outputs/NeuronIdentifiability/external_blinded_bounded_review_v2/validation.json
+  - ../../docs/research/SPON_CA_BURST_EXTERNAL_BOUNDED_REVIEW_V2_PACKAGE.md
+  evidence_capsules:
+  - ../../research/evidence/NREV-EXP-0017.json
+experiments:
+- id: canonical_v7_trace_atlas
+  question: What do Raw, temporal-ICA, and local-standardized signals look like at every confirmed occurrence?
+  design: Preserve immutable site coordinates and synchronized center traces across 106 occurrences; rank media by a frozen
+    LS-center criterion.
+  status: complete_descriptive
+  finding: The atlas exposes a strong shared burst waveform and substantial site-to-site heterogeneity.
+  limitation: Representative cases and sparse positives do not estimate precision.
+  artifacts:
+  - figures/final/fig03_trace_atlas_examples.pdf
+  - figures/final/fig03_trace_atlas_examples_source.tsv
+  evidence_capsule: ../../research/evidence/NREV-EXP-0001.json
+  next_decision: Use the atlas for failure-mode review, not biological source naming.
+- id: all_site_trace_taxonomy
+  question: Are recurring trace-shape patterns present without leaving most sites unassigned?
+  design: Fit an all-site joint two-class shape taxonomy and test leave-one-burst-out persistence at immutable-site grain.
+  status: complete_exploratory
+  finding: T1 contains 38 sites and T2 contains 12, with recurrent but imperfect stage and burst persistence.
+  limitation: One recording; classes are descriptive measurement phenotypes.
+  artifacts:
+  - figures/final/fig04_trace_taxonomy_experiment.json
+  - figures/final/fig04c_trace_taxonomy_lobo_summary.json
+  evidence_capsule: ../../research/evidence/NREV-EXP-0002.json
+  next_decision: Freeze the assignment rule before applying it to an independent recording.
+- id: pipeline_diagnostic_audit
+  question: Which signal, spatial, and transformation diagnostics explain pipeline behavior?
+  design: Compute occurrence-by-stage trace, annulus, spatial-footprint, transition, saturation, and availability diagnostics.
+  status: complete_descriptive
+  finding: Raw-to-ICA is the larger shape transformation; ICA-to-LS is more shape-preserving, and burst 2 is weaker and timing-sensitive.
+  limitation: Candidate metadata are partial and motion fields are absent.
+  artifacts:
+  - figures/final/fig05_pipeline_diagnostic_audit.png
+  - figures/final/fig05_pipeline_diagnostic_table.tsv
+  evidence_capsule: ../../research/evidence/NREV-EXP-0003.json
+  next_decision: Add motion diagnostics and independent-recording QC.
+- id: full_trace_feature_panel
+  question: Which compact interpretable features localize confirmed events over the complete trace, and which retain site
+    ordering across bursts?
+  design: Compare 11 frozen features against all same-duration guarded quiet windows and use 5,000-draw site-block bootstraps
+    and burst-pair site-rank correlations.
+  status: complete_exploratory
+  finding: Carrier, coherence, lag recurrence, and Raw amplitude were ceiling-limited at known centers; neither new extension
+    beat the carrier, while consensus and multiscale persistence retained cross-burst site-rank variation.
+  limitation: The same recording and bursts motivated prior feature choices; quiet windows are temporal references, not biological
+    negatives.
+  artifacts:
+  - figures/final/fig08_full_trace_feature_panel.png
+  - figures/final/fig08_full_trace_feature_panel.json
+  - tables/full_trace_feature_panel_summary.tex
+  evidence_capsule: ../../research/evidence/NREV-EXP-0004.json
+  next_decision: Freeze role-specific definitions and transfer them without tuning to an independent recording and exhaustively
+    reviewed bounded field.
+- id: automated_feature_validation
+  question: Do the frozen full-trace features retain value under harder retrieval, spatial displacement, grouped recovery
+    prediction, perturbation, repeatability, and falsification tests?
+  design: Run six prespecified automated analyses on 106 original geometries, with site-blocked inference, site-grouped cross-fitting,
+    a 102-row canonical-collapsed sensitivity, 500 circular-shift null draws, and fixed synthetic transients.
+  status: complete_exploratory
+  finding: Raw led temporal retrieval; all six compact features exceeded matched displaced tissue; a richer recovery model
+    improved point estimates but not the uncertainty gate; and perturbation, null, and injection tests behaved directionally
+    as expected.
+  limitation: Same-recording reuse, only 12 primary recovery misses, biologically unknown reference frames and tissue, and
+    simplified one-dimensional injections prevent precision, identity, or generalization claims.
+  artifacts:
+  - figures/final/fig09_automated_feature_validation.png
+  - figures/final/fig10_robustness_falsification.png
+  - generated_analysis/automated_feature_validation_v1/recovery_model_summary.tsv
+  evidence_capsule: ../../research/evidence/NREV-EXP-0005.json
+  next_decision: Freeze the compact role-specific stack; prioritize realistic movie-level simulation, bounded-field truth,
+    and independent-recording transfer over further same-recording feature expansion.
+- id: feature_deep_dives
+  question: Which errors dominate, and do coherence, lag, and calcium kinetics contribute through proposal formation, ranking,
+    or recovery prediction?
+  design: Reuse the exact frozen 106-occurrence population; classify B58 failures, compare native and common-proposal recall,
+    measure spatial decay and crowding, select a fixed kinetic bank leave-one-burst-out, and repeat site-grouped recovery
+    models 20 times.
+  status: complete_exploratory
+  finding: Twelve occurrences were missed by all lanes; native early-budget gains substantially exceeded common-proposal ranking
+    gains; a one-frame-rise, 20-frame-decay kernel was selected in every held-burst fold; and lag improved repeated recovery
+    point estimates more than coherence.
+  limitation: Same recording, sparse positives, only 12 all-lane misses, incomplete crowding labels, and descriptive rather
+    than causal proposal contrasts.
+  artifacts:
+  - figures/final/fig11_feature_deep_dives.png
+  - figures/final/fig12_spatial_decay_crowding.png
+  - generated_analysis/feature_deep_dives_v1/summary.json
+  evidence_capsule: ../../research/evidence/NREV-EXP-0006.json
+  next_decision: Preserve distinct proposal, ranking, and kinetic roles, but require bounded-field or independent-recording
+    validation before promoting a richer selector.
+- id: identity_aware_recenter_audit_v8
+  question: Are the 12 all-lane B58 misses primarily repairable localization errors, or do small response-maximizing shifts
+    cross identity boundaries?
+  design: Search a fixed six-pixel neighborhood using cross-stage response consensus, retain immutable original centers, apply
+    an explicit nearest-label identity guard, and visually inspect synchronized six-panel videos and traces.
+  status: complete_reviewed_interpretation_update
+  finding: Two candidates collided with the same canonical identity, six with another identity, and only four were identity-clear.
+    Collision shifts were more directionally consistent across stages and more coupled to neighboring traces than identity-clear
+    shifts; footprint morphology alone was weakly separating.
+  limitation: The search and footprint weights are same-event response-selected; labeled geometry is not exhaustive biological
+    truth, only four identity-clear misses remain, and no classifier was fit.
+  artifacts:
+  - ../../docs/research/SPON_CA_BURST_IDENTITY_AWARE_RECENTER_AUDIT_V8_RESULTS.md
+  - tables/identity_aware_recenter_v8.tex
+  - figures/final/fig13_identity_aware_feature_inspection_v8.png
+  - generated_analysis/identity_aware_feature_inspection_v8/summary.json
+  - generated_analysis/identity_aware_validation_suite_v2/summary.json
+  evidence_capsule: ../../research/evidence/NREV-EXP-0007.json
+  next_decision: Add identity-aware exclusion or joint footprint assignment to future localization analyses and resolve ambiguous
+    clusters through bounded-field review rather than automatic recentering.
+- id: expanded_automated_validation_v3
+  question: Which feature roles survive identity grouping, perturbation, label-light anomaly analysis, and prospective or
+    synthetic controls?
+  design: Run ten frozen test families spanning grouped prediction, 100 site-bootstrap stability fits, conditional importance,
+    prospective-footprint reuse, controlled mixtures, metamorphic checks, abstention, recovered-only anomaly models, and graph
+    crowding.
+  status: complete_exploratory
+  finding: The full panel exceeded carrier-only grouped prediction; annular context, persistence, and lag were most stable,
+    abstention reduced internal error, anomaly scores prioritized misses, and distance-only graph crowding added little.
+  limitation: Same recording, 12 misses, reused exploratory labels, one-dimensional mixtures, and only one identity-clear
+    cross-burst pair.
+  artifacts:
+  - figures/final/fig14_expanded_automated_validation.png
+  - generated_analysis/expanded_automated_validation_v3/summary.json
+  - ../../docs/research/SPON_CA_BURST_EXPANDED_AUTOMATED_VALIDATION_V3_RESULTS.md
+  evidence_capsule: ../../research/evidence/NREV-EXP-0008.json
+  next_decision: Stop broad same-recording feature expansion and prioritize independent transfer, bounded identity truth,
+    and realistic movie simulation.
+- id: major_validation_next_steps_v1
+  question: Can the three highest-priority validation gaps be advanced without weakening their evidence contracts?
+  design: Inventory untouched 060126 recordings and fail closed on incompatible truth; prepare detector-blind two-reviewer
+    identity and overlap adjudication templates; run 432 paired exact-truth simulated movie cells across proximity, amplitude,
+    correlation, and shape factors.
+  status: mixed_complete_and_human_gated
+  finding: Independent transfer is blocked by a task and truth mismatch rather than producing a metric; the bounded review
+    package is ready but unlabelled; spatial context improved mean simulator pixel AUC from 0.813 to 0.917 and won 94.9 percent
+    of paired cells.
+  limitation: The simulator is a controlled mechanistic stress test, not an independent animal; bounded-field precision awaits
+    two reviewers and adjudication; the available 060126 recordings are behavioral rather than a compatible spontaneous-burst
+    replication.
+  artifacts:
+  - ../../docs/research/SPON_CA_BURST_MAJOR_NEXT_STEPS_V1_RESULTS.md
+  - ../../Outputs/NeuronIdentifiability/independent_transfer_preflight_060126_v1/preflight.json
+  - ../../Outputs/NeuronIdentifiability/spon_ca_burst_identity_complete_bounded_review_v1/review_contract.json
+  - ../../Outputs/NeuronIdentifiability/realistic_movie_identity_stress_test_v1/summary.json
+  evidence_capsule: ../../research/evidence/NREV-EXP-0009.json
+  next_decision: Acquire or identify an independent identity-labelled spontaneous-burst recording, complete blinded dual review,
+    and extend the simulator to full detector-level recall and precision before feature promotion.
+- id: realistic_movie_detector_benchmark_v3
+  question: Do carrier, spatial-context, kinetic, and combined feature stacks play distinct roles when converted into complete
+    source proposals?
+  design: Freeze four score maps, apply five-pixel local-maximum suppression, evaluate proposal budgets 2, 4, and 8 with three-pixel
+    Hungarian one-to-one identity matching, and fit score calibration on seeds 0 through 5 for evaluation on seeds 6 through
+    11.
+  status: complete_computational
+  finding: At budget four, combined achieved the highest F1 at 0.471 and recall at 0.707; spatial context localized best at
+    0.835 px, reduced duplicates to 0.016 per movie, and had the best held-seed candidate average precision at 0.896; combined
+    had the best Brier score at 0.0286 and balanced accuracy at 0.862.
+  limitation: Proposal precision includes all simulated background candidates but the movie generator remains simplified;
+    candidate labels use a fixed three-pixel geometry rule; calibration is seed-held-out rather than generator-family-held-out.
+  artifacts:
+  - ../../docs/research/SPON_CA_BURST_REALISTIC_MOVIE_DETECTOR_V3_RESULTS.md
+  - ../../Outputs/NeuronIdentifiability/realistic_movie_detector_benchmark_v3/summary.json
+  - ../../Outputs/NeuronIdentifiability/realistic_movie_detector_benchmark_v3/operating_points.tsv
+  - ../../Outputs/NeuronIdentifiability/realistic_movie_detector_benchmark_v3/calibration_abstention.tsv
+  evidence_capsule: ../../research/evidence/NREV-EXP-0010.json
+  next_decision: Freeze the compact combined proposal stack and test it under broader simulator families and a task-compatible
+    independent biological recording; retain spatial context for localization and NMS rather than interpreting it as source
+    identity by itself.
+- id: generator_family_holdout_v4
+  question: Do the feature roles survive mechanism-level distribution shift rather than only new random seeds?
+  design: Hold out each of six complete generator families in turn; vary source count from 2 to 8; add explicit neuropil,
+    bleaching, source-specific nonrigid motion, and a label-free noise scale estimated from an untouched 060126 TIFF; retain
+    the previously frozen four score stacks and geometric matching rule.
+  status: complete_computational
+  finding: Spatial context achieved the best mean operating F1 at 0.515, recall at 0.773, localization at 1.202 px, and duplicate
+    rate at 0.083 per movie. It also led leave-one-family-out average precision at 0.824. Combined retained the best mean
+    Brier score at 0.094 and balanced accuracy at 0.722, but compound-shift F1 fell to 0.319 versus 0.338 for spatial context.
+  limitation: The empirical recording contributes only a label-free scalar read-noise mapping, not its full noise spectrum;
+    simulator mechanisms remain stylized; proposal budget is twice the known simulated source count and therefore not deployable
+    as written.
+  artifacts:
+  - ../../docs/research/SPON_CA_BURST_GENERATOR_FAMILY_HOLDOUT_V4_RESULTS.md
+  - ../../Outputs/NeuronIdentifiability/realistic_movie_generator_family_holdout_v4/summary.json
+  - ../../Outputs/NeuronIdentifiability/realistic_movie_generator_family_holdout_v4/family_operating_points.tsv
+  - ../../Outputs/NeuronIdentifiability/realistic_movie_generator_family_holdout_v4/leave_one_family_out_calibration.tsv
+  evidence_capsule: ../../research/evidence/NREV-EXP-0011.json
+  next_decision: Treat spatial context as the robust proposal backbone; test a frozen gated fusion learned only on simulator-development
+    families, and replace truth-scaled proposal budgets with label-free score or false-alarm controls before biological transfer.
+- id: label_free_false_alarm_gated_fusion_v5
+  question: Can a development-only learned gate outperform frozen spatial context when proposal thresholds use source-free
+    null movies instead of true source count?
+  design: Fit a balanced logistic gate on carrier, spatial-context, and kinetic proposal features from baseline, dense-neuropil,
+    and bleaching families; set thresholds using only zero-source movies from those families; freeze the gate and thresholds;
+    evaluate nonrigid-motion, empirical-noise, and compound-shift families at nominal false-alarm targets 1, 2, and 4.
+  status: complete_computational_negative_result
+  finding: At the primary nominal target of two false alarms per movie, gated fusion F1 was 0.5441 versus 0.5450 for spatial
+    context. Gating raised precision from 0.549 to 0.603 but lowered recall from 0.590 to 0.563 and increased duplicates from
+    0.22 to 0.87 per movie. Its empirical-noise benefit did not offset degradation under nonrigid motion.
+  limitation: Development-null thresholds did not guarantee the nominal rate after family shift; gates use simplified simulator
+    truth; nulls omit biological non-neuronal transients; candidate-level NMS is shared but learned fusion can promote adjacent
+    maxima.
+  artifacts:
+  - ../../docs/research/SPON_CA_BURST_LABEL_FREE_FALSE_ALARM_V5_RESULTS.md
+  - ../../Outputs/NeuronIdentifiability/label_free_false_alarm_gated_fusion_v5/summary.json
+  - ../../Outputs/NeuronIdentifiability/label_free_false_alarm_gated_fusion_v5/evaluation_operating_points.tsv
+  - ../../Outputs/NeuronIdentifiability/label_free_false_alarm_gated_fusion_v5/evaluation_candidates.tsv
+  evidence_capsule: ../../research/evidence/NREV-EXP-0012.json
+  next_decision: Reject the current gate as a replacement for spatial context; preserve spatial context as the proposal backbone
+    and investigate shift-aware null normalization plus explicit identity-level suppression before any new fusion model.
+- id: automated_challenge_suite_v7
+  question: Which proposed automated controls improve deployability, and where do the frozen feature and proposal definitions
+    fail under intervention, falsification, and simulator transfer?
+  design: Run twelve prespecified exact-truth families with six seeds per condition, correct weak-neighbor recovery by one-to-one
+    identity assignment, use label-free nulls where required, and preserve separate tables for every hypothesis.
+  status: complete_computational_mixed_result
+  finding: Movie-wise robust null normalization improved mean F1 from 0.505 to 0.523; OOD signatures separated the deliberately
+    shifted challenges with AUC 1.0; and a second simulator passed the F1 gate. Conversely, BH stopping produced F1 0.299,
+    suppression variants were equivalent, weak-neighbor 80-percent recovery required amplitude ratio 1.0 at 3 to 7 px, colored
+    noise reduced top-eight recall from 0.833 to 0.708, stability F1 ranged from 0 to 0.5, and reversed-time kinetic AUC remained
+    0.731.
+  limitation: Several challenges are intentionally stylized and OOD separation is likely optimistic; the second simulator
+    is easier than the primary; suppression is tested only after local-max proposal formation; six seeds limit precision of
+    severity boundaries.
+  artifacts:
+  - ../../docs/research/SPON_CA_BURST_AUTOMATED_CHALLENGE_SUITE_V7_RESULTS.md
+  - ../../Outputs/NeuronIdentifiability/automated_challenge_suite_v7/summary.json
+  - ../../Outputs/NeuronIdentifiability/automated_challenge_suite_v7/weak_neighbor_frontier.tsv
+  - ../../Outputs/NeuronIdentifiability/automated_challenge_suite_v7/negative_controls.tsv
+  evidence_capsule: ../../research/evidence/NREV-EXP-0013.json
+  next_decision: Preserve robust null normalization as a candidate improvement, reject current BH stopping and post-proposal
+    suppression as solved components, make identity-aware close-source resolution and parameter-robust stopping the next automated
+    development targets, and redesign kinetic falsification around directional kernels.
+- id: targeted_automated_development_v8
+  question: Do parameter-consensus stopping, pre-proposal NMF separation, or an explicitly directional kinetic contrast repair
+    the three principal v7 failures?
+  design: Calibrate a robust score threshold on zero-source development families and compare single-window with three-window
+    persistence on new artifacts; compare frozen spatial proposals with rank-two NMF under close unequal sources using one-to-one
+    identities; compare the current kinetic score with forward-minus-reverse contrast on forward and reversed movies.
+  status: complete_computational_negative_result
+  finding: Consensus and single-window stopping were identical at F1 0.568 and radius sensitivity 0.0417. Rank-two NMF reduced
+    weak-identity recovery from 0.354 to 0.069 and mean F1 from 0.580 to 0.354. Directional contrast reduced reversed AUC
+    to 0.523 but also reduced forward AUC to 0.477, failing useful directionality. Only one of five gates passed.
+  limitation: Consensus is tested after spatial scoring rather than during source formation; NMF rank is fixed to the true
+    two-source challenge and remains unconstrained by calcium kinetics; directional contrast uses maximum correlations and
+    may cancel heterogeneous source asymmetries.
+  artifacts:
+  - ../../docs/research/SPON_CA_BURST_TARGETED_AUTOMATED_DEVELOPMENT_V8_RESULTS.md
+  - ../../Outputs/NeuronIdentifiability/targeted_automated_development_v8/summary.json
+  - ../../Outputs/NeuronIdentifiability/targeted_automated_development_v8/parameter_consensus_stopping.tsv
+  - ../../Outputs/NeuronIdentifiability/targeted_automated_development_v8/close_source_separation.tsv
+  - ../../Outputs/NeuronIdentifiability/targeted_automated_development_v8/directional_kinetics.tsv
+  evidence_capsule: ../../research/evidence/NREV-EXP-0014.json
+  next_decision: Retain single-window robust stopping; reject unconstrained NMF and simple directional subtraction; pursue
+    joint spatial-temporal generative deblending and source-specific kinetic likelihood ratios only with new development conditions.
+- id: joint_generative_deblending_v10
+  question: Can a constrained alternating spatial-temporal generative model and source-specific kinetic likelihoods repair
+    the close-source and directionality failures without tuning on locked v8 conditions?
+  design: Freeze a two-component model with localized smooth nonnegative footprints, sparse calcium-kernel temporal projection,
+    and alternating reconstruction on new ellipse conditions; evaluate once on the locked v8 crescent grid; audit directionality
+    on unconstrained component coefficients to avoid forward-kernel circularity.
+  status: complete_computational_negative_result
+  finding: On development conditions, generative weak recovery was 0.389 versus 0.407 spatial and F1 was 0.639 versus 0.648.
+    On locked v8, weak recovery was 0.313 versus 0.521 and F1 was 0.608 versus 0.635. Corrected source-specific direction
+    AUC was 0.367, with 91.7 percent of reversed components still assigned positive forward likelihood. Only one of six gates
+    passed.
+  limitation: Component count remains fixed at two; spatial initialization begins from the same context map; the simplified
+    alternating optimizer lacks background and explicit motion components; simulated kinetics are heterogeneous enough that
+    the tested likelihood is not identifiable.
+  artifacts:
+  - ../../docs/research/SPON_CA_BURST_JOINT_GENERATIVE_DEBLENDING_V10_RESULTS.md
+  - ../../Outputs/NeuronIdentifiability/joint_generative_deblending_v10/summary.json
+  - ../../Outputs/NeuronIdentifiability/joint_generative_deblending_v10/development_deblending.tsv
+  - ../../Outputs/NeuronIdentifiability/joint_generative_deblending_v10/locked_v8_deblending.tsv
+  - ../../Outputs/NeuronIdentifiability/joint_generative_deblending_v10/source_specific_kinetics.tsv
+  evidence_capsule: ../../research/evidence/NREV-EXP-0015.json
+  next_decision: Reject this constrained factorization and likelihood model; stop escalating simulator-only deblenders until
+    bounded biological identity truth is available, and retain spatial context plus robust stopping as the current automated
+    baseline.
+- id: new_candidate_review_v1
+  question: Which previously unmatched detector sites appear neuronal under blinded six-panel full-trace review, and did the
+    feature-derived priority score rank neuron likelihood?
+  design: Present all 18 unmatched consolidated sites in a deterministic blinded order; preserve exact centers and complete
+    traces; normalize one expert's verbatim calls conservatively while retaining size, morphology, SNR, artifact, and overlap
+    observations separately.
+  status: complete_provisional_single_reviewer
+  finding: Nine sites were definite, four probable, four uncertain, and one artifact-or-noise; 13 of 18 were provisionally
+    likely neurons. The review-priority score enriched difficult ambiguous cases but did not monotonically rank neuron likelihood.
+  limitation: One reviewer, selected candidates rather than exhaustive bounded-field sampling, no adjudication, and no biological
+    identity or precision claim.
+  artifacts:
+  - ../../Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/user_review_v1.tsv
+  - ../../Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/review_summary_v1.json
+  - ../../docs/research/SPON_CA_BURST_NEW_CANDIDATE_REVIEW_V1_RESULTS.md
+  evidence_capsule: ../../research/evidence/NREV-EXP-0016.json
+  next_decision: Obtain a second blinded review, adjudicate the four uncertain sites and identity-confounded observations,
+    then separate review-value prioritization from calibrated neuron-likelihood modeling.
+- id: external_blinded_bounded_review_v2
+  question: Can an external team independently enumerate sources and review processed candidates without exposure to current
+    labels, detector ranks, or site identities?
+  design: 'Build two separately distributed portable browser archives: four Raw-first bounded-field clips with click annotation
+    and locked coverage export, followed only after submission by 18 re-randomized and re-blinded six-panel candidates; retain
+    the scoring key and agreement tools in a private archive.'
+  status: complete_implementation_human_gated
+  finding: All 22 videos decode, three archives pass integrity checks, public scans find no private text or path leakage,
+    and coordinate, submission, randomization, staged-cache, media, archive, and agreement checks pass.
+  limitation: No external reviewer has submitted labels; implementation readiness does not establish truth, precision, recall,
+    identity, or independent-recording generalization.
+  artifacts:
+  - ../../Outputs/NeuronIdentifiability/external_blinded_bounded_review_v2/experiment_contract.json
+  - ../../Outputs/NeuronIdentifiability/external_blinded_bounded_review_v2/validation.json
+  - ../../docs/workflows/external_blinded_bounded_review_v2.md
+  - ../../docs/research/SPON_CA_BURST_EXTERNAL_BOUNDED_REVIEW_V2_PACKAGE.md
+  evidence_capsule: ../../research/evidence/NREV-EXP-0017.json
+  next_decision: Distribute Phase A to at least two independent reviewers, accept only locked complete submissions, release
+    Phase B afterward, analyze agreement, and adjudicate before computing detector metrics or fitting label-aware models.
+- id: temporal_ica_internals
+  question: What components and matrices produce the frozen residual-group representation?
+  design: Export all six component traces, mixing/demixing matrices, energy fractions, and embedding inversion residuals at
+    50 sites.
+  status: complete_computational
+  finding: The transform is numerically invertible with maximum sitewise RMS residual 5.69e-12.
+  limitation: Numerical invertibility is not denoising or biological recovery.
+  artifacts:
+  - figures/final/fig06_ica_model_internals.png
+  - figures/final/fig06_ica_model_internals.json
+  evidence_capsule: ../../research/evidence/NREV-EXP-0018.json
+  next_decision: Relate component profiles to held-out detector errors without naming components as sources.
+- id: ls_denominator_audit
+  question: Is local standardization driven by true local variability or by its global scale floor?
+  design: Reproduce the frozen lane over 9,297 support pixels with the original 31-frame causal pre-roll and saved floor.
+  status: complete_validated_reproduction
+  finding: Median denominator is 0.7648; the 0.371705 floor is inactive at all audited centers; saved-output RMSE is 6.96e-7.
+  limitation: Center-level audit does not establish floor inactivity across the full field.
+  artifacts:
+  - figures/final/fig07_ls_denominator_diagnostics.png
+  - figures/final/fig07_ls_denominator_diagnostics.json
+  evidence_capsule: ../../research/evidence/NREV-EXP-0019.json
+  next_decision: Extend floor-use mapping full-field only when suitable GPU compute is available.
+next_experiments:
+- id: complete_external_bounded_review_v2
+  priority: 1
+  objective: Obtain two locked Phase A and Phase B submissions, run agreement analysis, adjudicate all spatial, class, and
+    identity disagreements, and freeze a local truth revision before any detector or learning evaluation.
+  plan: ../../docs/workflows/external_blinded_bounded_review_v2.md
+- id: uncertainty_aware_learning_v1
+  priority: 2
+  objective: Run the prespecified harmonized feature audit, positive-unlabeled learning, label-sensitivity models, leakage-resistant
+    grouped validation, feature stability, counterfactual perturbation, and hard-subgroup tests without promoting provisional
+    labels.
+  plan: ../../docs/research/SPON_CA_BURST_UNCERTAINTY_AWARE_LEARNING_PLAN_V1.md
+- id: identity_aware_bounded_review
+  priority: 3
+  objective: Exhaustively review the ambiguous ROI 10/15, ROI 11, ROI 12, and ROI 23 clusters with joint footprint and identity
+    assignment.
+- id: bounded_field_precision
+  priority: 4
+  objective: Exhaustively review a bounded field and estimate precision with verified negatives.
+- id: independent_recording_confirmation
+  priority: 5
+  objective: Apply frozen pipeline and phenotype assignments to an independent recording.
+- id: motion_registration_audit
+  priority: 6
+  objective: Export motion fields and registration residuals and relate them to shared waveform strength.
+- id: frozen_feature_transfer
+  priority: 7
+  objective: Transfer the frozen carrier, coherence, recurrence, consensus, and persistence definitions without tuning and
+    test task-specific utility.
+- id: realistic_movie_simulation
+  priority: 8
+  objective: Preserve the current spatial-context and robust-stopping baseline; defer additional deblender complexity until
+    bounded biological identity truth or a genuinely independent labelled recording is available.

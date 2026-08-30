@@ -1,0 +1,35 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0011
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical decision effective date
+program_id: NREV-PRG-0001
+title: Decision after Generator Family Holdout V4
+lifecycle: active
+action: retain
+rationale: Treat spatial context as the robust proposal backbone; test a frozen gated fusion learned only on simulator-development
+  families, and replace truth-scaled proposal budgets with label-free score or false-alarm controls before biological transfer.
+evidence_summary: Spatial context achieved the best mean operating F1 at 0.515, recall at 0.773, localization at 1.202 px,
+  and duplicate rate at 0.083 per movie. It also led leave-one-family-out average precision at 0.824. Combined retained the
+  best mean Brier score at 0.094 and balanced accuracy at 0.722, but compound-shift F1 fell to 0.319 versus 0.338 for spatial
+  context.
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0011
+claim_ids:
+- NREV-CLM-0010
+evidence_capsule_ids:
+- NREV-EVC-EXP-0011
+constraints:
+- The empirical recording contributes only a label-free scalar read-noise mapping, not its full noise spectrum; simulator
+  mechanisms remain stylized; proposal budget is twice the known simulated source count and therefore not deployable as written.
+- The historical decision date was not encoded in the v1 story and was not guessed during migration.
+visibility: public
+legacy_status: complete_computational
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

@@ -1,0 +1,150 @@
+{"kind":"deck","id":"pr/jkydop","name":"Deck"}
+{"kind":"layout","layoutId":"47e08388-4761-497d-953b-6e2d637734b6","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"3c6a8d35-080c-463b-9754-268429fe6fe5","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/a8ntna","slide":1,"title":"WEEKLY RESEARCH UPDATE","textShapes":4}
+{"kind":"textbox","id":"sh/0fyd4bq9","slide":1,"text":"WEEKLY RESEARCH UPDATE","textPreview":"WEEKLY RESEARCH UPDATE","textChars":22,"textLines":1,"bbox":[64,52,400,28]}
+{"kind":"textbox","id":"sh/fepwb69o","slide":1,"text":"What spatial ICA adds—\nand what it does not","textPreview":"What spatial ICA adds— | and what it does not","textChars":43,"textLines":2,"bbox":[64,150,680,185]}
+{"kind":"textbox","id":"sh/edgv2183","slide":1,"text":"Neuron identifiability, detection-event classes, and the next decisions","textPreview":"Neuron identifiability, detection-event classes, and the next decisions","textChars":71,"textLines":1,"bbox":[68,365,600,90]}
+{"kind":"textbox","id":"sh/sbyd0bqd","slide":1,"text":"Raul Valle  •  24 August 2026","textPreview":"Raul Valle  •  24 August 2026","textChars":29,"textLines":1,"bbox":[68,636,500,24]}
+{"kind":"image","id":"im/gny5o3ed","slide":1,"name":"","alt":"Spatial ICA filter gallery","bbox":[750,82,480,500]}
+{"kind":"notes","id":"nt/a8ntna","slide":1,"text":"Open with the central distinction: ICA remains informative as a reconstructed visual representation, even though the individual basis filters cannot be named or interpreted anatomically.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/paper/overleaf_jnm/figures/final/spatial_ica_filter_stability.png\nOutputs/.../18_spatial_ica_filter_stability_v1/summary.json\n[/Sources]"}
+{"kind":"slide","id":"sl/7fozvp","slide":2,"title":"Four new tests clarify spatial ICA’s role","textShapes":20}
+{"kind":"textbox","id":"sh/83upkrid","slide":2,"text":"Four new tests clarify spatial ICA’s role","textPreview":"Four new tests clarify spatial ICA’s role","textChars":41,"textLines":1,"bbox":[64,42,1130,55]}
+{"kind":"shape","id":"sh/7218rm1s","slide":2,"bbox":[64,108,1152,2]}
+{"kind":"textbox","id":"sh/61s7ih0n","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1180,670,36,22]}
+{"kind":"textbox","id":"sh/hs3qxgja","slide":2,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[64,165,250,32]}
+{"kind":"textbox","id":"sh/gru9obip","slide":2,"text":"Localization","textPreview":"Localization","textChars":12,"textLines":1,"bbox":[64,212,250,42]}
+{"kind":"textbox","id":"sh/vql8v614","slide":2,"text":"Labeled coordinates are more centered and spatially concentrated than translated controls.","textPreview":"Labeled coordinates are more centered and spatially concentrated than translated controls.","textChars":90,"textLines":1,"bbox":[64,275,250,150]}
+{"kind":"textbox","id":"sh/u5crm10j","slide":2,"text":"q ≤ 0.0014","textPreview":"q ≤ 0.0014","textChars":10,"textLines":1,"bbox":[64,500,250,48]}
+{"kind":"textbox","id":"sh/5wnq1gz6","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[350,165,250,32]}
+{"kind":"textbox","id":"sh/4ve9sbil","slide":2,"text":"Basis stability","textPreview":"Basis stability","textChars":15,"textLines":1,"bbox":[350,212,250,42]}
+{"kind":"textbox","id":"sh/218zi5wz","slide":2,"text":"Individual ICA filters change across seeds and held-burst refits.","textPreview":"Individual ICA filters change across seeds and held-burst refits.","textChars":65,"textLines":1,"bbox":[350,275,250,150]}
+{"kind":"textbox","id":"sh/32hgradk","slide":2,"text":"0.606–0.784","textPreview":"0.606–0.784","textChars":11,"textLines":1,"bbox":[350,500,250,48]}
+{"kind":"textbox","id":"sh/43qhkfe5","slide":2,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[636,165,250,32]}
+{"kind":"textbox","id":"sh/p4zitkvq","slide":2,"text":"Output stability","textPreview":"Output stability","textChars":16,"textLines":1,"bbox":[636,212,250,42]}
+{"kind":"textbox","id":"sh/q58zmpwb","slide":2,"text":"The reconstructed movie, morphology, timing, and recall remain nearly invariant.","textPreview":"The reconstructed movie, morphology, timing, and recall remain nearly invariant.","textChars":80,"textLines":1,"bbox":[636,275,250,150]}
+{"kind":"textbox","id":"sh/r6h0vudw","slide":2,"text":"r ≥ 0.9948","textPreview":"r ≥ 0.9948","textChars":10,"textLines":1,"bbox":[636,500,250,48]}
+{"kind":"textbox","id":"sh/crahofe1","slide":2,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[922,165,250,32]}
+{"kind":"textbox","id":"sh/dsjixkvm","slide":2,"text":"Class alignment","textPreview":"Class alignment","textChars":15,"textLines":1,"bbox":[922,212,250,42]}
+{"kind":"textbox","id":"sh/69ozalwr","slide":2,"text":"Class and certainty patterns are suggestive, but none survive corrected identity-level testing.","textPreview":"Class and certainty patterns are suggestive, but none survive corrected identity-level testing.","textChars":95,"textLines":1,"bbox":[922,275,250,150]}
+{"kind":"textbox","id":"sh/7axgjqdc","slide":2,"text":"q = 0.0679","textPreview":"q = 0.0679","textChars":10,"textLines":1,"bbox":[922,500,250,48]}
+{"kind":"textbox","id":"sh/vetwrmt4","slide":2,"text":"Discussion goal","textPreview":"Discussion goal","textChars":15,"textLines":1,"bbox":[64,610,170,28]}
+{"kind":"textbox","id":"sh/adkvihcj","slide":2,"text":"Agree on the correct scientific role of spatial ICA and choose the next validation target.","textPreview":"Agree on the correct scientific role of spatial ICA and choose the next validation target.","textChars":90,"textLines":1,"bbox":[245,605,930,38]}
+{"kind":"notes","id":"nt/7fozvp","slide":2,"text":"Use this as the roadmap. The four statements have different evidentiary status; the final one is deliberately a non-confirmation.\n\n[Sources]\n17_spatial_ica_objective_morphology_v2/summary.json\n18_spatial_ica_filter_stability_v1/summary.json\n19_spatial_ica_reconstruction_stability_v2/summary.json\n20_spatial_ica_class_certainty_alignment_v3/summary.json\n[/Sources]"}
+{"kind":"slide","id":"sl/ixoodg","slide":3,"title":"The reconstruction is useful; individual filters are not","textShapes":16}
+{"kind":"textbox","id":"sh/07y5wret","slide":3,"text":"The reconstruction is useful; individual filters are not","textPreview":"The reconstruction is useful; individual filters are not","textChars":56,"textLines":1,"bbox":[64,42,1130,55]}
+{"kind":"shape","id":"sh/f6po3md8","slide":3,"bbox":[64,108,1152,2]}
+{"kind":"textbox","id":"sh/e5gnu1wn","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1180,670,36,22]}
+{"kind":"textbox","id":"sh/s3y5srex","slide":3,"text":"Passed","textPreview":"Passed","textChars":6,"textLines":1,"bbox":[880,155,240,38]}
+{"kind":"textbox","id":"sh/r2p4zmdc","slide":3,"text":"Reconstructed output","textPreview":"Reconstructed output","textChars":20,"textLines":1,"bbox":[880,198,300,44]}
+{"kind":"textbox","id":"sh/q1wnqhwr","slide":3,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[880,270,24,52]}
+{"kind":"textbox","id":"sh/x0r6dgvm","slide":3,"text":"Pixel correlation ≥ 0.9985","textPreview":"Pixel correlation ≥ 0.9985","textChars":26,"textLines":1,"bbox":[910,270,290,52]}
+{"kind":"textbox","id":"sh/czi54bu1","slide":3,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[880,322,24,52]}
+{"kind":"textbox","id":"sh/qlwn2hov","slide":3,"text":"Event-map correlation ≥ 0.9983","textPreview":"Event-map correlation ≥ 0.9983","textChars":30,"textLines":1,"bbox":[910,322,290,52]}
+{"kind":"textbox","id":"sh/bm5ovmp0","slide":3,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[880,374,24,52]}
+{"kind":"textbox","id":"sh/cne54r6l","slide":3,"text":"Morphology rank ≥ 0.9948","textPreview":"Morphology rank ≥ 0.9948","textChars":24,"textLines":1,"bbox":[910,374,290,52]}
+{"kind":"textbox","id":"sh/don6xw76","slide":3,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[880,426,24,52]}
+{"kind":"textbox","id":"sh/2hwnyh8j","slide":3,"text":"Median peak error = 0 frames","textPreview":"Median peak error = 0 frames","textChars":28,"textLines":1,"bbox":[910,426,290,52]}
+{"kind":"textbox","id":"sh/3i5ormp4","slide":3,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[880,478,24,52]}
+{"kind":"textbox","id":"sh/oje50rqp","slide":3,"text":"Recall change within ±0.0125","textPreview":"Recall change within ±0.0125","textChars":28,"textLines":1,"bbox":[910,478,290,52]}
+{"kind":"textbox","id":"sh/pkn6tw7a","slide":3,"text":"Interpretation","textPreview":"Interpretation","textChars":14,"textLines":1,"bbox":[880,568,280,28]}
+{"kind":"textbox","id":"sh/mdg7a1o3","slide":3,"text":"Stable measurement representation; no component anatomy.","textPreview":"Stable measurement representation; no component anatomy.","textChars":56,"textLines":1,"bbox":[880,600,310,52]}
+{"kind":"image","id":"im/gvmdgfyd","slide":3,"name":"","alt":"Reconstructed-output stability charts","bbox":[45,125,790,505]}
+{"kind":"notes","id":"nt/ixoodg","slide":3,"text":"Ask whether the group agrees with making this basis-versus-reconstruction distinction a central methodological contribution of the paper.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/paper/overleaf_jnm/figures/final/spatial_ica_reconstruction_stability.png\nOutputs/.../19_spatial_ica_reconstruction_stability_v2/reconstruction_stability.tsv\n[/Sources]"}
+{"kind":"slide","id":"sl/6qb2pc","slide":4,"title":"Spatial ICA is objectively localized at protected coordinates","textShapes":17}
+{"kind":"textbox","id":"sh/m9kfm1sb","slide":4,"text":"Spatial ICA is objectively localized at protected coordinates","textPreview":"Spatial ICA is objectively localized at protected coordinates","textChars":61,"textLines":1,"bbox":[64,42,1130,55]}
+{"kind":"shape","id":"sh/9cvyhwrm","slide":4,"bbox":[64,108,1152,2]}
+{"kind":"textbox","id":"sh/8b2hora1","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1180,670,36,22]}
+{"kind":"textbox","id":"sh/ad4zq1s7","slide":4,"text":"Supported","textPreview":"Supported","textChars":9,"textLines":1,"bbox":[920,160,230,30]}
+{"kind":"textbox","id":"sh/xgvylgry","slide":4,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[920,215,24,58]}
+{"kind":"textbox","id":"sh/wfmhsbad","slide":4,"text":"Higher center–annulus contrast","textPreview":"Higher center–annulus contrast","textChars":30,"textLines":1,"bbox":[950,215,270,58]}
+{"kind":"textbox","id":"sh/bi9g729o","slide":4,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[920,273,24,58]}
+{"kind":"textbox","id":"sh/qh0fehs3","slide":4,"text":"Sharper boundaries","textPreview":"Sharper boundaries","textChars":18,"textLines":1,"bbox":[950,273,270,58]}
+{"kind":"textbox","id":"sh/gv65kvm5","slide":4,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[920,331,24,58]}
+{"kind":"textbox","id":"sh/hwfmd0nq","slide":4,"text":"Smaller effective radius","textPreview":"Smaller effective radius","textChars":24,"textLines":1,"bbox":[950,331,270,58]}
+{"kind":"textbox","id":"sh/utonil4z","slide":4,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[920,389,24,58]}
+{"kind":"textbox","id":"sh/vux4bq5k","slide":4,"text":"Smaller peak offset","textPreview":"Smaller peak offset","textChars":19,"textLines":1,"bbox":[950,389,270,58]}
+{"kind":"textbox","id":"sh/4z65ovm1","slide":4,"text":"Not supported","textPreview":"Not supported","textChars":13,"textLines":1,"bbox":[920,475,230,30]}
+{"kind":"textbox","id":"sh/50z6h03m","slide":4,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[920,520,24,52]}
+{"kind":"textbox","id":"sh/ixonm54b","slide":4,"text":"Temporal persistence","textPreview":"Temporal persistence","textChars":20,"textLines":1,"bbox":[950,520,270,52]}
+{"kind":"textbox","id":"sh/3yx4fq5w","slide":4,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[920,572,24,52]}
+{"kind":"textbox","id":"sh/k3m5cbmx","slide":4,"text":"Spatial-ICA compactness","textPreview":"Spatial-ICA compactness","textChars":23,"textLines":1,"bbox":[950,572,270,52]}
+{"kind":"textbox","id":"sh/l4vm5gni","slide":4,"text":"Translated controls are unknown locations—not biological negatives.","textPreview":"Translated controls are unknown locations—not biological negatives.","textChars":67,"textLines":1,"bbox":[920,625,300,44]}
+{"kind":"image","id":"im/6p8na1s7","slide":4,"name":"","alt":"Objective morphology controls","bbox":[48,120,830,530]}
+{"kind":"notes","id":"nt/6qb2pc","slide":4,"text":"Emphasize that this validates localization within each representation. It does not establish neuron identity, precision, or biological specificity.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/paper/overleaf_jnm/figures/final/spatial_ica_objective_morphology.png\nOutputs/.../17_spatial_ica_objective_morphology_v2/site_blocked_tests.tsv\n[/Sources]"}
+{"kind":"slide","id":"sl/hfcvay","slide":5,"title":"Detection classes recur as measurement-event archetypes","textShapes":12}
+{"kind":"textbox","id":"sh/9wnqx4zy","slide":5,"text":"Detection classes recur as measurement-event archetypes","textPreview":"Detection classes recur as measurement-event archetypes","textChars":55,"textLines":1,"bbox":[64,42,1130,55]}
+{"kind":"shape","id":"sh/m9wr290n","slide":5,"bbox":[64,108,1152,2]}
+{"kind":"textbox","id":"sh/na58vuh8","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1180,670,36,22]}
+{"kind":"textbox","id":"sh/183qt4z2","slide":5,"text":"Three frozen classes","textPreview":"Three frozen classes","textChars":20,"textLines":1,"bbox":[830,150,340,38]}
+{"kind":"textbox","id":"sh/e5cryp0b","slide":5,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[830,220,24,72]}
+{"kind":"textbox","id":"sh/z6l8ruhw","slide":5,"text":"Localized, high-signal events","textPreview":"Localized, high-signal events","textChars":29,"textLines":1,"bbox":[860,220,330,72]}
+{"kind":"textbox","id":"sh/k3y9cji1","slide":5,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[830,292,24,72]}
+{"kind":"textbox","id":"sh/l47a5oz6","slide":5,"text":"Broad, low-signal early events","textPreview":"Broad, low-signal early events","textChars":30,"textLines":1,"bbox":[860,292,330,72]}
+{"kind":"textbox","id":"sh/dwj65gzy","slide":5,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[830,364,24,72]}
+{"kind":"textbox","id":"sh/sva5wbit","slide":5,"text":"Broad, recurrent lower-signal events","textPreview":"Broad, recurrent lower-signal events","textChars":36,"textLines":1,"bbox":[860,364,330,72]}
+{"kind":"textbox","id":"sh/ru1o36h8","slide":5,"text":"84%","textPreview":"84%","textChars":3,"textLines":1,"bbox":[830,485,155,56]}
+{"kind":"textbox","id":"sh/qt8nu10n","slide":5,"text":"of ordered within-site transitions stayed in the same class","textPreview":"of ordered within-site transitions stayed in the same class","textChars":59,"textLines":1,"bbox":[830,545,320,70]}
+{"kind":"textbox","id":"sh/58z61wz2","slide":5,"text":"Classes describe detections—not neuron types.","textPreview":"Classes describe detections—not neuron types.","textChars":45,"textLines":1,"bbox":[830,630,340,34]}
+{"kind":"image","id":"im/h43i9gje","slide":5,"name":"","alt":"Detection class overview","bbox":[55,130,720,500]}
+{"kind":"notes","id":"nt/hfcvay","slide":5,"text":"Discuss whether the class names are plain enough and whether the group prefers archetype, regime, or profile class. Avoid biological naming.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/paper/overleaf_jnm/figures/final/detection_class_overview.png\npaper/overleaf_jnm/generated_analysis/detection_profile_taxonomy_summary.json\npaper/overleaf_jnm/sections/03_results.tex\n[/Sources]"}
+{"kind":"slide","id":"sl/ucb80f","slide":6,"title":"Class–certainty alignment remains a hypothesis","textShapes":9}
+{"kind":"textbox","id":"sh/a1kru507","slide":6,"text":"Class–certainty alignment remains a hypothesis","textPreview":"Class–certainty alignment remains a hypothesis","textChars":46,"textLines":1,"bbox":[64,42,1130,55]}
+{"kind":"shape","id":"sh/x4vapkji","slide":6,"bbox":[64,108,1152,2]}
+{"kind":"textbox","id":"sh/w329wfid","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1180,670,36,22]}
+{"kind":"textbox","id":"sh/mdkrql0v","slide":6,"text":"Strongest pattern","textPreview":"Strongest pattern","textChars":17,"textLines":1,"bbox":[850,155,330,34]}
+{"kind":"textbox","id":"sh/90bql0jm","slide":6,"text":"Spatial-ICA boundary sharpness","textPreview":"Spatial-ICA boundary sharpness","textChars":30,"textLines":1,"bbox":[850,202,350,38]}
+{"kind":"textbox","id":"sh/8f29svi1","slide":6,"text":"ε² = 0.323","textPreview":"ε² = 0.323","textChars":10,"textLines":1,"bbox":[850,276,250,42]}
+{"kind":"textbox","id":"sh/7adsvu10","slide":6,"text":"nominal p = 0.00485\nBH q = 0.0679","textPreview":"nominal p = 0.00485 | BH q = 0.0679","textChars":33,"textLines":2,"bbox":[850,330,300,70]}
+{"kind":"textbox","id":"sh/694r2p0f","slide":6,"text":"Certainty at identity grain","textPreview":"Certainty at identity grain","textChars":27,"textLines":1,"bbox":[850,455,330,30]}
+{"kind":"textbox","id":"sh/8ru9wnip","slide":6,"text":"Cramér’s V = 0.346\npermutation p = 0.313","textPreview":"Cramér’s V = 0.346 | permutation p = 0.313","textChars":40,"textLines":2,"bbox":[850,500,320,65]}
+{"kind":"textbox","id":"sh/ts3q5sza","slide":6,"text":"No corrected class or certainty test passed.","textPreview":"No corrected class or certainty test passed.","textChars":44,"textLines":1,"bbox":[850,610,340,44]}
+{"kind":"image","id":"im/yx0ze5kb","slide":6,"name":"","alt":"Canonical v7 class morphology sensitivity","bbox":[45,130,760,500]}
+{"kind":"notes","id":"nt/ucb80f","slide":6,"text":"The earlier occurrence-level p=0.0097 is superseded for inference because observations repeat within identities. Use the canonical-identity permutation result instead.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/paper/overleaf_jnm/figures/final/spatial_ica_canonical_v7_sensitivity.png\nOutputs/.../20_spatial_ica_class_certainty_alignment_v3/summary.json\n[/Sources]"}
+{"kind":"slide","id":"sl/286dcp","slide":7,"title":"Stronger measurement claims are now defensible","textShapes":22}
+{"kind":"textbox","id":"sh/batgvad0","slide":7,"text":"Stronger measurement claims are now defensible","textPreview":"Stronger measurement claims are now defensible","textChars":46,"textLines":1,"bbox":[64,42,1130,55]}
+{"kind":"shape","id":"sh/cb2h4fel","slide":7,"bbox":[64,108,1152,2]}
+{"kind":"textbox","id":"sh/xcbyxkv6","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[1180,670,36,22]}
+{"kind":"textbox","id":"sh/2l0fy5wj","slide":7,"text":"Defensible now","textPreview":"Defensible now","textChars":14,"textLines":1,"bbox":[72,155,500,38]}
+{"kind":"textbox","id":"sh/nmtgrad4","slide":7,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[72,220,24,78]}
+{"kind":"textbox","id":"sh/o72h0fep","slide":7,"text":"Spatial ICA provides localized morphology at labeled coordinates.","textPreview":"Spatial ICA provides localized morphology at labeled coordinates.","textChars":65,"textLines":1,"bbox":[102,220,470,78]}
+{"kind":"textbox","id":"sh/p8bytkvu","slide":7,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[72,298,24,78]}
+{"kind":"textbox","id":"sh/mh4za9cn","slide":7,"text":"Its reconstructed output is robust to seeds and held-burst refits.","textPreview":"Its reconstructed output is robust to seeds and held-burst refits.","textChars":66,"textLines":1,"bbox":[102,298,470,78]}
+{"kind":"textbox","id":"sh/72dg3ud8","slide":7,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[72,376,24,78]}
+{"kind":"textbox","id":"sh/ze9o3ypw","slide":7,"text":"Detection-event classes recur across bursts and sites.","textPreview":"Detection-event classes recur across bursts and sites.","textChars":54,"textLines":1,"bbox":[102,376,470,78]}
+{"kind":"textbox","id":"sh/yd0nut8b","slide":7,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[72,454,24,78]}
+{"kind":"textbox","id":"sh/lgr65872","slide":7,"text":"The basis filters themselves are not reproducible anatomical objects.","textPreview":"The basis filters themselves are not reproducible anatomical objects.","textChars":69,"textLines":1,"bbox":[102,454,470,78]}
+{"kind":"textbox","id":"sh/0fi5w3qh","slide":7,"text":"Still out of scope","textPreview":"Still out of scope","textChars":18,"textLines":1,"bbox":[690,155,500,38]}
+{"kind":"textbox","id":"sh/n29o7ips","slide":7,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[690,220,24,72]}
+{"kind":"textbox","id":"sh/mh0nyd8n","slide":7,"text":"Neuron-type or anatomical labels for classes or ICA filters","textPreview":"Neuron-type or anatomical labels for classes or ICA filters","textChars":59,"textLines":1,"bbox":[720,220,480,72]}
+{"kind":"textbox","id":"sh/94b6987y","slide":7,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[690,292,24,72]}
+{"kind":"textbox","id":"sh/83i50nqd","slide":7,"text":"Precision, specificity, or false-positive claims outside exhaustive review","textPreview":"Precision, specificity, or false-positive claims outside exhaustive review","textChars":74,"textLines":1,"bbox":[720,292,480,72]}
+{"kind":"textbox","id":"sh/v6tobip4","slide":7,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[690,364,24,72]}
+{"kind":"textbox","id":"sh/a5kn2doj","slide":7,"text":"Causal wiring from coactivity or shared firing","textPreview":"Causal wiring from coactivity or shared firing","textChars":46,"textLines":1,"bbox":[720,364,480,72]}
+{"kind":"textbox","id":"sh/614ruhsr","slide":7,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[690,436,24,72]}
+{"kind":"textbox","id":"sh/r2d83m9c","slide":7,"text":"Independent validation from candidate-assisted canonical v7","textPreview":"Independent validation from candidate-assisted canonical v7","textChars":59,"textLines":1,"bbox":[720,436,480,72]}
+{"kind":"textbox","id":"sh/s369wrqx","slide":7,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[690,508,24,72]}
+{"kind":"textbox","id":"sh/t4fq5wri","slide":7,"text":"A claim that ICA improves human annotation","textPreview":"A claim that ICA improves human annotation","textChars":42,"textLines":1,"bbox":[720,508,480,72]}
+{"kind":"notes","id":"nt/286dcp","slide":7,"text":"Invite objections to the claim boundary. The meeting is a good place to identify wording that sounds stronger than the evidence.\n\n[Sources]\npaper/ICA_STATISTICAL_TEST_SUITE.yaml\npaper/review_report/SPATIAL_ICA_OBJECTIVE_MORPHOLOGY_REVIEW.md\npaper/review_report/SPATIAL_ICA_FILTER_STABILITY_REVIEW.md\npaper/review_report/SPATIAL_ICA_RECONSTRUCTION_STABILITY_REVIEW.md\n[/Sources]"}
+{"kind":"slide","id":"sl/h3dein","slide":8,"title":"Four questions can move the paper forward this week","textShapes":16}
+{"kind":"textbox","id":"sh/xwzqx83a","slide":8,"text":"Four questions can move the paper forward this week","textPreview":"Four questions can move the paper forward this week","textChars":51,"textLines":1,"bbox":[64,42,1130,55]}
+{"kind":"shape","id":"sh/ato7mt4j","slide":8,"bbox":[64,108,1152,2]}
+{"kind":"textbox","id":"sh/vux8vyl4","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[1180,670,36,22]}
+{"kind":"textbox","id":"sh/876pk3md","slide":8,"text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[70,145,55,50]}
+{"kind":"textbox","id":"sh/98fqto3y","slide":8,"text":"Paper framing","textPreview":"Paper framing","textChars":13,"textLines":1,"bbox":[145,145,240,34]}
+{"kind":"textbox","id":"sh/m5o7it4n","slide":8,"text":"Should basis-instability versus reconstruction-stability become a headline result?","textPreview":"Should basis-instability versus reconstruction-stability become a headline result?","textChars":82,"textLines":1,"bbox":[400,145,780,66]}
+{"kind":"shape","id":"sh/n6x8ryl8","slide":8,"bbox":[145,239,1035,1]}
+{"kind":"textbox","id":"sh/03mpwjmh","slide":8,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[70,273,55,50]}
+{"kind":"textbox","id":"sh/l4v6po32","slide":8,"text":"Class language","textPreview":"Class language","textChars":14,"textLines":1,"bbox":[145,273,240,34]}
+{"kind":"textbox","id":"sh/xs32h4ji","slide":8,"text":"Do “measurement-event archetypes” and the three class descriptions communicate clearly?","textPreview":"Do “measurement-event archetypes” and the three class descriptions communicate clearly?","textChars":87,"textLines":1,"bbox":[400,273,780,66]}
+{"kind":"shape","id":"sh/wru18z2x","slide":8,"bbox":[145,367,1035,1]}
+{"kind":"textbox","id":"sh/vqlkfe1c","slide":8,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[70,401,55,50]}
+{"kind":"textbox","id":"sh/apcj69kr","slide":8,"text":"Next validation","textPreview":"Next validation","textChars":15,"textLines":1,"bbox":[145,401,240,34]}
+{"kind":"textbox","id":"sh/9o32d4j6","slide":8,"text":"Prioritize bounded-field exhaustive review, independent recording, or a small blinded ICA-utility panel?","textPreview":"Prioritize bounded-field exhaustive review, independent recording, or a small blinded ICA-utility panel?","textChars":104,"textLines":1,"bbox":[400,401,780,66]}
+{"kind":"shape","id":"sh/83a14z21","slide":8,"bbox":[145,495,1035,1]}
+{"kind":"textbox","id":"sh/n21kbulg","slide":8,"text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[70,529,55,50]}
+{"kind":"textbox","id":"sh/m1sj2pkv","slide":8,"text":"Profile depth","textPreview":"Profile depth","textChars":13,"textLines":1,"bbox":[145,529,240,34]}
+{"kind":"textbox","id":"sh/10ji9k3a","slide":8,"text":"Which profile dimensions matter most next: morphology, temporal kinetics, coactivity, acquisition context, or failure mode?","textPreview":"Which profile dimensions matter most next: morphology, temporal kinetics, coactivity, acquisition context, or failure mode?","textChars":123,"textLines":1,"bbox":[400,529,780,66]}
+{"kind":"textbox","id":"sh/0za10f2p","slide":8,"text":"Recommended meeting outcome","textPreview":"Recommended meeting outcome","textChars":27,"textLines":1,"bbox":[70,655,280,26]}
+{"kind":"textbox","id":"sh/cfytcjex","slide":8,"text":"Select one next validation target and approve the claim wording.","textPreview":"Select one next validation target and approve the claim wording.","textChars":64,"textLines":1,"bbox":[370,648,810,38]}
+{"kind":"notes","id":"nt/h3dein","slide":8,"text":"End by asking for an explicit decision, not general feedback. Record the selected validation target and any wording objections.\n\n[Sources]\npaper/overleaf_jnm/sections/03_results.tex\npaper/overleaf_jnm/sections/04_discussion.tex\npaper/ICA_STATISTICAL_TEST_SUITE.yaml\n[/Sources]"}

@@ -1,0 +1,29 @@
+schema_version: 1
+record_type: claim
+id: NREV-CLM-0010
+program_id: NREV-PRG-0001
+title: Generator Family Robustness
+statement: Spatial context is the most robust frozen proposal score under held-out neuropil, bleaching, nonrigid-motion, empirical-noise,
+  and compound-shift generator families, whereas naive equal-weight fusion retains better calibration but loses operating-point
+  robustness.
+scope: 108 exact-truth movies across six generator families, six seeds per family, and source counts 2, 4, and 8; empirical
+  noise scale estimated label-free from one untouched 060126 recording.
+limitations:
+- 'No inference is registered beyond this scope: 108 exact-truth movies across six generator families, six seeds per family,
+  and source counts 2, 4, and 8; empirical noise scale estimated label-free from one untouched 060126 recording.'
+claim_state: supported
+evidence_tier: computational_simulation
+review_state: not_requested
+evidence_capsule_ids:
+- NREV-EVC-EXP-0011
+decision_ids:
+- NREV-DEC-0011
+tags:
+- generator
+- family
+- robustness
+visibility: public
+legacy_id: generator_family_robustness
+legacy_status: established_computational_simulation
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

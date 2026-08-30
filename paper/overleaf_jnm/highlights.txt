@@ -1,0 +1,5 @@
+• Separates observation-site geometry from provisional neuron identity
+• Tests shared burst structure against local neuron-specific residuals
+• Treats sparse annotations as positive-unlabeled, not exhaustive truth
+• Shows two-frame ICA can collapse to temporal differentiation
+• Defines stable neuronal observability as a measurable study target

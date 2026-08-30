@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import os
 import shlex
+import shutil
 import subprocess
 import sys
 import time
@@ -20,7 +21,7 @@ from neurobench.manifests import load_dataset_manifest, manifest_path
 from neurobench.pipeline_catalog import normalize_pipeline
 
 
-DEFAULT_FIJI = Path("/home/jibby2k1/.local/bin/fiji")
+DEFAULT_FIJI = Path(os.environ.get("NEUROBENCH_FIJI", shutil.which("fiji") or "fiji"))
 DEFAULT_STAGES = [
     "high-pass",
     "event-denoise",
@@ -204,6 +205,7 @@ def main() -> None:
 
     macro_args = ",".join(
         [
+            f"project_root={PROJECT_ROOT}",
             f"dataset_id={dataset_id}",
             f"input_path={raw_video}",
             f"output_root={args.output_root.resolve()}",

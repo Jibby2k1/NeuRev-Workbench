@@ -1,6 +1,8 @@
 # worker.py
-"""
-Defines the main task function executed by each worker in the multiprocessing pool.
+"""Legacy grid-search worker preserved for reproducibility.
+
+New maintained work belongs under :mod:`neurobench`; see
+``docs/CODEBASE_NAVIGATION.md`` before extending this compatibility surface.
 """
 import gc
 import logging

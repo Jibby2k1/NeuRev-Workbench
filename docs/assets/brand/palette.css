@@ -1,0 +1,62 @@
+/* NeuRev Workbench visual tokens.
+ *
+ * Brand colors describe navigation, hierarchy, and interaction. Scientific
+ * annotation colors are a separate, reserved vocabulary; do not substitute
+ * brand accents for expert, model, or match marks.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Stable brand primitives, seeded from the bounded-review interface. */
+  --neurev-navy-950: #091015;
+  --neurev-navy-900: #111b22;
+  --neurev-navy-800: #16232c;
+  --neurev-navy-600: #29404d;
+  --neurev-cyan-400: #61d4de;
+  --neurev-cyan-700: #147d87;
+  --neurev-cyan-text: #0f6670;
+  --neurev-amber-400: #f3bd59;
+  --neurev-blue-600: #3158a5;
+  --neurev-violet-600: #6e53a4;
+
+  /* Theme-aware presentation roles. */
+  --neurev-canvas: #f7fafb;
+  --neurev-surface: #ffffff;
+  --neurev-surface-raised: #eef4f6;
+  --neurev-ink: #102733;
+  --neurev-muted: #526875;
+  --neurev-border: #b9cad1;
+  --neurev-accent: var(--neurev-cyan-700);
+  --neurev-accent-text: var(--neurev-cyan-text);
+  --neurev-accent-soft: #ddf4f5;
+  --neurev-blue-soft: #e8eefb;
+  --neurev-violet-soft: #f0eafa;
+
+  /* Reserved scientific annotation semantics. */
+  --neurev-expert-roi: #2f9d67;
+  --neurev-model-prediction: #d97706;
+  --neurev-match-link: #f4e7a1;
+  --neurev-match-link-outline: #746514;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --neurev-canvas: var(--neurev-navy-950);
+    --neurev-surface: var(--neurev-navy-900);
+    --neurev-surface-raised: var(--neurev-navy-800);
+    --neurev-ink: #eff7f8;
+    --neurev-muted: #a9bac1;
+    --neurev-border: var(--neurev-navy-600);
+    --neurev-accent: var(--neurev-cyan-400);
+    --neurev-accent-text: var(--neurev-cyan-400);
+    --neurev-accent-soft: #153b44;
+    --neurev-blue-soft: #1a2c51;
+    --neurev-violet-soft: #31284d;
+
+    --neurev-expert-roi: #7bd7a5;
+    --neurev-model-prediction: #ffad5c;
+    --neurev-match-link: #f4e7a1;
+    --neurev-match-link-outline: #d8c862;
+  }
+}

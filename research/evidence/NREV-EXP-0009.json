@@ -1,0 +1,99 @@
+{
+  "artifact_manifest_sha256": "88bbcc76dc3540d630806add406f2fdeb146af5b5c83e449b1b83fd4437d774e",
+  "artifacts": [
+    {
+      "access": "public",
+      "bytes": 2554,
+      "id": "artifact-01",
+      "media_type": "text/markdown",
+      "repository_path": "docs/research/SPON_CA_BURST_MAJOR_NEXT_STEPS_V1_RESULTS.md",
+      "role": "report",
+      "sha256": "24d782dc3f7198b211691a61755fba98741fabefecba6fa90243e6c7ea7295bd"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 4583,
+      "id": "artifact-02",
+      "media_type": "application/json",
+      "repository_path": "Outputs/NeuronIdentifiability/independent_transfer_preflight_060126_v1/preflight.json",
+      "role": "report",
+      "sha256": "ad5de3608d9b3b0a56595395594c54a9f719d0d44103e019a32bd8cca401faf4"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 1059,
+      "id": "artifact-03",
+      "media_type": "application/json",
+      "repository_path": "Outputs/NeuronIdentifiability/spon_ca_burst_identity_complete_bounded_review_v1/review_contract.json",
+      "role": "report",
+      "sha256": "28fe35fbe5af032518f1828d19cf0fbb3af0266b466a3d95e52fe37da8996ef0"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 1139,
+      "id": "artifact-04",
+      "media_type": "application/json",
+      "repository_path": "Outputs/NeuronIdentifiability/realistic_movie_identity_stress_test_v1/summary.json",
+      "role": "summary",
+      "sha256": "7987da450a6f0e1373be8f8d793d5dd83e2e90bc16aa093fb381b0845c75b9d4"
+    }
+  ],
+  "boundaries": {
+    "does_not_establish": [
+      "Claims beyond the registered finding and linked claim scopes.",
+      "Reproducible run provenance that was absent from the v1 story."
+    ],
+    "limitations": [
+      "The simulator is a controlled mechanistic stress test, not an independent animal; bounded-field precision awaits two reviewers and adjudication; the available 060126 recordings are behavioral rather than a compatible spontaneous-burst replication."
+    ],
+    "scope": "This capsule preserves the registered v1 experiment finding and its linked claim scopes."
+  },
+  "claim_impacts": [
+    {
+      "claim_id": "NREV-CLM-0008",
+      "effect": "supports",
+      "scope": "432 paired simulator cells across 12 seeds; mean AUC gain 0.104 and 94.9 percent win fraction; not biological external validation.",
+      "summary": "The experiment supports this claim only within its registered scope."
+    }
+  ],
+  "evidence_tier": "evidence_synthesis",
+  "experiment_id": "NREV-EXP-0009",
+  "gates": [
+    {
+      "criterion": "Every artifact referenced by the v1 experiment story is available and checksum identified at migration.",
+      "id": "legacy-artifact-capture",
+      "observed": "Captured 4 of 4 referenced artifacts with SHA-256 identities.",
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-29T23:52:35Z",
+  "id": "NREV-EVC-EXP-0009",
+  "legacy_status": "mixed_complete_and_human_gated",
+  "lifecycle": "validated",
+  "metrics": [],
+  "outcome": "mixed",
+  "program_id": "NREV-PRG-0001",
+  "record_type": "evidence_capsule",
+  "review_state": "pending",
+  "run_ids": [],
+  "schema_version": 1,
+  "source_records_sha256": "cd31f870a29d6c22ce3f5adea48807ca0b335747bc4779eb154a5f773940159c",
+  "summary": "Independent transfer is blocked by a task and truth mismatch rather than producing a metric; the bounded review package is ready but unlabelled; spatial context improved mean simulator pixel AUC from 0.813 to 0.917 and won 94.9 percent of paired cells.",
+  "validation": {
+    "checked_at": "2026-08-29T23:52:35Z",
+    "checks": [
+      {
+        "id": "portable-paths",
+        "status": "passed",
+        "summary": "Artifact references are repository-relative; ignored local outputs are metadata-only."
+      },
+      {
+        "id": "historical-provenance",
+        "status": "not_run",
+        "summary": "The v1 story did not encode run-level provenance, so no historical run record was invented."
+      }
+    ],
+    "status": "partial"
+  },
+  "visibility": "public"
+}

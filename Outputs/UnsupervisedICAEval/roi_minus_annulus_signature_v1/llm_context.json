@@ -1,8 +1,0 @@
-{
-  "decision": "stop_signature_branch",
-  "primary_figure": "figures/residual_signature_generalization.png",
-  "primary_metrics": "summary.json",
-  "roi_table": "tables/roi_residual_generalization_metrics.csv",
-  "signature_evidence_level": "S0_no_reproducible_residual_signature",
-  "status": "roi_minus_annulus_signature_complete_audit_incomplete"
-}

@@ -1,0 +1,25 @@
+canonical_roi_id	matched_bursts	certainty_groups	class_sequence	burst_sequence	dominant_class_id	dominant_class_fraction	class_entropy_bits	burst_1_class	burst_2_class	burst_3_class	burst_4_class
+roi_006	2	identity uncertain	2>2	2>3	2	1.0	0.0		2	2	
+roi_010	4	confirmed	3>3>3>3	1>2>3>4	3	1.0	0.0	3	3	3	3
+roi_014	4	confirmed	3>1>3>3	1>2>3>4	3	0.75	0.8112781244591328	3	1	3	3
+roi_021	1	confirmed	3	2	3	1.0	0.0		3		
+roi_new_001	4	confirmed	1>1>1>1	1>2>3>4	1	1.0	0.0	1	1	1	1
+roi_new_002	3	confirmed	1>1>3	1>2>3	1	0.6666666666666666	0.9182958340544896	1	1	3	
+roi_new_003	4	confirmed	3>3>3>3	1>2>3>4	3	1.0	0.0	3	3	3	3
+roi_new_004	1	confirmed	2	4	2	1.0	0.0				2
+roi_new_005	3	confirmed	3>3>3	1>2>3	3	1.0	0.0	3	3	3	
+roi_new_006	3	confirmed	3>3>3	1>2>3	3	1.0	0.0	3	3	3	
+roi_new_007	1	confirmed	3	1	3	1.0	0.0	3			
+roi_new_008	1	identity uncertain	3	2	3	1.0	0.0		3		
+roi_new_009	1	identity uncertain	2	3	2	1.0	0.0			2	
+roi_new_010	1	confirmed	3	4	3	1.0	0.0				3
+roi_new_011	1	confirmed	2	4	2	1.0	0.0				2
+roi_new_012	1	confirmed	3	4	3	1.0	0.0				3
+roi_new_014	1	identity uncertain	3	1	3	1.0	0.0	3			
+roi_new_015	1	confirmed	1	1	1	1.0	0.0	1			
+roi_new_016	1	identity uncertain	3	1	3	1.0	0.0	3			
+roi_new_018	1	identity uncertain	3	1	3	1.0	0.0	3			
+roi_new_019	1	confirmed	3	1	3	1.0	0.0	3			
+roi_new_020	1	identity uncertain	3	2	3	1.0	0.0		3		
+roi_new_021	1	identity uncertain	3	2	3	1.0	0.0		3		
+roi_new_024	1	identity uncertain	2	4	2	1.0	0.0				2

@@ -1,0 +1,4 @@
+class_id	class_name	detection_occurrences	detection_sites	bursts	median_raw_peak	median_residual_peak	median_spatial_specificity	median_recurrence_fraction	known_positive_overlap	known_positive_overlap_interpretation
+1	Class 1: localized, high-signal, mid-peaking, positive-area, lane-consensus, recurrent, bright-background	35	12	4	618.7307692307692	280.3728146853146	0.3193620368751735	1.0	28	descriptive only; not precision
+2	Class 2: broad-coupled, low-signal, early-peaking, positive-area, lane-consensus, episodic, annulus-decoupled, bright-background	8	6	4	269.5	93.98164335664325	0.17009469995054385	0.375	3	descriptive only; not precision
+3	Class 3: broad-coupled, low-signal, mid-peaking, positive-area, lane-consensus, recurrent, annulus-decoupled	43	24	4	271.6153846153845	97.20760489510474	0.19153425142200994	0.75	23	descriptive only; not precision

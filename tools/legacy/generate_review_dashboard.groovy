@@ -16,7 +16,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-final Path projectRoot = Paths.get("/home/jibby2k1/CNEL/State Analysis (Fish)/Separable-Gamma-CFAR")
+final Path projectRoot = Paths.get(System.getenv("NEUROBENCH_PROJECT_ROOT") ?: System.getProperty("user.dir"))
 final Path rawPath = projectRoot.resolve("Inputs/050126/050126/calcium video 2.tif")
 final Path highPassDir = projectRoot.resolve("Outputs/HighPass/calcium_video_2")
 final Path candidateDir = projectRoot.resolve("Outputs/CandidateEventPipeline/calcium_video_2")

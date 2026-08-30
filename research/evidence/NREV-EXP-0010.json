@@ -1,0 +1,99 @@
+{
+  "artifact_manifest_sha256": "06b1814f8eec95b3448e9b3542f42628ad96fbde94e04e3781cca878a10d84f4",
+  "artifacts": [
+    {
+      "access": "public",
+      "bytes": 2847,
+      "id": "artifact-01",
+      "media_type": "text/markdown",
+      "repository_path": "docs/research/SPON_CA_BURST_REALISTIC_MOVIE_DETECTOR_V3_RESULTS.md",
+      "role": "report",
+      "sha256": "863d156997d168ffd4c996a27b785ed83a7584614237f5ca0305ad0ca6c9076a"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 5737,
+      "id": "artifact-02",
+      "media_type": "application/json",
+      "repository_path": "Outputs/NeuronIdentifiability/realistic_movie_detector_benchmark_v3/summary.json",
+      "role": "summary",
+      "sha256": "694fa39d158e7e73ee0d668ae98b31584ecf06db3a789759775c27c91189e6ed"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 389841,
+      "id": "artifact-03",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "Outputs/NeuronIdentifiability/realistic_movie_detector_benchmark_v3/operating_points.tsv",
+      "role": "table",
+      "sha256": "9c0e5cc99311b63ec3a6d046b14d797752e03e4986e83bc0b92a50f362d01473"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 703,
+      "id": "artifact-04",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "Outputs/NeuronIdentifiability/realistic_movie_detector_benchmark_v3/calibration_abstention.tsv",
+      "role": "table",
+      "sha256": "963766d5a2fca5808a07937133135e2c4715b1a18320bf422dee9fbc0ae20818"
+    }
+  ],
+  "boundaries": {
+    "does_not_establish": [
+      "Claims beyond the registered finding and linked claim scopes.",
+      "Reproducible run provenance that was absent from the v1 story."
+    ],
+    "limitations": [
+      "Proposal precision includes all simulated background candidates but the movie generator remains simplified; candidate labels use a fixed three-pixel geometry rule; calibration is seed-held-out rather than generator-family-held-out."
+    ],
+    "scope": "This capsule preserves the registered v1 experiment finding and its linked claim scopes."
+  },
+  "claim_impacts": [
+    {
+      "claim_id": "NREV-CLM-0009",
+      "effect": "supports",
+      "scope": "432 movies, four frozen score stacks, proposal budgets 2, 4, and 8, three-pixel one-to-one identity matching; simulation is not biological transfer.",
+      "summary": "The experiment supports this claim only within its registered scope."
+    }
+  ],
+  "evidence_tier": "computational_simulation",
+  "experiment_id": "NREV-EXP-0010",
+  "gates": [
+    {
+      "criterion": "Every artifact referenced by the v1 experiment story is available and checksum identified at migration.",
+      "id": "legacy-artifact-capture",
+      "observed": "Captured 4 of 4 referenced artifacts with SHA-256 identities.",
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-29T23:52:35Z",
+  "id": "NREV-EVC-EXP-0010",
+  "legacy_status": "complete_computational",
+  "lifecycle": "validated",
+  "metrics": [],
+  "outcome": "supported",
+  "program_id": "NREV-PRG-0001",
+  "record_type": "evidence_capsule",
+  "review_state": "not_requested",
+  "run_ids": [],
+  "schema_version": 1,
+  "source_records_sha256": "d810083184231e3863b5025b1965671d311655dfb638cfbc5132aefa506bdf7b",
+  "summary": "At budget four, combined achieved the highest F1 at 0.471 and recall at 0.707; spatial context localized best at 0.835 px, reduced duplicates to 0.016 per movie, and had the best held-seed candidate average precision at 0.896; combined had the best Brier score at 0.0286 and balanced accuracy at 0.862.",
+  "validation": {
+    "checked_at": "2026-08-29T23:52:35Z",
+    "checks": [
+      {
+        "id": "portable-paths",
+        "status": "passed",
+        "summary": "Artifact references are repository-relative; ignored local outputs are metadata-only."
+      },
+      {
+        "id": "historical-provenance",
+        "status": "not_run",
+        "summary": "The v1 story did not encode run-level provenance, so no historical run record was invented."
+      }
+    ],
+    "status": "partial"
+  },
+  "visibility": "public"
+}

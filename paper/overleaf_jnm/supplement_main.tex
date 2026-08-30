@@ -1,0 +1,54 @@
+\documentclass[preprint,12pt,authoryear]{elsarticle}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,bm,mathtools}
+\usepackage{booktabs,tabularx,longtable,array,multirow}
+\usepackage{graphicx,subcaption,float}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage[nameinlink,capitalize,noabbrev]{cleveref}
+
+\graphicspath{{figures/}}
+\setlength{\emergencystretch}{3em}
+\input{macros/notation}
+\input{macros/provisional}
+\input{macros/results_macros}
+\input{macros/full_trace_feature_panel}
+\input{macros/automated_feature_validation}
+\input{macros/feature_deep_dives}
+
+\journal{Journal of Neuroscience Methods}
+
+\begin{document}
+\begin{frontmatter}
+\title{Supplementary information: Shared burst dynamics and limits of neuron-specific identifiability in sparse-positive zebrafish fluorescence imaging}
+\author[uf]{Raul Valle}
+\author[affpending]{Jose Principe}
+\author[affpending]{Yinong Chen}
+\author[affpending]{Chenyu Liang}
+\author[affpending]{Xin Tang}
+\affiliation[uf]{organization={Department of Electrical and Computer Engineering, University of Florida}, city={Gainesville}, state={Florida}, country={United States}}
+\affiliation[cnel]{organization={Computational NeuroEngineering Laboratory, University of Florida}, city={Gainesville}, state={Florida}, country={United States}}
+\affiliation[affpending]{organization={\Missing{confirm affiliation for Jose Principe, Yinong Chen, Chenyu Liang, and Xin Tang}}}
+\begin{abstract}
+This supplement defines the complete identity, trace, control, statistical, and reproducibility contracts for the protected NeuRev confirmatory analysis. It also specifies the trace-atlas layout and the evidence required to promote functional, tensor, and detection results.
+\end{abstract}
+\end{frontmatter}
+
+\DraftBanner
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\theequation}{S\arabic{equation}}
+
+\input{supplement/S01_extended_methods}
+\input{supplement/S02_extended_results}
+\input{supplement/S03_trace_atlas}
+
+\end{document}

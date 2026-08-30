@@ -1,0 +1,21 @@
+\begin{table}[!htbp]
+\centering
+\caption{Limitations and the corresponding manuscript safeguard.}
+\label{tab:limitations}
+\small
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{0.30\linewidth} X}
+\toprule
+Limitation & Safeguard \\
+\midrule
+One canonical recording & Restrict claims to within-recording measurement structure; require an independent recording for external generalization. \\
+Four shared burst intervals & Use leave-one-burst-out and burst-exclusion sensitivity; avoid asymptotic burst-level claims. \\
+Sparse, partly uncertain positives & Use positive--unlabeled metrics and preserve confidence/provenance; estimate precision only in a bounded exhaustive field. \\
+Identity/geometry collision in existing assays & Repair before trace aggregation; preserve original sites and regenerate all identity-sensitive results. \\
+Response-selected recentering can transfer identity & Require nearest-label and footprint-assignment guards; never count a stronger shifted trace as recovery by itself. \\
+Repeated exploratory use of the same bursts & Freeze the compact panel and estimands before a protected confirmatory rerun. \\
+Local annulus may contain true neural signal & Report Raw, annulus and residual jointly; treat subtraction as a transformation, not ground truth. \\
+Acquisition heterogeneity and saturation & Characterize noise, field effects, motion and saturation before interpreting stable observability. \\
+Shared drive can induce network correlations & Keep connectivity analyses descriptive and condition on global/local common mode. \\
+\bottomrule
+\end{tabularx}
+\end{table}

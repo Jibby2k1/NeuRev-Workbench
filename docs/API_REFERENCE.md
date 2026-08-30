@@ -26,6 +26,20 @@ Shared utilities for manifest-driven neuron review workflows.
 
 Algorithmic building blocks for executable Neurobench pipelines.
 
+### `causal_joint_msln`
+
+- Kind: `function`
+- Source: `neurobench.algorithms.multiscale_local_normalization`
+- Signature: `causal_joint_msln(values: np.ndarray, context: JointSTContext, *, scale_floor: float | None=None, quiet_mask: np.ndarray | None=None, diagnostic_sites_yx: np.ndarray | None=None) -> MSLNResult`
+- Summary: Normalize against one causal 3-D annulus-by-time reference.
+
+### `causal_joint_msln_cuda`
+
+- Kind: `function`
+- Source: `neurobench.algorithms.msln_msica_cuda`
+- Signature: `causal_joint_msln_cuda(values: np.ndarray, context: JointSTContext, *, quiet_mask: np.ndarray, review_crop_frames: int, max_vram_bytes: int, scale_floor_override: float | None=None, diagnostic_sites_yx: np.ndarray | None=None) -> CUDAJointResult`
+- Summary: Compute a causal joint MSLN review map while retaining it on the GPU.
+
 ### `estimate_integer_shift`
 
 - Kind: `function`
@@ -54,6 +68,13 @@ Algorithmic building blocks for executable Neurobench pipelines.
 - Signature: `process_independent_frame_chunks(video: Any, processor: Callable[[Any], Mapping[str, Any]], *, chunk_size: int, concatenate_keys: Sequence[str]) -> dict[str, Any]`
 - Summary: Apply a frame-independent processor to chunks and concatenate outputs.
 
+### `project_temporal_fit_at_sites`
+
+- Kind: `function`
+- Source: `neurobench.algorithms.multilag_msica`
+- Signature: `project_temporal_fit_at_sites(values: Any, fit: TemporalMSICAFit, sites_yx: np.ndarray) -> TemporalProjectionSiteDiagnostics`
+- Summary: Project only selected sites and retain every learned component.
+
 ### `robust_local_cfar`
 
 - Kind: `function`
@@ -67,6 +88,13 @@ Algorithmic building blocks for executable Neurobench pipelines.
 - Source: `neurobench.algorithms.motion`
 - Signature: `shift_frame_integer(frame, dy: int, dx: int)`
 - Summary: Shift a 2D frame by integer pixels with edge-free zero fill.
+
+### `TemporalProjectionSiteDiagnostics`
+
+- Kind: `class`
+- Source: `neurobench.algorithms.multilag_msica`
+- Signature: `class TemporalProjectionSiteDiagnostics`
+- Summary: Bounded component and invertibility diagnostics at selected YX sites.
 
 ## `neurobench.cli`
 
@@ -504,6 +532,38 @@ Discovery, ranking, and triage helpers for candidate neurons.
 - Signature: `validate_candidate_feature_table(rows: Sequence[Mapping[str, Any]]) -> None`
 - Summary: Validate the public candidate feature row contract.
 
+## `neurobench.experiments.event_weighted_cs_parzen`
+
+Event-balanced two-frame CS-Parzen ICA diagnostic workflow.
+
+### `EventWeightedConfigError`
+
+- Kind: `class`
+- Source: `neurobench.experiments.event_weighted_cs_parzen.config`
+- Signature: `class EventWeightedConfigError`
+- Summary: No docstring summary available.
+
+### `EventWeightedCSParzenConfig`
+
+- Kind: `class`
+- Source: `neurobench.experiments.event_weighted_cs_parzen.config`
+- Signature: `class EventWeightedCSParzenConfig`
+- Summary: No docstring summary available.
+
+### `preflight`
+
+- Kind: `module`
+- Source: `neurobench.experiments.event_weighted_cs_parzen.preflight`
+- Signature: `neurobench.experiments.event_weighted_cs_parzen.preflight`
+- Summary: Collision-safe, read-only-source preflight for event-weighted CS-Parzen.
+
+### `run`
+
+- Kind: `function`
+- Source: `neurobench.experiments.event_weighted_cs_parzen.runner`
+- Signature: `run(config: EventWeightedCSParzenConfig, *, preflight_dir: str | Path, authorize_full_spon: bool=False, resume: bool=False) -> dict[str, Any]`
+- Summary: No docstring summary available.
+
 ## `neurobench.experiments.hard_roi_adjudication`
 
 Versioned hard-ROI review and frozen re-evaluation workflow.
@@ -599,6 +659,46 @@ No docstring summary available.
 - Kind: `function`
 - Source: `neurobench.experiments.learnable_contrast.core`
 - Signature: `run(config: Config) -> dict[str, Any]`
+- Summary: No docstring summary available.
+
+## `neurobench.experiments.learned_operator_selection`
+
+Sequential learned-operator selection experiment program.
+
+### `LearnedOperatorConfig`
+
+- Kind: `class`
+- Source: `neurobench.experiments.learned_operator_selection.config`
+- Signature: `class LearnedOperatorConfig`
+- Summary: No docstring summary available.
+
+### `Stage`
+
+- Kind: `class`
+- Source: `neurobench.experiments.learned_operator_selection.decisions`
+- Signature: `class Stage`
+- Summary: No docstring summary available.
+
+## `neurobench.experiments.msln_msica`
+
+Multi-scale local normalization and multi-context ICA experiment.
+
+### `MSLNMSICAConfig`
+
+- Kind: `class`
+- Source: `neurobench.experiments.msln_msica.config`
+- Signature: `class MSLNMSICAConfig`
+- Summary: No docstring summary available.
+
+## `neurobench.experiments.neuron_identifiability`
+
+Identity-aware within-recording neuron observability study.
+
+### `ObservationRecord`
+
+- Kind: `class`
+- Source: `neurobench.experiments.neuron_identifiability.contracts`
+- Signature: `class ObservationRecord`
 - Summary: No docstring summary available.
 
 ## `neurobench.experiments.pairwise_separation`
@@ -773,6 +873,66 @@ Memory-safe transfer experiments for dark-soma excitation zones.
 - Source: `neurobench.experiments.soma_excitation`
 - Signature: `SomaExcitationExperimentConfig`
 - Summary: Exported by __all__.
+
+## `neurobench.experiments.unsupervised_ica_eval`
+
+Label-free two-frame ICA identification and external trace utilities.
+
+### `align_components`
+
+- Kind: `function`
+- Source: `neurobench.experiments.unsupervised_ica_eval.core`
+- Signature: `align_components(reference: np.ndarray, candidate: np.ndarray) -> tuple[np.ndarray, tuple[int, ...]]`
+- Summary: Resolve sign/permutation ambiguity by maximum absolute activation correlation.
+
+### `analytic_baselines`
+
+- Kind: `function`
+- Source: `neurobench.experiments.unsupervised_ica_eval.core`
+- Signature: `analytic_baselines(values: np.ndarray, *, epsilon: float=1e-08, random_seed: int=0) -> dict[str, np.ndarray]`
+- Summary: Return B0--B5 responses on exactly the supplied samples.
+
+### `candidate_signature_summary`
+
+- Kind: `function`
+- Source: `neurobench.experiments.unsupervised_ica_eval.traces`
+- Signature: `candidate_signature_summary(traces: np.ndarray, roi_ids: np.ndarray) -> dict[str, object]`
+- Summary: Equal-ROI weighted template and leave-one-ROI-out consistency.
+
+### `distribution_summary`
+
+- Kind: `function`
+- Source: `neurobench.experiments.unsupervised_ica_eval.core`
+- Signature: `distribution_summary(values: np.ndarray) -> dict[str, Any]`
+- Summary: No docstring summary available.
+
+### `fit_two_frame_ica`
+
+- Kind: `function`
+- Source: `neurobench.experiments.unsupervised_ica_eval.core`
+- Signature: `fit_two_frame_ica(values: np.ndarray, *, seed: int=0, max_iter: int=500, tolerance: float=1e-06) -> TwoFrameFit`
+- Summary: Fit ICA after the repository's maintained 2-D centering/whitening.
+
+### `paired_trace_metrics`
+
+- Kind: `function`
+- Source: `neurobench.experiments.unsupervised_ica_eval.traces`
+- Signature: `paired_trace_metrics(raw: np.ndarray, pipeline: np.ndarray, *, pre_event: int) -> dict[str, float]`
+- Summary: No docstring summary available.
+
+### `representation_fingerprint`
+
+- Kind: `function`
+- Source: `neurobench.experiments.unsupervised_ica_eval.core`
+- Signature: `representation_fingerprint(fit: TwoFrameFit, selection: dict[str, Any]) -> str`
+- Summary: Hash the label-free model plus frozen selection contract.
+
+### `stability_summary`
+
+- Kind: `function`
+- Source: `neurobench.experiments.unsupervised_ica_eval.core`
+- Signature: `stability_summary(fits: list[TwoFrameFit], *, top_fraction: float=0.01) -> dict[str, Any]`
+- Summary: No docstring summary available.
 
 ## `neurobench.exports`
 
@@ -1004,12 +1164,33 @@ Scientific metrics for Neurobench candidate, event, and run evaluation.
 
 Dataclass models for public Neurobench artifacts.
 
+### `AnnotationOperation`
+
+- Kind: `class`
+- Source: `neurobench.models.annotation_revision`
+- Signature: `class AnnotationOperation`
+- Summary: One attributable, append-only change in an annotation draft.
+
+### `AnnotationRevision`
+
+- Kind: `class`
+- Source: `neurobench.models.annotation_revision`
+- Signature: `class AnnotationRevision`
+- Summary: Immutable metadata envelope for a draft or published revision root.
+
 ### `AnnotationSet`
 
 - Kind: `class`
 - Source: `neurobench.models.annotations`
 - Signature: `class AnnotationSet`
 - Summary: Versioned annotation payload normalized to schema v3.
+
+### `AnnotationViewContract`
+
+- Kind: `class`
+- Source: `neurobench.models.annotation_revision`
+- Signature: `class AnnotationViewContract`
+- Summary: Coordinate and intensity contract for one selectable video representation.
 
 ### `ArtifactRecord`
 

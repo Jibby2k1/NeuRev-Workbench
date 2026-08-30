@@ -1,0 +1,79 @@
+{
+  "headline": {
+    "all_lane_misses": 12,
+    "best_fixed_kinetic_kernel": {
+      "decay_frames": 20,
+      "kernel_id": "rise1_decay20",
+      "rise_frames": 1,
+      "site_weighted_mean_frame_auc": 0.8925755890700867
+    },
+    "budget20_proposal_ranking": [
+      {
+        "budget": 20,
+        "common_proposal_carrier_recall": 0.4590062111801242,
+        "common_proposal_ranking_delta_vs_carrier": 0.010869565217391353,
+        "common_proposal_recall": 0.46987577639751554,
+        "feature_id": "coherence_w15",
+        "interpretation": "descriptive_native_vs_common_proposal_contrast_not_additive_causal_decomposition",
+        "native_carrier_recall": 0.5408643892339544,
+        "native_delta_vs_carrier": 0.06444099378881996,
+        "native_minus_common_delta_contrast": 0.0535714285714286,
+        "native_recall": 0.6053053830227744
+      },
+      {
+        "budget": 20,
+        "common_proposal_carrier_recall": 0.4590062111801242,
+        "common_proposal_ranking_delta_vs_carrier": 0.010869565217391353,
+        "common_proposal_recall": 0.46987577639751554,
+        "feature_id": "propagation_lag2_w15",
+        "interpretation": "descriptive_native_vs_common_proposal_contrast_not_additive_causal_decomposition",
+        "native_carrier_recall": 0.5408643892339544,
+        "native_delta_vs_carrier": 0.08110766045548656,
+        "native_minus_common_delta_contrast": 0.07023809523809521,
+        "native_recall": 0.621972049689441
+      }
+    ],
+    "carrier_repeated_log_loss": 0.7102658633820209,
+    "compact_log_loss_improvement": 0.018771951330913583,
+    "compact_three_repeated_log_loss": 0.6914939120511073,
+    "lobo_kinetic_mean_auc": 0.9154974660332326,
+    "recovered_any_b58": 94
+  },
+  "interpretation_limits": [
+    "Single recording and four bursts; no cross-fish generalization.",
+    "Known labels are sparse positives; unmatched candidates are unknown, not negatives.",
+    "Failure classes describe pipeline outcomes, not biological causes.",
+    "Native-vs-common-proposal contrasts are not an additive causal decomposition.",
+    "Kinetic-bank selection is leave-one-burst-out within the same recording.",
+    "Only twelve all-lane B58 misses make recovery modeling unstable and exploratory."
+  ],
+  "population": {
+    "bursts": 4,
+    "occurrences": 106,
+    "original_geometries": 50
+  },
+  "scientific_audit": {
+    "canonical_v7_trace_atlas": "media://v7_priority_neuron_full_traces_cs_parzen/manifest.json",
+    "canonical_v7_trace_atlas_complete": true,
+    "canonical_v7_trace_images": 106,
+    "detector_audit_source": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/10_representation_confirmation/detector_visual_audit_v2",
+    "detector_inventory": {
+      "comparison_closeups": 0,
+      "comparison_trace_figures": 79,
+      "comparison_videos": 0,
+      "complete": true,
+      "expert_closeup_videos": 27,
+      "expert_full_field_videos": 1,
+      "expert_trace_figures": 27,
+      "llm_context_present": true,
+      "model_closeup_videos": 44,
+      "model_full_field_videos": 1,
+      "model_trace_figures": 44,
+      "root": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/10_representation_confirmation/detector_visual_audit_v2",
+      "root_index_present": true
+    },
+    "mode": "validated_source_audit_reuse",
+    "reason": "secondary analysis of the exact frozen detector lanes and immutable ROI centers; no new proposal images or model annotations"
+  },
+  "status": "complete"
+}

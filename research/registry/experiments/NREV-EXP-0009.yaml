@@ -1,0 +1,39 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0009
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical execution date
+  - run-level code, configuration, input, environment, and randomization provenance
+  - preregistered gates
+  - experiment-specific falsifiers
+  - normalized unit of analysis, comparison, and data scope
+program_id: NREV-PRG-0001
+title: Major Validation Next Steps V1
+question: Can the three highest-priority validation gaps be advanced without weakening their evidence contracts?
+objective: Can the three highest-priority validation gaps be advanced without weakening their evidence contracts?
+rationale: Migrated to preserve the v1 question-design-result-decision record; the v1 story did not encode a separate rationale.
+lifecycle: validated
+outcome: mixed
+evidence_tier: evidence_synthesis
+review_state: pending
+falsifiers: []
+design:
+  summary: Inventory untouched 060126 recordings and fail closed on incompatible truth; prepare detector-blind two-reviewer
+    identity and overlap adjudication templates; run 432 paired exact-truth simulated movie cells across proximity, amplitude,
+    correlation, and shape factors.
+gates: []
+claim_ids:
+- NREV-CLM-0008
+decision_ids:
+- NREV-DEC-0009
+evidence_capsule_id: NREV-EVC-EXP-0009
+visibility: public
+legacy_id: major_validation_next_steps_v1
+legacy_status: mixed_complete_and_human_gated
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

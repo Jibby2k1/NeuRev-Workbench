@@ -1,0 +1,14 @@
+{
+  "checks": {
+    "competition_rows": true,
+    "leakage_rows": true,
+    "morphology_rows": true,
+    "no_classifier_fit_to_four_misses": true,
+    "outcome_counts_94_8_4": true,
+    "population_106": true,
+    "source_visual_audit_passed": true,
+    "twelve_miss_offsets_three_stages": true,
+    "twelve_misses_three_stages_three_extractions": true
+  },
+  "status": "passed"
+}

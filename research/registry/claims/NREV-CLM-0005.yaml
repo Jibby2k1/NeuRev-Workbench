@@ -1,0 +1,28 @@
+schema_version: 1
+record_type: claim
+id: NREV-CLM-0005
+program_id: NREV-PRG-0001
+title: Feature Role Decomposition
+statement: Early-budget coherence and lag gains are larger in native proposal streams than on a common proposal universe,
+  while a fixed kinetic filter and lag add distinct exploratory recovery value.
+scope: 106 occurrences at 50 immutable sites; 12 all-lane B58 misses; 20 repeated site-grouped splits and four leave-one-burst-out
+  kinetic folds.
+limitations:
+- 'No inference is registered beyond this scope: 106 occurrences at 50 immutable sites; 12 all-lane B58 misses; 20 repeated
+  site-grouped splits and four leave-one-burst-out kinetic folds.'
+claim_state: provisional
+evidence_tier: current_recording
+review_state: not_requested
+evidence_capsule_ids:
+- NREV-EVC-EXP-0006
+decision_ids:
+- NREV-DEC-0006
+tags:
+- feature
+- role
+- decomposition
+visibility: public
+legacy_id: feature_role_decomposition
+legacy_status: exploratory_supported_current_recording
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

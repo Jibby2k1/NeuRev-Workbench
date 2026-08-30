@@ -1,0 +1,120 @@
+{
+  "associations": {
+    "canonical_v7_adjudicated": {
+      "classes": [
+        1,
+        2,
+        3
+      ],
+      "confirmed_vs_uncertain_burst_stratified_permutation_p": 0.009699515024248788,
+      "confirmed_vs_uncertain_cramers_v": 0.45417453671900365,
+      "confirmed_vs_uncertain_fisher_exact": {
+        "odds_ratio": 2.04,
+        "table": [
+          [
+            34,
+            20
+          ],
+          [
+            10,
+            12
+          ]
+        ],
+        "two_sided_p": 0.20331777922320282
+      },
+      "groups": [
+        "confirmed",
+        "artifact",
+        "identity uncertain"
+      ],
+      "matched_occurrences": 45,
+      "permutation_repeats": 20000,
+      "table": [
+        [
+          8,
+          2,
+          24
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          4,
+          6
+        ]
+      ]
+    },
+    "frozen_v1_adjudicated": {
+      "classes": [
+        1,
+        2,
+        3
+      ],
+      "confirmed_vs_uncertain_burst_stratified_permutation_p": null,
+      "confirmed_vs_uncertain_cramers_v": null,
+      "confirmed_vs_uncertain_fisher_exact": {
+        "odds_ratio": null,
+        "table": [
+          [
+            10,
+            9
+          ],
+          [
+            0,
+            5
+          ]
+        ],
+        "two_sided_p": 0.05303030303030303
+      },
+      "groups": [
+        "confirmed"
+      ],
+      "matched_occurrences": 10,
+      "permutation_repeats": 0,
+      "table": [
+        [
+          1,
+          0,
+          9
+        ]
+      ]
+    }
+  },
+  "class_fit_modified": false,
+  "interpretation": "post-freeze descriptive association of measurement-event classes with reviewer identity certainty",
+  "limitations": [
+    "legacy labels without adjudicated certainty are excluded from the frozen certainty comparison",
+    "canonical-v7 labels are candidate-assisted and are not independent validation",
+    "classes are detection-event measurement archetypes, not neuron types",
+    "permutation p-values are descriptive because repeated sites and candidate selection limit exchangeability"
+  ],
+  "matching_radius_px": 6.0,
+  "schema_version": 1,
+  "status": "passed",
+  "transition_summary": {
+    "same_class_fraction": 0.84,
+    "same_class_transitions": 42,
+    "sites_with_multiple_detected_bursts": 22,
+    "table": [
+      [
+        22,
+        0,
+        2
+      ],
+      [
+        0,
+        2,
+        0
+      ],
+      [
+        4,
+        2,
+        18
+      ]
+    ],
+    "transition_pairs": 50
+  }
+}

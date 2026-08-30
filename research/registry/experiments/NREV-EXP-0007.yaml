@@ -1,0 +1,40 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0007
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical execution date
+  - run-level code, configuration, input, environment, and randomization provenance
+  - preregistered gates
+  - experiment-specific falsifiers
+  - normalized unit of analysis, comparison, and data scope
+program_id: NREV-PRG-0001
+title: Identity Aware Recenter Audit V8
+question: Are the 12 all-lane B58 misses primarily repairable localization errors, or do small response-maximizing shifts
+  cross identity boundaries?
+objective: Are the 12 all-lane B58 misses primarily repairable localization errors, or do small response-maximizing shifts
+  cross identity boundaries?
+rationale: Migrated to preserve the v1 question-design-result-decision record; the v1 story did not encode a separate rationale.
+lifecycle: reviewed
+outcome: supported
+evidence_tier: reviewed_current_recording
+review_state: in_review
+falsifiers: []
+design:
+  summary: Search a fixed six-pixel neighborhood using cross-stage response consensus, retain immutable original centers,
+    apply an explicit nearest-label identity guard, and visually inspect synchronized six-panel videos and traces.
+gates: []
+claim_ids:
+- NREV-CLM-0006
+decision_ids:
+- NREV-DEC-0007
+evidence_capsule_id: NREV-EVC-EXP-0007
+visibility: public
+legacy_id: identity_aware_recenter_audit_v8
+legacy_status: complete_reviewed_interpretation_update
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

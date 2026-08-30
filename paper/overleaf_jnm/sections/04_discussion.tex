@@ -1,0 +1,177 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Change detection is not source identification}
+
+The central methodological distinction in this study is between detecting temporal change and identifying a neuron-specific source. A two-frame operator can respond strongly at the onset of a burst while discarding slow fluorescence morphology or preserving activity that is equally visible in surrounding tissue. The near-equivalence between the learned ICA component and signed difference is therefore not merely a negative result. It identifies the operation that the learning procedure selected under this data geometry and prevents an unsupported interpretation of the component as an independently recovered neuronal signal.
+
+This distinction is consistent with the evolution from PCA/ICA cellular-signal
+sorting to modern modular calcium-imaging methods, which separately model
+spatial footprints, temporal traces, background activity, and deconvolved
+events \citep{mukamel2009automated,pnevmatikakis2016simultaneous,giovannucci2019caiman,zhou2018cnmfe}.
+The appropriate comparison for NeuRev is not whether every representation
+resembles one of these packages, but whether each proposed operator contributes
+a measurable function: temporal-change sensitivity, spatial localization,
+nuisance removal, waveform preservation, or candidate ranking.
+
+\subsection{A shared burst waveform can coexist with local neuronal information}
+
+The current evidence supports a strong event-aligned Raw waveform while showing that nearby tissue contains a similar morphology. This pattern is compatible with several mechanisms, including widespread neural recruitment, neuropil contamination, motion-coupled fluorescence, common illumination or acquisition dynamics, or spatially broad indicator responses. The data do not yet identify their relative contributions. Local annulus subtraction removes part of the shared component and leaves event-associated amplitude, but it can also suppress real spatially broad neural signal. Consequently, residualization should be evaluated as a measurement transformation, not assumed to yield ground truth.
+
+The proposed functional and tensor decompositions make this ambiguity explicit. A dominant rank-one structure would support a shared temporal waveform modulated by site and burst gains. Reproducible additional components could indicate kinetic or spatial substructure, but they would still require matched spatial controls and held-out stability before being interpreted as neuron-specific. Conversely, failure to find stable additional components would bound the amount of neuron-specific waveform information identifiable from this recording.
+
+\subsection{Feature value depends on where the search problem begins}
+
+The new complete-trace panel and the earlier protected full-field screen address
+different stages of the pipeline. Once a confirmed center is supplied, Raw and
+carrier amplitude already place nearly every annotated event above every
+same-duration quiet window, leaving little headroom for a more elaborate
+transform. When the location is unknown and the candidate budget is scarce,
+local coherence improves known-positive recovery by requiring neighboring
+pixels to express compatible dynamics. This is consistent with correlation and
+peak-to-noise seeding in CNMF-E and with the broader decomposition of spatial,
+temporal, and background terms in CaImAn
+\citep{zhou2018cnmfe,giovannucci2019caiman}.
+
+This division argues for a compact role-specific stack. Amplitude should remain
+the trace-level carrier; coherence should supply spatial proposal/ranking
+evidence; lagged recurrence should remain secondary temporal context and must
+not be interpreted causally. Annular subtraction and variance stabilization
+remain valuable diagnostics, but local neuropil correction can either reduce
+contamination or remove genuine shared activity and therefore requires
+dataset-specific validation \citep{keemink2018fissa}. Likewise, the exponential
+matched-filter comparator is not a substitute for generative spike inference.
+Methods such as OASIS model calcium kinetics explicitly, while benchmarking
+shows that performance depends on indicator, sampling, preprocessing, task
+metric, and electrophysiological ground truth
+\citep{friedrich2017oasis,berens2018benchmarking}.
+
+The consensus and multiscale-persistence extensions are most interesting as
+observability features. They do not improve event localization over the carrier,
+but they retain measurable cross-burst site-rank variation after amplitude
+percentiles saturate. That stability is hypothesis-generating evidence for a
+site reliability profile, not confirmation of a neuronal phenotype. Because
+the same recording motivated and evaluated the extensions, their definitions
+must now be frozen and transferred without tuning to an independent recording.
+
+The automated challenge suite narrows these roles further. Raw amplitude,
+carrier, coherence, and recurrence remain strong under frame-level retrieval,
+small timing shifts, and moderate coordinate displacement. A richer grouped
+recovery model improves discrimination in point estimates, but the
+site-bootstrap interval crosses zero; with only 12 primary misses, this is not
+confirmatory feature complementarity. The high repeatability but weak retrieval
+of annular contrast is an equally important warning: a stable statistic may
+encode persistent local contamination or acquisition geometry rather than
+useful event signal.
+
+The subsequent deep dives make the engineering roles more concrete. Coherence
+and lag produced much larger early-budget advantages in their native proposal
+streams than when restricted to a common proposal universe, which argues
+against treating them as rerankers alone. Lag added more repeated-split recovery
+value than coherence, whereas the full role-specific stack remained the best
+point estimate. A one-frame-rise, 20-frame-decay filter was selected in every
+leave-one-burst-out fold, supporting a small kinetic bank as a transparent
+alternative to a single arbitrary time constant. None of these results removes
+the need for new recordings or bounded-field truth: only 12 all-lane misses are
+available, and the proposal contrast is descriptive rather than causal.
+
+The canonical-v8 identity-aware audit further shows why localization and
+identity resolution cannot be collapsed into a single response-maximization
+step. Eight of the 12 local consensus shifts entered the neighborhood of an
+existing labeled geometry, including six shifts toward a different canonical
+identity. The stronger shifted waveform may therefore belong to a neighboring
+source rather than reveal a corrected center for the missed observation. This
+supports joint footprint or assignment-aware localization and makes automatic
+recentring an unsafe repair rule in crowded regions. The four identity-clear
+cases remain useful targeted hypotheses, but noise, ranking, and
+non-maximum-suppression still require separate adjudication.
+
+The highest-value feature work is consequently identity-conditional. First,
+the binary recovered-versus-missed outcome should be decomposed into recovered,
+identity-clear miss, and identity-ambiguous collision. With only four
+identity-clear misses, this is initially a descriptive or penalized model, not
+a new confirmatory classifier. Second, spatial-offset vectors should be tested
+for agreement across Raw, ICA, local standardization, and repeated bursts; a
+stable direction supports localization error, whereas stage- or burst-specific
+motion suggests contamination or acquisition drift. Third, point sampling
+should be compared with fixed disks and footprint-weighted extraction to test
+whether crescent, elliptical, or multi-lobed illumination explains fragile
+center traces.
+
+Fourth, crowded-field features should quantify the target-to-neighbor peak
+ratio, nearest competing maximum, saddle depth, NMS suppression margin, and
+local response-field topology. Fifth, original and candidate traces should be
+regressed jointly on neighboring labeled traces. Large neighbor partial
+correlation or a better nonnegative mixture fit would indicate source leakage
+rather than successful recentering. Sixth, footprint morphology---including
+eccentricity, solidity, convexity deficit, boundary sharpness, radial
+asymmetry, and multi-lobe evidence---should be evaluated for repeatability and
+incremental failure stratification. These tests use the existing movies and do
+not require human labels for every candidate, but biological identity and
+precision still require bounded review.
+
+The expanded automated suite provides a stopping rule for incremental feature
+engineering. The full panel clearly exceeds carrier-only internal prediction,
+but its most stable feature is variance-stabilized annular context, which likely
+combines observability, background, and acquisition geometry. Multiscale
+persistence and lag recurrence add complementary context, whereas a simple
+distance graph does not explain recovery. The next scientific gain is therefore
+unlikely to come from another small transform on the same bursts. It requires a
+change in evidence regime: independent-recording transfer, bounded
+identity-complete truth, or a realistic movie generator with exact source
+identity.
+
+These results match the modular logic of established calcium-imaging methods,
+which distinguish spatial filtering or footprints from temporal calcium
+dynamics and background terms
+\citep{vogelstein2010deconvolution,pnevmatikakis2016simultaneous,giovannucci2019caiman}.
+They do not show that the present compact operators recover spikes or demixed
+sources. Realistic simulation frameworks add anatomy, optical propagation,
+motion, indicator kinetics, and sensor noise and can expose false positives
+that strong extracted time courses alone do not reveal \citep{song2021naomi}.
+The monotonic one-dimensional injection result therefore justifies retaining
+the matched filter for transfer testing, while also defining why movie-level
+simulation is the next synthetic step.
+
+\subsection{Stable observability may be the most productive neuron-level target}
+
+Detailed activation morphology need not be the only reproducible property of a neuron. A site may repeatedly exhibit high amplitude, strong SNR, compact spatial support, weak annulus coupling, or reliable candidate ranking even when its exact waveform varies. We refer to this profile as a measurement or observability phenotype. The term is deliberately nonbiological: stable visibility can arise from expression level, optical depth, focus, cell size, local crowding, acquisition field, or true response magnitude.
+
+Quantifying observability has direct methodological value. It can explain why some known neurons are systematically recovered while others are repeatedly missed, reveal whether apparent algorithm failures are actually proposal or acquisition failures, and guide the next annotation or data-collection effort. A detector that improves only for already bright, isolated neurons is less scientifically useful than one that expands coverage of difficult but credible sites. The proposed variance-component and recoverability models therefore treat site-associated heterogeneity as a primary result rather than nuisance variation.
+
+\subsection{Incomplete annotation changes what detection metrics mean}
+
+Sparse positive labels make recall of known observations identifiable but leave full-field precision unidentified. Treating every unmatched candidate as background would penalize the algorithm for discovering neurons omitted by the annotation process and would favor conservative methods that reproduce the labeling bias. Positive--unlabeled learning theory emphasizes that conclusions depend on how positives enter the labeled set, particularly when labeling is not random \citep{bekker2020pu}.
+
+The bounded-field annotation study is designed to convert one small region from positive--unlabeled to exhaustively reviewed data. Its value is disproportionate to its size: it permits a local precision estimate, a false-candidate taxonomy, an estimate of hidden-positive prevalence, and an assessment of whether candidate score calibrates review confidence. The rest of the full field remains useful for known-positive recovery and discovery, but it should not be assigned a fictitious negative class.
+
+\subsection{Implications for unsupervised learning in NeuRev}
+
+Avoiding large supervised models is appropriate given the current data volume, but unsupervised learning does not remove the need for scientific evaluation. An unsupervised representation can learn acquisition structure, global burst timing, local covariance, or a simple derivative. The relevant question is whether it exposes a stable and useful statistic that an interpretable comparator does not already provide.
+
+The confirmatory program therefore places learned and analytic operators in the same frozen panel. Pairwise ICA remains as an equivalence control; local coherence and lagged recurrence are tested for ranking utility; residualization is tested for spatial specificity and fidelity; and Raw remains the carrier against which information loss is measured. New learning is warranted only when the existing analysis identifies a missing operation or a reproducible residual structure that cannot be represented by the compact panel.
+
+The spatial-ICA results sharpen this conclusion. Individual filters varied too much across seeds and held-burst exclusions to support component-wise anatomical interpretation, yet dense reconstruction was nearly invariant and preserved event-map morphology, peak timing, and known-positive recall. Basis instability and representation stability are not contradictory: multiple rotated or redistributed bases can span a similar useful signal subspace. For annotation, spatial ICA can remain a useful visual and quantitative representation without implying that any displayed component is a uniquely identifiable neuron.
+
+Objective translated-control comparisons support localized morphology at labeled coordinates, but they do not turn sparse positives into exhaustive truth. Likewise, the class analyses provide plausible structure---especially the candidate-assisted boundary-sharpness gradient---without corrected evidence that the classes encode spatial-ICA morphology or reviewer certainty. The frozen classes should remain measurement-event archetypes rather than neuron types.
+
+\subsection{Limitations}
+
+The study has several non-negotiable limitations. First, one recording cannot establish generalization across animals, preparations, sessions, or microscopes. Second, four shared bursts provide limited independent temporal replication and make burst-level variance estimates imprecise. Third, current labels are sparse and partly uncertain, and the same bursts have informed multiple exploratory decisions. Fourth, pre-repair identity-sensitive numbers remain provisional even though later analyses preserve immutable site geometry. Fifth, annulus subtraction is not a pure nuisance-removal operation. Sixth, candidate-based metrics outside the bounded field cannot identify precision or specificity. Seventh, any coactivity or lag analysis is descriptive because shared drive and calcium kinetics can generate apparent network structure. Eighth, the spatial-ICA fit is transductive within one recording, its positive encoding clips negative reconstructed values, and its manual review panel has been deferred; objective morphology and reconstruction stability do not establish reviewer utility or biological source separation. Ninth, the complete-trace panel conditions on confirmed centers and reuses previously analyzed bursts; its ceiling-limited event-localization metric neither validates the two new features nor ranks their full-field specificity. Tenth, the automated recovery model has only 12 primary misses and its improvement interval crosses zero. Eleventh, circular shifts and simplified trace injections validate alignment and operator behavior but do not reproduce anatomy, optics, motion, or biological ground truth. Twelfth, the canonical-v8 recentering candidates are response-selected within the same recording, and the identity guard uses sparse labeled geometry rather than exhaustive biological source truth.
+
+\input{tables/limitations}
+
+These limitations do not make the dataset scientifically unusable. They determine the level at which it should be analyzed. The strongest contribution is a transparent within-recording measurement study, accompanied by explicit criteria for the additional data and annotation required to promote each claim.
+
+\subsection{Highest-value next evidence}
+
+The most valuable immediate addition is not a wider hyperparameter sweep. It
+is exhaustive review of one bounded field using the frozen carrier, coherence,
+and recurrence panel, so proposal coverage, ranking, and precision can be
+separated. The most valuable future dataset is an independently acquired
+recording that satisfies a frozen quality and annotation contract. Such a
+recording would test the shared-versus-specific decomposition and determine
+whether the consensus and multiscale-persistence site rankings transfer without
+retuning. For synthetic work, an anatomy- and optics-aware movie simulation is
+more informative than further widening the present one-dimensional injection
+grid.

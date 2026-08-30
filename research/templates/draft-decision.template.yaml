@@ -1,0 +1,27 @@
+schema_version: 1
+record_type: decision
+id: __DECISION_ID__
+origin:
+  kind: native
+program_id: __PROGRAM_ID__
+title: __DECISION_TITLE__
+lifecycle: draft
+action: hold
+rationale: No evidence has been evaluated. Keep the experiment on hold until its required gates are frozen and execution is explicitly authorized.
+evidence_summary: This is a planning record; no run evidence or scientific outcome exists at scaffold time.
+effective_on: __DATE__
+review_state: not_requested
+experiment_ids: __EXPERIMENT_IDS__
+claim_ids: __CLAIM_IDS__
+evidence_capsule_ids: []
+constraints:
+  - This draft does not authorize execution, publication, promotion, or a scientific claim.
+  - Run into the registered non-colliding output root and preserve exact code, input, configuration, seed, and environment provenance.
+  - Complete the applicable scientific audit package before treating computation as audit-complete.
+  - Keep raw inputs, reviewer identities, private randomization material, credentials, and large generated artifacts outside Git.
+follow_up:
+  - Review and preregister the protocol, falsifiers, gates, and analysis plan.
+  - Replace this planning hold only with an evidence-backed decision linked to a validated capsule.
+visibility: public
+created_on: __DATE__
+updated_on: __DATE__

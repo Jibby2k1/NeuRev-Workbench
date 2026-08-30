@@ -1,0 +1,211 @@
+\section{What is established in the current recording}
+
+\input{generated/story_status_table}
+
+\subsection{Population traces and descriptive phenotypes}
+
+The compact population summary shows both the dominant shared waveform and the
+heterogeneity hidden by a global average (\Cref{fig:overview-population}). T1
+and T2 are measurement phenotypes, not claimed neuron types. Their recurrence
+suggests useful structure for diagnostics and feature engineering, while their
+biological meaning requires independent recordings and stronger identity
+evidence.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.98\linewidth]{figures/final/fig04_population_trace_summary.png}
+  \caption{Population trace summary across Raw, temporal ICA, and local
+  standardization. Global summaries emphasize shared behavior; fixed T1/T2
+  summaries expose recurrent differences without asserting biological classes.}
+  \label{fig:overview-population}
+\end{figure}
+
+\subsection{The diagnostic audit}
+
+The audit combines temporal signal quality, neighborhood coupling, spatial
+compactness, stage-transition fidelity, and artifact availability
+(\Cref{fig:overview-audit}). It shows that Raw-to-ICA is the larger
+transformation, whereas ICA-to-local-standardization preserves trace shape more
+closely. Burst 2 remains a weaker and timing-sensitive condition. Candidate
+metadata cover only part of the confirmed occurrence set, and independent
+recording validation remains unavailable.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.98\linewidth]{figures/final/fig05_pipeline_diagnostic_audit.png}
+  \caption{Current pipeline diagnostic audit. The availability panel now
+  includes component-level ICA and true local-standardization denominator
+  diagnostics; motion residuals and independent validation remain missing.}
+  \label{fig:overview-audit}
+\end{figure}
+
+\subsection{The complete trace assigns features to different jobs}
+
+The full-trace panel asks whether the annotated burst is exceptional relative
+to every same-duration guarded quiet window at the same confirmed center
+(\Cref{fig:overview-full-trace}). The carrier mean percentile is
+\FullTraceCarrierPercentile{}, and \FullTraceCarrierCeilingCount{} of
+\FullTraceOccurrences{} occurrence scores are exactly 1.0. Local coherence and
+lagged recurrence are similarly saturated and do not beat the carrier under the
+prespecified paired interval gate. This does not undo the earlier result that
+coherence improves full-field known-positive recovery at a scarce candidate
+budget. Instead, it separates feature roles: amplitude is enough once the
+correct center is known; spatial coherence helps find or rank that center.
+
+The two new summaries---agreement across Raw, ICA, and local-standardization
+representations, and persistence across 3-, 7-, and 15-frame scales---do not
+improve localization. Their median cross-burst site-rank correlations are
+\FullTraceConsensusRepeatability{} and
+\FullTracePersistenceRepeatability{}, respectively, making them exploratory
+site-reliability features for independent confirmation.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.98\linewidth]{figures/final/fig08_full_trace_feature_panel.png}
+  \caption{Complete-trace feature panel at 50 confirmed sites. Quiet windows
+  are temporal references rather than biological negatives. Gold denotes the
+  two prespecified extensions.}
+  \label{fig:overview-full-trace}
+\end{figure}
+
+\subsection{Automated challenge tests separate retrieval, localization, and reliability}
+
+The ceiling-limited event-maximum result was followed by six fixed automated
+tests (\Cref{fig:overview-automated}). In the harder frame-level retrieval task,
+Raw led with AUC \AutoRawAUC{} [\AutoRawAUCLow{},
+\AutoRawAUCHigh{}], followed by the carrier, coherence, and lag recurrence.
+All six compact features were stronger at the labeled center than at
+same-field, quiet-baseline-matched displaced tissue. The recovery target was
+met by \AutoRecoveryCount{}/\FullTraceOccurrences{} original geometries.
+Cross-fitted log loss improved from \AutoCarrierLogLoss{} to
+\AutoExtendedLogLoss{} with the role-specific panel, but the site-bootstrap
+improvement interval (\AutoRecoveryDeltaLow{}--\AutoRecoveryDeltaHigh{}) crossed
+zero. Feature complementarity is therefore promising, not confirmed.
+
+Coordinate and timing perturbations, 500 site-blocked circular shifts, and
+fixed synthetic transients further distinguish robustness from biological
+validity (\Cref{fig:overview-robustness}). The strongest amplitude/context
+features degraded gradually under coordinate error and small timing shifts.
+Every observed selected-feature alignment exceeded the circular-shift null,
+while a calcium-shaped matched filter had the strongest weak-transient
+injection response. These checks validate operator behavior; they do not create
+ground-truth neurons or verified negative tissue.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.98\linewidth]{figures/final/fig09_automated_feature_validation.png}
+  \caption{Automated feature challenge suite. Site-blocked intervals preserve
+  immutable geometry. Quiet and displaced references have unknown biological
+  labels, and the recovery model remains exploratory.}
+  \label{fig:overview-automated}
+\end{figure}
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.98\linewidth]{figures/final/fig10_robustness_falsification.png}
+  \caption{Coordinate and timing perturbations, synthetic transient
+  sensitivity, and circular-shift alignment falsification. Injections test
+  operators rather than realistic tissue or optical formation.}
+  \label{fig:overview-robustness}
+\end{figure}
+
+The feature deep dives further separated pipeline roles. At B58,
+\DeepRecoveredAll{} occurrences were recovered by all lanes,
+\DeepRecoveredPartial{} by a subset, and \DeepAllMisses{} by none. At B20,
+coherence and lag had native recall gains of \DeepCoherenceNativeTwenty{} and
+\DeepLagNativeTwenty{} over carrier, compared with only
+\DeepCoherenceRankingTwenty{} and \DeepLagRankingTwenty{} on a common proposal
+universe. The selected kinetic kernel was \DeepKineticKernel{} with
+leave-one-burst-out mean AUC \DeepKineticLOBOAUC{}. These results support
+separate proposal, ranking, and kinetic roles while remaining within-recording
+and exploratory.
+
+The canonical-v8 review adds an identity guard to this failure interpretation.
+Of the 12 all-lane misses, two local response maxima collided with another
+geometry of the same canonical identity, six approached a different identity,
+and four were identity-clear. Strict recall remains $94/106=88.7\%$; the
+$94/98=95.9\%$ identity-resolved value is conditional and must not replace it.
+The four-case rescue ceiling is $98/106=92.5\%$, contingent on independent
+validation of ROI~19, ROI~22, ROI~25, and ROI~27.
+
+\input{tables/identity_aware_recenter_v8}
+
+The automated follow-up supports the identity distinction. Collision cases had
+more consistent shift directions across Raw, ICA, and local standardization
+(median cosine 0.972 versus 0.448) and greater neighboring-trace leakage after
+conditioning on the original center (median partial correlation 0.474 versus
+0.182). Morphology alone separated the groups weakly. Response-weighted
+footprints increased event SNR in both groups, showing that spatial aggregation
+can improve visibility without proving that the aggregated signal belongs to
+the intended identity (\Cref{fig:overview-identity-aware}).
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.99\linewidth]{figures/final/fig13_identity_aware_feature_inspection_v8.png}
+  \caption{Identity-aware feature inspection of the 12 all-lane misses. The
+  collision and identity-clear groups are descriptive and contain only eight
+  and four occurrences.}
+  \label{fig:overview-identity-aware}
+\end{figure}
+
+The expanded automated suite found that the full stack predicts frozen recovery
+more effectively than carrier alone under identity grouping (AUC 0.833 versus
+0.611). Variance-stabilized annular context and multiscale persistence were the
+most stable sparse selections, followed by lag recurrence. This favors an
+observability-context interpretation rather than brightness alone. Abstaining
+on the least-confident half reduced internal error from 20.8\% to 9.4\%, while
+recovered-only anomaly scoring reached AUC 0.814 for prioritizing misses. These
+results remain internal and exploratory
+(\Cref{fig:overview-expanded-validation}).
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.99\linewidth]{figures/final/fig14_expanded_automated_validation.png}
+  \caption{Expanded non-RL automated validation of feature stability,
+  conditional importance, abstention, anomaly prioritization, graph context,
+  and controlled mixtures.}
+  \label{fig:overview-expanded-validation}
+\end{figure}
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.98\linewidth]{figures/final/fig11_feature_deep_dives.png}
+  \caption{Failure taxonomy, proposal/ranking contrasts, kinetic-bank results,
+  and repeated grouped recovery models.}
+  \label{fig:overview-feature-deep-dives}
+\end{figure}
+
+\subsection{What the model-internal diagnostics add}
+
+The temporal transform is no longer a black box. All six component traces and
+the fitted matrices are retained at each site (\Cref{fig:overview-ica}). The
+maximum sitewise embedding inversion RMS is $5.69\times10^{-12}$. This confirms
+that the fitted transform can be inverted numerically; it is not a denoising or
+biological reconstruction score.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.98\linewidth]{figures/final/fig06_ica_model_internals.png}
+  \caption{Frozen temporal-ICA internals. Component energy is distributed
+  across the six outputs, and numerical inversion is accurate to floating-point
+  precision.}
+  \label{fig:overview-ica}
+\end{figure}
+
+The exact local-standardization denominator was reproduced using the frozen
+fit, the original 31-frame causal pre-roll, the union of each site's 15-by-15
+support, and the saved global scale floor (\Cref{fig:overview-denominator}). The
+reproduced center outputs agree with the saved CUDA movie with RMS error
+$6.96\times10^{-7}$. The floor is 0.371705, the median audited denominator is
+0.7648, and the floor is inactive at every audited center. This makes the
+interpretation more concrete: local-standardization strength at these centers
+tracks measured local variability rather than a fallback constant.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.98\linewidth]{figures/final/fig07_ls_denominator_diagnostics.png}
+  \caption{True local-standardization denominator audit at 50 sites. Floor
+  inactivity is established at the audited centers only, not across every pixel
+  in the field.}
+  \label{fig:overview-denominator}
+\end{figure}

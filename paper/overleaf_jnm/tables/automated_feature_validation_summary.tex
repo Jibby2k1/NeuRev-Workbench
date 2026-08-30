@@ -1,0 +1,20 @@
+\begin{table}[!htbp]
+\centering
+\scriptsize
+\begin{tabularx}{\linewidth}{X r r r}
+\toprule
+Feature & Frame AUC [95\% CI] & Spatial $\Delta$ AUC & Site fraction \\
+\midrule
+Raw center & 0.931 [0.906, 0.952] & 0.147 & 0.510 \\
+Frozen amplitude carrier & 0.920 [0.896, 0.941] & 0.152 & 0.580 \\
+Local coherence (15 frames) & 0.915 [0.890, 0.938] & 0.171 & 0.741 \\
+Lag-2 recurrence (15 frames) & 0.905 [0.878, 0.927] & 0.169 & 0.735 \\
+LS exponential matched filter & 0.884 [0.843, 0.917] & -- & 0.687 \\
+Raw/ICA/LS consensus & 0.803 [0.776, 0.828] & 0.152 & 0.756 \\
+LS multiscale persistence & 0.780 [0.742, 0.817] & 0.217 & 0.770 \\
+Raw center-annulus & 0.727 [0.685, 0.773] & -- & 0.866 \\
+\bottomrule
+\end{tabularx}
+\caption{Automated full-trace validation. Frame AUC separates annotated event frames from guarded quiet-reference frames. Spatial differences compare the true center with same-field baseline-matched displaced tissue. Site fraction is a nonparametric variance fraction, not REML ICC. Quiet and displaced references have unknown biological labels.}
+\label{tab:automated-feature-validation}
+\end{table}

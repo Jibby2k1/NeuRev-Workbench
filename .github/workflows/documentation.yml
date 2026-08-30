@@ -1,0 +1,49 @@
+name: Documentation
+
+on:
+  pull_request:
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - "pyproject.toml"
+      - ".github/workflows/documentation.yml"
+  push:
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - "pyproject.toml"
+      - ".github/workflows/documentation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: documentation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build searchable documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install documentation dependencies
+        run: python -m pip install "mkdocs>=1.6,<2" "mkdocs-material>=9.6,<10"
+
+      - name: Build documentation without publishing
+        run: mkdocs build --clean --strict
+
+      - name: Verify built-site links and assets
+        run: >-
+          python tools/check_built_site_links.py
+          --site-dir site
+          --base-path /NeuRev-Workbench/

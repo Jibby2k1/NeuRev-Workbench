@@ -12,7 +12,7 @@ import numpy as np
 from neurobench.experiments.hierarchical_parzen_ica.patch_information_program import (
     _pool_values,
 )
-from neurobench.metrics.sparse_detection import extract_local_maxima
+from neurobench.metrics.sparse_detection import extract_local_maxima, extract_separated_local_maxima
 
 from .adjudication import label_view, load_tsv
 from .config import HardRoiAdjudicationConfig
@@ -108,9 +108,11 @@ def _candidate_records(
     *,
     distance: int,
     limit: int,
+    separated: bool = False,
 ) -> list[dict[str, Any]]:
     event = _frames(values, start_ui, end_ui)
-    peaks = extract_local_maxima(score_map, int(distance), limit=int(limit))
+    extractor = extract_separated_local_maxima if separated else extract_local_maxima
+    peaks = extractor(score_map, int(distance), limit=int(limit), tie_breaker=np.max(event, axis=0)) if separated else extractor(score_map, int(distance), limit=int(limit))
     records = []
     for rank, (score, x, y) in enumerate(peaks, start=1):
         peak_ui = start_ui + int(np.argmax(event[:, int(y), int(x)]))
@@ -221,6 +223,7 @@ def _evaluate_map(
     *,
     label_view_id: str,
     timing_view_id: str,
+    separated_nms: bool = False,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     events = {}
     event_bounds = {}
@@ -241,10 +244,12 @@ def _evaluate_map(
         candidates = _candidate_records(
             values, maps["events"][burst], start_ui, end_ui,
             distance=int(config.evaluation["nms_distance_px"]), limit=500,
+            separated=separated_nms,
         )
         raw_candidates = _candidate_records(
             values, maps["events"][burst], start_ui, end_ui,
             distance=1, limit=5000,
+            separated=separated_nms,
         )
         budget_results = {}
         primary_matches: dict[int, int] = {}

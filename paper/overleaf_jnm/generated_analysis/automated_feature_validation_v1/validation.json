@@ -1,0 +1,11 @@
+{
+  "checks": {
+    "all_null_p_finite": true,
+    "figures_exist": true,
+    "recovery_has_two_classes": true,
+    "recovery_rows": true,
+    "spatial_rows": true,
+    "temporal_rows": true
+  },
+  "status": "passed"
+}

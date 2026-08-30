@@ -1,0 +1,96 @@
+{
+  "artifact_manifest_sha256": "14fd336523c011e5e1110ebac2f38e218a1fc567b7a957becb2c53fa95db0dc3",
+  "artifacts": [
+    {
+      "access": "metadata_only",
+      "bytes": 3149,
+      "id": "artifact-01",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/user_review_v1.tsv",
+      "role": "table",
+      "sha256": "45608b3240dca0a7c26113898c3d9d0e5ca555b7cc85ba570080b5ee8a4252ea"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 1470,
+      "id": "artifact-02",
+      "media_type": "application/json",
+      "repository_path": "Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/review_summary_v1.json",
+      "role": "summary",
+      "sha256": "e2cd88113caf136e89e0267e52c5ca0391754f0bd60a85d9cc0fa6d5be789f1f"
+    },
+    {
+      "access": "public",
+      "bytes": 2591,
+      "id": "artifact-03",
+      "media_type": "text/markdown",
+      "repository_path": "docs/research/SPON_CA_BURST_NEW_CANDIDATE_REVIEW_V1_RESULTS.md",
+      "role": "report",
+      "sha256": "f2adddc8f5f37cab70bd7f88e34a0e0505450b10d49b6d3319dc899fc83cfed0"
+    }
+  ],
+  "boundaries": {
+    "does_not_establish": [
+      "Claims beyond the registered finding and linked claim scopes.",
+      "Reproducible run provenance that was absent from the v1 story."
+    ],
+    "limitations": [
+      "One reviewer, selected candidates rather than exhaustive bounded-field sampling, no adjudication, and no biological identity or precision claim."
+    ],
+    "scope": "This capsule preserves the registered v1 experiment finding and its linked claim scopes."
+  },
+  "claim_impacts": [
+    {
+      "claim_id": "NREV-CLM-0018",
+      "effect": "qualifies",
+      "scope": "Sparse positives do not make unmatched candidates verified negatives.",
+      "summary": "The experiment bears on this registered claim without resolving it."
+    },
+    {
+      "claim_id": "NREV-CLM-0019",
+      "effect": "supports",
+      "scope": "18 selected unmatched sites in one recording; 9 definite, 4 probable, 4 uncertain, and 1 artifact-or-noise call; no existing decisions changed.",
+      "summary": "The experiment supports this claim only within its registered scope."
+    }
+  ],
+  "evidence_tier": "reviewed_current_recording",
+  "experiment_id": "NREV-EXP-0016",
+  "gates": [
+    {
+      "criterion": "Every artifact referenced by the v1 experiment story is available and checksum identified at migration.",
+      "id": "legacy-artifact-capture",
+      "observed": "Captured 3 of 3 referenced artifacts with SHA-256 identities.",
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-29T23:52:35Z",
+  "id": "NREV-EVC-EXP-0016",
+  "legacy_status": "complete_provisional_single_reviewer",
+  "lifecycle": "validated",
+  "metrics": [],
+  "outcome": "inconclusive",
+  "program_id": "NREV-PRG-0001",
+  "record_type": "evidence_capsule",
+  "review_state": "in_review",
+  "run_ids": [],
+  "schema_version": 1,
+  "source_records_sha256": "5736b3bd6ee69641ff418b95f3b2c1f72971d61c0215704036c97f8d5fa4a40d",
+  "summary": "Nine sites were definite, four probable, four uncertain, and one artifact-or-noise; 13 of 18 were provisionally likely neurons. The review-priority score enriched difficult ambiguous cases but did not monotonically rank neuron likelihood.",
+  "validation": {
+    "checked_at": "2026-08-29T23:52:35Z",
+    "checks": [
+      {
+        "id": "portable-paths",
+        "status": "passed",
+        "summary": "Artifact references are repository-relative; ignored local outputs are metadata-only."
+      },
+      {
+        "id": "historical-provenance",
+        "status": "not_run",
+        "summary": "The v1 story did not encode run-level provenance, so no historical run record was invented."
+      }
+    ],
+    "status": "partial"
+  },
+  "visibility": "public"
+}

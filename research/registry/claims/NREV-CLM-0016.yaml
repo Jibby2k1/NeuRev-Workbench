@@ -1,0 +1,26 @@
+schema_version: 1
+record_type: claim
+id: NREV-CLM-0016
+program_id: NREV-PRG-0001
+title: Ls Denominator Behavior
+statement: Local-standardization scaling at audited centers is governed by measured local variability rather than the global
+  floor.
+scope: 50 centers over 560 frames; no full-field floor-inactivity claim.
+limitations:
+- 'No inference is registered beyond this scope: 50 centers over 560 frames; no full-field floor-inactivity claim.'
+claim_state: supported
+evidence_tier: current_recording
+review_state: not_requested
+evidence_capsule_ids:
+- NREV-EVC-EXP-0019
+decision_ids:
+- NREV-DEC-0019
+tags:
+- ls
+- denominator
+- behavior
+visibility: public
+legacy_id: ls_denominator_behavior
+legacy_status: established_audited_centers
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

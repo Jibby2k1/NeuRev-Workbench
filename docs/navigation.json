@@ -1,0 +1,156 @@
+{
+  "schema_version": 2,
+  "generated_from": "research/registry",
+  "generated_policy": "do_not_edit",
+  "repository": {
+    "name": "NeuRev-Workbench",
+    "product": "NeuRev Workbench",
+    "python_package": "neurobench",
+    "checkout_rule": "Use the directory containing AGENTS.md; verify git status and do not infer identity from an external data path.",
+    "python": ".venv-neurobench/bin/python",
+    "maintained_code": "neurobench",
+    "local_artifacts": "Outputs",
+    "portable_evidence": "research/evidence"
+  },
+  "routes": [
+    {
+      "id": "project_story",
+      "human_start": "research/generated/PROJECT_STORY.md",
+      "authority": "research/registry",
+      "compiled_view": "research/generated/canonical.json",
+      "machine_context": "research/generated/llm_context.json",
+      "validation": [
+        ".venv-neurobench/bin/python -m neurobench.research.registry check"
+      ]
+    },
+    {
+      "id": "current_neuron_identifiability_state",
+      "human_start": "paper/overleaf_jnm/CURRENT_RESEARCH_STATE.md",
+      "authority": "research/registry/programs/neuron-identifiability.yaml",
+      "implementation": "neurobench/experiments/neuron_identifiability",
+      "validation": [
+        "make -C paper/overleaf_jnm story-check"
+      ]
+    },
+    {
+      "id": "experiment_timeline",
+      "human_start": "research/generated/EXPERIMENT_TIMELINE.md",
+      "authority": "research/registry/index.yaml",
+      "validation": [
+        ".venv-neurobench/bin/python -m neurobench.research.registry check"
+      ]
+    },
+    {
+      "id": "claim_ledger",
+      "human_start": "research/generated/CLAIM_LEDGER.md",
+      "authority": "research/registry/claims",
+      "validation": [
+        ".venv-neurobench/bin/python -m neurobench.research.registry check"
+      ]
+    },
+    {
+      "id": "scientific_experiment",
+      "human_start": "docs/workflows/SCIENTIFIC_AUDIT_OUTPUT_STANDARD.md",
+      "authority": "docs/decisions/0001-repository-wide-research-registry.md",
+      "implementation": "neurobench/experiments",
+      "validation": [
+        "experiment-specific tests",
+        "validation.json",
+        "portable evidence capsule"
+      ]
+    },
+    {
+      "id": "local_candidate_review",
+      "human_start": "docs/HOW_TO_USE_DASHBOARD.md",
+      "authority": "docs/NEURON_WORKBENCH.md",
+      "implementation": "neurobench/workbench",
+      "validation": [
+        "workbench-focused tests",
+        "browser render smoke when enabled"
+      ]
+    },
+    {
+      "id": "maintained_codebase",
+      "human_start": "docs/CODEBASE_NAVIGATION.md",
+      "authority": "neurobench",
+      "validation": [
+        "focused package tests",
+        "full portable test suite"
+      ]
+    },
+    {
+      "id": "publication_release",
+      "human_start": "docs/RELEASE_PROCESS.md",
+      "authority": "docs/PUBLICATION_BOUNDARY.md",
+      "validation": [
+        ".venv-neurobench/bin/python tools/audit_publication_boundary.py --fail-on warning",
+        ".venv-neurobench/bin/python -m neurobench.research.registry check"
+      ]
+    },
+    {
+      "id": "external_bounded_review_v2",
+      "human_start": "docs/workflows/external_blinded_bounded_review_v2.md",
+      "authority": "research/evidence/NREV-EXP-0017.json",
+      "local_artifacts": "Outputs/NeuronIdentifiability/external_blinded_bounded_review_v2",
+      "implementation": "neurobench/experiments/neuron_identifiability/external_bounded_review.py",
+      "status": "implementation_complete_annotations_pending"
+    },
+    {
+      "id": "fish_inverse_control",
+      "human_start": "docs/programs/fish_inverse_control/README.md",
+      "authority": "research/registry/programs/fish-inverse-control.yaml",
+      "implementation": "neurobench/programs"
+    },
+    {
+      "id": "grid_dynamics",
+      "human_start": "docs/GRID_LATENT_DYNAMICS.md",
+      "authority": "research/registry/programs/grid-dynamics.yaml",
+      "implementation": "neurobench/dynamics"
+    }
+  ],
+  "scientific_boundaries": {
+    "recordings": 1,
+    "sites": 50,
+    "occurrences": 106,
+    "description": "Confirmed occurrences at immutable registered centers in the current recording.",
+    "unchanged_claims": [
+      "Full-field precision is unresolved.",
+      "One-to-one biological source identity is unresolved.",
+      "Generalization to an independent recording is unresolved."
+    ]
+  },
+  "generated_files": {
+    "policy": "do_not_edit",
+    "source": "research/registry",
+    "paths": [
+      "research/generated/canonical.json",
+      "research/generated/PROJECT_STORY.md",
+      "research/generated/EXPERIMENT_TIMELINE.md",
+      "research/generated/CLAIM_LEDGER.md",
+      "research/generated/llm_context.json",
+      "paper/overleaf_jnm/story/research_story.yaml",
+      "paper/overleaf_jnm/STORY_INDEX.md",
+      "paper/overleaf_jnm/EXPERIMENT_STORY.md",
+      "paper/overleaf_jnm/generated/story_status_table.tex",
+      "paper/overleaf_jnm/generated/experiment_story.tex",
+      "docs/navigation.json",
+      "llms.txt"
+    ]
+  },
+  "generated_regions": {
+    "policy": "edit_registry_source_and_rebuild",
+    "source": "research/registry",
+    "regions": [
+      {
+        "path": "README.md",
+        "begin_marker": "<!-- BEGIN GENERATED RESEARCH SNAPSHOT -->",
+        "end_marker": "<!-- END GENERATED RESEARCH SNAPSHOT -->"
+      },
+      {
+        "path": "docs/REPOSITORY_GUIDE.md",
+        "begin_marker": "<!-- BEGIN GENERATED FLAGSHIP BOUNDARY -->",
+        "end_marker": "<!-- END GENERATED FLAGSHIP BOUNDARY -->"
+      }
+    ]
+  }
+}

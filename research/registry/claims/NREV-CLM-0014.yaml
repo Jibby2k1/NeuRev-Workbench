@@ -1,0 +1,29 @@
+schema_version: 1
+record_type: claim
+id: NREV-CLM-0014
+program_id: NREV-PRG-0001
+title: Constrained Generative Rejection
+statement: A frozen constrained joint spatial-temporal factorization does not improve close-source identity recovery over
+  spatial context, and component-specific forward-versus-reversed likelihoods remain non-directional after circularity-safe
+  auditing.
+scope: New ellipse development grid followed by one-shot locked v8 crescent evaluation; six seeds; corrected kinetic audit
+  uses unconstrained component coefficients.
+limitations:
+- 'No inference is registered beyond this scope: New ellipse development grid followed by one-shot locked v8 crescent evaluation;
+  six seeds; corrected kinetic audit uses unconstrained component coefficients.'
+claim_state: supported
+evidence_tier: computational_simulation
+review_state: not_requested
+evidence_capsule_ids:
+- NREV-EVC-EXP-0015
+decision_ids:
+- NREV-DEC-0015
+tags:
+- constrained
+- generative
+- rejection
+visibility: public
+legacy_id: constrained_generative_rejection
+legacy_status: established_computational_negative_result
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

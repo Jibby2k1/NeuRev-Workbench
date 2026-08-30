@@ -1,0 +1,25 @@
+schema_version: 1
+record_type: program
+id: NREV-PRG-0004
+slug: grid-dynamics
+title: Grid and Latent Dynamics
+summary: Template-aligned neural-state grids, latent representations, forecasting baselines, and video-level classifiers.
+lifecycle: active
+scientific_scope: Measurement and forecasting methods for template-aligned neural state, without causal or control interpretation.
+objectives:
+- Compare transparent and learned forecasting baselines on identity-safe neural-state grids.
+- Separate passive forecast quality from downstream causal or control claims.
+boundaries:
+- Independent-video generalization of learned latent dynamics is unresolved.
+- Passive neural-state forecasts do not establish causal interpretation.
+- Predicted state has not been shown to invert into a safe control action.
+related_program_ids:
+- NREV-PRG-0001
+- NREV-PRG-0002
+- NREV-PRG-0003
+documentation:
+- docs/GRID_LATENT_DYNAMICS.md
+- docs/TEMPLATE_GRID_WORKFLOW.md
+visibility: public
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

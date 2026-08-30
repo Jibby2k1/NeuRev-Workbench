@@ -1,0 +1,36 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0015
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical decision effective date
+program_id: NREV-PRG-0001
+title: Decision after Joint Generative Deblending V10
+lifecycle: active
+action: stop
+rationale: Reject this constrained factorization and likelihood model; stop escalating simulator-only deblenders until bounded
+  biological identity truth is available, and retain spatial context plus robust stopping as the current automated baseline.
+evidence_summary: On development conditions, generative weak recovery was 0.389 versus 0.407 spatial and F1 was 0.639 versus
+  0.648. On locked v8, weak recovery was 0.313 versus 0.521 and F1 was 0.608 versus 0.635. Corrected source-specific direction
+  AUC was 0.367, with 91.7 percent of reversed components still assigned positive forward likelihood. Only one of six gates
+  passed.
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0015
+claim_ids:
+- NREV-CLM-0014
+evidence_capsule_ids:
+- NREV-EVC-EXP-0015
+constraints:
+- Component count remains fixed at two; spatial initialization begins from the same context map; the simplified alternating
+  optimizer lacks background and explicit motion components; simulated kinetics are heterogeneous enough that the tested likelihood
+  is not identifiable.
+- The historical decision date was not encoded in the v1 story and was not guessed during migration.
+visibility: public
+legacy_status: complete_computational_negative_result
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

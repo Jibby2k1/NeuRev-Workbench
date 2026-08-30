@@ -1,0 +1,41 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0014
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical execution date
+  - run-level code, configuration, input, environment, and randomization provenance
+  - preregistered gates
+  - experiment-specific falsifiers
+  - normalized unit of analysis, comparison, and data scope
+program_id: NREV-PRG-0001
+title: Targeted Automated Development V8
+question: Do parameter-consensus stopping, pre-proposal NMF separation, or an explicitly directional kinetic contrast repair
+  the three principal v7 failures?
+objective: Do parameter-consensus stopping, pre-proposal NMF separation, or an explicitly directional kinetic contrast repair
+  the three principal v7 failures?
+rationale: Migrated to preserve the v1 question-design-result-decision record; the v1 story did not encode a separate rationale.
+lifecycle: closed
+outcome: rejected
+evidence_tier: computational_simulation
+review_state: not_requested
+falsifiers: []
+design:
+  summary: Calibrate a robust score threshold on zero-source development families and compare single-window with three-window
+    persistence on new artifacts; compare frozen spatial proposals with rank-two NMF under close unequal sources using one-to-one
+    identities; compare the current kinetic score with forward-minus-reverse contrast on forward and reversed movies.
+gates: []
+claim_ids:
+- NREV-CLM-0013
+decision_ids:
+- NREV-DEC-0014
+evidence_capsule_id: NREV-EVC-EXP-0014
+visibility: public
+legacy_id: targeted_automated_development_v8
+legacy_status: complete_computational_negative_result
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

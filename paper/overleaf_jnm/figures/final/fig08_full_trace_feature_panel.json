@@ -1,0 +1,25 @@
+{
+  "imported_figure_sha256": "cbb764b28ab52ed304c9837683d6723befc89eebba80e1ee9bcc8d06207c4333",
+  "interpretation_limits": [
+    "exploratory reuse of one recording and four previously analyzed bursts",
+    "quiet windows are temporal reference windows, not verified biological negatives",
+    "event localization is not full-field precision or specificity",
+    "lagged recurrence is not evidence of causal biological propagation",
+    "prespecified extensions require independent-recording confirmation"
+  ],
+  "population": {
+    "bursts": 4,
+    "occurrences": 106,
+    "sites": 50
+  },
+  "source_artifact_index_sha256": "fc95700aebc652718a265ec933ba8148dad55727020bc68c3e0de5acb045b0b7",
+  "source_figure_sha256": "cbb764b28ab52ed304c9837683d6723befc89eebba80e1ee9bcc8d06207c4333",
+  "source_run": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_full_trace_feature_panel_v2",
+  "source_status": {
+    "schema_version": 1,
+    "status": "complete_exploratory",
+    "validation": "passed"
+  },
+  "source_summary_sha256": "53f2f4dbf4518f0e0c4e5ca47489a17ffdb2ae2ee36215b1ef85ce66b615f919",
+  "status": "imported_from_validated_exploratory_run"
+}

@@ -33,16 +33,23 @@ def test_cuda_joint_and_gate_match_cpu() -> None:
     values = (500 + rng.normal(size=(24, 15, 17))).astype(np.float32)
     quiet = np.arange(24) < 12
     context = JointSTContext("joint_cuda_test", 7, 3, 5, 1)
-    cpu = causal_joint_msln(values, context, quiet_mask=quiet)
+    sites = np.asarray([[2, 3], [10, 12]], dtype=np.int32)
+    cpu = causal_joint_msln(values, context, quiet_mask=quiet, diagnostic_sites_yx=sites)
     gpu = causal_joint_msln_cuda(
         values,
         context,
         quiet_mask=quiet,
         review_crop_frames=5,
         max_vram_bytes=512 * 2**20,
+        diagnostic_sites_yx=sites,
     )
     actual = cp.asnumpy(gpu.values)
     np.testing.assert_allclose(actual, cpu.values[5:], rtol=2e-5, atol=2e-5)
+    assert gpu.site_diagnostics is not None and cpu.site_diagnostics is not None
+    for name in gpu.site_diagnostics:
+        np.testing.assert_allclose(
+            gpu.site_diagnostics[name], cpu.site_diagnostics[name][5:], rtol=2e-5, atol=2e-5
+        )
     cpu_gate = bounded_residual_gate(cpu.values[5:], beta=0.25, kappa=2)
     gpu_gate = cp.asnumpy(
         bounded_residual_gate_cuda(gpu.values, beta=0.25, kappa=2)

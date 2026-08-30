@@ -1,0 +1,31 @@
+schema_version: 1
+program_id: null
+run_root: null
+generated_at_utc: null
+conservative_defaults:
+  preserve_original_sites: true
+  preserve_original_timing: true
+  unresolved_identity_action: unresolved
+items:
+  - id: example_decision_id
+    status: pending
+    category: identity_or_timing_or_annotation_or_authorship
+    question: Replace with one concrete decision that cannot be made safely by Codex.
+    scientific_consequence: Explain which estimand, figure, table, or claim changes.
+    options:
+      - option_id: conservative_default
+        label: Preserve the source contract
+        consequence: Continue reporting the unresolved or original-source view.
+      - option_id: alternate
+        label: Apply an adjudicated revision
+        consequence: Regenerate only the explicitly dependent outputs.
+    recommended_option: conservative_default
+    evidence:
+      - relative/path/to/review_artifact.png
+      - relative/path/to/trace_or_table.csv
+    blocks:
+      - dependent_stage_or_claim
+    does_not_block:
+      - all_valid_original_site_analyses
+    rerun_command: null
+    response_format: "example_decision_id: conservative_default"

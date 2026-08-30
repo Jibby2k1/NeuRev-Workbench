@@ -1,0 +1,76 @@
+name: Bug report
+description: Report a reproducible defect using synthetic or non-sensitive evidence.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve NeuRev. Do not upload raw recordings,
+        ignored outputs, credentials, reviewer identities, or private review
+        material. Use the private security link for sensitive reports.
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: Give the exact Git tag or full commit SHA.
+      placeholder: v0.1.0 or 0123456789abcdef...
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - Maintained Python package
+        - Command-line tool
+        - Workbench or review UI
+        - Research registry or generated view
+        - Documentation
+        - Packaging or release artifact
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Observed behavior
+      description: State what happened and include the smallest safe error excerpt.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Use a tiny synthetic fixture and repository-relative paths.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Python version, operating system, relevant optional dependencies, and CPU/GPU class. Omit hostnames and user paths.
+    validations:
+      required: true
+  - type: input
+    id: test
+    attributes:
+      label: Candidate regression test
+      description: Name an existing test or describe the focused test that should fail before the fix.
+  - type: checkboxes
+    id: boundary
+    attributes:
+      label: Publication boundary
+      options:
+        - label: I removed credentials, absolute workstation paths, raw inputs, private review material, and large outputs.
+          required: true
+        - label: I verified this is not a private security or data-exposure report.
+          required: true

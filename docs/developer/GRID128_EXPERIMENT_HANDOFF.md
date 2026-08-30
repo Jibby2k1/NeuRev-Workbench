@@ -7,8 +7,8 @@ results.
 
 ## Repository Context
 
-- Project root:
-  `/home/jibby2k1/UF Dropbox/CNEL/State Analysis (Fish)/NeuRev-Workbench`
+- Project root: the directory containing `AGENTS.md`. If frozen outputs live in
+  another checkout, set `NEUROBENCH_DATA_ROOT` to that directory.
 - Use the project virtual environment for Python commands:
   `.venv-neurobench/bin/python`
 - Current main experiment root:
@@ -1568,7 +1568,7 @@ job is chosen, prioritize CPU/file utilities:
    Markdown:
    `Outputs/GridModel/060126_crop512_grid128_max_v1/plans/grid128_backfill_preflight_v1/current_learned_leader_metric_backfill_preflight.md`.
 
-Refer to `VISIONS.md` for the ambitious roadmap and acceptance criteria.
+Refer to `docs/archive/plans/VISIONS.md` for the preserved ambitious roadmap and acceptance criteria.
 
 ## Safety Notes For Future Agents
 

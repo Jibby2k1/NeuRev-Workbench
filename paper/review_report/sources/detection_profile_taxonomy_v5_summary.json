@@ -1,0 +1,391 @@
+{
+  "candidate_source": "strict object-separated union of frozen coherence_w15 and propagation_lag2_w15 B20 proposals",
+  "class_counts": {
+    "1": 35,
+    "2": 8,
+    "3": 43
+  },
+  "classification": {
+    "candidate_models": [
+      {
+        "bootstrap_mean_ari": 0.6518158406040402,
+        "k": 2,
+        "minimum_burst_coverage": 4,
+        "minimum_class_size": 37,
+        "objective": 0.1754604951121111,
+        "silhouette": 0.26918722157705033,
+        "viable": true
+      },
+      {
+        "bootstrap_mean_ari": 0.7240100558544675,
+        "k": 3,
+        "minimum_burst_coverage": 4,
+        "minimum_class_size": 8,
+        "objective": 0.20580843965715015,
+        "silhouette": 0.2842618524327782,
+        "viable": true
+      },
+      {
+        "bootstrap_mean_ari": 0.6012242916243302,
+        "k": 4,
+        "minimum_burst_coverage": 4,
+        "minimum_class_size": 8,
+        "objective": 0.14241598618308496,
+        "silhouette": 0.23687663350780302,
+        "viable": true
+      },
+      {
+        "bootstrap_mean_ari": 0.6806366315166642,
+        "k": 5,
+        "minimum_burst_coverage": 3,
+        "minimum_class_size": 6,
+        "objective": 0.17732321315240623,
+        "silhouette": 0.26052552116872774,
+        "viable": true
+      },
+      {
+        "bootstrap_mean_ari": 0.6580347062322324,
+        "k": 6,
+        "minimum_burst_coverage": 3,
+        "minimum_class_size": 6,
+        "objective": 0.15942286236649647,
+        "silhouette": 0.24227120675643093,
+        "viable": true
+      }
+    ],
+    "class_names": {
+      "1": "Class 1: localized, high-signal, mid-peaking, positive-area, lane-consensus, recurrent, bright-background",
+      "2": "Class 2: broad-coupled, low-signal, early-peaking, positive-area, lane-consensus, episodic, annulus-decoupled, bright-background",
+      "3": "Class 3: broad-coupled, low-signal, mid-peaking, positive-area, lane-consensus, recurrent, annulus-decoupled"
+    },
+    "selected_k": 3,
+    "selection_rule": "maximum silhouette times bootstrap mean ARI; lowest k breaks ties",
+    "standardized_centroids": {
+      "1": {
+        "annulus_correlation": 0.3435180276456745,
+        "event_area_scaled": 0.7407500605589742,
+        "lane_agreement": -1.3877787807814457e-17,
+        "log_raw_peak": 0.7707670314719435,
+        "log_residual_peak": 0.9586663380857128,
+        "log_snr": 0.6073538022469588,
+        "mean_rank_fraction": -0.5458128078817734,
+        "quiet_intensity_scaled": 0.2066515822265204,
+        "recurrence_fraction": -0.11428571428571399,
+        "spatial_specificity": 0.6047150170372289,
+        "time_to_peak_fraction": 0.0857142857142858
+      },
+      "2": {
+        "annulus_correlation": -2.4057281570430202,
+        "event_area_scaled": -2.0777234114334577,
+        "lane_agreement": -0.1875,
+        "log_raw_peak": -0.9867088624027275,
+        "log_residual_peak": -0.9199598372696464,
+        "log_snr": -2.1942965567543187,
+        "mean_rank_fraction": 0.3448275862068966,
+        "quiet_intensity_scaled": 2.158329646261132,
+        "recurrence_fraction": -0.875,
+        "spatial_specificity": -0.24235664552056413,
+        "time_to_peak_fraction": -0.6145833333333333
+      },
+      "3": {
+        "annulus_correlation": -0.4100473960946695,
+        "event_area_scaled": -0.2917087010619993,
+        "lane_agreement": -0.10465116279069772,
+        "log_raw_peak": -0.38511672048698936,
+        "log_residual_peak": -0.40577873982163437,
+        "log_snr": -0.18966915815893806,
+        "mean_rank_fraction": 0.3416198877305533,
+        "quiet_intensity_scaled": 0.021201276962848847,
+        "recurrence_fraction": -0.6744186046511627,
+        "spatial_specificity": -0.31892726406713473,
+        "time_to_peak_fraction": 0.28682170542635665
+      }
+    }
+  },
+  "detection_occurrences": 86,
+  "detection_sites": 36,
+  "features": [
+    "log_raw_peak",
+    "log_residual_peak",
+    "log_snr",
+    "spatial_specificity",
+    "annulus_correlation",
+    "event_area_scaled",
+    "time_to_peak_fraction",
+    "lane_agreement",
+    "mean_rank_fraction",
+    "recurrence_fraction",
+    "quiet_intensity_scaled"
+  ],
+  "fitting_labels_used": false,
+  "interpretation": "measurement/detection-event archetypes, not biological neuron types",
+  "known_labels_usage": "post-freeze class characterization only",
+  "known_positive_overlap_by_class": {
+    "1": 28,
+    "2": 3,
+    "3": 23
+  },
+  "prohibited": [
+    "precision",
+    "false-positive classes",
+    "cell types",
+    "population generalization"
+  ],
+  "representatives": [
+    {
+      "burst_id": 4,
+      "class_id": 1,
+      "class_name": "Class 1: localized, high-signal, mid-peaking, positive-area, lane-consensus, recurrent, bright-background",
+      "detection_occurrence_id": "b04__det_004",
+      "x_px": 390,
+      "y_px": 222
+    },
+    {
+      "burst_id": 4,
+      "class_id": 2,
+      "class_name": "Class 2: broad-coupled, low-signal, early-peaking, positive-area, lane-consensus, episodic, annulus-decoupled, bright-background",
+      "detection_occurrence_id": "b04__det_016",
+      "x_px": 338,
+      "y_px": 238
+    },
+    {
+      "burst_id": 2,
+      "class_id": 3,
+      "class_name": "Class 3: broad-coupled, low-signal, mid-peaking, positive-area, lane-consensus, recurrent, annulus-decoupled",
+      "detection_occurrence_id": "b02__det_019",
+      "x_px": 391,
+      "y_px": 139
+    }
+  ],
+  "robust_scaling": {
+    "annulus_correlation": {
+      "bursts": {
+        "1": {
+          "iqr": 0.027241854870674542,
+          "median": 0.9791515209024177
+        },
+        "2": {
+          "iqr": 0.026091326881741983,
+          "median": 0.9730484483890902
+        },
+        "3": {
+          "iqr": 0.007682943479173532,
+          "median": 0.991415629096972
+        },
+        "4": {
+          "iqr": 0.005743422232672768,
+          "median": 0.9937847171777024
+        }
+      },
+      "mode": "within_burst_median_iqr",
+      "standardized_clip": [
+        -3.0,
+        3.0
+      ]
+    },
+    "event_area_scaled": {
+      "bursts": {
+        "1": {
+          "iqr": 0.5721713094125409,
+          "median": 8.397976436167232
+        },
+        "2": {
+          "iqr": 0.7737406627740828,
+          "median": 7.935614906883802
+        },
+        "3": {
+          "iqr": 0.6745089531881927,
+          "median": 9.116156480747616
+        },
+        "4": {
+          "iqr": 0.6030585709219878,
+          "median": 9.550366724797753
+        }
+      },
+      "mode": "within_burst_median_iqr",
+      "standardized_clip": [
+        -3.0,
+        3.0
+      ]
+    },
+    "lane_agreement": {
+      "iqr": 1.0,
+      "median": 1.0,
+      "mode": "global_median_iqr",
+      "standardized_clip": [
+        -3.0,
+        3.0
+      ]
+    },
+    "log_raw_peak": {
+      "bursts": {
+        "1": {
+          "iqr": 0.5186629486937866,
+          "median": 5.608061954263435
+        },
+        "2": {
+          "iqr": 0.740885598734236,
+          "median": 5.5017290572928115
+        },
+        "3": {
+          "iqr": 0.6520208183611889,
+          "median": 6.1929915192172675
+        },
+        "4": {
+          "iqr": 0.5173318275887295,
+          "median": 6.3794052001446255
+        }
+      },
+      "mode": "within_burst_median_iqr",
+      "standardized_clip": [
+        -3.0,
+        3.0
+      ]
+    },
+    "log_residual_peak": {
+      "bursts": {
+        "1": {
+          "iqr": 0.5269613228637562,
+          "median": 4.629990711256914
+        },
+        "2": {
+          "iqr": 0.9218973076958754,
+          "median": 4.583320447305944
+        },
+        "3": {
+          "iqr": 0.6838682695870526,
+          "median": 5.249785254744565
+        },
+        "4": {
+          "iqr": 0.6677829440604324,
+          "median": 5.478693924082306
+        }
+      },
+      "mode": "within_burst_median_iqr",
+      "standardized_clip": [
+        -3.0,
+        3.0
+      ]
+    },
+    "log_snr": {
+      "bursts": {
+        "1": {
+          "iqr": 0.7432152035340858,
+          "median": 2.506098686623559
+        },
+        "2": {
+          "iqr": 0.5525813680909741,
+          "median": 1.7265047926983057
+        },
+        "3": {
+          "iqr": 0.581954184995769,
+          "median": 3.425624288456956
+        },
+        "4": {
+          "iqr": 0.5911881641220664,
+          "median": 3.4939829685485293
+        }
+      },
+      "mode": "within_burst_median_iqr",
+      "standardized_clip": [
+        -3.0,
+        3.0
+      ]
+    },
+    "mean_rank_fraction": {
+      "iqr": 0.54375,
+      "median": 0.5625,
+      "mode": "global_median_iqr",
+      "standardized_clip": [
+        -3.0,
+        3.0
+      ]
+    },
+    "quiet_intensity_scaled": {
+      "bursts": {
+        "1": {
+          "iqr": 0.2706942445311844,
+          "median": 6.823411669006895
+        },
+        "2": {
+          "iqr": 0.13397487127829422,
+          "median": 6.9739390805187105
+        },
+        "3": {
+          "iqr": 0.17007730802102827,
+          "median": 6.818924065275521
+        },
+        "4": {
+          "iqr": 0.20784952898362974,
+          "median": 6.884289797773362
+        }
+      },
+      "mode": "within_burst_median_iqr",
+      "standardized_clip": [
+        -3.0,
+        3.0
+      ]
+    },
+    "recurrence_fraction": {
+      "iqr": 0.5,
+      "median": 1.0,
+      "mode": "global_median_iqr",
+      "standardized_clip": [
+        -3.0,
+        3.0
+      ]
+    },
+    "spatial_specificity": {
+      "bursts": {
+        "1": {
+          "iqr": 0.0975496725129879,
+          "median": 0.23137825535984757
+        },
+        "2": {
+          "iqr": 0.18361698852986424,
+          "median": 0.23547033631165787
+        },
+        "3": {
+          "iqr": 0.13152416336004805,
+          "median": 0.24438647252096315
+        },
+        "4": {
+          "iqr": 0.1283654174003591,
+          "median": 0.2089528237534635
+        }
+      },
+      "mode": "within_burst_median_iqr",
+      "standardized_clip": [
+        -3.0,
+        3.0
+      ]
+    },
+    "time_to_peak_fraction": {
+      "bursts": {
+        "1": {
+          "iqr": 0.1739130434782609,
+          "median": 0.2608695652173913
+        },
+        "2": {
+          "iqr": 0.08695652173913043,
+          "median": 0.043478260869565216
+        },
+        "3": {
+          "iqr": 0.1111111111111111,
+          "median": 0.2962962962962963
+        },
+        "4": {
+          "iqr": 0.043478260869565244,
+          "median": 0.2826086956521739
+        }
+      },
+      "mode": "within_burst_median_iqr",
+      "standardized_clip": [
+        -3.0,
+        3.0
+      ]
+    }
+  },
+  "schema_version": 1,
+  "status": "complete"
+}

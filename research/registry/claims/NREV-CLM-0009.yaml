@@ -1,0 +1,29 @@
+schema_version: 1
+record_type: claim
+id: NREV-CLM-0009
+program_id: NREV-PRG-0001
+title: Realistic Movie Detector Roles
+statement: In exact-truth movie detection, the combined carrier-context-kinetic stack improves compact-budget identity recovery
+  and held-seed calibration, while spatial context most strongly improves localization and duplicate suppression.
+scope: 432 movies, four frozen score stacks, proposal budgets 2, 4, and 8, three-pixel one-to-one identity matching; simulation
+  is not biological transfer.
+limitations:
+- 'No inference is registered beyond this scope: 432 movies, four frozen score stacks, proposal budgets 2, 4, and 8, three-pixel
+  one-to-one identity matching; simulation is not biological transfer.'
+claim_state: supported
+evidence_tier: computational_simulation
+review_state: not_requested
+evidence_capsule_ids:
+- NREV-EVC-EXP-0010
+decision_ids:
+- NREV-DEC-0010
+tags:
+- realistic
+- movie
+- detector
+- roles
+visibility: public
+legacy_id: realistic_movie_detector_roles
+legacy_status: established_computational_simulation
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

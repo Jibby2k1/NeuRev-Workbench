@@ -6,6 +6,7 @@ from typing import Any
 import numpy as np
 
 from .traces import candidate_signature_summary, paired_trace_metrics
+from neurobench.experiments.neuron_identifiability.contracts import disk_geometry_hash
 
 
 def _json(path: Path, value: object) -> None:
@@ -17,8 +18,13 @@ def _read_rows(path: Path) -> list[dict[str,Any]]:
     rows=[]
     for item in raw:
         if item.get("include_inclusive","").lower() != "true": continue
+        original=item["original_roi_id"]
         rows.append({"observation_id":item["observation_id"],"roi_id":item["canonical_roi_id"],
+                     "original_roi_id":original,"observation_site_id":original,
+                     "canonical_neuron_id":item["canonical_roi_id"],
                      "burst_id":int(item["burst_id"]),"x":float(item["x_px"]),"y":float(item["y_px"]),
+                     "geometry_hash":disk_geometry_hash(float(item["x_px"]),float(item["y_px"]),2),
+                     "analysis_view":"original_site_adjudicated_timing",
                      "start":int(item["event_onset_ui"] or item["original_start_frame_ui"])-1,
                      "stop":int(item["event_end_ui"] or item["original_end_frame_ui"])})
     return rows
@@ -47,29 +53,30 @@ def run(video_path:Path, labels_path:Path, frozen_path:Path, output:Path, *, rad
     if len(rows)!=79: raise ValueError(f"expected 79 inclusive occurrences, found {len(rows)}")
     selected=int(frozen["selection"]["selected_component"]); rng=np.random.default_rng(seed)
     records=[]; windows=[]; roi_ids=[]; window_length=pre+max(r["stop"]-r["start"] for r in rows)+post
-    unique={(r["roi_id"],r["x"],r["y"]) for r in rows}; traces={key:_roi_trace(video,key[1],key[2],radius) for key in unique}
+    unique={(r["observation_site_id"],r["x"],r["y"]) for r in rows}; traces={key:_roi_trace(video,key[1],key[2],radius) for key in unique}
     for row in rows:
-        raw=traces[(row["roi_id"],row["x"],row["y"])]; ica=_operator(raw,frozen["fit"],selected); diff=np.diff(raw)
+        raw=traces[(row["observation_site_id"],row["x"],row["y"])]; ica=_operator(raw,frozen["fit"],selected); diff=np.diff(raw)
         start,stop=row["start"],row["stop"]; a=max(0,start-pre); b=min(len(raw),stop+post)
         raw_window=raw[a:b]; ica_window=ica[a:min(b-1,len(ica))]; diff_window=diff[a:min(b-1,len(diff))]
         n=min(len(raw_window)-1,len(ica_window)); metrics=paired_trace_metrics(raw_window[:n],ica_window[:n],pre_event=min(pre,n-1))
         records.append({**row,"raw_baseline":float(np.median(raw[max(0,start-pre):start])),
                         "ica_event_score":_event_score(ica,start,stop),"difference_event_score":_event_score(diff,start,stop),**metrics})
         padded=np.full(window_length,np.nan); segment=raw[max(0,start-pre):min(len(raw),start-pre+window_length)]; padded[:len(segment)]=segment
-        windows.append(padded); roi_ids.append(row["roi_id"])
+        windows.append(padded); roi_ids.append(row["observation_site_id"])
     ica_true=np.asarray([r["ica_event_score"] for r in records]); diff_true=np.asarray([r["difference_event_score"] for r in records])
     valid_offsets=np.arange(80,len(video)-80); valid_offsets=valid_offsets[(valid_offsets<1500)|(valid_offsets>2300)]
     null_ica=[]; null_diff=[]
     for _ in range(shifts):
         offset=int(rng.choice(valid_offsets)); si=[]; sd=[]
         for row in rows:
-            raw=traces[(row["roi_id"],row["x"],row["y"])]; ica=_operator(raw,frozen["fit"],selected); diff=np.diff(raw); duration=row["stop"]-row["start"]
+            raw=traces[(row["observation_site_id"],row["x"],row["y"])]; ica=_operator(raw,frozen["fit"],selected); diff=np.diff(raw); duration=row["stop"]-row["start"]
             si.append(_event_score(ica,offset,offset+duration)); sd.append(_event_score(diff,offset,offset+duration))
         null_ica.append(float(np.mean(si))); null_diff.append(float(np.mean(sd)))
     null_ica=np.asarray(null_ica); null_diff=np.asarray(null_diff)
     signature=candidate_signature_summary(np.asarray(windows),np.asarray(roi_ids))
     summary={"schema_version":1,"status":"external_sparse_positive_assay_complete_audit_incomplete",
-             "frozen_representation_sha256":frozen["sha256"],"occurrences":len(rows),"canonical_rois":len(set(roi_ids)),
+             "frozen_representation_sha256":frozen["sha256"],"occurrences":len(rows),"original_sites":len(set(roi_ids)),
+             "proposed_canonical_identities":len({r["canonical_neuron_id"] for r in rows}),
              "labels_role":"external_evaluation_only","precision":"not_applicable_sparse_positive_labels",
              "ica":{"mean_event_score":float(ica_true.mean()),"label_shift_mean":float(null_ica.mean()),"label_shift_p_upper":float((1+np.sum(null_ica>=ica_true.mean()))/(1+len(null_ica)))},
              "difference":{"mean_event_score":float(diff_true.mean()),"label_shift_mean":float(null_diff.mean()),"label_shift_p_upper":float((1+np.sum(null_diff>=diff_true.mean()))/(1+len(null_diff)))},
@@ -90,5 +97,5 @@ def run(video_path:Path, labels_path:Path, frozen_path:Path, output:Path, *, rad
 
 def main()->None:
     p=argparse.ArgumentParser(); p.add_argument("--video-npy",type=Path,required=True); p.add_argument("--labels",type=Path,required=True); p.add_argument("--frozen",type=Path,required=True); p.add_argument("--output-dir",type=Path,required=True); p.add_argument("--roi-radius",type=int,default=2); p.add_argument("--shifts",type=int,default=199); a=p.parse_args()
-    result=run(a.video_npy,a.labels,a.frozen,a.output_dir,radius=a.roi_radius,shifts=a.shifts); print(json.dumps({k:result[k] for k in ("status","frozen_representation_sha256","occurrences","canonical_rois")},indent=2))
+    result=run(a.video_npy,a.labels,a.frozen,a.output_dir,radius=a.roi_radius,shifts=a.shifts); print(json.dumps({k:result[k] for k in ("status","frozen_representation_sha256","occurrences","original_sites","proposed_canonical_identities")},indent=2))
 if __name__=="__main__": main()

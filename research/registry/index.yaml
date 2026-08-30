@@ -1,0 +1,198 @@
+schema_version: 1
+flagship_program_id: NREV-PRG-0001
+programs:
+- NREV-PRG-0001
+- NREV-PRG-0002
+- NREV-PRG-0003
+- NREV-PRG-0004
+claims:
+- NREV-CLM-0001
+- NREV-CLM-0002
+- NREV-CLM-0003
+- NREV-CLM-0004
+- NREV-CLM-0005
+- NREV-CLM-0006
+- NREV-CLM-0007
+- NREV-CLM-0008
+- NREV-CLM-0009
+- NREV-CLM-0010
+- NREV-CLM-0011
+- NREV-CLM-0012
+- NREV-CLM-0013
+- NREV-CLM-0014
+- NREV-CLM-0015
+- NREV-CLM-0016
+- NREV-CLM-0017
+- NREV-CLM-0018
+- NREV-CLM-0019
+- NREV-CLM-0020
+experiments:
+- NREV-EXP-0001
+- NREV-EXP-0002
+- NREV-EXP-0003
+- NREV-EXP-0004
+- NREV-EXP-0005
+- NREV-EXP-0006
+- NREV-EXP-0007
+- NREV-EXP-0008
+- NREV-EXP-0009
+- NREV-EXP-0010
+- NREV-EXP-0011
+- NREV-EXP-0012
+- NREV-EXP-0013
+- NREV-EXP-0014
+- NREV-EXP-0015
+- NREV-EXP-0016
+- NREV-EXP-0017
+- NREV-EXP-0018
+- NREV-EXP-0019
+- NREV-EXP-0020
+- NREV-EXP-0021
+- NREV-EXP-0022
+- NREV-EXP-0023
+- NREV-EXP-0024
+- NREV-EXP-0025
+- NREV-EXP-0026
+- NREV-EXP-0027
+completed_experiments:
+- NREV-EXP-0001
+- NREV-EXP-0002
+- NREV-EXP-0003
+- NREV-EXP-0004
+- NREV-EXP-0005
+- NREV-EXP-0006
+- NREV-EXP-0007
+- NREV-EXP-0008
+- NREV-EXP-0009
+- NREV-EXP-0010
+- NREV-EXP-0011
+- NREV-EXP-0012
+- NREV-EXP-0013
+- NREV-EXP-0014
+- NREV-EXP-0015
+- NREV-EXP-0016
+- NREV-EXP-0017
+- NREV-EXP-0018
+- NREV-EXP-0019
+planned_experiments:
+- NREV-EXP-0020
+- NREV-EXP-0021
+- NREV-EXP-0022
+- NREV-EXP-0023
+- NREV-EXP-0024
+- NREV-EXP-0025
+- NREV-EXP-0026
+- NREV-EXP-0027
+decisions:
+- NREV-DEC-0001
+- NREV-DEC-0002
+- NREV-DEC-0003
+- NREV-DEC-0004
+- NREV-DEC-0005
+- NREV-DEC-0006
+- NREV-DEC-0007
+- NREV-DEC-0008
+- NREV-DEC-0009
+- NREV-DEC-0010
+- NREV-DEC-0011
+- NREV-DEC-0012
+- NREV-DEC-0013
+- NREV-DEC-0014
+- NREV-DEC-0015
+- NREV-DEC-0016
+- NREV-DEC-0017
+- NREV-DEC-0018
+- NREV-DEC-0019
+runs: []
+evidence_capsules:
+- NREV-EVC-EXP-0001
+- NREV-EVC-EXP-0002
+- NREV-EVC-EXP-0003
+- NREV-EVC-EXP-0004
+- NREV-EVC-EXP-0005
+- NREV-EVC-EXP-0006
+- NREV-EVC-EXP-0007
+- NREV-EVC-EXP-0008
+- NREV-EVC-EXP-0009
+- NREV-EVC-EXP-0010
+- NREV-EVC-EXP-0011
+- NREV-EVC-EXP-0012
+- NREV-EVC-EXP-0013
+- NREV-EVC-EXP-0014
+- NREV-EVC-EXP-0015
+- NREV-EVC-EXP-0016
+- NREV-EVC-EXP-0017
+- NREV-EVC-EXP-0018
+- NREV-EVC-EXP-0019
+migration:
+  claim_id_map:
+    shared_burst_waveform: NREV-CLM-0001
+    trace_phenotypes: NREV-CLM-0002
+    full_trace_feature_roles: NREV-CLM-0003
+    automated_feature_complementarity: NREV-CLM-0004
+    feature_role_decomposition: NREV-CLM-0005
+    identity_aware_miss_interpretation: NREV-CLM-0006
+    expanded_automated_feature_validation: NREV-CLM-0007
+    realistic_movie_spatial_context: NREV-CLM-0008
+    realistic_movie_detector_roles: NREV-CLM-0009
+    generator_family_robustness: NREV-CLM-0010
+    prospective_gated_fusion: NREV-CLM-0011
+    automated_challenge_boundaries: NREV-CLM-0012
+    targeted_v8_rejections: NREV-CLM-0013
+    constrained_generative_rejection: NREV-CLM-0014
+    temporal_transform_invertibility: NREV-CLM-0015
+    ls_denominator_behavior: NREV-CLM-0016
+    biological_source_identity: NREV-CLM-0017
+    full_field_precision: NREV-CLM-0018
+    new_candidate_single_reviewer_labels: NREV-CLM-0019
+    external_bounded_review_readiness: NREV-CLM-0020
+  experiment_id_map:
+    canonical_v7_trace_atlas: NREV-EXP-0001
+    all_site_trace_taxonomy: NREV-EXP-0002
+    pipeline_diagnostic_audit: NREV-EXP-0003
+    full_trace_feature_panel: NREV-EXP-0004
+    automated_feature_validation: NREV-EXP-0005
+    feature_deep_dives: NREV-EXP-0006
+    identity_aware_recenter_audit_v8: NREV-EXP-0007
+    expanded_automated_validation_v3: NREV-EXP-0008
+    major_validation_next_steps_v1: NREV-EXP-0009
+    realistic_movie_detector_benchmark_v3: NREV-EXP-0010
+    generator_family_holdout_v4: NREV-EXP-0011
+    label_free_false_alarm_gated_fusion_v5: NREV-EXP-0012
+    automated_challenge_suite_v7: NREV-EXP-0013
+    targeted_automated_development_v8: NREV-EXP-0014
+    joint_generative_deblending_v10: NREV-EXP-0015
+    new_candidate_review_v1: NREV-EXP-0016
+    external_blinded_bounded_review_v2: NREV-EXP-0017
+    temporal_ica_internals: NREV-EXP-0018
+    ls_denominator_audit: NREV-EXP-0019
+    complete_external_bounded_review_v2: NREV-EXP-0020
+    uncertainty_aware_learning_v1: NREV-EXP-0021
+    identity_aware_bounded_review: NREV-EXP-0022
+    bounded_field_precision: NREV-EXP-0023
+    independent_recording_confirmation: NREV-EXP-0024
+    motion_registration_audit: NREV-EXP-0025
+    frozen_feature_transfer: NREV-EXP-0026
+    realistic_movie_simulation: NREV-EXP-0027
+  decision_id_map:
+    canonical_v7_trace_atlas: NREV-DEC-0001
+    all_site_trace_taxonomy: NREV-DEC-0002
+    pipeline_diagnostic_audit: NREV-DEC-0003
+    full_trace_feature_panel: NREV-DEC-0004
+    automated_feature_validation: NREV-DEC-0005
+    feature_deep_dives: NREV-DEC-0006
+    identity_aware_recenter_audit_v8: NREV-DEC-0007
+    expanded_automated_validation_v3: NREV-DEC-0008
+    major_validation_next_steps_v1: NREV-DEC-0009
+    realistic_movie_detector_benchmark_v3: NREV-DEC-0010
+    generator_family_holdout_v4: NREV-DEC-0011
+    label_free_false_alarm_gated_fusion_v5: NREV-DEC-0012
+    automated_challenge_suite_v7: NREV-DEC-0013
+    targeted_automated_development_v8: NREV-DEC-0014
+    joint_generative_deblending_v10: NREV-DEC-0015
+    new_candidate_review_v1: NREV-DEC-0016
+    external_blinded_bounded_review_v2: NREV-DEC-0017
+    temporal_ica_internals: NREV-DEC-0018
+    ls_denominator_audit: NREV-DEC-0019
+  recorded_at: '2026-08-29'
+  snapshot_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af

@@ -9,9 +9,7 @@ import subprocess
 from typing import Any
 
 
-DEFAULT_CAIMAN_PYTHON = Path(
-    "/home/jibby2k1/.local/share/neurobench-caiman-1.13.1/bin/python"
-)
+DEFAULT_CAIMAN_PYTHON = os.environ.get("NEUROBENCH_CAIMAN_PYTHON")
 
 
 def _external_audit(python_executable: Path) -> tuple[bool, str | None, str | None]:
@@ -49,7 +47,7 @@ def audit_caiman_backend(
 ) -> dict[str, Any]:
     """Report local or isolated CaImAn availability without fitting data."""
     requested = python_executable or os.environ.get("NEUROBENCH_CAIMAN_PYTHON")
-    if requested is None and DEFAULT_CAIMAN_PYTHON.is_file():
+    if requested is None and DEFAULT_CAIMAN_PYTHON:
         requested = DEFAULT_CAIMAN_PYTHON
     probe_error = None
     if requested is not None:

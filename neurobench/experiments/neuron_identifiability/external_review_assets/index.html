@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NeuRev independent review</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <noscript>This review application requires JavaScript.</noscript>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">NeuRev · independent annotation</p>
+      <h1 id="appTitle">Loading review…</h1>
+      <p id="appInstructions" class="lede"></p>
+    </div>
+    <div class="reviewerBox">
+      <label for="reviewerId">Opaque reviewer ID</label>
+      <input id="reviewerId" autocomplete="off" placeholder="provided by administrator">
+      <span id="saveState" class="status">Draft not started</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="progressCard">
+      <div>
+        <span class="sectionLabel">Progress</span>
+        <strong id="progressText">0 / 0 complete</strong>
+      </div>
+      <div class="progressTrack"><span id="progressBar"></span></div>
+    </section>
+
+    <div class="workspace">
+      <aside class="itemRail">
+        <h2>Review queue</h2>
+        <div id="itemList" class="itemList"></div>
+      </aside>
+
+      <section class="evidenceCard">
+        <div class="evidenceHeader">
+          <div>
+            <span class="sectionLabel">Evidence</span>
+            <h2 id="currentItem">—</h2>
+          </div>
+          <span id="frameReadout" class="framePill"></span>
+        </div>
+        <div id="mediaHost" class="mediaHost"></div>
+        <p id="mediaHint" class="hint"></p>
+      </section>
+
+      <section class="annotationCard">
+        <span class="sectionLabel">Annotation</span>
+        <div id="editor"></div>
+      </section>
+    </div>
+
+    <section class="completionCard">
+      <h2>Completion and export</h2>
+      <div id="completionChecks"></div>
+      <label class="certify"><input id="certify" type="checkbox"> <span id="certifyText"></span></label>
+      <div class="exportRow">
+        <button id="backupBtn" class="secondary">Export draft backup</button>
+        <button id="finalBtn" class="primary">Lock and export final JSON</button>
+      </div>
+      <p class="hint">Final export is enabled only after every required item is complete. Locking prevents accidental post-submission edits in this browser.</p>
+    </section>
+  </main>
+
+  <footer>Annotations remain local to this browser until you export JSON.</footer>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

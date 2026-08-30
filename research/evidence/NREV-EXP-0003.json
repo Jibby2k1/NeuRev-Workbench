@@ -1,0 +1,87 @@
+{
+  "artifact_manifest_sha256": "bb102a07c1d4cdf61bee222d28069e65b3da807ac7455dcad7ab504d658908fc",
+  "artifacts": [
+    {
+      "access": "public",
+      "bytes": 447868,
+      "id": "artifact-01",
+      "media_type": "image/png",
+      "repository_path": "paper/overleaf_jnm/figures/final/fig05_pipeline_diagnostic_audit.png",
+      "role": "figure",
+      "sha256": "6b6dcb2b00c3585ecef98f9882e0ff10fd1e77bde458a6efc2acd01db4b2b67e"
+    },
+    {
+      "access": "public",
+      "bytes": 156379,
+      "id": "artifact-02",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "paper/overleaf_jnm/figures/final/fig05_pipeline_diagnostic_table.tsv",
+      "role": "table",
+      "sha256": "d4bf6f248b4957fce853e21100639e889829f5a740fcce2de6fbc19245cc06de"
+    }
+  ],
+  "boundaries": {
+    "does_not_establish": [
+      "Claims beyond the registered finding and linked claim scopes.",
+      "Reproducible run provenance that was absent from the v1 story."
+    ],
+    "limitations": [
+      "Candidate metadata are partial and motion fields are absent."
+    ],
+    "scope": "This capsule preserves the registered v1 experiment finding and its linked claim scopes."
+  },
+  "claim_impacts": [
+    {
+      "claim_id": "NREV-CLM-0001",
+      "effect": "supports",
+      "scope": "106 confirmed occurrences at 50 sites in one recording.",
+      "summary": "The experiment supports this claim only within its registered scope."
+    },
+    {
+      "claim_id": "NREV-CLM-0017",
+      "effect": "qualifies",
+      "scope": "Stable measurement representations do not establish biological source identity.",
+      "summary": "The experiment bears on this registered claim without resolving it."
+    }
+  ],
+  "evidence_tier": "current_recording",
+  "experiment_id": "NREV-EXP-0003",
+  "gates": [
+    {
+      "criterion": "Every artifact referenced by the v1 experiment story is available and checksum identified at migration.",
+      "id": "legacy-artifact-capture",
+      "observed": "Captured 2 of 2 referenced artifacts with SHA-256 identities.",
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-29T23:52:35Z",
+  "id": "NREV-EVC-EXP-0003",
+  "legacy_status": "complete_descriptive",
+  "lifecycle": "validated",
+  "metrics": [],
+  "outcome": "inconclusive",
+  "program_id": "NREV-PRG-0001",
+  "record_type": "evidence_capsule",
+  "review_state": "not_requested",
+  "run_ids": [],
+  "schema_version": 1,
+  "source_records_sha256": "757ed5935efe035474cadf915cf4793453ae3c86f4ea5d13eba3543718fe1af6",
+  "summary": "Raw-to-ICA is the larger shape transformation; ICA-to-LS is more shape-preserving, and burst 2 is weaker and timing-sensitive.",
+  "validation": {
+    "checked_at": "2026-08-29T23:52:35Z",
+    "checks": [
+      {
+        "id": "portable-paths",
+        "status": "passed",
+        "summary": "Artifact references are repository-relative; ignored local outputs are metadata-only."
+      },
+      {
+        "id": "historical-provenance",
+        "status": "not_run",
+        "summary": "The v1 story did not encode run-level provenance, so no historical run record was invented."
+      }
+    ],
+    "status": "partial"
+  },
+  "visibility": "public"
+}

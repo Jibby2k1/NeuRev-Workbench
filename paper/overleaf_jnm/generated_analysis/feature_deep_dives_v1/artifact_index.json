@@ -1,0 +1,99 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1077,
+      "path": "REPORT.md",
+      "sha256": "0bd35cb84ce8d5e992f0647347eff87663202e830d6d2588579f4ec682af99f4"
+    },
+    {
+      "bytes": 546228,
+      "path": "figures/deep_dive_overview.png",
+      "sha256": "8115247090593b6a0311ea9017874c2a34c5311b1fb3a3025745aef0b3ef3a8a"
+    },
+    {
+      "bytes": 347957,
+      "path": "figures/spatial_decay_crowding.png",
+      "sha256": "ab0919c188616707b7044774543e042441863ac9ccb38b7c84f961a9922d7e61"
+    },
+    {
+      "bytes": 2173,
+      "path": "llm_context.json",
+      "sha256": "d10df942b8b0e1e515e49cb1fa22c0037e7eb54e9b3b63c5f1067723cd1403fa"
+    },
+    {
+      "bytes": 2657,
+      "path": "preflight.json",
+      "sha256": "864ebb244fd8a21ba9b357569fe7046560d9da616d1310a46b121f5205cf1ef0"
+    },
+    {
+      "bytes": 3719,
+      "path": "summary.json",
+      "sha256": "9ed30ee32d088cf4adb24fe4f7bd173f93e694d8974f3aa4828c7fca9fa82300"
+    },
+    {
+      "bytes": 1901,
+      "path": "tables/burst_conditioned_feature_roles.tsv",
+      "sha256": "c25cc8c9cc57d510ef43a175e3faf0b3bfc321be7ec671574e7f4f3ad4389cc2"
+    },
+    {
+      "bytes": 3407,
+      "path": "tables/coherence_lag_mechanism_audit.tsv",
+      "sha256": "dca22574c390e88b91110c02e569d063bd7e7aaca3ccdc3d56cb8be75806a4e1"
+    },
+    {
+      "bytes": 2219,
+      "path": "tables/crowding_associations.tsv",
+      "sha256": "1f44db8a6948b50d5c21db781cdefafcacb048b125b89ad9ef17d49441d3992c"
+    },
+    {
+      "bytes": 18978,
+      "path": "tables/failure_taxonomy_occurrence.tsv",
+      "sha256": "3638eb97dff8ce2d71959114968a795559fbf6cbc7b8ead188c84c4352cb6a00"
+    },
+    {
+      "bytes": 808,
+      "path": "tables/failure_taxonomy_summary.tsv",
+      "sha256": "fe1a2ad3be6da2c18ea16b5770609af8763a3769270afcdda09d6e5dce6cc59d"
+    },
+    {
+      "bytes": 336,
+      "path": "tables/kinetic_bank_lobo_selection.tsv",
+      "sha256": "7a1bc49cb2c49fac8dcb6afb57ff38c71a66ef72a8562b60082d80072eee56ad"
+    },
+    {
+      "bytes": 114271,
+      "path": "tables/kinetic_bank_occurrence.tsv",
+      "sha256": "d40e86b1c1a0031d90511a06a279ce27963f33705b4f6bfd7958c420598b5b7b"
+    },
+    {
+      "bytes": 637,
+      "path": "tables/kinetic_bank_summary.tsv",
+      "sha256": "742c67d1d6b31db3a59e8232267bed9b7d929fcbc68efe82f0623f601dc90290"
+    },
+    {
+      "bytes": 2591,
+      "path": "tables/proposal_ranking_decomposition.tsv",
+      "sha256": "e1f7df8cf46bda6728b2dc6a0d0d7d7610104238717f4db830c7d04d5e83f7d3"
+    },
+    {
+      "bytes": 1816,
+      "path": "tables/recovery_coefficient_stability.tsv",
+      "sha256": "c61153d7a3d326a34fc89ee21f62ff030d711fe900d869cfef649a3934807ff6"
+    },
+    {
+      "bytes": 903,
+      "path": "tables/recovery_complementarity.tsv",
+      "sha256": "dfe86b533d7f9b79f82df17aa823403051c8dd727cfe6f713495e0ba66d39cda"
+    },
+    {
+      "bytes": 88487,
+      "path": "tables/spatial_decay_crowding.tsv",
+      "sha256": "9c8f0f8beb82c8eaae584c236e95ae783c7d957f146d2cc821daf8fb83b90cdb"
+    },
+    {
+      "bytes": 385,
+      "path": "validation.json",
+      "sha256": "0787671e7ce9c7ad9f7f608fe221f7099fc8f736983690e7558f7e4191acea32"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 # Unsupervised two-frame ICA evaluation
 
 This is the label-free Stage A implementation of
-`NEUREV_ICA_UNSUPERVISED_REPRESENTATION_EVAL_PLAN.md`. It reuses the maintained
+`docs/archive/plans/NEUREV_ICA_UNSUPERVISED_REPRESENTATION_EVAL_PLAN.md`. It reuses the maintained
 two-dimensional whitening implementation and deliberately stops before labels,
 multi-time-step ICA, or biological interpretation.
 

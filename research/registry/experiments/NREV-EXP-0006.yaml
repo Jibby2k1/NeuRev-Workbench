@@ -1,0 +1,41 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0006
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical execution date
+  - run-level code, configuration, input, environment, and randomization provenance
+  - preregistered gates
+  - experiment-specific falsifiers
+  - normalized unit of analysis, comparison, and data scope
+program_id: NREV-PRG-0001
+title: Feature Deep Dives
+question: Which errors dominate, and do coherence, lag, and calcium kinetics contribute through proposal formation, ranking,
+  or recovery prediction?
+objective: Which errors dominate, and do coherence, lag, and calcium kinetics contribute through proposal formation, ranking,
+  or recovery prediction?
+rationale: Migrated to preserve the v1 question-design-result-decision record; the v1 story did not encode a separate rationale.
+lifecycle: validated
+outcome: inconclusive
+evidence_tier: current_recording
+review_state: not_requested
+falsifiers: []
+design:
+  summary: Reuse the exact frozen 106-occurrence population; classify B58 failures, compare native and common-proposal recall,
+    measure spatial decay and crowding, select a fixed kinetic bank leave-one-burst-out, and repeat site-grouped recovery
+    models 20 times.
+gates: []
+claim_ids:
+- NREV-CLM-0005
+decision_ids:
+- NREV-DEC-0006
+evidence_capsule_id: NREV-EVC-EXP-0006
+visibility: public
+legacy_id: feature_deep_dives
+legacy_status: complete_exploratory
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

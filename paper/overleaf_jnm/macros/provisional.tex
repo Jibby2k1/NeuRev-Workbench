@@ -1,0 +1,44 @@
+% Draft and provisional-result helpers.
+\definecolor{provisionalorange}{RGB}{166,82,0}
+\definecolor{draftred}{RGB}{155,25,25}
+\newif\ifshowprovisional
+\showprovisionaltrue
+
+\newcommand{\Provisional}[1]{%
+  \ifshowprovisional
+    \textcolor{provisionalorange}{#1}\textsuperscript{\textcolor{provisionalorange}{\ensuremath{\dagger}}}%
+  \else
+    #1%
+  \fi
+}
+\newcommand{\Missing}[1]{\textcolor{draftred}{[MISSING: #1]}}
+\newcommand{\AuthorDecision}[1]{\textcolor{draftred}{[AUTHOR DECISION: #1]}}
+\newcommand{\CodexReplace}[1]{\textcolor{draftred}{[CODEX REPLACE: #1]}}
+\newcommand{\DraftOnly}[1]{\textcolor{draftred}{#1}}
+\newcommand{\DraftBanner}{%
+  \begin{center}
+  \fcolorbox{draftred}{red!3}{%
+  \parbox{0.94\linewidth}{\small\textbf{Working manuscript skeleton.}
+  Daggered values and figures are provisional outputs from the pre-repair repository.
+  Author, ethics, funding, data-release, and final adjudication fields require review.
+  The release build must disable provisional mode and contain no red placeholders.}}
+  \end{center}
+}
+
+\newcommand{\DraftFigure}[3]{%
+\begin{figure}[!htbp]
+  \centering
+  \fbox{\parbox[c][0.23\textheight][c]{0.90\linewidth}{\centering
+  \textbf{Planned figure}\par\medskip #1}}
+  \caption{#2}
+  \label{#3}
+\end{figure}}
+
+\newcommand{\ProvisionalFigure}[4]{%
+\begin{figure}[!htbp]
+  \centering
+  \IfFileExists{figures/#2}{\includegraphics[width=#1]{#2}}{%
+    \fbox{\parbox[c][0.20\textheight][c]{0.90\linewidth}{\centering Missing provisional asset: \nolinkurl{#2}}}}
+  \caption{#3 \textbf{Provisional:} this artifact predates the identity/geometry repair and is included only to guide the confirmatory rerun.}
+  \label{#4}
+\end{figure}}

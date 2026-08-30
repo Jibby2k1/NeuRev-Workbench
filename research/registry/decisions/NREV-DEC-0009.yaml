@@ -1,0 +1,34 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0009
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical decision effective date
+program_id: NREV-PRG-0001
+title: Decision after Major Validation Next Steps V1
+lifecycle: active
+action: hold
+rationale: Acquire or identify an independent identity-labelled spontaneous-burst recording, complete blinded dual review,
+  and extend the simulator to full detector-level recall and precision before feature promotion.
+evidence_summary: Independent transfer is blocked by a task and truth mismatch rather than producing a metric; the bounded
+  review package is ready but unlabelled; spatial context improved mean simulator pixel AUC from 0.813 to 0.917 and won 94.9
+  percent of paired cells.
+review_state: pending
+experiment_ids:
+- NREV-EXP-0009
+claim_ids:
+- NREV-CLM-0008
+evidence_capsule_ids:
+- NREV-EVC-EXP-0009
+constraints:
+- The simulator is a controlled mechanistic stress test, not an independent animal; bounded-field precision awaits two reviewers
+  and adjudication; the available 060126 recordings are behavioral rather than a compatible spontaneous-burst replication.
+- The historical decision date was not encoded in the v1 story and was not guessed during migration.
+visibility: public
+legacy_status: mixed_complete_and_human_gated
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

@@ -1,0 +1,108 @@
+{
+  "artifact_manifest_sha256": "d8cf651383e8bc4a06f3f03b253219a219faad2fb14892251a2cae41c5e99137",
+  "artifacts": [
+    {
+      "access": "public",
+      "bytes": 2721,
+      "id": "artifact-01",
+      "media_type": "text/markdown",
+      "repository_path": "docs/research/SPON_CA_BURST_JOINT_GENERATIVE_DEBLENDING_V10_RESULTS.md",
+      "role": "report",
+      "sha256": "0a39cd562b77e268d53803d9a810d6e6a89bb754d87403f398a801699150456b"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 2303,
+      "id": "artifact-02",
+      "media_type": "application/json",
+      "repository_path": "Outputs/NeuronIdentifiability/joint_generative_deblending_v10/summary.json",
+      "role": "summary",
+      "sha256": "b277b64c825ed7edc2f055621cf8e49f1b36527765edd8b91eabe7df99b38441"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 12750,
+      "id": "artifact-03",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "Outputs/NeuronIdentifiability/joint_generative_deblending_v10/development_deblending.tsv",
+      "role": "table",
+      "sha256": "d362b9d39a068c701f7eeabb871843b98c81bd1af744dfbb795ad821e69fe116"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 17250,
+      "id": "artifact-04",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "Outputs/NeuronIdentifiability/joint_generative_deblending_v10/locked_v8_deblending.tsv",
+      "role": "table",
+      "sha256": "82b67b0ddb983d2e02979074cbf91c16e455a1d7fe14239511bbd90fe96904d8"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 3093,
+      "id": "artifact-05",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "Outputs/NeuronIdentifiability/joint_generative_deblending_v10/source_specific_kinetics.tsv",
+      "role": "table",
+      "sha256": "033539b963b02e7d710eea5e09da177389f7fcb14559d7f5e57e463c516009d9"
+    }
+  ],
+  "boundaries": {
+    "does_not_establish": [
+      "Claims beyond the registered finding and linked claim scopes.",
+      "Reproducible run provenance that was absent from the v1 story."
+    ],
+    "limitations": [
+      "Component count remains fixed at two; spatial initialization begins from the same context map; the simplified alternating optimizer lacks background and explicit motion components; simulated kinetics are heterogeneous enough that the tested likelihood is not identifiable."
+    ],
+    "scope": "This capsule preserves the registered v1 experiment finding and its linked claim scopes."
+  },
+  "claim_impacts": [
+    {
+      "claim_id": "NREV-CLM-0014",
+      "effect": "supports",
+      "scope": "New ellipse development grid followed by one-shot locked v8 crescent evaluation; six seeds; corrected kinetic audit uses unconstrained component coefficients.",
+      "summary": "The experiment supports this claim only within its registered scope."
+    }
+  ],
+  "evidence_tier": "computational_simulation",
+  "experiment_id": "NREV-EXP-0015",
+  "gates": [
+    {
+      "criterion": "Every artifact referenced by the v1 experiment story is available and checksum identified at migration.",
+      "id": "legacy-artifact-capture",
+      "observed": "Captured 5 of 5 referenced artifacts with SHA-256 identities.",
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-29T23:52:35Z",
+  "id": "NREV-EVC-EXP-0015",
+  "legacy_status": "complete_computational_negative_result",
+  "lifecycle": "validated",
+  "metrics": [],
+  "outcome": "rejected",
+  "program_id": "NREV-PRG-0001",
+  "record_type": "evidence_capsule",
+  "review_state": "not_requested",
+  "run_ids": [],
+  "schema_version": 1,
+  "source_records_sha256": "30ac8bc41f3ec650bc739c46ae019a2ec43fd770cf9e509026f20ab7c77a197f",
+  "summary": "On development conditions, generative weak recovery was 0.389 versus 0.407 spatial and F1 was 0.639 versus 0.648. On locked v8, weak recovery was 0.313 versus 0.521 and F1 was 0.608 versus 0.635. Corrected source-specific direction AUC was 0.367, with 91.7 percent of reversed components still assigned positive forward likelihood. Only one of six gates passed.",
+  "validation": {
+    "checked_at": "2026-08-29T23:52:35Z",
+    "checks": [
+      {
+        "id": "portable-paths",
+        "status": "passed",
+        "summary": "Artifact references are repository-relative; ignored local outputs are metadata-only."
+      },
+      {
+        "id": "historical-provenance",
+        "status": "not_run",
+        "summary": "The v1 story did not encode run-level provenance, so no historical run record was invented."
+      }
+    ],
+    "status": "partial"
+  },
+  "visibility": "public"
+}

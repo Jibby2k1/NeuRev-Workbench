@@ -1,0 +1,29 @@
+schema_version: 1
+record_type: run
+id: __RUN_ID__
+experiment_id: __EXPERIMENT_ID__
+program_id: __PROGRAM_ID__
+lifecycle: planned
+planned_at: __PLANNED_AT__
+code: __CODE_PROVENANCE__
+configuration: __CONFIGURATION__
+inputs: __INPUTS__
+environment: __ENVIRONMENT__
+randomization: __RANDOMIZATION__
+artifacts:
+  output_root: __OUTPUT_ROOT__
+validation:
+  preflight: not_run
+  execution: not_run
+  outputs: not_run
+  checks:
+    - id: output_collision
+      status: not_run
+      summary: Confirm the registered output root is absent immediately before execution.
+    - id: scientific_audit
+      status: not_run
+      summary: Validate the applicable scientific audit inventory and media contract.
+    - id: publication_boundary
+      status: not_run
+      summary: Scan public records and release candidates for private or non-portable content.
+visibility: public

@@ -1,0 +1,34 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0016
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical decision effective date
+program_id: NREV-PRG-0001
+title: Decision after New Candidate Review V1
+lifecycle: active
+action: hold
+rationale: Obtain a second blinded review, adjudicate the four uncertain sites and identity-confounded observations, then
+  separate review-value prioritization from calibrated neuron-likelihood modeling.
+evidence_summary: Nine sites were definite, four probable, four uncertain, and one artifact-or-noise; 13 of 18 were provisionally
+  likely neurons. The review-priority score enriched difficult ambiguous cases but did not monotonically rank neuron likelihood.
+review_state: in_review
+experiment_ids:
+- NREV-EXP-0016
+claim_ids:
+- NREV-CLM-0018
+- NREV-CLM-0019
+evidence_capsule_ids:
+- NREV-EVC-EXP-0016
+constraints:
+- One reviewer, selected candidates rather than exhaustive bounded-field sampling, no adjudication, and no biological identity
+  or precision claim.
+- The historical decision date was not encoded in the v1 story and was not guessed during migration.
+visibility: public
+legacy_status: complete_provisional_single_reviewer
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

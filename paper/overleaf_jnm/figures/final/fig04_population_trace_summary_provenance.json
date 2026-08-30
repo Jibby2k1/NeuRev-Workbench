@@ -1,0 +1,37 @@
+{
+  "status": "descriptive_exploratory",
+  "population": {
+    "confirmed_occurrences": 106,
+    "immutable_sites": 50
+  },
+  "site_definition": "original_roi_id plus rounded source x/y coordinate",
+  "alignment": {
+    "anchor": "annotated event onset",
+    "pre_frames": 15,
+    "fps": 10.0
+  },
+  "shape_normalization": "subtract pre-event median, divide by max absolute centered value per occurrence and stage",
+  "aggregation": "mean shapes and median scalar metrics across bursts within immutable site",
+  "trace_taxonomy": {
+    "source": "repo://paper/overleaf_jnm/figures/final/fig04_trace_taxonomy_site_assignments.tsv",
+    "source_sha256": "c1d5c2766c6850b6b7e766ad89b872fce45b1dcd3f8f37f0c37ddedb97568cd0",
+    "class_counts": {
+      "1": 38,
+      "2": 12
+    },
+    "class_interpretation": "reassessed joint trace-shape measurement profile, not biological cell type"
+  },
+  "source_manifest": "media://v7_priority_neuron_media_cs_parzen/manifest.json",
+  "source_manifest_sha256": "b481b7e92fc4792482f6f4f00923e8ce23fcc5508dd0dcc8b5e401d87b2bca7d",
+  "source_arrays": {
+    "data://Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy": "04dfbe2f7cb69d72ff75e23ad17c87b3fd406c96a4b872148de2285a9a44d449",
+    "data://Outputs/HierarchicalParzenICA/spon_ca_burst_multilag_msica_v5_all_roi_diagnostics/cache/recovery_msica.npy": "b83127865eac2ca828729868c80ae09030d5c042004703c1cc646b89ff8c3306",
+    "data://Outputs/HierarchicalParzenICA/spon_ca_burst_multilag_msica_v5_all_roi_diagnostics/cache/recovery_msln.npy": "339598552e293717df417918c767b2ba2a74e23c2d71e684bcedc7cc6519d6f7"
+  },
+  "outputs": {
+    "figure": "repo://paper/overleaf_jnm/figures/final/fig04_population_trace_summary.png",
+    "source_tsv": "repo://paper/overleaf_jnm/figures/final/fig04_population_trace_summary_source.tsv",
+    "figure_sha256": "7933ae16cf418253632cdf6936b8efc8787436fe83f87c47aaa1f4d196ef780d",
+    "source_tsv_sha256": "2eb031fcdda75ee4b334a2c9fc13373fd7513ceb0b2bc9f7515a518ac8504c55"
+  }
+}

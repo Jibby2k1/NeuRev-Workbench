@@ -1,7 +1,0 @@
-{
-  "primary_figure": "figures/signature_generalization.png",
-  "primary_metrics": "summary.json",
-  "roi_table": "tables/roi_generalization_metrics.csv",
-  "signature_evidence_level": "S0_no_reproducible_signature",
-  "status": "signature_null_generalization_complete_audit_incomplete"
-}

@@ -45,20 +45,19 @@ The following indexes make file discovery explicit:
 
 `README.md` and `docs/CODEBASE_NAVIGATION.md` route into these indexes.
 
-## Intentionally deferred moves
+## Preserved historical plans
 
-The following old, generic plan files remain in place:
+The following old, generic plan files are preserved under
+`docs/archive/plans/`:
 
-- `goal.md`
-- `plan.md`
-- `codex_neurobench_plan.md`
+- `docs/archive/plans/goal.md`
+- `docs/archive/plans/plan.md`
+- `docs/archive/plans/codex_neurobench_plan.md`
 - `docs/plan.md`
 
-They are large historical snapshots with possible external references. Moving
-them during an already dirty research batch would create compatibility risk.
-They are classified as historical in navigation and ignored by default search.
-A future clean commit may move them under `docs/archive/plans/` while leaving
-short compatibility stubs.
+The three generic root snapshots were moved intact and their known incoming
+references were updated. `docs/plan.md` remains the curated long-term
+documentation roadmap rather than a root-level project entry point.
 
 Also deferred:
 
@@ -69,4 +68,3 @@ Also deferred:
 - changing the source-tree dependency in
   `neurobench/dynamics/manual_annotations.py` without a dedicated regression
   task.
-

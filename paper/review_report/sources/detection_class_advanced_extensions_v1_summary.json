@@ -1,0 +1,135 @@
+{
+  "canonical_trajectories": {
+    "canonical_ids": 24,
+    "median_dominant_class_fraction_multi_burst": 1.0,
+    "with_two_or_more_matched_bursts": 8
+  },
+  "class_fit_modified": false,
+  "context_association": {
+    "categories": [
+      "challenging/structured context",
+      "isolated",
+      "overlapping"
+    ],
+    "classes": [
+      1,
+      2,
+      3
+    ],
+    "cramers_v": 0.4106711502538176,
+    "n": 45,
+    "table": [
+      [
+        0,
+        5,
+        5
+      ],
+      [
+        8,
+        2,
+        20
+      ],
+      [
+        0,
+        0,
+        5
+      ]
+    ]
+  },
+  "limitations": [
+    "centroid margin is relative geometry, not a calibrated posterior probability",
+    "morphology/context and canonical trajectories use candidate-assisted v7 review",
+    "field boundary is provisional",
+    "all tests are descriptive within one recording and multiple secondary comparisons are not confirmatory"
+  ],
+  "morphology_association": {
+    "categories": [
+      "ambiguous/non-neuronal boundary",
+      "localized boundary"
+    ],
+    "classes": [
+      1,
+      2,
+      3
+    ],
+    "cramers_v": 0.5032120244670295,
+    "n": 45,
+    "table": [
+      [
+        0,
+        4,
+        3
+      ],
+      [
+        8,
+        3,
+        27
+      ]
+    ]
+  },
+  "schema_version": 1,
+  "soft_membership": {
+    "ambiguity_fraction": 0.2558139534883721,
+    "ambiguity_threshold": 0.30066255221051263,
+    "ambiguous_occurrences": 22,
+    "confirmed_median": 0.4728449246015156,
+    "confirmed_vs_uncertain_mann_whitney_p": 0.7901982250114046,
+    "measure": "relative nearest-versus-second-centroid distance margin; not a calibrated probability",
+    "median_margin_by_class": {
+      "1": 0.51105917963345,
+      "2": 0.44042000695290984,
+      "3": 0.47408214795024844
+    },
+    "uncertain_median": 0.511310882637068
+  },
+  "spatial_and_burst": {
+    "burst_chi_square_p_not_primary_sparse_expected_counts": 0.4839876750645631,
+    "burst_cramers_v": 0.17848016349481077,
+    "burst_label_permutation_p": 0.5025099498010039,
+    "burst_table": [
+      [
+        8,
+        1,
+        14
+      ],
+      [
+        9,
+        1,
+        11
+      ],
+      [
+        8,
+        2,
+        11
+      ],
+      [
+        10,
+        4,
+        7
+      ]
+    ],
+    "field_boundary_x_px": 286.0,
+    "field_chi_square_p_not_primary_sparse_expected_counts": 0.03398560651413857,
+    "field_cramers_v": 0.4334498677803327,
+    "field_label_permutation_p": 0.040979180416391675,
+    "field_table_class_by_side": [
+      [
+        1,
+        9
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        0,
+        20
+      ]
+    ],
+    "permutation_repeats": 50000,
+    "spatial_grain": "36 consolidated detection sites using dominant class",
+    "x_kruskal_p": 0.005004948037586846,
+    "y_kruskal_p": 0.038410811792478586
+  },
+  "status": "passed"
+}

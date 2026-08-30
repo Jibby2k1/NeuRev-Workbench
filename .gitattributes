@@ -2,4 +2,22 @@
 neurobench/workbench/assets/workbench.js linguist-generated=true
 docs/reports/**/report.html linguist-generated=true
 docs/API_REFERENCE.md linguist-generated=true
+research/generated/** linguist-generated=true
+paper/overleaf_jnm/story/research_story.yaml linguist-generated=true
+paper/overleaf_jnm/generated/** linguist-generated=true
+paper/overleaf_jnm/generated/** -whitespace
+paper/overleaf_jnm/EXPERIMENT_STORY.md linguist-generated=true
+paper/overleaf_jnm/STORY_INDEX.md linguist-generated=true
+docs/navigation.json linguist-generated=true
+llms.txt linguist-generated=true
+docs/assets/diagrams/*.svg linguist-generated=true
+docs/archive/plans/** -whitespace
 
+# Keep binary scientific artifacts out of text diffs.
+paper/**/*.tsv linguist-generated=true -diff
+*.pdf binary
+*.png binary
+*.npz binary
+*.npy binary
+*.tif binary
+*.tiff binary

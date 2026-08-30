@@ -1,0 +1,3 @@
+source	rows	clear_rows
+cross_burst_transfer	35	1
+pre_event_frozen_footprint	12	4

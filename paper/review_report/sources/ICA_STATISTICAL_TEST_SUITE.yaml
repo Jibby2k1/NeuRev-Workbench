@@ -1,0 +1,65 @@
+schema_version: 1
+frozen_on: "2026-08-24"
+scope: single_recording_within_recording
+representation_families:
+  temporal_two_frame_ica:
+    identity: frozen_two_frame_ica_sha256_705bbfe45097cebd2d56875b98fc90a598aa49311a6f9a7f893976d93134c7e7
+    primary_role: temporal_change_detection
+    prohibited_interpretation: independent_neural_source
+  spatial_dense_fastica_wiener:
+    identity: spon_ca_burst_spatial_ica_screen_v1__c2_dense_convolutional_fastica
+    primary_role: spatial_morphology_and_boundary_visibility
+    status: exploratory_audit_failed
+  tensor_factor_ica:
+    identity: frozen_two_frame_ica_site_by_burst_by_time_rank2
+    primary_role: representation_complexity
+    individual_factor_interpretation: prohibited_due_lobo_instability
+hypotheses:
+  - id: ICA_T1
+    question: Does temporal two-frame ICA add an operation beyond signed difference?
+    metric: equivalence_to_signed_difference
+    current_result: r_squared_0.9938_no_independent_operation
+  - id: ICA_S1
+    question: Does spatial ICA improve reviewer boundary visibility over Raw alone?
+    primary_outcomes: [boundary_resolvable, neuron_shape_resolvable, reviewer_confidence]
+    design: blinded_within_observation_raw_vs_ica_vs_combined
+    status: pending_panel_specific_review
+  - id: ICA_S2
+    question: Are spatial ICA footprints compact and localized relative to matched annular and translated controls?
+    primary_outcomes: [center_surround_contrast, compactness, footprint_radius, translated_control_delta]
+    design: frozen_spatial_ica_no_label_refit
+    status: ready_to_run
+  - id: ICA_S3
+    question: Does spatial ICA help difficult morphology strata without losing event timing?
+    strata: [localized_center, membrane_or_ring, overlapping, weak_signal, no_boundary]
+    primary_outcomes: [known_positive_recall, boundary_resolvable, peak_frame_error, peak_retention, area_retention]
+    status: ready_to_run
+  - id: ICA_N1
+    question: Does ICA carry stable cross-neural coactivity information?
+    status: exploratory_supported
+  - id: ICA_F1
+    question: Are individual ICA tensor factors stable enough to interpret?
+    stability_threshold: 0.8
+    current_result: failed_component_stability
+gates:
+  provenance:
+    require_exact_displayed_panel_for_each_review: true
+    original_hard_roi_clip_panels: [raw_intensity, fixed_pseudocolor, positive_temporal_change]
+    do_not_relabel_positive_change_as_ica: true
+  morphology_promotion:
+    require_blinded_raw_ica_combined_ablation: true
+    require_site_blocked_uncertainty: true
+    require_morphology_stratum_reporting: true
+    require_matched_spatial_controls: true
+  interpretation:
+    visual_utility_does_not_require_native_signal_fidelity: true
+    visual_utility_does_not_establish_anatomical_identity: true
+    unmatched_candidates_remain_unknown: true
+existing_spatial_screen_checkpoint:
+  lane: c2_dense_convolutional_fastica
+  fixed_budget_recall: 0.6713768115942029
+  median_peak_retention: 0.9747201204299927
+  median_area_retention: 0.9520078301429749
+  median_peak_frame_error: 0
+  audit_pass: false
+  failure_reason: poor_exact_semisynthetic_preservation_and_pending_held_burst_seed_visual_confirmation

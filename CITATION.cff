@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use NeuRev Workbench, cite this software and the experiment-specific references documented in the repository."
+title: "NeuRev Workbench"
+type: software
+authors:
+  - family-names: Valle
+    given-names: Raul
+version: 0.1.0
+repository-code: "https://github.com/Jibby2k1/NeuRev-Workbench"
+url: "https://github.com/Jibby2k1/NeuRev-Workbench"
+license: MIT
+abstract: >-
+  An evidence-first workbench for interpretable neural-imaging measurement,
+  source separation, candidate detection, scientific audit, and bounded review.
+keywords:
+  - calcium imaging
+  - neuron detection
+  - source separation
+  - scientific reproducibility
+  - image analysis

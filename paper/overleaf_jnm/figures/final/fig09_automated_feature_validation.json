@@ -1,0 +1,11 @@
+{
+  "population": {
+    "bursts": 4,
+    "occurrences": 106,
+    "sites": 50
+  },
+  "source_artifact_index_sha256": "52c10fa6e39af45b8ad9750c1cbf09cb9d554fe2cc5f352bdbd8e4bb209e72ff",
+  "source_run": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_automated_feature_validation_v1",
+  "source_summary_sha256": "104b7872bae62e166ff4d9c022d671fe259aed497c880806aca4dd35df7bfab2",
+  "status": "imported_from_validated_automated_suite"
+}

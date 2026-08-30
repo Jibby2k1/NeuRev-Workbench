@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neurev.org/research/schemas/decision.schema.json",
+  "title": "NeuRev research decision record",
+  "description": "Auditable decision linking bounded evidence to an explicit research action.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "id",
+    "origin",
+    "program_id",
+    "title",
+    "lifecycle",
+    "action",
+    "rationale",
+    "evidence_summary",
+    "review_state",
+    "experiment_ids",
+    "claim_ids",
+    "evidence_capsule_ids",
+    "constraints",
+    "visibility"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "record_type": {"const": "decision"},
+    "id": {"$ref": "#/$defs/decision_id"},
+    "origin": {"$ref": "#/$defs/origin"},
+    "program_id": {"$ref": "#/$defs/program_id"},
+    "title": {"$ref": "#/$defs/title"},
+    "lifecycle": {
+      "type": "string",
+      "enum": ["draft", "active", "superseded", "withdrawn", "archived"]
+    },
+    "action": {
+      "type": "string",
+      "enum": ["promote", "retain", "hold", "stop", "supersede"]
+    },
+    "rationale": {"$ref": "#/$defs/nonempty_text"},
+    "evidence_summary": {"$ref": "#/$defs/nonempty_text"},
+    "effective_on": {"$ref": "#/$defs/date"},
+    "review_state": {"$ref": "#/$defs/review_state"},
+    "experiment_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/experiment_id"}
+    },
+    "claim_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/claim_id"}
+    },
+    "evidence_capsule_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/evidence_capsule_id"}
+    },
+    "constraints": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonempty_text"}
+    },
+    "follow_up": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonempty_text"}
+    },
+    "supersedes_decision_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/decision_id"}
+    },
+    "visibility": {"$ref": "#/$defs/visibility"},
+    "legacy_status": {"$ref": "#/$defs/legacy_status"},
+    "created_on": {"$ref": "#/$defs/date"},
+    "updated_on": {"$ref": "#/$defs/date"}
+  },
+  "anyOf": [
+    {"properties": {"experiment_ids": {"minItems": 1}}},
+    {"properties": {"claim_ids": {"minItems": 1}}}
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "origin": {
+            "properties": {"kind": {"const": "native"}},
+            "required": ["kind"]
+          }
+        },
+        "required": ["origin"]
+      },
+      "then": {"required": ["effective_on"]}
+    },
+    {
+      "if": {"properties": {"action": {"const": "supersede"}}, "required": ["action"]},
+      "then": {
+        "properties": {"supersedes_decision_ids": {"minItems": 1}},
+        "required": ["supersedes_decision_ids"]
+      }
+    }
+  ],
+  "$defs": {
+    "decision_id": {"type": "string", "pattern": "^NREV-DEC-[0-9]{4,}$"},
+    "origin": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {"kind": {"const": "native"}}
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "source_path", "source_sha256", "recorded_on", "missing_fields"],
+          "properties": {
+            "kind": {"const": "migrated_legacy"},
+            "source_path": {"$ref": "#/$defs/repository_path"},
+            "source_sha256": {"$ref": "#/$defs/sha256"},
+            "recorded_on": {"$ref": "#/$defs/date"},
+            "missing_fields": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {"$ref": "#/$defs/nonempty_text"}
+            }
+          }
+        }
+      ]
+    },
+    "program_id": {"type": "string", "pattern": "^NREV-PRG-[0-9]{4,}$"},
+    "experiment_id": {"type": "string", "pattern": "^NREV-EXP-[0-9]{4,}$"},
+    "claim_id": {"type": "string", "pattern": "^NREV-CLM-[0-9]{4,}$"},
+    "evidence_capsule_id": {
+      "type": "string",
+      "pattern": "^NREV-EVC-[A-Z0-9][A-Z0-9-]{2,63}$"
+    },
+    "title": {"type": "string", "minLength": 3, "maxLength": 160},
+    "nonempty_text": {"type": "string", "minLength": 1},
+    "review_state": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "not_required",
+        "pending",
+        "in_review",
+        "changes_requested",
+        "approved",
+        "adjudication_required",
+        "adjudicated"
+      ]
+    },
+    "visibility": {"type": "string", "enum": ["public", "internal", "restricted"]},
+    "legacy_status": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Original free-form status retained only for migration provenance."
+    },
+    "date": {"type": "string", "format": "date"}
+    ,
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "repository_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:[\\\\/])(?![A-Za-z][A-Za-z0-9+.-]*:)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    }
+  }
+}

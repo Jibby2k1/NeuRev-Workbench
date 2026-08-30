@@ -1,0 +1,7 @@
+cohort	certainty_group	eligible_labels	matched_labels	unmatched_labels	matched_fraction
+frozen_v1_adjudicated	confirmed	19	10	9	0.5263157894736842
+frozen_v1_adjudicated	identity uncertain	5	0	5	0.0
+frozen_v1_adjudicated	probable	1	0	1	0.0
+canonical_v7_adjudicated	confirmed	54	34	20	0.6296296296296297
+canonical_v7_adjudicated	artifact	9	1	8	0.1111111111111111
+canonical_v7_adjudicated	identity uncertain	22	10	12	0.45454545454545453

@@ -18,9 +18,9 @@ def _peak_amplitude(trace:np.ndarray,start:int,duration:int,pre:int)->float:
 def run(video_path:Path,labels_path:Path,output:Path,*,radius:int=2,annulus_inner:int=3,annulus_outer:int=6,outer_inner:int=7,outer_outer:int=10,pre:int=20,post:int=20,folds:int=5,shifts:int=199,bootstraps:int=5000,seed:int=20260820)->dict[str,Any]:
     if output.exists(): raise FileExistsError(f"refusing existing output: {output}")
     rows=_read_rows(labels_path); video=np.load(video_path,mmap_mode="r",allow_pickle=False)
-    if len(rows)!=79 or len({r["roi_id"] for r in rows})!=26: raise ValueError("canonical 79-occurrence/26-ROI contract failed")
+    if len(rows)!=79 or len({r["observation_site_id"] for r in rows})!=27: raise ValueError("79-occurrence/27-site contract failed")
     duration=max(r["stop"]-r["start"] for r in rows); length=pre+duration+post; rng=np.random.default_rng(seed)
-    geometry={r["roi_id"]:(r["x"],r["y"]) for r in rows}; by_roi={rid:[r for r in rows if r["roi_id"]==rid] for rid in sorted(geometry)}
+    geometry={r["observation_site_id"]:(r["x"],r["y"]) for r in rows}; by_roi={rid:[r for r in rows if r["observation_site_id"]==rid] for rid in sorted(geometry)}
     roi={rid:_roi_trace(video,*xy,radius) for rid,xy in geometry.items()}
     local={rid:_annulus_trace(video,*xy,annulus_inner,annulus_outer) for rid,xy in geometry.items()}
     outer={rid:_annulus_trace(video,*xy,outer_inner,outer_outer) for rid,xy in geometry.items()}
@@ -51,7 +51,7 @@ def run(video_path:Path,labels_path:Path,output:Path,*,radius:int=2,annulus_inne
     s1=bool(len(within)>0 and float(np.median(within))>0.5); s2=bool(stats["delta_vs_same_roi_shift"]["ci95_low"]>0 and stats["delta_vs_spatial_control"]["ci95_low"]>0); s3=bool(s2 and stats["delta_vs_same_roi_shift"]["sign_flip_p_upper"]<=.01 and stats["delta_vs_spatial_control"]["sign_flip_p_upper"]<=.01)
     level="S3_held_out_residual_signature_within_recording" if s3 else "S2_across_roi_residual_signature" if s2 else "S1_within_roi_residual_repeatability" if s1 else "S0_no_reproducible_residual_signature"
     decision="advance_to_bounded_multitime_temporal_ica" if s3 else "stop_signature_branch"
-    summary={"schema_version":1,"status":"roi_minus_annulus_signature_complete_audit_incomplete","occurrences":len(rows),"canonical_rois":len(records),"folds":folds,
+    summary={"schema_version":1,"status":"roi_minus_annulus_signature_complete_audit_incomplete","occurrences":len(rows),"original_sites":len(records),"proposed_canonical_identities":len({r["canonical_neuron_id"] for r in rows}),"analysis_view":"original_site_adjudicated_timing","folds":folds,
              "representation":"amplitude-preserving ROI mean minus 3-6 px annulus mean","spatial_control":"3-6 px annulus mean minus 7-10 px outer-ring mean",
              "shape_normalization":"pre-event median and MAD only; residual amplitude retained separately; no peak alignment or scaling",
              "held_out_event_correlation":{"mean":float(held.mean()),"median":float(np.median(held))},"within_roi_pairwise_correlation":{"mean":float(within.mean()),"median":float(np.median(within))},

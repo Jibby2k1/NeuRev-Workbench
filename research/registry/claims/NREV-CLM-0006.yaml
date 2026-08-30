@@ -1,0 +1,29 @@
+schema_version: 1
+record_type: claim
+id: NREV-CLM-0006
+program_id: NREV-PRG-0001
+title: Identity Aware Miss Interpretation
+statement: Most apparent local recentering improvements among the all-lane misses cross an existing identity boundary and
+  therefore cannot be treated as safe coordinate corrections.
+scope: Canonical-v8 interpretation audit of the 12 canonical-v7 all-lane B58 misses; 2 same-identity collisions, 6 other-identity
+  collisions, and 4 identity-clear hypotheses under a fixed six-pixel guard.
+limitations:
+- 'No inference is registered beyond this scope: Canonical-v8 interpretation audit of the 12 canonical-v7 all-lane B58 misses;
+  2 same-identity collisions, 6 other-identity collisions, and 4 identity-clear hypotheses under a fixed six-pixel guard.'
+claim_state: supported
+evidence_tier: reviewed_current_recording
+review_state: in_review
+evidence_capsule_ids:
+- NREV-EVC-EXP-0007
+decision_ids:
+- NREV-DEC-0007
+tags:
+- identity
+- aware
+- miss
+- interpretation
+visibility: public
+legacy_id: identity_aware_miss_interpretation
+legacy_status: established_reviewed_current_recording
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

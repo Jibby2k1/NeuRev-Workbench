@@ -1,0 +1,99 @@
+{
+  "artifact_manifest_sha256": "b7c71d5bdf4bc41c98ed794653834e170f2d46e1b57a2fcbd9633324c0032258",
+  "artifacts": [
+    {
+      "access": "public",
+      "bytes": 2694,
+      "id": "artifact-01",
+      "media_type": "text/markdown",
+      "repository_path": "docs/research/SPON_CA_BURST_LABEL_FREE_FALSE_ALARM_V5_RESULTS.md",
+      "role": "report",
+      "sha256": "377cc6b7b69cede410ebf2d0bd04587c40eabe55449c17a338bc9dbb4e25a8ab"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 5294,
+      "id": "artifact-02",
+      "media_type": "application/json",
+      "repository_path": "Outputs/NeuronIdentifiability/label_free_false_alarm_gated_fusion_v5/summary.json",
+      "role": "summary",
+      "sha256": "74407a1bb22d5fa0bf8dc63548ddd1929b071cd2fb4574bea6be0eb2d55ec6f1"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 36381,
+      "id": "artifact-03",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "Outputs/NeuronIdentifiability/label_free_false_alarm_gated_fusion_v5/evaluation_operating_points.tsv",
+      "role": "table",
+      "sha256": "9783806e011a3484d46a1dbd375e4893a70e20efaf916af36264b244beb7a5f3"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 424902,
+      "id": "artifact-04",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "Outputs/NeuronIdentifiability/label_free_false_alarm_gated_fusion_v5/evaluation_candidates.tsv",
+      "role": "table",
+      "sha256": "e6a1865209e6a79f7c716b431d03242e3b2215cdd3e9b977ed4f8ffc43fee58e"
+    }
+  ],
+  "boundaries": {
+    "does_not_establish": [
+      "Claims beyond the registered finding and linked claim scopes.",
+      "Reproducible run provenance that was absent from the v1 story."
+    ],
+    "limitations": [
+      "Development-null thresholds did not guarantee the nominal rate after family shift; gates use simplified simulator truth; nulls omit biological non-neuronal transients; candidate-level NMS is shared but learned fusion can promote adjacent maxima."
+    ],
+    "scope": "This capsule preserves the registered v1 experiment finding and its linked claim scopes."
+  },
+  "claim_impacts": [
+    {
+      "claim_id": "NREV-CLM-0011",
+      "effect": "supports",
+      "scope": "54 untouched-family movies with 2, 4, or 8 sources; three development families for gate fitting and null calibration; target false-alarm rates 1, 2, and 4 per movie.",
+      "summary": "The experiment supports this claim only within its registered scope."
+    }
+  ],
+  "evidence_tier": "computational_simulation",
+  "experiment_id": "NREV-EXP-0012",
+  "gates": [
+    {
+      "criterion": "Every artifact referenced by the v1 experiment story is available and checksum identified at migration.",
+      "id": "legacy-artifact-capture",
+      "observed": "Captured 4 of 4 referenced artifacts with SHA-256 identities.",
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-29T23:52:35Z",
+  "id": "NREV-EVC-EXP-0012",
+  "legacy_status": "complete_computational_negative_result",
+  "lifecycle": "validated",
+  "metrics": [],
+  "outcome": "rejected",
+  "program_id": "NREV-PRG-0001",
+  "record_type": "evidence_capsule",
+  "review_state": "not_requested",
+  "run_ids": [],
+  "schema_version": 1,
+  "source_records_sha256": "aa9ed719df93122645818917b9c0e6f0b5887d424afec2bf2277d61cac2cb876",
+  "summary": "At the primary nominal target of two false alarms per movie, gated fusion F1 was 0.5441 versus 0.5450 for spatial context. Gating raised precision from 0.549 to 0.603 but lowered recall from 0.590 to 0.563 and increased duplicates from 0.22 to 0.87 per movie. Its empirical-noise benefit did not offset degradation under nonrigid motion.",
+  "validation": {
+    "checked_at": "2026-08-29T23:52:35Z",
+    "checks": [
+      {
+        "id": "portable-paths",
+        "status": "passed",
+        "summary": "Artifact references are repository-relative; ignored local outputs are metadata-only."
+      },
+      {
+        "id": "historical-provenance",
+        "status": "not_run",
+        "summary": "The v1 story did not encode run-level provenance, so no historical run record was invented."
+      }
+    ],
+    "status": "partial"
+  },
+  "visibility": "public"
+}

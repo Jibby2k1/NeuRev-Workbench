@@ -1,0 +1,41 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0008
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical execution date
+  - run-level code, configuration, input, environment, and randomization provenance
+  - preregistered gates
+  - experiment-specific falsifiers
+  - normalized unit of analysis, comparison, and data scope
+program_id: NREV-PRG-0001
+title: Expanded Automated Validation V3
+question: Which feature roles survive identity grouping, perturbation, label-light anomaly analysis, and prospective or synthetic
+  controls?
+objective: Which feature roles survive identity grouping, perturbation, label-light anomaly analysis, and prospective or synthetic
+  controls?
+rationale: Migrated to preserve the v1 question-design-result-decision record; the v1 story did not encode a separate rationale.
+lifecycle: validated
+outcome: inconclusive
+evidence_tier: current_recording
+review_state: not_requested
+falsifiers: []
+design:
+  summary: Run ten frozen test families spanning grouped prediction, 100 site-bootstrap stability fits, conditional importance,
+    prospective-footprint reuse, controlled mixtures, metamorphic checks, abstention, recovered-only anomaly models, and graph
+    crowding.
+gates: []
+claim_ids:
+- NREV-CLM-0007
+decision_ids:
+- NREV-DEC-0008
+evidence_capsule_id: NREV-EVC-EXP-0008
+visibility: public
+legacy_id: expanded_automated_validation_v3
+legacy_status: complete_exploratory
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

@@ -1,0 +1,35 @@
+schema_version: 1
+recorded_on: "2026-08-24"
+status: tentatively_approved
+scope: detection_profile_author_review
+final_publication_approval: false
+decisions:
+  - id: 1
+    key: measurement_class_language
+    approved: true
+    wording: "The three groups are detection-event measurement classes, not neuron types."
+  - id: 2
+    key: certainty_language
+    approved: true
+    wording: "Identity uncertainty aligns with class composition, but not with centroid-assignment ambiguity."
+  - id: 3
+    key: class_1_name
+    approved: true
+    wording: "Localized, high-signal, recurrent."
+  - id: 4
+    key: class_2_name
+    approved: true
+    wording: "Broad, low-signal, early/episodic."
+  - id: 5
+    key: class_3_name
+    approved: true
+    wording: "Broad, lower-signal, recurrent."
+  - id: 6
+    key: field_result
+    approved: true
+    wording: "Retain only as a fragile, hypothesis-generating, supplementary observation."
+  - id: 7
+    key: positive_unlabeled_boundary
+    approved: true
+    wording: "Sparse overlap must not be called precision, specificity, or false-positive rate."
+note: "Recorded at the author's request as tentative working decisions while cross-neural analyses are considered."

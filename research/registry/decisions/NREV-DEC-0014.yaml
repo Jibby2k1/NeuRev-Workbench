@@ -1,0 +1,35 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0014
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical decision effective date
+program_id: NREV-PRG-0001
+title: Decision after Targeted Automated Development V8
+lifecycle: active
+action: stop
+rationale: Retain single-window robust stopping; reject unconstrained NMF and simple directional subtraction; pursue joint
+  spatial-temporal generative deblending and source-specific kinetic likelihood ratios only with new development conditions.
+evidence_summary: Consensus and single-window stopping were identical at F1 0.568 and radius sensitivity 0.0417. Rank-two
+  NMF reduced weak-identity recovery from 0.354 to 0.069 and mean F1 from 0.580 to 0.354. Directional contrast reduced reversed
+  AUC to 0.523 but also reduced forward AUC to 0.477, failing useful directionality. Only one of five gates passed.
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0014
+claim_ids:
+- NREV-CLM-0013
+evidence_capsule_ids:
+- NREV-EVC-EXP-0014
+constraints:
+- Consensus is tested after spatial scoring rather than during source formation; NMF rank is fixed to the true two-source
+  challenge and remains unconstrained by calcium kinetics; directional contrast uses maximum correlations and may cancel heterogeneous
+  source asymmetries.
+- The historical decision date was not encoded in the v1 story and was not guessed during migration.
+visibility: public
+legacy_status: complete_computational_negative_result
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

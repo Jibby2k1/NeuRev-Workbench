@@ -1,0 +1,84 @@
+\documentclass[preprint,12pt,authoryear]{elsarticle}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{booktabs,tabularx,array}
+\usepackage{graphicx,float}
+\usepackage{xcolor,microtype,url,hyperref}
+\usepackage[nameinlink,capitalize,noabbrev]{cleveref}
+
+\graphicspath{{figures/}}
+\setlength{\emergencystretch}{3em}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!45!black,
+  urlcolor=blue!55!black,
+  pdftitle={High-level research overview: shared burst dynamics and neuron identifiability},
+  pdfauthor={Raul Valle, Jose Principe, Yinong Chen, Chenyu Liang, Xin Tang}
+}
+
+\input{macros/notation}
+\input{macros/provisional}
+\input{macros/results_macros}
+\input{macros/full_trace_feature_panel}
+\input{macros/automated_feature_validation}
+\input{macros/feature_deep_dives}
+
+\journal{Research overview accompanying the technical manuscript}
+
+\begin{document}
+\begin{frontmatter}
+
+\title{What the current zebrafish fluorescence recording tells us about shared bursts and neuron identifiability}
+
+\author[uf]{Raul Valle}
+\author[affpending]{Jose Principe}
+\author[affpending]{Yinong Chen}
+\author[affpending]{Chenyu Liang}
+\author[affpending]{Xin Tang}
+
+\affiliation[uf]{organization={Department of Electrical and Computer Engineering, University of Florida},
+  city={Gainesville}, state={Florida}, country={United States}}
+\affiliation[affpending]{organization={Affiliations pending author confirmation}}
+
+\begin{abstract}
+This document is a reader-friendly companion to the evidence-complete technical
+manuscript. The central result is that the recording contains a strong,
+repeatable burst waveform, but that waveform is shared by labeled neurons and
+nearby tissue. The processing pipeline separates temporal components and
+standardizes each location against its local space--time variability. These
+transformations produce stable, useful measurement representations, but they do
+not by themselves prove that each output is an independently identified neuron.
+Across 106 confirmed neuron--burst observations at 50 fixed spatial sites,
+complete-trace event localization is already near ceiling for Raw amplitude,
+the frozen carrier, local coherence, and lagged recurrence. A harder frame-level
+test ranks Raw highest (AUC \AutoRawAUC{}), and all six compact features score
+higher at true centers than at matched displaced tissue. A richer recovery
+model improves cross-fitted point estimates but does not pass the site-bootstrap
+uncertainty gate. Neighborhood coherence adds its clearest value during
+full-field candidate ranking. Two
+recurrent trace phenotypes summarize major differences in persistence, local
+contrast, and spatial coupling. The frozen six-component CS--Parzen temporal ICA
+is numerically invertible, and the subsequent local-standardization denominator
+has now been reproduced directly at every site. Its global floor was inactive at
+all audited centers, showing that center-trace scaling was driven by measured
+local variability rather than floor clipping. The study therefore supports an
+identifiability-first interpretation: the pipeline is role-specific feature
+engineering and a useful detector representation, while biological source identity and
+full-field precision remain open validation questions.
+\end{abstract}
+
+\begin{keyword}
+zebrafish \sep fluorescence imaging \sep feature engineering \sep independent component analysis \sep local standardization \sep identifiability
+\end{keyword}
+
+\end{frontmatter}
+
+\DraftBanner
+\input{sections_overview/01_research_overview}
+\input{sections_overview/02_current_evidence}
+\input{sections_overview/03_interpretation_and_next_steps}
+\input{sections/06_declarations}
+
+\end{document}

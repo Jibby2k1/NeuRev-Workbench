@@ -7,7 +7,7 @@ inspection, ROI/event labels, notes, keyboard shortcuts, and autosave.
 
 Use this guide when you want to process a video, open the dashboard, review
 candidates, compare parameter settings, or export annotation data for the lab.
-For a map of the full documentation set, see [README.md](README.md).
+For a map of the full documentation set, see the [repository guide](REPOSITORY_GUIDE.md).
 
 **New reviewer?** Start with
 [How to Use the NeuRev Dashboard](HOW_TO_USE_DASHBOARD.md). It is the concise
@@ -154,9 +154,11 @@ For an optional real-browser smoke check, run:
 NEUROBENCH_BROWSER_SMOKE=1 python3 -m pytest tests/test_workbench_browser_smoke.py
 ```
 
-The smoke test builds a tiny workbench, opens it with Firefox headless, and
-checks that a browser screenshot is produced. It is opt-in because local desktop
-Firefox sessions can interfere with headless screenshot mode on some machines.
+The smoke test builds a tiny workbench, opens it in an isolated headless Firefox
+profile, and checks that a browser screenshot is produced. It is opt-in because
+desktop or snap-confined Firefox sessions can still interfere with screenshot
+mode on some machines. A render is bounded to 45 seconds and reports captured
+browser diagnostics on failure; it is not part of the default clean-clone gate.
 
 The v1 builder configures and exports a static/local browser workbench. It does
 not execute image-processing pipelines in the browser. Pipeline runs still

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "program_id": null,
+  "stage_id": null,
+  "generated_at_utc": null,
+  "code": {
+    "repository": null,
+    "revision": null,
+    "dirty": null
+  },
+  "configuration": {
+    "path": null,
+    "sha256": null
+  },
+  "inputs": [],
+  "labels": [],
+  "environment": {
+    "python": null,
+    "platform": null,
+    "cuda_available": null,
+    "packages_file": null
+  },
+  "outputs": []
+}

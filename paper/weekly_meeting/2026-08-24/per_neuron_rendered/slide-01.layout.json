@@ -1,0 +1,369 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/fp5beu",
+    "id": "fp5beu",
+    "slide": 1,
+    "layoutId": "16f501ce-28da-4583-abcd-d838cf17288b",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "42d86e5b-0e44-4ddc-ad02-04c77df4f1a2",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#FFFFFF",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "+mn-lt"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "16f501ce-28da-4583-abcd-d838cf17288b",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "42d86e5b-0e44-4ddc-ad02-04c77df4f1a2",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "42d86e5b-0e44-4ddc-ad02-04c77df4f1a2",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/n6t4na1c",
+      "id": "1",
+      "bbox": [
+        64,
+        52,
+        400,
+        28
+      ],
+      "geometry": "rect",
+      "text": "WEEKLY RESEARCH UPDATE",
+      "textPreview": "WEEKLY RESEARCH UPDATE",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 16,
+        "typeface": "+mn-lt",
+        "color": "#60656D",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "WEEKLY RESEARCH UPDATE"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "WEEKLY RESEARCH UPDATE",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#60656D",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "WEEKLY RESEARCH UPDATE",
+              "fontSize": 16,
+              "color": "#60656D",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/872lwf2x",
+      "id": "2",
+      "bbox": [
+        64,
+        155,
+        610,
+        150
+      ],
+      "geometry": "rect",
+      "text": "Building profiles\nfor individual neurons",
+      "textPreview": "Building profiles | for individual neurons",
+      "resolvedFontSize": 54,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 54,
+        "typeface": "+mn-lt",
+        "color": "#111111",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Building profiles"
+          },
+          {
+            "index": 2,
+            "text": "for individual neurons"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Building profiles",
+          "resolvedTextStyle": {
+            "fontSize": 54,
+            "color": "#111111",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Building profiles",
+              "fontSize": 54,
+              "color": "#111111",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "for individual neurons",
+          "resolvedTextStyle": {
+            "fontSize": 54,
+            "color": "#111111",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "for individual neurons",
+              "fontSize": 54,
+              "color": "#111111",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/98bmpkji",
+      "id": "3",
+      "bbox": [
+        68,
+        360,
+        590,
+        80
+      ],
+      "geometry": "rect",
+      "text": "Why the same burst produces very different evidence for different neurons",
+      "textPreview": "Why the same burst produces very different evidence for different neurons",
+      "resolvedFontSize": 25,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 25,
+        "typeface": "+mn-lt",
+        "color": "#60656D",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Why the same burst produces very different"
+          },
+          {
+            "index": 2,
+            "text": "evidence for different neurons"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Why the same burst produces very different evidence for different neurons",
+          "resolvedTextStyle": {
+            "fontSize": 25,
+            "color": "#60656D",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Why the same burst produces very different evidence for different neurons",
+              "fontSize": 25,
+              "color": "#60656D",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "image",
+      "scope": "slide",
+      "aid": "im/v6xw7q5o",
+      "id": "4",
+      "bbox": [
+        700,
+        110,
+        520,
+        440
+      ],
+      "alt": "Spatial map of per-site observability",
+      "contentType": "image/png",
+      "imageFit": "contain",
+      "asset": {
+        "assetId": "f9aef495-8ebe-45fc-bb00-f393d1999cd2",
+        "contentType": "image/png",
+        "byteLength": 475456
+      }
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/z29kjalg",
+      "id": "5",
+      "bbox": [
+        68,
+        636,
+        500,
+        24
+      ],
+      "geometry": "rect",
+      "text": "Raul Valle  •  24 August 2026",
+      "textPreview": "Raul Valle  •  24 August 2026",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 16,
+        "typeface": "+mn-lt",
+        "color": "#60656D",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Raul Valle  •  24 August 2026"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Raul Valle  •  24 August 2026",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#60656D",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Raul Valle  •  24 August 2026",
+              "fontSize": 16,
+              "color": "#60656D",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

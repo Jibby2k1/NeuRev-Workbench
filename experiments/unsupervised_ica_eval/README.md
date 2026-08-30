@@ -1,7 +1,7 @@
 # Unsupervised ICA evaluation program
 
 This folder is the durable command/config entry point for
-`NEUREV_ICA_UNSUPERVISED_REPRESENTATION_EVAL_PLAN.md`.
+`docs/archive/plans/NEUREV_ICA_UNSUPERVISED_REPRESENTATION_EVAL_PLAN.md`.
 
 - `stage_a_two_frame.json`: label-free canonical fit and operator identification.
 - `stage_b_external_assay.json`: frozen-model external evaluation on the canonical

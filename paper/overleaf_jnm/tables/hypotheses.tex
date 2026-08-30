@@ -1,0 +1,31 @@
+\begingroup
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\setlength{\LTpre}{0.4\baselineskip}
+\setlength{\LTpost}{0.4\baselineskip}
+\begin{longtable}{p{0.055\textwidth} >{\raggedright\arraybackslash}p{0.34\textwidth} >{\raggedright\arraybackslash}p{0.19\textwidth} >{\raggedright\arraybackslash}p{0.32\textwidth}}
+\caption{Prespecified hypothesis hierarchy for the protected analysis.}\label{tab:hypotheses}\\
+\toprule
+ID & Hypothesis & Current status & Confirmatory decision rule \\
+\midrule
+\endfirsthead
+\multicolumn{4}{l}{\small\itshape Table \thetable\ continued from previous page}\\
+\toprule
+ID & Hypothesis & Current status & Confirmatory decision rule \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\small\itshape Continued on next page}\\
+\endfoot
+\bottomrule
+\endlastfoot
+H1 & Annotated events differ from matched ordinary times. & Supported provisionally. & Site/burst-aware block-shift effect and interval exclude the null region. \\
+H2 & Event activity is spatially concentrated at the labeled site. & Partial amplitude evidence. & ROI contrasts outperform matched spatial controls; equivalence assessed only with frozen margins. \\
+H3 & Sites or neurons possess stable activation gain/observability. & Strong exploratory motivation. & Cross-burst rank stability and site variance component pass preregistered reliability gates. \\
+H4 & Neurons possess reproducible neuron-specific temporal waveforms. & Not established. & Functional site component improves held-out reconstruction and exceeds spatial controls. \\
+H5 & Measurement phenotype explains known-positive recovery failures. & Suggestive. & Prespecified covariates improve held-out recovery model with stable coefficient direction. \\
+H6 & Two-frame ICA adds information beyond temporal difference. & Provisionally rejected. & Promote only if repaired rerun breaks the analytic equivalence and adds utility/fidelity. \\
+H7 & Compact spatial/contextual statistics add recovery information. & Supported provisionally. & Frozen same-proposal and proposal-union comparisons improve known-positive recall without disproportionate burden. \\
+H8 & Directed or network interactions are identifiable. & Not established. & Exploratory only; no causal promotion from this recording. \\
+\end{longtable}
+\endgroup

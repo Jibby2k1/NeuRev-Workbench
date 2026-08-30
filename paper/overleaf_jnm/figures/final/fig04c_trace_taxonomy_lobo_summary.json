@@ -1,0 +1,88 @@
+{
+  "status": "exploratory_single_recording",
+  "contract": "leave one burst out; refit two-class joint shape taxonomy on remaining bursts; assign held-out recurrent sites by nearest training centroid",
+  "eligible_rows": 81,
+  "eligible_recurrent_sites": 25,
+  "folds": [
+    {
+      "burst_id": 1,
+      "eligible_recurrent_sites": 17,
+      "agreement_with_training_class": 0.8235294117647058,
+      "median_margin": 0.0587539221827776,
+      "training_T1_retained": 0,
+      "training_T1_total": 0,
+      "training_T2_retained": 14,
+      "training_T2_total": 17
+    },
+    {
+      "burst_id": 2,
+      "eligible_recurrent_sites": 19,
+      "agreement_with_training_class": 0.3684210526315789,
+      "median_margin": 0.11133370993135956,
+      "training_T1_retained": 7,
+      "training_T1_total": 19,
+      "training_T2_retained": 0,
+      "training_T2_total": 0
+    },
+    {
+      "burst_id": 3,
+      "eligible_recurrent_sites": 24,
+      "agreement_with_training_class": 0.7083333333333334,
+      "median_margin": 0.13417833945805807,
+      "training_T1_retained": 15,
+      "training_T1_total": 21,
+      "training_T2_retained": 2,
+      "training_T2_total": 3
+    },
+    {
+      "burst_id": 4,
+      "eligible_recurrent_sites": 21,
+      "agreement_with_training_class": 1.0,
+      "median_margin": 0.29952649208014526,
+      "training_T1_retained": 19,
+      "training_T1_total": 19,
+      "training_T2_retained": 2,
+      "training_T2_total": 2
+    }
+  ],
+  "site_persistence": {
+    "all_fold_agreement_sites": 9,
+    "constant_heldout_label_sites": 3,
+    "median_centroid_margin": 0.132726293084954,
+    "fraction_margin_below_0p10": 0.3950617283950617
+  },
+  "site_blocked_agreement": {
+    "all_bursts": {
+      "mean": 0.74,
+      "ci95": [
+        0.6466666666666666,
+        0.8333333333333333
+      ]
+    },
+    "excluding_burst_2": {
+      "mean": 0.84,
+      "ci95": [
+        0.74,
+        0.9266666666666665
+      ]
+    }
+  },
+  "margin_definition": "(second-nearest distance - nearest distance) / sum of both distances",
+  "limits": [
+    "only recurrent sites test persistence",
+    "single recording",
+    "class alignment uses full joint labels for naming only",
+    "centroid assignment is descriptive, not calibrated probability"
+  ],
+  "seed": 20260826,
+  "inputs": {
+    "repo://paper/overleaf_jnm/figures/final/fig04_population_trace_summary_source.tsv": "2eb031fcdda75ee4b334a2c9fc13373fd7513ceb0b2bc9f7515a518ac8504c55",
+    "repo://paper/overleaf_jnm/figures/final/fig04_trace_taxonomy_site_assignments.tsv": "c1d5c2766c6850b6b7e766ad89b872fce45b1dcd3f8f37f0c37ddedb97568cd0"
+  },
+  "outputs": {
+    "assignments": "repo://paper/overleaf_jnm/figures/final/fig04c_trace_taxonomy_lobo_assignments.tsv",
+    "figure": "repo://paper/overleaf_jnm/figures/final/fig04c_trace_taxonomy_lobo_persistence.png",
+    "assignments_sha256": "080e712b2784469b30da81304fcc8fc16f5ad0011ce1c2183b5a8cfa815a7fc5",
+    "figure_sha256": "52db02ab05d9aab14e3b8cd3d62e0cee38c2b6bea652af9282b3a78d13a32bd2"
+  }
+}

@@ -1,0 +1,30 @@
+schema_version: 1
+record_type: claim
+id: NREV-CLM-0019
+program_id: NREV-PRG-0001
+title: New Candidate Single Reviewer Labels
+statement: Review of previously unmatched candidates expands the provisional appearance envelope to include small, discreet,
+  low-SNR, and crescent-shaped neuron calls, while artifact-adjacent and neighbor-confounded sites remain unresolved.
+scope: 18 selected unmatched sites in one recording; 9 definite, 4 probable, 4 uncertain, and 1 artifact-or-noise call; no
+  existing decisions changed.
+limitations:
+- 'No inference is registered beyond this scope: 18 selected unmatched sites in one recording; 9 definite, 4 probable, 4 uncertain,
+  and 1 artifact-or-noise call; no existing decisions changed.'
+claim_state: provisional
+evidence_tier: reviewed_current_recording
+review_state: in_review
+evidence_capsule_ids:
+- NREV-EVC-EXP-0016
+decision_ids:
+- NREV-DEC-0016
+tags:
+- new
+- candidate
+- single
+- reviewer
+- labels
+visibility: public
+legacy_id: new_candidate_single_reviewer_labels
+legacy_status: provisional_single_reviewer
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

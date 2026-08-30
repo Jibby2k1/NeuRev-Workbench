@@ -1,0 +1,108 @@
+{
+  "artifact_manifest_sha256": "97b49949fe3fa644f9b336ac7b7412a74ca351fc9c2cea38ba1fd6223d9d7015",
+  "artifacts": [
+    {
+      "access": "public",
+      "bytes": 3084,
+      "id": "artifact-01",
+      "media_type": "text/markdown",
+      "repository_path": "docs/research/SPON_CA_BURST_TARGETED_AUTOMATED_DEVELOPMENT_V8_RESULTS.md",
+      "role": "report",
+      "sha256": "6fe819530feb8faac8f4bbbca867252d6bf630c2be12b8a7c66bed105362894b"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 1864,
+      "id": "artifact-02",
+      "media_type": "application/json",
+      "repository_path": "Outputs/NeuronIdentifiability/targeted_automated_development_v8/summary.json",
+      "role": "summary",
+      "sha256": "2dbe81bb78543b90652d80d841ac776f63f8db07f24e976dffdffb7de9e81f2b"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 22709,
+      "id": "artifact-03",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "Outputs/NeuronIdentifiability/targeted_automated_development_v8/parameter_consensus_stopping.tsv",
+      "role": "table",
+      "sha256": "0c6282b90f8018b1c2ad0ed8bcec18532ccfde1d268b8e363740fec43e824c4f"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 13945,
+      "id": "artifact-04",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "Outputs/NeuronIdentifiability/targeted_automated_development_v8/close_source_separation.tsv",
+      "role": "table",
+      "sha256": "05f241a4b2178e1f33f16df83f2f1f6c87107c2c188ebb56110144d82c4d4cce"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 4391,
+      "id": "artifact-05",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "Outputs/NeuronIdentifiability/targeted_automated_development_v8/directional_kinetics.tsv",
+      "role": "table",
+      "sha256": "e94bfec85b39de077b1c9aad3474e4adb4740db2f527a04d8dd2031fa6c689d6"
+    }
+  ],
+  "boundaries": {
+    "does_not_establish": [
+      "Claims beyond the registered finding and linked claim scopes.",
+      "Reproducible run provenance that was absent from the v1 story."
+    ],
+    "limitations": [
+      "Consensus is tested after spatial scoring rather than during source formation; NMF rank is fixed to the true two-source challenge and remains unconstrained by calcium kinetics; directional contrast uses maximum correlations and may cancel heterogeneous source asymmetries."
+    ],
+    "scope": "This capsule preserves the registered v1 experiment finding and its linked claim scopes."
+  },
+  "claim_impacts": [
+    {
+      "claim_id": "NREV-CLM-0013",
+      "effect": "supports",
+      "scope": "Six-seed targeted development package with disjoint artifact definitions, one-to-one weak-identity matching, and explicit forward and reversed kinetic gates.",
+      "summary": "The experiment supports this claim only within its registered scope."
+    }
+  ],
+  "evidence_tier": "computational_simulation",
+  "experiment_id": "NREV-EXP-0014",
+  "gates": [
+    {
+      "criterion": "Every artifact referenced by the v1 experiment story is available and checksum identified at migration.",
+      "id": "legacy-artifact-capture",
+      "observed": "Captured 5 of 5 referenced artifacts with SHA-256 identities.",
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-29T23:52:35Z",
+  "id": "NREV-EVC-EXP-0014",
+  "legacy_status": "complete_computational_negative_result",
+  "lifecycle": "validated",
+  "metrics": [],
+  "outcome": "rejected",
+  "program_id": "NREV-PRG-0001",
+  "record_type": "evidence_capsule",
+  "review_state": "not_requested",
+  "run_ids": [],
+  "schema_version": 1,
+  "source_records_sha256": "af368f16df5210d063e190e8bd594860fc5002c8b4afc1c9004d59e0f1bc907b",
+  "summary": "Consensus and single-window stopping were identical at F1 0.568 and radius sensitivity 0.0417. Rank-two NMF reduced weak-identity recovery from 0.354 to 0.069 and mean F1 from 0.580 to 0.354. Directional contrast reduced reversed AUC to 0.523 but also reduced forward AUC to 0.477, failing useful directionality. Only one of five gates passed.",
+  "validation": {
+    "checked_at": "2026-08-29T23:52:35Z",
+    "checks": [
+      {
+        "id": "portable-paths",
+        "status": "passed",
+        "summary": "Artifact references are repository-relative; ignored local outputs are metadata-only."
+      },
+      {
+        "id": "historical-provenance",
+        "status": "not_run",
+        "summary": "The v1 story did not encode run-level provenance, so no historical run record was invented."
+      }
+    ],
+    "status": "partial"
+  },
+  "visibility": "public"
+}

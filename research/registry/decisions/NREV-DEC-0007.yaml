@@ -1,0 +1,34 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0007
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical decision effective date
+program_id: NREV-PRG-0001
+title: Decision after Identity Aware Recenter Audit V8
+lifecycle: active
+action: retain
+rationale: Add identity-aware exclusion or joint footprint assignment to future localization analyses and resolve ambiguous
+  clusters through bounded-field review rather than automatic recentering.
+evidence_summary: Two candidates collided with the same canonical identity, six with another identity, and only four were
+  identity-clear. Collision shifts were more directionally consistent across stages and more coupled to neighboring traces
+  than identity-clear shifts; footprint morphology alone was weakly separating.
+review_state: in_review
+experiment_ids:
+- NREV-EXP-0007
+claim_ids:
+- NREV-CLM-0006
+evidence_capsule_ids:
+- NREV-EVC-EXP-0007
+constraints:
+- The search and footprint weights are same-event response-selected; labeled geometry is not exhaustive biological truth,
+  only four identity-clear misses remain, and no classifier was fit.
+- The historical decision date was not encoded in the v1 story and was not guessed during migration.
+visibility: public
+legacy_status: complete_reviewed_interpretation_update
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

@@ -1,0 +1,65 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1805,
+      "path": "REPORT.md",
+      "sha256": "b2c86b99eea0eb7fc2f7dc93e316707c40a97a0c7a6036c9751cc192fd90fee4"
+    },
+    {
+      "bytes": 558334,
+      "path": "figures/full_trace_feature_panel.png",
+      "sha256": "cbb764b28ab52ed304c9837683d6723befc89eebba80e1ee9bcc8d06207c4333"
+    },
+    {
+      "bytes": 822,
+      "path": "llm_context.json",
+      "sha256": "9ee16fc446e1d417aae6169961ea761f7c8c7a0ebc084abe2f3612738a8131ed"
+    },
+    {
+      "bytes": 3000,
+      "path": "preflight.json",
+      "sha256": "14dce5ade9513d0478a4cbb539969098adb02fb494e552da0947ea21048040a6"
+    },
+    {
+      "bytes": 88,
+      "path": "status.json",
+      "sha256": "266b1037f80da284621860ca48c726401ce3338429447505810296b43ca99638"
+    },
+    {
+      "bytes": 12462,
+      "path": "summary.json",
+      "sha256": "53f2f4dbf4518f0e0c4e5ca47489a17ffdb2ae2ee36215b1ef85ce66b615f919"
+    },
+    {
+      "bytes": 1284,
+      "path": "tables/burst_feature_summary.tsv",
+      "sha256": "589487f2da0c3b4b9a44552cf43f117f245e78e37691ce183a311ff25de8a4f5"
+    },
+    {
+      "bytes": 2208,
+      "path": "tables/burst_pair_repeatability.tsv",
+      "sha256": "e71e75cf32190b71882c62a596a1f60f2810da2bc27fcb9e2c520facec78464a"
+    },
+    {
+      "bytes": 2941,
+      "path": "tables/feature_summary.tsv",
+      "sha256": "e7e3b27aeaea509d54aff822fb06876c27e48b68fb470d65af18764eb7defe7d"
+    },
+    {
+      "bytes": 182837,
+      "path": "tables/occurrence_feature_metrics.tsv",
+      "sha256": "d4eb7862d3bc5ea0f6b914039e02b30542c8eae766f61a5e8e92819d8bac31d3"
+    },
+    {
+      "bytes": 2239982,
+      "path": "tables/paired_bootstrap_draws.tsv",
+      "sha256": "7a95de35d2e3e0a73f15994bc5484baaf2a2c02eb46722ef2f01c852c14eedfc"
+    },
+    {
+      "bytes": 650,
+      "path": "validation.json",
+      "sha256": "7cdf7de719efa71d9a8b1137c93fa558cf3f5f6621ba6e5cbe0be7da76b9937a"
+    }
+  ],
+  "schema_version": 1
+}

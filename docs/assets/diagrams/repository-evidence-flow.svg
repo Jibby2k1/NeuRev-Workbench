@@ -1,0 +1,203 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 850" role="img" aria-labelledby="evidence-flow-title evidence-flow-desc">
+  <title id="evidence-flow-title">NeuRev repository evidence flow</title>
+  <desc id="evidence-flow-desc">A left-to-right authoritative path moves from a research question and provenance through a frozen experiment, bounded execution, scientific audit, and evidence capsule. Independent review then updates the canonical experiment, run, evidence, claim, decision, and lineage registry. The registry generates synchronized GitHub, documentation, Overleaf, and LLM navigation views.</desc>
+  <defs>
+    <filter id="evidence-shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="#071014" flood-opacity="0.13"/>
+    </filter>
+    <marker id="evidence-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path class="arrow-head" d="M 0 0 L 10 5 L 0 10 z"/>
+    </marker>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --canvas: #f7fafb;
+        --surface: #ffffff;
+        --surface-raised: #eef4f6;
+        --ink: #102733;
+        --muted: #526875;
+        --border: #b9cad1;
+        --line: #607b87;
+        --accent: #147d87;
+        --accent-text: #0f6670;
+        --accent-soft: #ddf4f5;
+        --blue: #3158a5;
+        --blue-soft: #e8eefb;
+        --violet: #6e53a4;
+        --violet-soft: #f0eafa;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --canvas: #091015;
+          --surface: #111b22;
+          --surface-raised: #16232c;
+          --ink: #eff7f8;
+          --muted: #a9bac1;
+          --border: #29404d;
+          --line: #76909b;
+          --accent: #61d4de;
+          --accent-text: #61d4de;
+          --accent-soft: #153b44;
+          --blue: #89a7f5;
+          --blue-soft: #1a2c51;
+          --violet: #c4b5fd;
+          --violet-soft: #31284d;
+        }
+      }
+      text { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: var(--ink); }
+      .canvas { fill: var(--canvas); }
+      .eyebrow { fill: var(--accent-text); font-size: 13px; font-weight: 750; letter-spacing: 2.4px; }
+      .title { font-size: 34px; font-weight: 760; letter-spacing: -0.7px; }
+      .subtitle { fill: var(--muted); font-size: 17px; }
+      .section-label { fill: var(--muted); font-size: 12px; font-weight: 760; letter-spacing: 2px; }
+      .card { fill: var(--surface); stroke: var(--border); stroke-width: 1.4; filter: url(#evidence-shadow); }
+      .card-accent { fill: var(--accent-soft); stroke: var(--accent); }
+      .card-blue { fill: var(--blue-soft); stroke: var(--blue); }
+      .card-violet { fill: var(--violet-soft); stroke: var(--violet); stroke-width: 1.8; }
+      .card-output { fill: var(--surface-raised); }
+      .step { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.2; }
+      .step-blue { fill: var(--blue-soft); stroke: var(--blue); }
+      .step-violet { fill: var(--violet-soft); stroke: var(--violet); }
+      .step-text { fill: var(--accent-text); font-size: 13px; font-weight: 800; text-anchor: middle; dominant-baseline: middle; }
+      .step-text-blue { fill: var(--blue); }
+      .step-text-violet { fill: var(--violet); }
+      .card-title { font-size: 18px; font-weight: 740; }
+      .card-copy { fill: var(--muted); font-size: 14px; }
+      .micro { fill: var(--muted); font-size: 12px; font-weight: 650; letter-spacing: 0.3px; }
+      .connector { fill: none; stroke: var(--line); stroke-width: 2; marker-end: url(#evidence-arrow); }
+      .bus { fill: none; stroke: var(--line); stroke-width: 1.7; }
+      .arrow-head { fill: var(--line); }
+      .caption { fill: var(--muted); font-size: 13px; font-style: italic; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <rect class="canvas" width="1440" height="850" rx="18"/>
+  <text class="eyebrow" x="44" y="52">NEUREV WORKBENCH</text>
+  <text class="title" x="44" y="96">From experiment to defensible story</text>
+  <text class="subtitle" x="44" y="128">Evidence moves forward once; every public view is regenerated from durable records.</text>
+
+  <text class="section-label" x="44" y="158">AUTHORITATIVE EVIDENCE PATH</text>
+
+  <g aria-label="Step 1, question and provenance">
+    <rect class="card card-accent" x="44" y="176" width="248" height="186" rx="15"/>
+    <circle class="step" cx="70" cy="204" r="15"/>
+    <text class="step-text" x="70" y="204">1</text>
+    <text class="card-title" x="62" y="244">Question + provenance</text>
+    <text class="card-copy" x="62" y="277">
+      <tspan x="62" dy="0">Dataset identity and scope</tspan>
+      <tspan x="62" dy="25">Falsifier + primary metric</tspan>
+      <tspan x="62" dy="25">Known evidence boundary</tspan>
+    </text>
+  </g>
+
+  <g aria-label="Step 2, frozen experiment">
+    <rect class="card" x="320" y="176" width="248" height="186" rx="15"/>
+    <circle class="step" cx="346" cy="204" r="15"/>
+    <text class="step-text" x="346" y="204">2</text>
+    <text class="card-title" x="338" y="244">Frozen experiment</text>
+    <text class="card-copy" x="338" y="277">
+      <tspan x="338" dy="0">Protocol + comparator</tspan>
+      <tspan x="338" dy="25">Configuration + code SHA</tspan>
+      <tspan x="338" dy="25">Predeclared gates</tspan>
+    </text>
+  </g>
+
+  <g aria-label="Step 3, bounded execution">
+    <rect class="card card-blue" x="596" y="176" width="248" height="186" rx="15"/>
+    <circle class="step step-blue" cx="622" cy="204" r="15"/>
+    <text class="step-text step-text-blue" x="622" y="204">3</text>
+    <text class="card-title" x="614" y="244">Bounded execution</text>
+    <text class="card-copy" x="614" y="277">
+      <tspan x="614" dy="0">Atomic run record</tspan>
+      <tspan x="614" dy="25">Metrics + uncertainty</tspan>
+      <tspan x="614" dy="25">Resource-safe artifacts</tspan>
+    </text>
+  </g>
+
+  <g aria-label="Step 4, scientific audit">
+    <rect class="card" x="872" y="176" width="248" height="186" rx="15"/>
+    <circle class="step" cx="898" cy="204" r="15"/>
+    <text class="step-text" x="898" y="204">4</text>
+    <text class="card-title" x="890" y="244">Scientific audit</text>
+    <text class="card-copy" x="890" y="277">
+      <tspan x="890" dy="0">Expert / Model / Comparison</tspan>
+      <tspan x="890" dy="25">Media + machine indexes</tspan>
+      <tspan x="890" dy="25">Inventory validation</tspan>
+    </text>
+  </g>
+
+  <g aria-label="Step 5, evidence capsule">
+    <rect class="card card-accent" x="1148" y="176" width="248" height="186" rx="15"/>
+    <circle class="step" cx="1174" cy="204" r="15"/>
+    <text class="step-text" x="1174" y="204">5</text>
+    <text class="card-title" x="1166" y="244">Evidence capsule</text>
+    <text class="card-copy" x="1166" y="277">
+      <tspan x="1166" dy="0">Gates + limitations</tspan>
+      <tspan x="1166" dy="25">Checksums + provenance</tspan>
+      <tspan x="1166" dy="25">Permitted claim scope</tspan>
+    </text>
+  </g>
+
+  <path class="connector" d="M 292 269 H 313"/>
+  <path class="connector" d="M 568 269 H 589"/>
+  <path class="connector" d="M 844 269 H 865"/>
+  <path class="connector" d="M 1120 269 H 1141"/>
+  <text class="micro" x="301" y="254">freeze</text>
+  <text class="micro" x="575" y="254">run</text>
+  <text class="micro" x="849" y="254">audit</text>
+  <text class="micro" x="1124" y="254">package</text>
+
+  <path class="connector" d="M 1272 362 V 412 Q 1272 430 1254 430 H 1176 V 443"/>
+  <g aria-label="Independent review and durable decision">
+    <rect class="card card-blue" x="1018" y="450" width="316" height="136" rx="15"/>
+    <circle class="step step-blue" cx="1045" cy="478" r="15"/>
+    <text class="step-text step-text-blue" x="1045" y="478">6</text>
+    <text class="card-title" x="1070" y="484">Independent review</text>
+    <text class="card-copy" x="1038" y="523">
+      <tspan x="1038" dy="0">Outcome + evidence tier</tspan>
+      <tspan x="1038" dy="25">Decision + adjudication record</tspan>
+    </text>
+  </g>
+
+  <path class="connector" d="M 1018 518 H 879"/>
+  <g aria-label="Canonical research registry">
+    <rect class="card card-violet" x="520" y="450" width="352" height="136" rx="15"/>
+    <circle class="step step-violet" cx="548" cy="478" r="15"/>
+    <text class="step-text step-text-violet" x="548" y="478">7</text>
+    <text class="card-title" x="574" y="484">Canonical registry</text>
+    <text class="card-copy" x="542" y="523">
+      <tspan x="542" dy="0">Experiment · run · evidence</tspan>
+      <tspan x="542" dy="25">Claim · decision · lineage</tspan>
+    </text>
+  </g>
+
+  <text class="section-label" x="44" y="654">SYNCHRONIZED GENERATED VIEWS</text>
+  <path class="bus" d="M 696 586 V 666 M 180 666 H 1260"/>
+  <path class="connector" d="M 180 666 V 686"/>
+  <path class="connector" d="M 540 666 V 686"/>
+  <path class="connector" d="M 900 666 V 686"/>
+  <path class="connector" d="M 1260 666 V 686"/>
+
+  <g aria-label="GitHub story and releases">
+    <rect class="card card-output" x="44" y="694" width="272" height="94" rx="13"/>
+    <text class="card-title" x="64" y="730">GitHub story + releases</text>
+    <text class="card-copy" x="64" y="758">Concise, public, traceable</text>
+  </g>
+  <g aria-label="Searchable documentation portal">
+    <rect class="card card-output" x="404" y="694" width="272" height="94" rx="13"/>
+    <text class="card-title" x="424" y="730">Documentation portal</text>
+    <text class="card-copy" x="424" y="758">Searchable human routes</text>
+  </g>
+  <g aria-label="Overleaf manuscript">
+    <rect class="card card-output" x="764" y="694" width="272" height="94" rx="13"/>
+    <text class="card-title" x="784" y="730">Overleaf manuscript</text>
+    <text class="card-copy" x="784" y="758">Evidence-bound narrative</text>
+  </g>
+  <g aria-label="LLM navigation and machine indexes">
+    <rect class="card card-output" x="1124" y="694" width="272" height="94" rx="13"/>
+    <text class="card-title" x="1144" y="730">LLM navigation</text>
+    <text class="card-copy" x="1144" y="758">Small machine-first indexes</text>
+  </g>
+
+  <text class="caption" x="720" y="826">Generated views communicate the evidence; they never replace its authority.</text>
+</svg>

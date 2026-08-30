@@ -1,0 +1,25 @@
+# NeuRev Workbench
+
+> Generated from `research/registry/`; do not edit by hand.
+
+> Evidence-first calcium-imaging source separation, neuron detection, scientific audit, and blinded review.
+
+## Canonical routes
+
+- [Repository research story](research/generated/PROJECT_STORY.md)
+- [Machine research context](research/generated/llm_context.json)
+- [Claim ledger](research/generated/CLAIM_LEDGER.md)
+- [Experiment timeline](research/generated/EXPERIMENT_TIMELINE.md)
+- [Repository guide](docs/REPOSITORY_GUIDE.md)
+- [Scientific audit standard](docs/workflows/SCIENTIFIC_AUDIT_OUTPUT_STANDARD.md)
+- [Maintained implementation](neurobench/)
+
+## Authority order
+
+1. Immutable manifests, evidence capsules, hashes, and validation records.
+2. Experiment protocols and decision records.
+3. Canonical records under `research/registry/`.
+4. Generated research-story and navigation views.
+5. Meetings, presentations, historical plans, and local output prose.
+
+Large artifacts under `Inputs/` and `Outputs/` are local and are not public source authority. Read compact JSON indexes before media.

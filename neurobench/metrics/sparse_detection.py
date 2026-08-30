@@ -75,6 +75,49 @@ def extract_local_maxima(
     return [(float(scores[i]), int(x[i]), int(y[i])) for i in order]
 
 
+def extract_separated_local_maxima(
+    score: np.ndarray,
+    distance: int,
+    threshold: float = -np.inf,
+    limit: int = 10_000,
+    *,
+    tie_breaker: np.ndarray | None = None,
+) -> list[Peak]:
+    """Return score-ranked maxima with explicit Euclidean separation.
+
+    ``maximum_filter`` alone leaves every pixel of a flat maximum plateau. This
+    variant ranks all plateau pixels deterministically and greedily retains only
+    representatives farther than ``distance`` from an already retained peak.
+    The optional label-free tie breaker selects a meaningful plateau location.
+    """
+    from scipy.ndimage import maximum_filter
+
+    values = np.asarray(score)
+    if values.ndim != 2 or not np.isfinite(values).all():
+        raise ValueError("score must be a finite 2D array")
+    distance, limit = int(distance), int(limit)
+    if distance < 1 or limit < 1:
+        raise ValueError("distance and limit must be positive")
+    keep = (values == maximum_filter(values, size=2 * distance + 1, mode="nearest")) & (values >= threshold)
+    keep[:distance] = False; keep[-distance:] = False; keep[:, :distance] = False; keep[:, -distance:] = False
+    y, x = np.nonzero(keep); scores = values[y, x]
+    if tie_breaker is None:
+        order = np.lexsort((x, y, -scores))
+    else:
+        secondary = np.asarray(tie_breaker)
+        if secondary.shape != values.shape or not np.isfinite(secondary).all():
+            raise ValueError("tie_breaker must be finite and match score")
+        order = np.lexsort((x, y, -secondary[y, x], -scores))
+    selected: list[Peak] = []
+    squared = float(distance * distance)
+    for index in order:
+        px, py = int(x[index]), int(y[index])
+        if all((px - old_x) ** 2 + (py - old_y) ** 2 > squared for _, old_x, old_y in selected):
+            selected.append((float(scores[index]), px, py))
+            if len(selected) >= limit: break
+    return selected
+
+
 def quiet_calibrated_threshold(
     maps: Sequence[np.ndarray], distance: int, peaks_per_map: float, *, limit: int = 2000
 ) -> float:

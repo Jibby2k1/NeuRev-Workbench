@@ -1,0 +1,152 @@
+schema_version: 1
+canonical_document: main.tex
+documents:
+  technical:
+    entrypoint: main_technical.tex
+    purpose: Evidence-complete journal manuscript with full methods and boundaries.
+  overview:
+    entrypoint: main_overview.tex
+    purpose: High-level narrative for collaborators and interdisciplinary readers.
+  experiments:
+    entrypoint: main_experiment_story.tex
+    purpose: Chronological question-design-result-decision experiment record.
+  supplement:
+    entrypoint: supplement_main.tex
+    purpose: Extended methods and supporting analyses.
+claim_order:
+- shared_burst_waveform
+- trace_phenotypes
+- full_trace_feature_roles
+- automated_feature_complementarity
+- feature_role_decomposition
+- identity_aware_miss_interpretation
+- expanded_automated_feature_validation
+- realistic_movie_spatial_context
+- realistic_movie_detector_roles
+- generator_family_robustness
+- prospective_gated_fusion
+- automated_challenge_boundaries
+- targeted_v8_rejections
+- constrained_generative_rejection
+- temporal_transform_invertibility
+- ls_denominator_behavior
+- biological_source_identity
+- full_field_precision
+- new_candidate_single_reviewer_labels
+- external_bounded_review_readiness
+experiment_order:
+- canonical_v7_trace_atlas
+- all_site_trace_taxonomy
+- pipeline_diagnostic_audit
+- full_trace_feature_panel
+- automated_feature_validation
+- feature_deep_dives
+- identity_aware_recenter_audit_v8
+- expanded_automated_validation_v3
+- major_validation_next_steps_v1
+- realistic_movie_detector_benchmark_v3
+- generator_family_holdout_v4
+- label_free_false_alarm_gated_fusion_v5
+- automated_challenge_suite_v7
+- targeted_automated_development_v8
+- joint_generative_deblending_v10
+- new_candidate_review_v1
+- external_blinded_bounded_review_v2
+- temporal_ica_internals
+- ls_denominator_audit
+planned_order:
+- complete_external_bounded_review_v2
+- uncertainty_aware_learning_v1
+- identity_aware_bounded_review
+- bounded_field_precision
+- independent_recording_confirmation
+- motion_registration_audit
+- frozen_feature_transfer
+- realistic_movie_simulation
+claim_evidence:
+  shared_burst_waveform:
+  - figures/final/fig04_population_trace_summary.png
+  - figures/final/fig05_pipeline_diagnostic_table.tsv
+  trace_phenotypes:
+  - figures/final/fig04_trace_taxonomy_experiment.json
+  - figures/final/fig04_trace_taxonomy_site_assignments.tsv
+  full_trace_feature_roles:
+  - figures/final/fig08_full_trace_feature_panel.png
+  - figures/final/fig09_automated_feature_validation.png
+  - generated_analysis/automated_feature_validation_v1/temporal_retrieval_summary.tsv
+  automated_feature_complementarity:
+  - figures/final/fig09_automated_feature_validation.png
+  - generated_analysis/automated_feature_validation_v1/recovery_model_summary.tsv
+  - generated_analysis/automated_feature_validation_v1/recovery_model_ablation.tsv
+  feature_role_decomposition:
+  - figures/final/fig11_feature_deep_dives.png
+  - generated_analysis/feature_deep_dives_v1/proposal_ranking_decomposition.tsv
+  - generated_analysis/feature_deep_dives_v1/recovery_complementarity.tsv
+  identity_aware_miss_interpretation:
+  - ../../docs/research/SPON_CA_BURST_IDENTITY_AWARE_RECENTER_AUDIT_V8_RESULTS.md
+  - tables/identity_aware_recenter_v8.tex
+  - figures/final/fig13_identity_aware_feature_inspection_v8.png
+  - generated_analysis/identity_aware_feature_inspection_v8/summary.json
+  - generated_analysis/identity_aware_validation_suite_v2/summary.json
+  expanded_automated_feature_validation:
+  - figures/final/fig14_expanded_automated_validation.png
+  - generated_analysis/expanded_automated_validation_v3/summary.json
+  - ../../docs/research/SPON_CA_BURST_EXPANDED_AUTOMATED_VALIDATION_V3_RESULTS.md
+  realistic_movie_spatial_context:
+  - ../../Outputs/NeuronIdentifiability/realistic_movie_identity_stress_test_v1/summary.json
+  - ../../docs/research/SPON_CA_BURST_MAJOR_NEXT_STEPS_V1_RESULTS.md
+  realistic_movie_detector_roles:
+  - ../../Outputs/NeuronIdentifiability/realistic_movie_detector_benchmark_v3/summary.json
+  - ../../docs/research/SPON_CA_BURST_REALISTIC_MOVIE_DETECTOR_V3_RESULTS.md
+  generator_family_robustness:
+  - ../../Outputs/NeuronIdentifiability/realistic_movie_generator_family_holdout_v4/summary.json
+  - ../../docs/research/SPON_CA_BURST_GENERATOR_FAMILY_HOLDOUT_V4_RESULTS.md
+  prospective_gated_fusion:
+  - ../../Outputs/NeuronIdentifiability/label_free_false_alarm_gated_fusion_v5/summary.json
+  - ../../docs/research/SPON_CA_BURST_LABEL_FREE_FALSE_ALARM_V5_RESULTS.md
+  automated_challenge_boundaries:
+  - ../../Outputs/NeuronIdentifiability/automated_challenge_suite_v7/summary.json
+  - ../../docs/research/SPON_CA_BURST_AUTOMATED_CHALLENGE_SUITE_V7_RESULTS.md
+  targeted_v8_rejections:
+  - ../../Outputs/NeuronIdentifiability/targeted_automated_development_v8/summary.json
+  - ../../docs/research/SPON_CA_BURST_TARGETED_AUTOMATED_DEVELOPMENT_V8_RESULTS.md
+  constrained_generative_rejection:
+  - ../../Outputs/NeuronIdentifiability/joint_generative_deblending_v10/summary.json
+  - ../../docs/research/SPON_CA_BURST_JOINT_GENERATIVE_DEBLENDING_V10_RESULTS.md
+  temporal_transform_invertibility:
+  - figures/final/fig06_ica_model_internals.json
+  - figures/final/fig06_ica_model_internals.npz
+  ls_denominator_behavior:
+  - figures/final/fig07_ls_denominator_diagnostics.json
+  - figures/final/fig07_ls_denominator_diagnostics.npz
+  biological_source_identity:
+  - PIPELINE_DIAGNOSTIC_AUDIT.md
+  full_field_precision:
+  - sections/02_materials_and_methods.tex
+  new_candidate_single_reviewer_labels:
+  - ../../Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/user_review_v1.tsv
+  - ../../Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/review_summary_v1.json
+  - ../../docs/research/SPON_CA_BURST_NEW_CANDIDATE_REVIEW_V1_RESULTS.md
+  external_bounded_review_readiness:
+  - ../../Outputs/NeuronIdentifiability/external_blinded_bounded_review_v2/experiment_contract.json
+  - ../../Outputs/NeuronIdentifiability/external_blinded_bounded_review_v2/validation.json
+  - ../../docs/research/SPON_CA_BURST_EXTERNAL_BOUNDED_REVIEW_V2_PACKAGE.md
+planned:
+  complete_external_bounded_review_v2:
+    priority: 1
+    plan: ../../docs/workflows/external_blinded_bounded_review_v2.md
+  uncertainty_aware_learning_v1:
+    priority: 2
+    plan: ../../docs/research/SPON_CA_BURST_UNCERTAINTY_AWARE_LEARNING_PLAN_V1.md
+  identity_aware_bounded_review:
+    priority: 3
+  bounded_field_precision:
+    priority: 4
+  independent_recording_confirmation:
+    priority: 5
+  motion_registration_audit:
+    priority: 6
+  frozen_feature_transfer:
+    priority: 7
+  realistic_movie_simulation:
+    priority: 8

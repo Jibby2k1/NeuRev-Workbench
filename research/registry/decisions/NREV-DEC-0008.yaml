@@ -1,0 +1,33 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0008
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical decision effective date
+program_id: NREV-PRG-0001
+title: Decision after Expanded Automated Validation V3
+lifecycle: active
+action: retain
+rationale: Stop broad same-recording feature expansion and prioritize independent transfer, bounded identity truth, and realistic
+  movie simulation.
+evidence_summary: The full panel exceeded carrier-only grouped prediction; annular context, persistence, and lag were most
+  stable, abstention reduced internal error, anomaly scores prioritized misses, and distance-only graph crowding added little.
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0008
+claim_ids:
+- NREV-CLM-0007
+evidence_capsule_ids:
+- NREV-EVC-EXP-0008
+constraints:
+- Same recording, 12 misses, reused exploratory labels, one-dimensional mixtures, and only one identity-clear cross-burst
+  pair.
+- The historical decision date was not encoded in the v1 story and was not guessed during migration.
+visibility: public
+legacy_status: complete_exploratory
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

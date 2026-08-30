@@ -1,0 +1,35 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0005
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical decision effective date
+program_id: NREV-PRG-0001
+title: Decision after Automated Feature Validation
+lifecycle: active
+action: retain
+rationale: Freeze the compact role-specific stack; prioritize realistic movie-level simulation, bounded-field truth, and independent-recording
+  transfer over further same-recording feature expansion.
+evidence_summary: Raw led temporal retrieval; all six compact features exceeded matched displaced tissue; a richer recovery
+  model improved point estimates but not the uncertainty gate; and perturbation, null, and injection tests behaved directionally
+  as expected.
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0005
+claim_ids:
+- NREV-CLM-0003
+- NREV-CLM-0004
+evidence_capsule_ids:
+- NREV-EVC-EXP-0005
+constraints:
+- Same-recording reuse, only 12 primary recovery misses, biologically unknown reference frames and tissue, and simplified
+  one-dimensional injections prevent precision, identity, or generalization claims.
+- The historical decision date was not encoded in the v1 story and was not guessed during migration.
+visibility: public
+legacy_status: complete_exploratory
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

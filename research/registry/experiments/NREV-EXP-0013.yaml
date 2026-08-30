@@ -1,0 +1,40 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0013
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical execution date
+  - run-level code, configuration, input, environment, and randomization provenance
+  - preregistered gates
+  - experiment-specific falsifiers
+  - normalized unit of analysis, comparison, and data scope
+program_id: NREV-PRG-0001
+title: Automated Challenge Suite V7
+question: Which proposed automated controls improve deployability, and where do the frozen feature and proposal definitions
+  fail under intervention, falsification, and simulator transfer?
+objective: Which proposed automated controls improve deployability, and where do the frozen feature and proposal definitions
+  fail under intervention, falsification, and simulator transfer?
+rationale: Migrated to preserve the v1 question-design-result-decision record; the v1 story did not encode a separate rationale.
+lifecycle: closed
+outcome: mixed
+evidence_tier: computational_simulation
+review_state: not_requested
+falsifiers: []
+design:
+  summary: Run twelve prespecified exact-truth families with six seeds per condition, correct weak-neighbor recovery by one-to-one
+    identity assignment, use label-free nulls where required, and preserve separate tables for every hypothesis.
+gates: []
+claim_ids:
+- NREV-CLM-0012
+decision_ids:
+- NREV-DEC-0013
+evidence_capsule_id: NREV-EVC-EXP-0013
+visibility: public
+legacy_id: automated_challenge_suite_v7
+legacy_status: complete_computational_mixed_result
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

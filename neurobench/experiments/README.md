@@ -7,6 +7,7 @@ workflows. Generic program planning lives in `neurobench/programs/`.
 |---|---|---|---|
 | `soma_excitation/` | frozen transfer to dark-soma excitation zones | `neurobench experiment soma-excitation` | CPU-only, explicit RAM/chunk/batch caps |
 | `learnable_contrast/` | weakly supervised contrast, spatiotemporal diagnostic, direct tuning | `neurobench experiment learnable-contrast` | CUDA, explicit manifests and stage gates |
+| `neuron_identifiability/` | canonical-cohort analysis, feature validation, identity audits, simulator stress tests, manuscript exports, candidate media | focused module entry points; see package README | mixed resources, immutable identities, collision-safe output roots |
 
 Package expectations:
 
@@ -21,3 +22,6 @@ Package expectations:
 Do not put action-conditioned control code here until its public state, action,
 outcome, timing, and safety schemas are frozen.
 
+For the current Spon Ca Burst methods program, use
+[`neuron_identifiability/README.md`](neuron_identifiability/README.md) to avoid
+scanning the entire experiment package.

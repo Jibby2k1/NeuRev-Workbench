@@ -1,0 +1,39 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0018
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical execution date
+  - run-level code, configuration, input, environment, and randomization provenance
+  - preregistered gates
+  - experiment-specific falsifiers
+  - normalized unit of analysis, comparison, and data scope
+program_id: NREV-PRG-0001
+title: Temporal Ica Internals
+question: What components and matrices produce the frozen residual-group representation?
+objective: What components and matrices produce the frozen residual-group representation?
+rationale: Migrated to preserve the v1 question-design-result-decision record; the v1 story did not encode a separate rationale.
+lifecycle: validated
+outcome: supported
+evidence_tier: current_recording
+review_state: not_requested
+falsifiers: []
+design:
+  summary: Export all six component traces, mixing/demixing matrices, energy fractions, and embedding inversion residuals
+    at 50 sites.
+gates: []
+claim_ids:
+- NREV-CLM-0015
+- NREV-CLM-0017
+decision_ids:
+- NREV-DEC-0018
+evidence_capsule_id: NREV-EVC-EXP-0018
+visibility: public
+legacy_id: temporal_ica_internals
+legacy_status: complete_computational
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

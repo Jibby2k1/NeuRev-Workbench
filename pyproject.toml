@@ -1,16 +1,32 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "neurobench"
 version = "0.1.0"
-description = "Gamma/CFAR neuroimaging discovery and review workbench tools"
+description = "Evidence-first calcium-imaging measurement, detection, review, and research provenance"
 readme = "README.md"
 requires-python = ">=3.10"
-license = {text = "MIT"}
+license = "MIT"
 authors = [
   {name = "Neurobench contributors"}
+]
+keywords = [
+  "calcium-imaging",
+  "neuroscience",
+  "source-separation",
+  "neuron-detection",
+  "scientific-provenance",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
 ]
 dependencies = [
   "numpy",
@@ -32,6 +48,10 @@ dependencies = [
 dev = [
   "pytest",
 ]
+docs = [
+  "mkdocs>=1.6,<2",
+  "mkdocs-material>=9.6,<10",
+]
 gpu = [
   "cupy",
   "nvidia-ml-py",
@@ -42,11 +62,27 @@ representation = [
   "umap-learn>=0.5.12",
 ]
 
+paper = [
+  "statsmodels>=0.14",
+  "scikit-learn>=1.6",
+]
+
+tensor = [
+  "tensorly>=0.9",
+]
+
 [project.scripts]
 neurobench = "neurobench.cli.main:main"
+
+[project.urls]
+Homepage = "https://github.com/Jibby2k1/NeuRev-Workbench"
+Documentation = "https://github.com/Jibby2k1/NeuRev-Workbench/tree/main/docs"
+Repository = "https://github.com/Jibby2k1/NeuRev-Workbench.git"
+Issues = "https://github.com/Jibby2k1/NeuRev-Workbench/issues"
 
 [tool.setuptools.packages.find]
 include = ["neurobench*"]
 
 [tool.setuptools.package-data]
 "neurobench.workbench" = ["assets/*.js", "assets/*.css", "assets/*.html"]
+"neurobench.experiments.neuron_identifiability" = ["external_review_assets/*"]

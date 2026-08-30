@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -56,7 +57,7 @@ class ConclusiveBatchConfig:
             source_video=resolve(raw["source_video"]),
             source_tiff=resolve(raw["source_tiff"]),
             labels_tsv=resolve(raw["labels_tsv"]),
-            caiman_python=Path(str(raw["caiman_python"])).expanduser().resolve(),
+            caiman_python=Path(os.path.expandvars(str(raw["caiman_python"]))).expanduser().resolve(),
             frames=dict(raw["frames"]),
             methods=tuple(dict(value) for value in raw["methods"]),
             design=dict(raw["design"]),

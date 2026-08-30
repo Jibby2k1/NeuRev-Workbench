@@ -1,0 +1,99 @@
+{
+  "artifact_manifest_sha256": "eb1db89c05b56338dfc628ee2a366a15baf21a538a47f915eb9dcc5587e2f100",
+  "artifacts": [
+    {
+      "access": "public",
+      "bytes": 2938,
+      "id": "artifact-01",
+      "media_type": "text/markdown",
+      "repository_path": "docs/research/SPON_CA_BURST_GENERATOR_FAMILY_HOLDOUT_V4_RESULTS.md",
+      "role": "report",
+      "sha256": "cea180166aea42b8d211fd9feb925887455f1a1a3fd5989c977668dfe8f3b16a"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 8697,
+      "id": "artifact-02",
+      "media_type": "application/json",
+      "repository_path": "Outputs/NeuronIdentifiability/realistic_movie_generator_family_holdout_v4/summary.json",
+      "role": "summary",
+      "sha256": "ddd31bbdedcd0fb331064b0aebf770537420ae9b1530959e6a05ae93cf5b4d3f"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 35346,
+      "id": "artifact-03",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "Outputs/NeuronIdentifiability/realistic_movie_generator_family_holdout_v4/family_operating_points.tsv",
+      "role": "table",
+      "sha256": "182604bd88893b64e058ae17d8706cfc42a795a6ed226a5a7492afb28fba2bc7"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 3426,
+      "id": "artifact-04",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "Outputs/NeuronIdentifiability/realistic_movie_generator_family_holdout_v4/leave_one_family_out_calibration.tsv",
+      "role": "table",
+      "sha256": "ee26a299109fe4100deba5843a7f5438fd3fd27b3f6a0b2b471df249abe3ca7d"
+    }
+  ],
+  "boundaries": {
+    "does_not_establish": [
+      "Claims beyond the registered finding and linked claim scopes.",
+      "Reproducible run provenance that was absent from the v1 story."
+    ],
+    "limitations": [
+      "The empirical recording contributes only a label-free scalar read-noise mapping, not its full noise spectrum; simulator mechanisms remain stylized; proposal budget is twice the known simulated source count and therefore not deployable as written."
+    ],
+    "scope": "This capsule preserves the registered v1 experiment finding and its linked claim scopes."
+  },
+  "claim_impacts": [
+    {
+      "claim_id": "NREV-CLM-0010",
+      "effect": "supports",
+      "scope": "108 exact-truth movies across six generator families, six seeds per family, and source counts 2, 4, and 8; empirical noise scale estimated label-free from one untouched 060126 recording.",
+      "summary": "The experiment supports this claim only within its registered scope."
+    }
+  ],
+  "evidence_tier": "computational_simulation",
+  "experiment_id": "NREV-EXP-0011",
+  "gates": [
+    {
+      "criterion": "Every artifact referenced by the v1 experiment story is available and checksum identified at migration.",
+      "id": "legacy-artifact-capture",
+      "observed": "Captured 4 of 4 referenced artifacts with SHA-256 identities.",
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-29T23:52:35Z",
+  "id": "NREV-EVC-EXP-0011",
+  "legacy_status": "complete_computational",
+  "lifecycle": "validated",
+  "metrics": [],
+  "outcome": "supported",
+  "program_id": "NREV-PRG-0001",
+  "record_type": "evidence_capsule",
+  "review_state": "not_requested",
+  "run_ids": [],
+  "schema_version": 1,
+  "source_records_sha256": "0d8ec4c07c43733ca3f6b01e71271d5f6ee8c1f5981a02f0cb3480dc5e5eec21",
+  "summary": "Spatial context achieved the best mean operating F1 at 0.515, recall at 0.773, localization at 1.202 px, and duplicate rate at 0.083 per movie. It also led leave-one-family-out average precision at 0.824. Combined retained the best mean Brier score at 0.094 and balanced accuracy at 0.722, but compound-shift F1 fell to 0.319 versus 0.338 for spatial context.",
+  "validation": {
+    "checked_at": "2026-08-29T23:52:35Z",
+    "checks": [
+      {
+        "id": "portable-paths",
+        "status": "passed",
+        "summary": "Artifact references are repository-relative; ignored local outputs are metadata-only."
+      },
+      {
+        "id": "historical-provenance",
+        "status": "not_run",
+        "summary": "The v1 story did not encode run-level provenance, so no historical run record was invented."
+      }
+    ],
+    "status": "partial"
+  },
+  "visibility": "public"
+}

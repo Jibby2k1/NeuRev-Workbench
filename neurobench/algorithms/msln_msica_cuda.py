@@ -16,6 +16,7 @@ class CUDAJointResult:
     values: Any
     scale_floor: float
     diagnostics: dict[str, Any]
+    site_diagnostics: dict[str, np.ndarray] | None = None
 
 
 def _cupy() -> Any:
@@ -81,6 +82,7 @@ def causal_joint_msln_cuda(
     review_crop_frames: int,
     max_vram_bytes: int,
     scale_floor_override: float | None = None,
+    diagnostic_sites_yx: np.ndarray | None = None,
 ) -> CUDAJointResult:
     """Compute a causal joint MSLN review map while retaining it on the GPU."""
     cp = _cupy()
@@ -96,6 +98,13 @@ def causal_joint_msln_cuda(
     quiet = np.asarray(quiet_mask, dtype=bool)
     if quiet.shape != (len(source),):
         raise ValueError("quiet mask must align with the source frames")
+    sites = None
+    if diagnostic_sites_yx is not None:
+        sites = np.asarray(diagnostic_sites_yx, dtype=np.int64)
+        if sites.ndim != 2 or sites.shape[1] != 2 or not len(sites):
+            raise ValueError("diagnostic_sites_yx must be a non-empty [sites,2] array")
+        if np.any(sites < 0) or np.any(sites[:, 0] >= source.shape[1]) or np.any(sites[:, 1] >= source.shape[2]):
+            raise ValueError("diagnostic site lies outside the video")
     free_before, _ = cp.cuda.runtime.memGetInfo()
     cap = min(int(max_vram_bytes), int(free_before))
     # Measured implementation peak is below 42 bytes/source element plus
@@ -164,6 +173,13 @@ def causal_joint_msln_cuda(
     scale = cp.sqrt(variance).astype(cp.float32)
     del variance
     numerator = centered[crop:] - reference_mean
+    site_reference_mean = None
+    if sites is not None:
+        diagnostic_y = cp.asarray(sites[:, 0])
+        diagnostic_x = cp.asarray(sites[:, 1])
+        site_reference_mean = cp.asnumpy(
+            reference_mean[:, diagnostic_y, diagnostic_x]
+        )
     del centered, reference_mean
     track()
 
@@ -182,6 +198,19 @@ def causal_joint_msln_cuda(
         )
     fitted_floor = max(fitted_floor, float(np.finfo(np.float32).eps))
     del quiet_scales, positive, quiet_review
+    site_diagnostics = None
+    if sites is not None:
+        yy = cp.asarray(sites[:, 0])
+        xx = cp.asarray(sites[:, 1])
+        site_scale = scale[:, yy, xx]
+        site_numerator = numerator[:, yy, xx]
+        site_diagnostics = {
+            "numerator": cp.asnumpy(site_numerator),
+            "reference_mean_centered": site_reference_mean,
+            "local_scale": cp.asnumpy(site_scale),
+            "denominator": cp.asnumpy(cp.maximum(site_scale, cp.float32(fitted_floor))),
+            "floor_applied": cp.asnumpy((site_scale < fitted_floor).astype(cp.float32)),
+        }
     result = numerator / cp.maximum(scale, cp.float32(fitted_floor))
     result = result.astype(cp.float32)
     del numerator, scale
@@ -213,6 +242,7 @@ def causal_joint_msln_cuda(
             "observed_peak_vram_bytes": peak_used,
             "runtime_seconds": time.monotonic() - started,
         },
+        site_diagnostics=site_diagnostics,
     )
 
 

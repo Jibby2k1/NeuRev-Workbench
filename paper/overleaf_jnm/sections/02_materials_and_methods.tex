@@ -1,0 +1,333 @@
+\section{Materials and methods}
+\label{sec:methods}
+
+\subsection{Study design and inferential scope}
+
+The study is an intensive methodological analysis of one canonical zebrafish fluorescence recording. The current repository artifacts describe \NCurrentBursts{} shared burst intervals and \NCurrentOccurrences{} labeled neuron--burst occurrences. These occurrences arise from \NCurrentOriginalSites{} original spatial observation sites and \NCurrentCanonicalNeurons{} proposed canonical neuron identities. The recording, not the individual frame or pixel, is the highest independent experimental unit. All population-level statements are therefore excluded; inferential claims concern temporal and spatial structure within this recording.
+
+Existing numerical results are treated as discovery-stage evidence. The confirmatory run freezes the label contract, candidate representations, spatial supports, temporal windows, null procedures, and primary estimands before regenerating the manuscript outputs. Analyses are organized in versioned stages, each of which emits a machine-readable metric file, a validation report, an artifact index, and a source map.
+
+\subsection{Observation, site, and canonical-identity contract}
+\label{sec:identity-contract}
+
+Each labeled occurrence is represented by an immutable record
+\begin{equation}
+  o_i = (q_i,s_i,c_i,b_i,x_i,y_i,t_i^{\mathrm{start}},t_i^{\mathrm{stop}},\ell_i),
+\end{equation}
+where $q_i$ is a unique observation identifier, $s_i$ is an immutable spatial-site identifier, $c_i$ is a provisional canonical-neuron identifier, $b_i$ is the burst, $(x_i,y_i)$ is the source coordinate or mask reference, and $\ell_i$ stores annotation provenance and confidence. Trace extraction is keyed by $s_i$ and geometry, never by $c_i$ alone. A canonical merge is an aggregation hypothesis applied after extraction; it cannot overwrite or redefine an original spatial site.
+
+This distinction is required because the current repository provisionally maps original sites ROI~010 and ROI~015 to one canonical identity although their coordinates differ. The protected rerun preserves both spatial traces, generates a direct comparison packet, and reports site-level results regardless of the eventual merge decision. Canonical-neuron summaries are generated only for identity decisions that have been explicitly adjudicated or are accompanied by an unresolved-status sensitivity analysis.
+
+Frame intervals shown to reviewers are one-based and inclusive. Internal array slices are zero-based and half-open. Coordinates follow $x=$ column and $y=$ row. Automated validation checks bounds, interval conversion, duplicate observation identifiers, coordinate collisions, and one-to-one trace provenance.
+
+\subsection{Annotation contract and timing uncertainty}
+
+Annotations are interpreted as sparse positives rather than exhaustive ground truth. Each occurrence stores neuron-presence confidence, activity confidence, timing confidence, morphology notes, reviewer state, and provenance. Original annotations remain immutable. Suggested revisions are written to a separate adjudication table and never silently replace the source labels.
+
+Burst~2 is prespecified as timing-uncertain because preliminary traces suggest a weaker event and a pipeline peak shift opposite to that observed in the other bursts. Automated onset, peak, and offset proposals are generated from Raw, annulus, residual, difference, and frozen-ICA traces. The primary analysis is reported using the original timing, with sensitivity analyses using the approved revision and excluding burst~2 entirely. Human approval is required before an annotation is changed, but unresolved timing does not block analyses that remain valid under the original contract.
+
+\subsection{Trace extraction and atlas}
+\label{sec:trace-atlas-methods}
+
+For every occurrence, the pipeline exports synchronized full-context and event-centered traces from the following representations:
+\begin{enumerate}[label=(\alph*)]
+  \item Raw ROI mean;
+  \item baseline-corrected Raw and, when physically appropriate, $\Delta F/F_0$;
+  \item robustly standardized Raw;
+  \item local annulus and outer-ring means;
+  \item amplitude-preserving ROI-minus-annulus residual;
+  \item signed adjacent-frame difference;
+  \item the frozen two-frame ICA component;
+  \item selected spatial-context scores, including local coherence and lagged recurrence.
+\end{enumerate}
+
+Primary traces preserve native timing and amplitude. Shape-only displays that peak-align or scale each event are generated separately and labeled as such. Saturated samples, field-boundary membership, motion quality, and annotation timing are overlaid on the atlas.
+
+For a trace $Y_i(t)$ and pre-event baseline window $W_i^{\mathrm{pre}}$, the robust baseline and scale are
+\begin{align}
+  \tilde Y_i &= \median_{t\in W_i^{\mathrm{pre}}} Y_i(t),\\
+  \hat\sigma_i &= 1.4826\,\MAD_{t\in W_i^{\mathrm{pre}}}Y_i(t).
+\end{align}
+The native-amplitude event peak is
+\begin{equation}
+  A_i = \max_{t\in W_i^{\mathrm{event}}}\{Y_i(t)-\tilde Y_i\},
+\end{equation}
+and robust peak signal-to-noise ratio is $A_i/(\hat\sigma_i+\epsilon)$. Additional metrics include signed minimum and maximum, area above baseline, rise time, time to peak, decay half-time, full width at half maximum, baseline slope, saturation fraction, Raw--pipeline peak-time offset, Raw--pipeline correlation, annulus coupling, residual amplitude, and spatial compactness. Metrics with unstable denominators or censored peaks are flagged rather than imputed silently.
+
+For qualitative trace-atlas examples, three confirmed sites were frozen before
+inspection of the present CS--Parzen panels: a high-observability hero
+(ROI~003), a confirmed hard case termed the antihero (ROI~011), and a random
+eligible confirmed four-burst site drawn with seed 20260824 (ROI~010). The
+antihero is not a negative. Within each frozen site, the displayed occurrence
+was selected by the largest native $3\times3$ center maximum in the
+CS--Parzen-to-local-standardization movie. Each row reports Raw fluorescence,
+the long-delay CS--Parzen residual-group representation, and its subsequent
+local standardization, with the exact center trace and a cursor at that row's
+independently selected peak frame. These panels are descriptive case studies;
+they do not enter model fitting, case selection, or confirmatory inference.
+
+For the compact population display and trace-taxonomy experiment, traces are
+aligned to the annotated event onset without peak shifting. Each
+occurrence--representation trace is centered by its 15-frame pre-event median
+and divided by its maximum absolute centered value. Repeated bursts are then
+averaged within each coordinate-defined original site. Raw, CS--Parzen ICA,
+and local-standardization blocks are each normalized to equal $L_2$ weight and
+concatenated for the primary shape-only analysis. Principal components
+retaining at least 90\% of variance are clustered by Ward agglomeration.
+Candidate solutions with two through six classes require at least five sites
+per class and are ranked by silhouette separation multiplied by median
+adjusted Rand agreement over 500 repeated 80\% site subsamples.
+
+To test stage preservation, the selected class count is held fixed while Raw,
+CS--Parzen ICA, and local-standardization traces are clustered independently.
+Stage-specific labels are optimally permuted only for display and compared
+with the joint solution using adjusted Rand index, normalized mutual
+information, and full transition tables. PCA-dimension sensitivities and
+amplitude-augmented fits are reported separately. Native peak amplitude is
+excluded from the primary taxonomy and retained for class-conditioned
+distribution panels, preventing brightness from defining a shape class.
+Classes are exploratory measurement profiles within one recording, not
+biological neuron types. They are denoted Trace Classes T1 and T2 to
+distinguish them from the separately frozen three-class detection-profile
+taxonomy.
+
+Trace-class persistence is evaluated by leaving out each burst in turn,
+refitting the complete two-class shape pipeline on the remaining bursts, and
+assigning each eligible held-out recurrent site to the nearest training
+centroid. Class names are aligned to the full joint solution using training
+sites only. The relative centroid margin is the second-nearest minus nearest
+distance divided by their sum; it is a geometric separation measure rather
+than a calibrated probability. Agreement is averaged within site before a
+site bootstrap interval is calculated. Single-burst sites do not contribute to
+persistence estimates, and burst~2 is repeated as a prespecified exclusion
+sensitivity.
+
+The pipeline diagnostic audit uses one row per confirmed occurrence and
+representation. Native center-trace summaries include pre-event median and
+MAD, baseline slope, signed and positive event area, peak, robust SNR, time to
+peak, full width at half maximum, and the ratio of late to early positive event
+area. A 3--6 pixel annulus provides local peak and trace-correlation measures.
+Peak event-minus-baseline maps in a $21\times21$ crop provide center--annulus
+contrast, effective radius, peak offset, and high-response connected-component
+count. Raw saturation is evaluated separately at the center and within the
+local crop. Each stage transition reports center-trace correlation, native
+peak ratio, peak-time shift, and contrast ratio. Because the explicit local-
+standardization denominator was not saved, the absolute ICA-to-LS center ratio
+is labeled only as an effective-scale proxy and is not interpreted as the true
+denominator. Unavailable component activations, mixing matrices, filters,
+reconstruction residuals, and motion fields are recorded as missing
+diagnostics rather than reconstructed from the final movies.
+
+For the frozen long-delay CS--Parzen lane, a bounded model-internals audit was
+subsequently generated directly from the saved fit and source movie at the 50
+unique canonical-v7 observation sites. All six component activations, the
+mixing and demixing matrices, and per-component squared-energy fractions were
+retained. Applying the pseudoinverse mixing matrix to the component vector
+provides an embedding inversion residual. This residual tests numerical
+invertibility of the temporal transform only; it is not interpreted as a
+denoising error or biological reconstruction error. The normalization code was
+also instrumented to export, at requested sites only, its numerator, centered
+reference mean, local scale, floored denominator, and floor-use indicator. The
+site-level denominator audit projected the union of their 15-by-15 spatial
+supports from the frozen temporal fit, preserved the original 31-frame causal
+pre-roll, and reused the global scale floor saved by the original CUDA lane.
+The reproduced normalized center traces were compared directly with the saved
+local-standardization movie before the denominator was interpreted.
+
+\subsection{Exploratory full-trace feature panel}
+\label{sec:full-trace-panel-methods}
+
+To distinguish event localization at a known ROI center from full-field
+candidate ranking, we evaluated a frozen 11-feature panel over the complete
+560-frame review interval (UI frames 1800--2359, 10~Hz). The analysis contained
+106 confirmed occurrences nested in 50 immutable coordinate-defined sites and
+four annotated burst intervals. For every site, quiet frames excluded the
+union of all bursts plus a 15-frame guard on each side. Raw, ICA, local-
+standardized, center-minus-annulus, and variance-stabilized traces were centered
+and scaled by the quiet-frame median and MAD where appropriate.
+
+The nine established or previously frozen features were Raw-center amplitude,
+CS--Parzen ICA-center amplitude, local-standardization amplitude, Raw and
+variance-stabilized center-minus-annulus contrast, a causal exponential matched
+filter, the frozen amplitude carrier, 15-frame local coherence, and 15-frame
+lag-2 recurrence. The matched filter is an interpretable kinetic comparator,
+not spike inference; established spike-inference methods instead fit explicit
+autoregressive calcium dynamics after spatial shapes are known
+\citep{friedrich2017oasis,berens2018benchmarking}. Two prespecified extensions
+were evaluated: a representation-consensus score defined as the minimum of the
+quiet-calibrated Raw, ICA, and local-standardization empirical percentiles, and
+multiscale persistence defined as the geometric mean of causal 3-, 7-, and
+15-frame positive local-standardization averages.
+
+For feature $f$ and occurrence $i$, let $E_{if}$ be the feature maximum within
+the annotated event interval and let $Q_{if}$ contain maxima from every
+same-duration window wholly inside the guarded quiet set. The primary score is
+the mid-rank empirical percentile
+\begin{equation}
+  P_{if}=\frac{\sum_{q\in Q_{if}}\mathbb{I}(q<E_{if})+
+  \tfrac{1}{2}\sum_{q\in Q_{if}}\mathbb{I}(q=E_{if})}{|Q_{if}|}.
+\end{equation}
+Feature means and paired differences from the frozen carrier use 5,000-draw
+site-block bootstraps. Burst-specific medians guard against a result driven by
+one event. Cross-burst repeatability is the median available Spearman
+correlation of site ranks over burst pairs with at least five shared sites.
+The localization gate requires a confidence-interval lower bound above 0.5 and
+every burst median at least 0.75; incremental utility requires the complete
+paired interval versus the carrier to exceed zero. This is an exploratory reuse
+of one recording. Quiet windows are temporal references, not verified negative
+examples, and the analysis cannot estimate full-field precision or biological
+source identity.
+
+\subsection{Automated feature challenge suite}
+\label{sec:automated-feature-validation-methods}
+
+We prespecified six no-human-in-the-loop extensions before computation. First,
+each event frame was ranked against all guarded quiet-reference frames using
+ROC AUC, reference average precision, top-1/5/10\% event recall, and reciprocal
+first-event rank. Second, true centers were paired with deterministic same-field
+translated coordinates selected to match quiet Raw baseline and remain at
+least 12 pixels from every labeled center. Third, detector recovery at budget
+58 by any carrier, coherence, or lag-recurrence lane was modeled with fixed-L2
+logistic regression in five site-grouped folds. The primary population retained
+all 106 original geometries; the 102-row canonical-collapsed label view was a
+sensitivity only. The carrier model included location and burst terms; the
+role-specific model added coherence, recurrence, consensus, persistence,
+annular contrast, and frozen LS priority.
+
+Fourth, coordinate offsets of 1, 2, 4, and 6 pixels and event-boundary shifts
+of $-10$ through $+10$ frames measured perturbation tolerance. Fifth,
+repeatability used burst-pair site-rank correlations and a transparent
+nonparametric site variance fraction; this quantity is not a REML ICC. Sixth,
+500 site-blocked circular shifts preserved feature autocorrelation while
+breaking event alignment. Fixed calcium-like transients with peaks of 0--4
+quiet-MAD units and decay constants of 5, 10, or 20 frames were injected into
+actual guarded quiet LS traces to compare amplitude, a causal exponential
+matched filter, and multiscale persistence. Such injections are operator tests,
+not realistic optical simulation; anatomy- and optics-aware simulators are
+required for stronger synthetic ground truth \citep{song2021naomi}.
+
+All primary means are means of immutable-site means with 2,000-draw site
+bootstraps. Complementarity requires the entire site-bootstrap interval for
+cross-fitted log-loss improvement to exceed zero. Spatial superiority requires
+a positive interval for true-minus-displaced AUC. Quiet frames and displaced
+tissue remain biologically unknown, and no analysis estimates full-field
+precision.
+
+\subsection{Acquisition and noise characterization}
+\label{sec:acquisition-methods}
+
+Acquisition properties are estimated before biological interpretation. Quiet adjacent-frame differences are used to assess an intensity-dependent Poisson--Gaussian model \citep{foi2008poissongaussian}:
+\begin{equation}
+  \Var(Y_{t+1}-Y_t\mid \bar Y_t)
+  \approx 2\left(\sigma_r^2+\alpha \bar Y_t\right),
+\end{equation}
+where $\sigma_r^2$ represents an intensity-independent component and $\alpha$ an intensity-dependent component. Robust binned regression reports the slope, intercept, goodness of fit, and departures associated with saturation.
+
+Temporal acquisition diagnostics include autocorrelation, power spectral density, baseline drift, photobleaching trend, frame-difference variance, and change-point sensitivity. Spatial diagnostics include saturation maps, row/column discontinuities, local covariance, effective rank, motion residuals, and field-specific intensity statistics. Other available recordings are not treated as biological validation. They form an unlabeled acquisition-QC cohort used to characterize failure regimes and to test whether the canonical recording is unusual in noise, motion, saturation, drift, coherence, or transient density.
+
+\subsection{Temporal controls and operator identification}
+
+Temporal event evidence is tested against block-matched circular or admissible shifted windows that preserve event duration, recording region, and temporal dependence. Shifts are excluded when they overlap any labeled event or protected buffer. The resampling unit is the burst or observation site as appropriate; individual frames are not treated as independent replicates.
+
+For the canonical-v8 interpretation audit, the immutable canonical-v7 centers
+were retained and each of the 12 all-lane B58 misses was searched within a
+fixed six-pixel neighborhood. At every candidate pixel, event response was the
+event maximum minus the median of the preceding 15 frames. Candidate ordering
+used the median within-neighborhood response percentile across Raw, CS-Parzen
+ICA, and local-standardized representations. The selected coordinate was a
+measurement hypothesis only. A nearest-label guard classified it as clear
+within six pixels, colliding with another geometry of the same canonical
+identity, or colliding with a different canonical identity. Synchronized
+six-panel videos and exact-center traces were reviewed before the audit was
+marked complete; no source coordinate or identity label was modified.
+
+For the learned two-frame component $z_t=w_0Y_t+w_1Y_{t+1}$, operator identity is assessed by cosine similarity, Pearson and Spearman correlation, coefficient of determination, and top-activation overlap against interpretable two-frame operators. The main comparator is signed difference $D_t=Y_{t+1}-Y_t$. A near-equivalence result is interpreted as change detection rather than recovery of an independent neuronal source. Detection utility and trace fidelity are evaluated separately.
+
+\subsection{Spatial specificity and matched spatial nulls}
+\label{sec:spatial-methods}
+
+For each event, an event-minus-baseline map is defined as
+\begin{equation}
+  D_i(x,y)=\frac{1}{|W_i^{\mathrm{event}}|}\sum_{t\in W_i^{\mathrm{event}}}Y(x,y,t)
+  -\median_{t\in W_i^{\mathrm{pre}}}Y(x,y,t).
+\end{equation}
+Radial profiles, center-to-annulus contrast, outer-ring contrast, footprint radius, eccentricity, compactness, local autocorrelation, nearest-neighbor distance, and overlap with other sites are computed from this map. A bounded specificity score is
+\begin{equation}
+  S_i=\frac{A_i^{\ROI}-A_i^{\mathrm{ann}}}
+  {|A_i^{\ROI}|+|A_i^{\mathrm{ann}}|+\epsilon}.
+\end{equation}
+
+Matched spatial controls preserve local intensity, field region, distance from the image boundary, mask area, and, where possible, crowding. Controls include annulus-versus-outer-ring residuals and translated pseudo-ROIs that do not overlap protected labeled regions. Superiority, noninferiority, and equivalence are distinct hypotheses. Equivalence is claimed only if the complete confidence interval lies within a prespecified scientifically meaningful margin $[-\delta,\delta]$; failure to reject a difference is not described as equivalence \citep{lakens2017equivalence}.
+
+\subsection{Scalar variance decomposition and observability}
+\label{sec:scalar-models}
+
+For each scalar metric $m_{sb}$ observed at site $s$ and burst $b$, the primary variance-component model is
+\begin{equation}
+  m_{sb}=\beta_0+u_s+v_b+\epsilon_{sb},
+  \qquad
+  u_s\sim\mathcal N(0,\sigma_s^2),\quad
+  v_b\sim\mathcal N(0,\sigma_b^2).
+\end{equation}
+With only four bursts, burst variance is interpreted cautiously and is accompanied by leave-one-burst-out and burst-fixed-effect analyses. The site-associated intraclass correlation is
+\begin{equation}
+  \mathrm{ICC}_{\mathrm{site}}=
+  \frac{\sigma_s^2}{\sigma_s^2+\sigma_b^2+\sigma_\epsilon^2}.
+\end{equation}
+Primary outcomes are Raw amplitude, residual amplitude, robust SNR, event area, time to peak, spatial specificity, footprint radius, annulus coupling, and known-positive recoverability. Cross-burst rank stability and bootstrap intervals provide nonparametric complements. Singular mixed models are downgraded to transparent fixed-effect or rank-based summaries rather than being reported as converged.
+
+\subsection{Functional and tensor decomposition}
+\label{sec:functional-models}
+
+Functional analysis is conditional on trace-completeness, temporal-alignment, and held-out stability gates. Event-centered traces are modeled as
+\begin{equation}
+  Y_{sb}(\tau)=\mu(\tau)+U_s(\tau)+V_b(\tau)+E_{sb}(\tau),
+\end{equation}
+using a compact basis or functional principal components with simultaneous uncertainty bands. Functional mixed models follow established approaches for decomposing structured curve variation \citep{morris2006functional}.
+
+A complementary low-rank model treats the site-by-burst-by-time array as a tensor:
+\begin{equation}
+  \mathcal X_{sb\tau}\approx
+  \sum_{k=1}^{K}a_{sk}c_{bk}h_{\tau k}.
+\end{equation}
+Rank and stability are selected without using the held-out burst. A one-component solution would support a shared waveform modulated by site and burst gains; additional components are promoted only if they reproduce under leave-one-burst-out analysis and improve held-out reconstruction beyond a preregistered threshold. Tensor factors are descriptive, not automatically biological sources \citep{kolda2009tensor}.
+
+\subsection{Measurement phenotypes and known-positive recoverability}
+
+A \emph{measurement phenotype} is defined as a reproducible profile of observability, not a biological cell type. Candidate dimensions include amplitude, SNR, repeatability, annulus coupling, spatial compactness, crowding, saturation, timing stability, and candidate rank. Continuous analyses are primary. Exploratory clustering is permitted only with bootstrap stability and without biological naming.
+
+Known-positive recovery at fixed candidate budget is modeled with clustered or mixed-effects logistic regression:
+\begin{equation}
+  \operatorname{logit}\Pr(M_{sb}=1)=\beta_0+\bm\beta^\top\bm z_{sb}+u_s+v_b,
+\end{equation}
+where $M_{sb}$ indicates whether a candidate matched the labeled occurrence and $\bm z_{sb}$ contains prespecified measurement covariates. Failures are partitioned into proposal, ranking, localization, timing, and non-maximum-suppression failures.
+
+\subsection{Positive--unlabeled evaluation and bounded-field annotation}
+\label{sec:pu-methods}
+
+Outside an exhaustively reviewed region, reported detection quantities are restricted to known-positive recall, proposal-union coverage, candidate burden, nearest-candidate rank, localization error, and failure category. Unmatched candidates remain unlabeled. No full-field precision, specificity, or false-positive rate is calculated.
+
+A bounded spatial--temporal field is prepared for exhaustive review by two independent raters blinded to algorithmic candidates. Review categories are confirmed neuron, probable neuron, activity with uncertain identity, artifact, background, and unresolved. A third reviewer adjudicates disagreements. Inter-rater agreement is reported with raw agreement and category-appropriate chance-corrected statistics. Only this bounded field supports local precision--recall analysis, and confidence-sensitive analyses are reported alongside binary adjudication.
+
+\subsection{Frozen representation panel}
+
+The confirmatory representation panel is compact and interpretable: Raw or quiet-standardized carrier, signed temporal difference, frozen two-frame ICA as an equivalence control, ROI-minus-annulus residual, local coherence, lagged recurrence, and one prespecified information-divergence statistic. Parameters, candidate proposals, non-maximum suppression, and candidate budgets are frozen before confirmatory evaluation. The same proposals are reused where necessary to distinguish proposal gains from ranking gains. Broad feature expansion is prohibited.
+
+\subsection{Spatial ICA morphology, stability, and post-freeze alignment}
+\label{sec:spatial-ica-methods}
+
+Spatial ICA was fitted without labels to $11\times11$ local patches from the review frames using a 12-component dense convolutional FastICA bank and dense Wiener reconstruction. The fit was transductive within this single recording: all review frames were eligible for fitting, but annotation locations, certainty labels, and detection classes were excluded. The stored positive TIFF used a global linear mapping from a signed reconstructed source range of 0--279.77 to unsigned 16-bit intensity; 58.85\% of voxels were clipped at zero and 0.20\% reached the upper bound. Quantitative stability comparisons therefore used the signed reconstruction, and amplitudes were not compared across Raw and encoded spatial-ICA units.
+
+Objective morphology was computed at all 79 protected-v1 occurrences (27 immutable sites) and deterministic translated controls using identical event and baseline windows. The prespecified representation-internal metrics were center--annulus contrast, boundary sharpness, compactness, effective radius, peak offset, and temporal persistence. Site-blocked mean differences used site bootstrap intervals and site-level sign-flip tests; the 12 Raw and spatial-ICA tests were controlled together with Benjamini--Hochberg adjustment. Translated controls are unknown locations rather than verified biological negatives.
+
+Stability was evaluated at two levels. Filter stability compared four random-seed fits and four leave-one-burst-window-out fits after component alignment, using subspace cosine similarity and individual-filter absolute correlation. Reconstructed-output stability compared signed dense-Wiener movies, event maps, morphology ranks, peak timing, and fixed-budget known-positive recall. Leave-one-burst-out models were evaluated only on the excluded burst. Prespecified gates required pixel and median event-map correlations of at least 0.90, morphology Spearman correlation of at least 0.70, median peak error no greater than one frame, and absolute recall change no greater than 0.05.
+
+The already frozen detection-event classes were then joined post hoc to Raw and spatial-ICA morphology without refitting. Protected-v1 one-to-one matches were aggregated to immutable sites. Because only one protected site belonged to Class~2, three-class inference was prohibited. A candidate-assisted canonical-v7 sensitivity analysis aggregated to 24 canonical identities and was treated as internal-consistency evidence, not independent validation. Identity-certainty comparisons used dominant class per canonical identity and morphology residuals adjusted for class and burst; permutation labels were exchanged at the canonical-identity grain and 14 metric tests were multiplicity-controlled.
+
+\subsection{Uncertainty, multiplicity, and sensitivity analyses}
+
+Primary estimands are declared before the protected rerun. Uncertainty is estimated by site-level, burst-level, or two-way resampling, preserving temporal blocks. Exact or Monte Carlo sign-flip/permutation procedures are used when their exchangeability conditions are satisfied. Secondary families are controlled using the Benjamini--Hochberg false-discovery-rate procedure \citep{benjamini1995fdr}. Every primary analysis is repeated with burst~2 excluded; identity-sensitive analyses are repeated under separate-site and approved-merge views. Effect sizes and compatibility intervals are reported even when hypothesis tests are inconclusive.
+
+\subsection{Software and reproducibility}
+
+The analysis is implemented in the maintained \texttt{neurobench} package. Each stage records source hashes, label hashes, configuration, software environment, random seeds, output checksums, validation status, and exact figure/table generation commands. Existing scientific outputs are never overwritten. CPU-compatible tests are mandatory; CUDA may accelerate array operations but cannot change the numerical contract. The final result-to-manuscript exporter writes each numerical claim as a \LaTeX{} macro and records its exact source in a machine-readable map.

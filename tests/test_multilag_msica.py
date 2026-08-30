@@ -9,6 +9,7 @@ from neurobench.algorithms.multilag_msica import (
     lag_weights,
     matrix_renyi_mutual_information,
     project_temporal_fit,
+    project_temporal_fit_at_sites,
     sample_anchor_indices,
 )
 
@@ -102,3 +103,25 @@ def test_delay_embedding_uses_held_out_objective_and_projects_residual() -> None
     assert fit.diagnostics["confirmation_samples"] == 80
     assert len(fit.residual_indices) == 3
     assert np.isfinite(fit.objective)
+
+
+def test_site_projection_exposes_components_mixing_and_invertibility() -> None:
+    movie = _movie(23)
+    anchors = sample_anchor_indices(movie.shape, history=8, count=160, seed=9)
+    embedded = gather_delay_embedding(movie, anchors, (0, 1, 2, 4, 8))
+    fit = fit_delay_embedding(
+        embedded[:, :80], embedded[:, 80:], lags=(0, 1, 2, 4, 8),
+        objective_family="ksg_mi", objective_parameter={"neighbors": 3},
+        angle_step_degrees=30.0, max_sweeps=2,
+    )
+    sites = np.asarray([[1, 2], [5, 7]], dtype=np.int32)
+    audit = project_temporal_fit_at_sites(movie, fit, sites)
+    outputs = project_temporal_fit(movie, fit)
+    assert audit.components.shape == (5, 82, 2)
+    np.testing.assert_allclose(
+        audit.components[fit.persistence_index],
+        outputs["persistence"][:, sites[:, 0], sites[:, 1]],
+        rtol=2e-5, atol=2e-5,
+    )
+    np.testing.assert_allclose(audit.reconstructed_embedding, audit.embedded_input, atol=1e-10)
+    np.testing.assert_allclose(audit.residual_component_energy_fraction.sum(axis=0), 1.0, atol=1e-12)

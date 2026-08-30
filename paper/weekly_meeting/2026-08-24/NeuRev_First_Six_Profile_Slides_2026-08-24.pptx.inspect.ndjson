@@ -1,0 +1,205 @@
+{"kind":"deck","id":"pr/awq27o","name":"Deck"}
+{"kind":"layout","layoutId":"410f45d3-fcb3-4572-afda-1dd71e01ef44","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"eb06d18b-d908-4e6b-a36c-cb0c5cff7ed6","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/to4dx8","slide":1,"title":"NEURON IDENTIFIABILITY  /  FIRST SIX","textShapes":21}
+{"kind":"textbox","id":"sh/lk36tsz6","slide":1,"text":"NEURON IDENTIFIABILITY  /  FIRST SIX","textPreview":"NEURON IDENTIFIABILITY  /  FIRST SIX","textChars":36,"textLines":1,"bbox":[64,28,760,22]}
+{"kind":"textbox","id":"sh/yhs7yxgv","slide":1,"text":"The ICA + Local Norm pipeline improved known-positive recovery","textPreview":"The ICA + Local Norm pipeline improved known-positive recovery","textChars":62,"textLines":1,"bbox":[64,58,1130,52]}
+{"kind":"shape","id":"sh/zi1or2h0","slide":1,"bbox":[64,116,1152,0]}
+{"kind":"textbox","id":"sh/cfapwnip","slide":1,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[1170,670,44,18]}
+{"kind":"textbox","id":"sh/qts7ud0j","slide":1,"text":"PRIMARY SETTING","textPreview":"PRIMARY SETTING","textChars":15,"textLines":1,"bbox":[830,145,300,20]}
+{"kind":"textbox","id":"sh/bu1onih4","slide":1,"text":"6 px NMS  •  budget 20","textPreview":"6 px NMS  •  budget 20","textChars":22,"textLines":1,"bbox":[830,175,330,34]}
+{"kind":"shape","id":"sh/wbep8ryt","slide":1,"bbox":[830,240,360,56]}
+{"kind":"shape","id":"sh/hcnq1cze","slide":1,"bbox":[830,240,8,56]}
+{"kind":"textbox","id":"sh/9orm1k32","slide":1,"text":"carrier_signed","textPreview":"carrier_signed","textChars":14,"textLines":1,"bbox":[852,248,190,20]}
+{"kind":"textbox","id":"sh/8nil8fmh","slide":1,"text":"66 / 102","textPreview":"66 / 102","textChars":8,"textLines":1,"bbox":[1050,248,120,18]}
+{"kind":"textbox","id":"sh/7mp4zalc","slide":1,"text":"64.8%","textPreview":"64.8%","textChars":5,"textLines":1,"bbox":[1050,267,120,22]}
+{"kind":"shape","id":"sh/mlg36p4r","slide":1,"bbox":[830,312,360,56]}
+{"kind":"shape","id":"sh/lk7mxk36","slide":1,"bbox":[830,312,8,56]}
+{"kind":"textbox","id":"sh/kjyl4fml","slide":1,"text":"coherence_w15","textPreview":"coherence_w15","textChars":13,"textLines":1,"bbox":[852,320,190,20]}
+{"kind":"textbox","id":"sh/zip4val0","slide":1,"text":"70 / 102","textPreview":"70 / 102","textChars":8,"textLines":1,"bbox":[1050,320,120,18]}
+{"kind":"textbox","id":"sh/yhg3254f","slide":1,"text":"69.5%","textPreview":"69.5%","textChars":5,"textLines":1,"bbox":[1050,339,120,22]}
+{"kind":"shape","id":"sh/5gbm943a","slide":1,"bbox":[830,384,360,56]}
+{"kind":"shape","id":"sh/4f2lgz2p","slide":1,"bbox":[830,384,8,56]}
+{"kind":"textbox","id":"sh/4za5cna1","slide":1,"text":"lag2_w15","textPreview":"lag2_w15","textChars":8,"textLines":1,"bbox":[852,392,190,20]}
+{"kind":"textbox","id":"sh/pkj65sbm","slide":1,"text":"72 / 102","textPreview":"72 / 102","textChars":8,"textLines":1,"bbox":[1050,392,120,18]}
+{"kind":"textbox","id":"sh/2x8nadsv","slide":1,"text":"71.3%","textPreview":"71.3%","textChars":5,"textLines":1,"bbox":[1050,411,120,22]}
+{"kind":"textbox","id":"sh/3yho3itg","slide":1,"text":"+4.7 pp","textPreview":"+4.7 pp","textChars":7,"textLines":1,"bbox":[835,475,150,34]}
+{"kind":"textbox","id":"sh/gvq583a5","slide":1,"text":"coherence gain","textPreview":"coherence gain","textChars":14,"textLines":1,"bbox":[835,510,150,26]}
+{"kind":"textbox","id":"sh/hwz618ba","slide":1,"text":"+6.5 pp","textPreview":"+6.5 pp","textChars":7,"textLines":1,"bbox":[1025,475,150,34]}
+{"kind":"textbox","id":"sh/ut8n6tsz","slide":1,"text":"lag gain","textPreview":"lag gain","textChars":8,"textLines":1,"bbox":[1025,510,150,26]}
+{"kind":"shape","id":"sh/fuhozytk","slide":1,"bbox":[820,552,385,92]}
+{"kind":"textbox","id":"sh/srq543at","slide":1,"text":"Boundary","textPreview":"Boundary","textChars":8,"textLines":1,"bbox":[838,565,90,20]}
+{"kind":"textbox","id":"sh/tsz6xobe","slide":1,"text":"Candidate-assisted v7 tests internal consistency—not precision or independent validation.","textPreview":"Candidate-assisted v7 tests internal consistency—not precision or independent validation.","textChars":89,"textLines":1,"bbox":[838,587,345,50]}
+{"kind":"textbox","id":"sh/vmxo7yd0","slide":1,"text":"Success establishes the next question: why are some known neurons still easy—and others hard?","textPreview":"Success establishes the next question: why are some known neurons still easy—and others hard?","textChars":93,"textLines":1,"bbox":[70,625,710,50]}
+{"kind":"image","id":"im/wz2p4ri5","slide":1,"name":"","alt":"Canonical v7 NMS sensitivity and known-positive recall gains","bbox":[48,135,735,470]}
+{"kind":"notes","id":"nt/to4dx8","slide":1,"text":"Acknowledge the result first. At the primary 6-pixel NMS and budget 20, both compact lanes outperform carrier_signed. The v7 annotations are candidate-assisted, so use known-positive recovery and internal consistency language only.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/canonical_v7_extension/nms/v7_nms_budget_recall.tsv\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/canonical_v7_extension/visuals/v7_nms_sensitivity.png\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/canonical_v7_extension/SUMMARY.json\n[/Sources]"}
+{"kind":"slide","id":"sl/2thz5k","slide":2,"title":"NEURON IDENTIFIABILITY  /  FIRST SIX","textShapes":15}
+{"kind":"textbox","id":"sh/6t0ba5o7","slide":2,"text":"NEURON IDENTIFIABILITY  /  FIRST SIX","textPreview":"NEURON IDENTIFIABILITY  /  FIRST SIX","textChars":36,"textLines":1,"bbox":[64,28,760,22]}
+{"kind":"textbox","id":"sh/twbal07y","slide":2,"text":"Strong shared noise makes neuron profiles essential","textPreview":"Strong shared noise makes neuron profiles essential","textChars":51,"textLines":1,"bbox":[64,58,1130,52]}
+{"kind":"shape","id":"sh/sv2tcv6d","slide":2,"bbox":[64,116,1152,0]}
+{"kind":"textbox","id":"sh/j69sfqpw","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1170,670,44,18]}
+{"kind":"textbox","id":"sh/i50rml8b","slide":2,"text":"Aggregate recall cannot explain a neuron.","textPreview":"Aggregate recall cannot explain a neuron.","textChars":41,"textLines":1,"bbox":[68,145,520,42]}
+{"kind":"textbox","id":"sh/5srah07m","slide":2,"text":"It does not tell us why an individual neuron is visible, ambiguous, or missed.","textPreview":"It does not tell us why an individual neuron is visible, ambiguous, or missed.","textChars":78,"textLines":1,"bbox":[68,205,500,82]}
+{"kind":"textbox","id":"sh/47i98vq1","slide":2,"text":"WHY A PROFILE IS NEEDED","textPreview":"WHY A PROFILE IS NEEDED","textChars":23,"textLines":1,"bbox":[68,325,440,20]}
+{"kind":"textbox","id":"sh/v2psbqpk","slide":2,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[68,360,20,32]}
+{"kind":"textbox","id":"sh/u1gril8z","slide":2,"text":"Separate a neuron’s stable tendency from burst-wide context.","textPreview":"Separate a neuron’s stable tendency from burst-wide context.","textChars":60,"textLines":1,"bbox":[93,360,445,42]}
+{"kind":"textbox","id":"sh/of6x8vmh","slide":2,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[68,425,20,32]}
+{"kind":"textbox","id":"sh/9gzy1g32","slide":2,"text":"Distinguish weak local evidence from true absence.","textPreview":"Distinguish weak local evidence from true absence.","textChars":50,"textLines":1,"bbox":[93,425,445,42]}
+{"kind":"textbox","id":"sh/mdof6l4r","slide":2,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[68,490,20,32]}
+{"kind":"textbox","id":"sh/nexgzqlw","slide":2,"text":"Explain failure modes before adding another detector score.","textPreview":"Explain failure modes before adding another detector score.","textChars":59,"textLines":1,"bbox":[93,490,445,42]}
+{"kind":"shape","id":"sh/0b6x4bml","slide":2,"bbox":[64,575,495,88]}
+{"kind":"textbox","id":"sh/1cfyxg36","slide":2,"text":"Profile question","textPreview":"Profile question","textChars":16,"textLines":1,"bbox":[82,590,140,20]}
+{"kind":"textbox","id":"sh/e9of214f","slide":2,"text":"Which measurable properties recur for the same neuron across bursts?","textPreview":"Which measurable properties recur for the same neuron across bursts?","textChars":68,"textLines":1,"bbox":[82,614,450,45]}
+{"kind":"textbox","id":"sh/k7ahgf2p","slide":2,"text":"Same bursts. Very different site-level evidence.","textPreview":"Same bursts. Very different site-level evidence.","textChars":48,"textLines":1,"bbox":[690,625,425,34]}
+{"kind":"image","id":"im/kfe54fmt","slide":2,"name":"","alt":"Event-aligned raw, annulus, and residual traces across observation sites","bbox":[590,145,625,470]}
+{"kind":"notes","id":"nt/2thz5k","slide":2,"text":"The recording contains strong shared transients and noise. Profiling reframes a missed detection as a measurable neuron-by-context problem rather than immediately treating it as biological absence.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/03_trace_atlas/trace_atlas_overview.png\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/03_trace_atlas/trace_metrics.tsv\n[/Sources]"}
+{"kind":"slide","id":"sl/9qliwn","slide":3,"title":"NEURON IDENTIFIABILITY  /  FIRST SIX","textShapes":19}
+{"kind":"textbox","id":"sh/e1gjmx8b","slide":3,"text":"NEURON IDENTIFIABILITY  /  FIRST SIX","textPreview":"NEURON IDENTIFIABILITY  /  FIRST SIX","textChars":36,"textLines":1,"bbox":[64,28,760,22]}
+{"kind":"textbox","id":"sh/1o7ixsr2","slide":3,"text":"The detector already contains clues about why it succeeds","textPreview":"The detector already contains clues about why it succeeds","textChars":57,"textLines":1,"bbox":[64,58,1130,52]}
+{"kind":"shape","id":"sh/g3y1o7qh","slide":3,"bbox":[64,116,1152,0]}
+{"kind":"textbox","id":"sh/3qp0z29s","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1170,670,44,18]}
+{"kind":"textbox","id":"sh/2pgjqx8n","slide":3,"text":"We should not begin with more features. We should first explain the features already producing useful rankings on the validated observations.","textPreview":"We should not begin with more features. We should first explain the features already producing useful rankings on the validated observati...","textChars":141,"textLines":1,"bbox":[70,140,1120,66]}
+{"kind":"shape","id":"sh/psri1cry","slide":3,"bbox":[65,245,270,280]}
+{"kind":"shape","id":"sh/ory1s7qd","slide":3,"bbox":[65,245,270,10]}
+{"kind":"textbox","id":"sh/bu903m94","slide":3,"text":"Signal","textPreview":"Signal","textChars":6,"textLines":1,"bbox":[87,275,220,30]}
+{"kind":"textbox","id":"sh/qt0juh8j","slide":3,"text":"Raw peak\nResidual peak","textPreview":"Raw peak | Residual peak","textChars":22,"textLines":2,"bbox":[87,330,220,70]}
+{"kind":"shape","id":"sh/ov6pgbux","slide":3,"bbox":[87,415,225,0]}
+{"kind":"textbox","id":"sh/9wf6pgvi","slide":3,"text":"Is the event strong at the site?","textPreview":"Is the event strong at the site?","textChars":32,"textLines":1,"bbox":[87,440,220,60]}
+{"kind":"shape","id":"sh/mtone1cr","slide":3,"bbox":[365,245,270,280]}
+{"kind":"shape","id":"sh/nuxon6dc","slide":3,"bbox":[365,245,270,10]}
+{"kind":"textbox","id":"sh/wz6pkbut","slide":3,"text":"Contrast","textPreview":"Contrast","textChars":8,"textLines":1,"bbox":[387,275,220,30]}
+{"kind":"textbox","id":"sh/x0z6tgve","slide":3,"text":"ROI − annulus\nSpatial specificity","textPreview":"ROI − annulus | Spatial specificity","textChars":33,"textLines":2,"bbox":[387,330,220,70]}
+{"kind":"shape","id":"sh/axo7i1c3","slide":3,"bbox":[387,415,225,0]}
+{"kind":"textbox","id":"sh/byxor6do","slide":3,"text":"Is activity localized?","textPreview":"Is activity localized?","textChars":22,"textLines":1,"bbox":[387,440,220,60]}
+{"kind":"shape","id":"sh/knqpovu5","slide":3,"bbox":[665,245,270,280]}
+{"kind":"shape","id":"sh/loz6x0vq","slide":3,"bbox":[665,245,270,10]}
+{"kind":"textbox","id":"sh/tkv6hgnu","slide":3,"text":"Noise","textPreview":"Noise","textChars":5,"textLines":1,"bbox":[687,275,220,30]}
+{"kind":"textbox","id":"sh/sjm58bm9","slide":3,"text":"Baseline SD\nRobust SNR","textPreview":"Baseline SD | Robust SNR","textChars":22,"textLines":2,"bbox":[687,330,220,70]}
+{"kind":"shape","id":"sh/7idofq5o","slide":3,"bbox":[687,415,225,0]}
+{"kind":"textbox","id":"sh/6h4n6l43","slide":3,"text":"Is the event distinguishable?","textPreview":"Is the event distinguishable?","textChars":29,"textLines":1,"bbox":[687,440,220,60]}
+{"kind":"shape","id":"sh/h8f6l0nq","slide":3,"bbox":[965,245,270,280]}
+{"kind":"shape","id":"sh/gn6pcvm5","slide":3,"bbox":[965,245,270,10]}
+{"kind":"textbox","id":"sh/fmdojq50","slide":3,"text":"Detector behavior","textPreview":"Detector behavior","textChars":17,"textLines":1,"bbox":[987,275,220,30]}
+{"kind":"textbox","id":"sh/ul47al4f","slide":3,"text":"Rank\nLane agreement","textPreview":"Rank | Lane agreement","textChars":19,"textLines":2,"bbox":[987,330,220,70]}
+{"kind":"shape","id":"sh/xcb69wnm","slide":3,"bbox":[987,415,225,0]}
+{"kind":"textbox","id":"sh/wr250rm1","slide":3,"text":"How does evidence become recovery?","textPreview":"How does evidence become recovery?","textChars":34,"textLines":1,"bbox":[987,440,220,60]}
+{"kind":"textbox","id":"sh/mx03axkz","slide":3,"text":"VALIDATED-DATA TEST","textPreview":"VALIDATED-DATA TEST","textChars":19,"textLines":1,"bbox":[70,570,260,20]}
+{"kind":"textbox","id":"sh/ni9432lk","slide":3,"text":"Repeatability across bursts  →  association with recovery  →  failure/class discrimination","textPreview":"Repeatability across bursts  →  association with recovery  →  failure/class discrimination","textChars":90,"textLines":1,"bbox":[70,602,1115,38]}
+{"kind":"textbox","id":"sh/8jilc725","slide":3,"text":"Outcome: an interpretable profile—not a larger black box.","textPreview":"Outcome: an interpretable profile—not a larger black box.","textChars":57,"textLines":1,"bbox":[70,652,1120,28]}
+{"kind":"notes","id":"nt/9qliwn","slide":3,"text":"The existing pipeline already measures signal, contrast, noise, and detector behavior. The validated observations let us ask why those measures work and where they fail, before engineering new representations.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/analysis_visuals/site_summary.tsv\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/05_scalar_observability/site_burst_metrics.tsv\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/canonical_v7_extension/nms/v7_nms_budget_recall.tsv\n[/Sources]"}
+{"kind":"slide","id":"sl/65l9gg","slide":4,"title":"NEURON IDENTIFIABILITY  /  FIRST SIX","textShapes":22}
+{"kind":"textbox","id":"sh/qhgvqho3","slide":4,"text":"NEURON IDENTIFIABILITY  /  FIRST SIX","textPreview":"NEURON IDENTIFIABILITY  /  FIRST SIX","textChars":36,"textLines":1,"bbox":[64,28,760,22]}
+{"kind":"textbox","id":"sh/d47u1w7e","slide":4,"text":"Local Norm makes neighborhood context measurable","textPreview":"Local Norm makes neighborhood context measurable","textChars":48,"textLines":1,"bbox":[64,58,1130,52]}
+{"kind":"shape","id":"sh/s3ydsr69","slide":4,"bbox":[64,116,1152,0]}
+{"kind":"textbox","id":"sh/3e5cvmpc","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1170,670,44,18]}
+{"kind":"textbox","id":"sh/idwbmhor","slide":4,"text":"MEASUREMENT GEOMETRY","textPreview":"MEASUREMENT GEOMETRY","textChars":20,"textLines":1,"bbox":[70,145,320,20]}
+{"kind":"shape","id":"sh/5g7uxc7i","slide":4,"bbox":[95,205,420,330]}
+{"kind":"shape","id":"sh/4fydo76x","slide":4,"bbox":[185,260,240,220]}
+{"kind":"shape","id":"sh/na9c765w","slide":4,"bbox":[245,315,120,110]}
+{"kind":"textbox","id":"sh/290vy1ob","slide":4,"text":"ROI","textPreview":"ROI","textChars":3,"textLines":1,"bbox":[275,350,60,30]}
+{"kind":"textbox","id":"sh/ona5gr6p","slide":4,"text":"ANNULUS","textPreview":"ANNULUS","textChars":7,"textLines":1,"bbox":[255,280,100,24]}
+{"kind":"textbox","id":"sh/pojmpw7a","slide":4,"text":"BACKGROUND","textPreview":"BACKGROUND","textChars":10,"textLines":1,"bbox":[225,490,160,22]}
+{"kind":"textbox","id":"sh/2l8neh8j","slide":4,"text":"central signal","textPreview":"central signal","textChars":14,"textLines":1,"bbox":[110,220,120,20]}
+{"kind":"shape","id":"sh/3m14nmp4","slide":4,"bbox":[215,235,72,82]}
+{"kind":"textbox","id":"sh/gjq5crqt","slide":4,"text":"local neighborhood","textPreview":"local neighborhood","textChars":18,"textLines":1,"bbox":[380,230,130,40]}
+{"kind":"shape","id":"sh/1kzmlw7y","slide":4,"bbox":[348,270,42,55]}
+{"kind":"textbox","id":"sh/eh8nah8n","slide":4,"text":"WHAT WE CAN TRACK","textPreview":"WHAT WE CAN TRACK","textChars":17,"textLines":1,"bbox":[585,145,360,20]}
+{"kind":"textbox","id":"sh/fih4jmp8","slide":4,"text":"Mean","textPreview":"Mean","textChars":4,"textLines":1,"bbox":[585,200,220,26]}
+{"kind":"textbox","id":"sh/sfq587qh","slide":4,"text":"signal level inside ROI and annulus","textPreview":"signal level inside ROI and annulus","textChars":35,"textLines":1,"bbox":[810,200,365,36]}
+{"kind":"shape","id":"sh/tgzmhc72","slide":4,"bbox":[585,249,590,0]}
+{"kind":"textbox","id":"sh/9cr258zq","slide":4,"text":"Standard deviation","textPreview":"Standard deviation","textChars":18,"textLines":1,"bbox":[585,275,220,26]}
+{"kind":"textbox","id":"sh/8bilc3i5","slide":4,"text":"baseline variability / local noise","textPreview":"baseline variability / local noise","textChars":34,"textLines":1,"bbox":[810,275,365,36]}
+{"kind":"shape","id":"sh/7a9k3yh0","slide":4,"bbox":[585,324,590,0]}
+{"kind":"textbox","id":"sh/m9g3at0f","slide":4,"text":"ROI − annulus","textPreview":"ROI − annulus","textChars":13,"textLines":1,"bbox":[585,350,220,26]}
+{"kind":"textbox","id":"sh/l8721ozu","slide":4,"text":"local contrast after shared activity","textPreview":"local contrast after shared activity","textChars":36,"textLines":1,"bbox":[810,350,365,36]}
+{"kind":"shape","id":"sh/knyl8ji9","slide":4,"bbox":[585,399,590,0]}
+{"kind":"textbox","id":"sh/zmpkzeho","slide":4,"text":"Spatial specificity","textPreview":"Spatial specificity","textChars":19,"textLines":1,"bbox":[585,425,220,26]}
+{"kind":"textbox","id":"sh/ylg36t03","slide":4,"text":"whether the response is localized","textPreview":"whether the response is localized","textChars":33,"textLines":1,"bbox":[810,425,365,36]}
+{"kind":"shape","id":"sh/54bmdszy","slide":4,"bbox":[585,474,590,0]}
+{"kind":"textbox","id":"sh/432lknid","slide":4,"text":"Across-burst recurrence","textPreview":"Across-burst recurrence","textChars":23,"textLines":1,"bbox":[585,500,220,26]}
+{"kind":"textbox","id":"sh/2pczepgv","slide":4,"text":"whether the profile repeats","textPreview":"whether the profile repeats","textChars":27,"textLines":1,"bbox":[810,500,365,36]}
+{"kind":"shape","id":"sh/nql07uxg","slide":4,"bbox":[585,549,590,0]}
+{"kind":"shape","id":"sh/orehgfy1","slide":4,"bbox":[575,590,615,65]}
+{"kind":"textbox","id":"sh/psni9kfm","slide":4,"text":"Why it is useful","textPreview":"Why it is useful","textChars":16,"textLines":1,"bbox":[595,603,150,20]}
+{"kind":"textbox","id":"sh/elcza5gz","slide":4,"text":"Each number has a visible trace-level meaning and can be compared neuron by neuron.","textPreview":"Each number has a visible trace-level meaning and can be compared neuron by neuron.","textChars":83,"textLines":1,"bbox":[750,598,420,44]}
+{"kind":"notes","id":"nt/65l9gg","slide":4,"text":"Local normalization asks whether the site differs from its immediate neighborhood. The measures are easy to compute, plot, and explain, which makes them ideal foundations for a per-neuron profile.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/03_trace_atlas/trace_metrics.tsv\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/05_scalar_observability/site_burst_metrics.tsv\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/analysis_visuals/site_summary.tsv\n[/Sources]"}
+{"kind":"slide","id":"sl/kq1seq","slide":5,"title":"NEURON IDENTIFIABILITY  /  FIRST SIX","textShapes":34}
+{"kind":"textbox","id":"sh/cfapcj6d","slide":5,"text":"NEURON IDENTIFIABILITY  /  FIRST SIX","textPreview":"NEURON IDENTIFIABILITY  /  FIRST SIX","textChars":36,"textLines":1,"bbox":[64,28,760,22]}
+{"kind":"textbox","id":"sh/be183e5s","slide":5,"text":"Three neurons show why one metric is not enough","textPreview":"Three neurons show why one metric is not enough","textChars":47,"textLines":1,"bbox":[64,58,1130,52]}
+{"kind":"shape","id":"sh/qds7ato7","slide":5,"bbox":[64,116,1152,0]}
+{"kind":"textbox","id":"sh/pcjq1onm","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1170,670,44,18]}
+{"kind":"shape","id":"sh/obap8j61","slide":5,"bbox":[45,140,365,475]}
+{"kind":"shape","id":"sh/3a1oze5g","slide":5,"bbox":[45,140,365,9]}
+{"kind":"textbox","id":"sh/29s769ov","slide":5,"text":"HERO","textPreview":"HERO","textChars":4,"textLines":1,"bbox":[63,160,155,24]}
+{"kind":"textbox","id":"sh/1oj6x4nq","slide":5,"text":"roi_003","textPreview":"roi_003","textChars":7,"textLines":1,"bbox":[225,158,160,24]}
+{"kind":"textbox","id":"sh/2lkbet0r","slide":5,"text":"Raw peak","textPreview":"Raw peak","textChars":8,"textLines":1,"bbox":[63,462,80,20]}
+{"kind":"textbox","id":"sh/nmtc7y1c","slide":5,"text":"1,215","textPreview":"1,215","textChars":5,"textLines":1,"bbox":[140,458,78,26]}
+{"kind":"textbox","id":"sh/on2tg3ix","slide":5,"text":"Residual","textPreview":"Residual","textChars":8,"textLines":1,"bbox":[225,462,82,20]}
+{"kind":"textbox","id":"sh/pobu98j2","slide":5,"text":"705","textPreview":"705","textChars":3,"textLines":1,"bbox":[315,458,69,26]}
+{"kind":"textbox","id":"sh/eh0bat0f","slide":5,"text":"Specificity","textPreview":"Specificity","textChars":11,"textLines":1,"bbox":[63,510,90,20]}
+{"kind":"textbox","id":"sh/fi9c3y10","slide":5,"text":"0.423","textPreview":"0.423","textChars":5,"textLines":1,"bbox":[157,506,92,26]}
+{"kind":"textbox","id":"sh/0jitc3il","slide":5,"text":"B58 known-positive recovery","textPreview":"B58 known-positive recovery","textChars":27,"textLines":1,"bbox":[63,552,210,20]}
+{"kind":"textbox","id":"sh/1kbu58j6","slide":5,"text":"100%","textPreview":"100%","textChars":4,"textLines":1,"bbox":[290,547,94,28]}
+{"kind":"shape","id":"sh/qt0b690j","slide":5,"bbox":[435,140,365,475]}
+{"kind":"shape","id":"sh/ru9cze14","slide":5,"bbox":[435,140,365,9]}
+{"kind":"textbox","id":"sh/vml0rqdk","slide":5,"text":"ANTIHERO","textPreview":"ANTIHERO","textChars":8,"textLines":1,"bbox":[453,160,155,24]}
+{"kind":"textbox","id":"sh/ulczilcz","slide":5,"text":"roi_011","textPreview":"roi_011","textChars":7,"textLines":1,"bbox":[615,158,160,24]}
+{"kind":"textbox","id":"sh/wnehkvu5","slide":5,"text":"Raw peak","textPreview":"Raw peak","textChars":8,"textLines":1,"bbox":[453,462,80,20]}
+{"kind":"textbox","id":"sh/jq50vqdg","slide":5,"text":"369","textPreview":"369","textChars":3,"textLines":1,"bbox":[530,458,78,26]}
+{"kind":"textbox","id":"sh/ipwjmlcb","slide":5,"text":"Residual","textPreview":"Residual","textChars":8,"textLines":1,"bbox":[615,462,82,20]}
+{"kind":"textbox","id":"sh/5cnix0vm","slide":5,"text":"74","textPreview":"74","textChars":2,"textLines":1,"bbox":[705,458,69,26]}
+{"kind":"textbox","id":"sh/4be1ovu1","slide":5,"text":"Specificity","textPreview":"Specificity","textChars":11,"textLines":1,"bbox":[453,510,90,20]}
+{"kind":"textbox","id":"sh/zu10j6dc","slide":5,"text":"0.072","textPreview":"0.072","textChars":5,"textLines":1,"bbox":[547,506,92,26]}
+{"kind":"textbox","id":"sh/ytsza1wr","slide":5,"text":"B58 known-positive recovery","textPreview":"B58 known-positive recovery","textChars":27,"textLines":1,"bbox":[453,552,210,20]}
+{"kind":"textbox","id":"sh/ozqxk7ap","slide":5,"text":"0–25%","textPreview":"0–25%","textChars":5,"textLines":1,"bbox":[680,547,94,28]}
+{"kind":"shape","id":"sh/p0zetcba","slide":5,"bbox":[825,140,365,475]}
+{"kind":"shape","id":"sh/2x8fixsj","slide":5,"bbox":[825,140,365,9]}
+{"kind":"textbox","id":"sh/3yhwr2t4","slide":5,"text":"RANDOM","textPreview":"RANDOM","textChars":6,"textLines":1,"bbox":[843,160,155,24]}
+{"kind":"textbox","id":"sh/gv6xgnut","slide":5,"text":"roi_010","textPreview":"roi_010","textChars":7,"textLines":1,"bbox":[1005,158,160,24]}
+{"kind":"textbox","id":"sh/etofexcn","slide":5,"text":"Raw peak","textPreview":"Raw peak","textChars":8,"textLines":1,"bbox":[843,462,80,20]}
+{"kind":"textbox","id":"sh/fuxwnit8","slide":5,"text":"256","textPreview":"256","textChars":3,"textLines":1,"bbox":[920,458,78,26]}
+{"kind":"textbox","id":"sh/0raxsrax","slide":5,"text":"Residual","textPreview":"Residual","textChars":8,"textLines":1,"bbox":[1005,462,82,20]}
+{"kind":"textbox","id":"sh/lsjy1wbi","slide":5,"text":"34","textPreview":"34","textChars":2,"textLines":1,"bbox":[1095,458,69,26]}
+{"kind":"textbox","id":"sh/hwbudoru","slide":5,"text":"Specificity","textPreview":"Specificity","textChars":11,"textLines":1,"bbox":[843,510,90,20]}
+{"kind":"textbox","id":"sh/wb2tkja9","slide":5,"text":"−0.004","textPreview":"−0.004","textChars":6,"textLines":1,"bbox":[937,506,92,26]}
+{"kind":"textbox","id":"sh/vatcbe9o","slide":5,"text":"B58 known-positive recovery","textPreview":"B58 known-positive recovery","textChars":27,"textLines":1,"bbox":[843,552,210,20]}
+{"kind":"textbox","id":"sh/u9kbi9s3","slide":5,"text":"75%","textPreview":"75%","textChars":3,"textLines":1,"bbox":[1070,547,94,28]}
+{"kind":"shape","id":"sh/50vuhorq","slide":5,"bbox":[55,626,1080,58]}
+{"kind":"textbox","id":"sh/4zmdojql","slide":5,"text":"The random neuron has weaker simple Local Norm metrics than the antihero—but much better recovery. The profile must combine dimensions and context.","textPreview":"The random neuron has weaker simple Local Norm metrics than the antihero—but much better recovery. The profile must combine dimensions an...","textChars":147,"textLines":1,"bbox":[75,638,1040,42]}
+{"kind":"image","id":"im/9sjups3a","slide":5,"name":"","alt":"HERO example trace for roi_003","bbox":[59,200,337,245]}
+{"kind":"image","id":"im/ydgvmtsr","slide":5,"name":"","alt":"ANTIHERO example trace for roi_011","bbox":[449,200,337,245]}
+{"kind":"image","id":"im/epozq1s3","slide":5,"name":"","alt":"RANDOM example trace for roi_010","bbox":[839,200,337,245]}
+{"kind":"notes","id":"nt/kq1seq","slide":5,"text":"Hero is the frozen high-observability confirmed site. Antihero means a confirmed hard case, not a negative. The random example was frozen from eligible protected confirmed four-burst sites with seed 20260824. Its 75 percent recovery despite weaker simple contrast is the reason to avoid a one-number profile.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/10_representation_confirmation/detector_visual_audit_v2/1_Expert_Annotations/figures/traces/roi_003.png\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/10_representation_confirmation/detector_visual_audit_v2/1_Expert_Annotations/figures/traces/roi_011.png\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/10_representation_confirmation/detector_visual_audit_v2/1_Expert_Annotations/figures/traces/roi_010.png\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/analysis_visuals/site_summary.tsv\n[/Sources]"}
+{"kind":"slide","id":"sl/cww9lo","slide":6,"title":"NEURON IDENTIFIABILITY  /  FIRST SIX","textShapes":27}
+{"kind":"textbox","id":"sh/32tkrads","slide":6,"text":"NEURON IDENTIFIABILITY  /  FIRST SIX","textPreview":"NEURON IDENTIFIABILITY  /  FIRST SIX","textChars":36,"textLines":1,"bbox":[64,28,760,22]}
+{"kind":"textbox","id":"sh/432l0fud","slide":6,"text":"ICA should add information Local Norm cannot","textPreview":"ICA should add information Local Norm cannot","textChars":44,"textLines":1,"bbox":[64,58,1130,52]}
+{"kind":"shape","id":"sh/5ob2tkvy","slide":6,"bbox":[64,116,1152,0]}
+{"kind":"textbox","id":"sh/qp432pcj","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1170,670,44,18]}
+{"kind":"shape","id":"sh/rqdkvad4","slide":6,"bbox":[65,155,510,330]}
+{"kind":"textbox","id":"sh/srml4fu9","slide":6,"text":"LOCAL NORM ASKS","textPreview":"LOCAL NORM ASKS","textChars":15,"textLines":1,"bbox":[90,180,300,20]}
+{"kind":"textbox","id":"sh/dsv2xkvu","slide":6,"text":"Is the ROI different from its immediate neighborhood?","textPreview":"Is the ROI different from its immediate neighborhood?","textChars":53,"textLines":1,"bbox":[90,225,430,75]}
+{"kind":"textbox","id":"sh/6t0jqlwz","slide":6,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[90,335,20,32]}
+{"kind":"textbox","id":"sh/7u9kjqdk","slide":6,"text":"Local contrast","textPreview":"Local contrast","textChars":14,"textLines":1,"bbox":[115,335,385,42]}
+{"kind":"textbox","id":"sh/vq1sjuds","slide":6,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[90,385,20,32]}
+{"kind":"textbox","id":"sh/ap8bqpcn","slide":6,"text":"Baseline variability","textPreview":"Baseline variability","textChars":20,"textLines":1,"bbox":[115,385,385,42]}
+{"kind":"textbox","id":"sh/xsjal4vy","slide":6,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[90,435,20,32]}
+{"kind":"textbox","id":"sh/wratszud","slide":6,"text":"Spatial specificity","textPreview":"Spatial specificity","textChars":19,"textLines":1,"bbox":[115,435,385,42]}
+{"kind":"shape","id":"sh/nmhsfudw","slide":6,"bbox":[705,155,510,330]}
+{"kind":"textbox","id":"sh/ml8bmpcb","slide":6,"text":"ICA ASKS","textPreview":"ICA ASKS","textChars":8,"textLines":1,"bbox":[730,180,300,20]}
+{"kind":"textbox","id":"sh/9ozah4v2","slide":6,"text":"Does the activity contain structure separable from shared recording dynamics?","textPreview":"Does the activity contain structure separable from shared recording dynamics?","textChars":77,"textLines":1,"bbox":[730,225,430,90]}
+{"kind":"textbox","id":"sh/onqtozuh","slide":6,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[730,335,20,32]}
+{"kind":"textbox","id":"sh/zixsbad0","slide":6,"text":"Activation energy and timing","textPreview":"Activation energy and timing","textChars":28,"textLines":1,"bbox":[755,335,385,42]}
+{"kind":"textbox","id":"sh/exobi5cf","slide":6,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[730,385,20,32]}
+{"kind":"textbox","id":"sh/2tobu5g7","slide":6,"text":"Cross-burst recurrence","textPreview":"Cross-burst recurrence","textChars":22,"textLines":1,"bbox":[755,385,385,42]}
+{"kind":"textbox","id":"sh/3uxc3axs","slide":6,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[730,435,20,32]}
+{"kind":"textbox","id":"sh/4v6twfyd","slide":6,"text":"Spatial concentration / shape","textPreview":"Spatial concentration / shape","textChars":29,"textLines":1,"bbox":[755,435,385,42]}
+{"kind":"textbox","id":"sh/pgfu5kfi","slide":6,"text":"+","textPreview":"+","textChars":1,"textLines":1,"bbox":[615,270,60,60]}
+{"kind":"textbox","id":"sh/qhobypg3","slide":6,"text":"THE SCIENTIFIC TEST","textPreview":"THE SCIENTIFIC TEST","textChars":19,"textLines":1,"bbox":[70,535,300,20]}
+{"kind":"textbox","id":"sh/rixc7uxo","slide":6,"text":"Local Norm profile","textPreview":"Local Norm profile","textChars":18,"textLines":1,"bbox":[70,580,230,35]}
+{"kind":"textbox","id":"sh/cjqt0ze9","slide":6,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[315,580,45,35]}
+{"kind":"textbox","id":"sh/dkzu9kfu","slide":6,"text":"add frozen ICA features","textPreview":"add frozen ICA features","textChars":23,"textLines":1,"bbox":[375,580,260,35]}
+{"kind":"textbox","id":"sh/el8v2pwf","slide":6,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[650,580,45,35]}
+{"kind":"textbox","id":"sh/zmhcbux0","slide":6,"text":"incremental prediction of recovery, failure, or class","textPreview":"incremental prediction of recovery, failure, or class","textChars":53,"textLines":1,"bbox":[710,574,490,52]}
+{"kind":"shape","id":"sh/9gje1oz2","slide":6,"bbox":[65,645,1150,42]}
+{"kind":"textbox","id":"sh/8faxsjih","slide":6,"text":"Guardrail: compare every ICA feature with an interpretable simple comparator; do not assign anatomy to an ICA filter.","textPreview":"Guardrail: compare every ICA feature with an interpretable simple comparator; do not assign anatomy to an ICA filter.","textChars":117,"textLines":1,"bbox":[85,655,1110,24]}
+{"kind":"notes","id":"nt/cww9lo","slide":6,"text":"ICA matters because annotators found it visually informative, not because component identities are anatomical. The next analysis should test whether frozen ICA-derived measures add predictive or explanatory value after Local Norm features. If they merely reproduce a simple signed difference, the simpler comparator wins.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/03_trace_atlas/trace_metrics.tsv\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/09_ica_statistical_test_suite/summary.json\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/10_representation_confirmation/summary.json\n[/Sources]"}

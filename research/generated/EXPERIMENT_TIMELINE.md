@@ -1,0 +1,33 @@
+# Experiment timeline
+
+Generated from the repository research registry. Order is explicit; historical execution dates and run provenance remain unknown when absent from the v1 source.
+
+| ID | Experiment | Lifecycle | Outcome | Evidence | Decision |
+| --- | --- | --- | --- | --- | --- |
+| `NREV-EXP-0001` | Canonical V7 Trace Atlas | validated | inconclusive | current_recording | retain |
+| `NREV-EXP-0002` | All Site Trace Taxonomy | validated | inconclusive | current_recording | retain |
+| `NREV-EXP-0003` | Pipeline Diagnostic Audit | validated | inconclusive | current_recording | retain |
+| `NREV-EXP-0004` | Full Trace Feature Panel | validated | inconclusive | current_recording | retain |
+| `NREV-EXP-0005` | Automated Feature Validation | validated | inconclusive | current_recording | retain |
+| `NREV-EXP-0006` | Feature Deep Dives | validated | inconclusive | current_recording | retain |
+| `NREV-EXP-0007` | Identity Aware Recenter Audit V8 | reviewed | supported | reviewed_current_recording | retain |
+| `NREV-EXP-0008` | Expanded Automated Validation V3 | validated | inconclusive | current_recording | retain |
+| `NREV-EXP-0009` | Major Validation Next Steps V1 | validated | mixed | evidence_synthesis | hold |
+| `NREV-EXP-0010` | Realistic Movie Detector Benchmark V3 | validated | supported | computational_simulation | retain |
+| `NREV-EXP-0011` | Generator Family Holdout V4 | validated | supported | computational_simulation | retain |
+| `NREV-EXP-0012` | Label Free False Alarm Gated Fusion V5 | closed | rejected | computational_simulation | stop |
+| `NREV-EXP-0013` | Automated Challenge Suite V7 | closed | mixed | computational_simulation | retain |
+| `NREV-EXP-0014` | Targeted Automated Development V8 | closed | rejected | computational_simulation | stop |
+| `NREV-EXP-0015` | Joint Generative Deblending V10 | closed | rejected | computational_simulation | stop |
+| `NREV-EXP-0016` | New Candidate Review V1 | reviewed | inconclusive | reviewed_current_recording | hold |
+| `NREV-EXP-0017` | External Blinded Bounded Review V2 | validated | not_evaluated | descriptive | hold |
+| `NREV-EXP-0018` | Temporal Ica Internals | validated | supported | current_recording | retain |
+| `NREV-EXP-0019` | Ls Denominator Audit | validated | supported | current_recording | retain |
+| `NREV-EXP-0020` | Complete External Bounded Review V2 | draft | not_evaluated | none | pending |
+| `NREV-EXP-0021` | Uncertainty Aware Learning V1 | draft | not_evaluated | none | pending |
+| `NREV-EXP-0022` | Identity Aware Bounded Review | draft | not_evaluated | none | pending |
+| `NREV-EXP-0023` | Bounded Field Precision | draft | not_evaluated | none | pending |
+| `NREV-EXP-0024` | Independent Recording Confirmation | draft | not_evaluated | none | pending |
+| `NREV-EXP-0025` | Motion Registration Audit | draft | not_evaluated | none | pending |
+| `NREV-EXP-0026` | Frozen Feature Transfer | draft | not_evaluated | none | pending |
+| `NREV-EXP-0027` | Realistic Movie Simulation | draft | not_evaluated | none | pending |

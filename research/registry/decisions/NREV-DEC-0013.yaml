@@ -1,0 +1,37 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0013
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical decision effective date
+program_id: NREV-PRG-0001
+title: Decision after Automated Challenge Suite V7
+lifecycle: active
+action: retain
+rationale: Preserve robust null normalization as a candidate improvement, reject current BH stopping and post-proposal suppression
+  as solved components, make identity-aware close-source resolution and parameter-robust stopping the next automated development
+  targets, and redesign kinetic falsification around directional kernels.
+evidence_summary: Movie-wise robust null normalization improved mean F1 from 0.505 to 0.523; OOD signatures separated the
+  deliberately shifted challenges with AUC 1.0; and a second simulator passed the F1 gate. Conversely, BH stopping produced
+  F1 0.299, suppression variants were equivalent, weak-neighbor 80-percent recovery required amplitude ratio 1.0 at 3 to 7
+  px, colored noise reduced top-eight recall from 0.833 to 0.708, stability F1 ranged from 0 to 0.5, and reversed-time kinetic
+  AUC remained 0.731.
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0013
+claim_ids:
+- NREV-CLM-0012
+evidence_capsule_ids:
+- NREV-EVC-EXP-0013
+constraints:
+- Several challenges are intentionally stylized and OOD separation is likely optimistic; the second simulator is easier than
+  the primary; suppression is tested only after local-max proposal formation; six seeds limit precision of severity boundaries.
+- The historical decision date was not encoded in the v1 story and was not guessed during migration.
+visibility: public
+legacy_status: complete_computational_mixed_result
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

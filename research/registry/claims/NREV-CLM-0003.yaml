@@ -1,0 +1,31 @@
+schema_version: 1
+record_type: claim
+id: NREV-CLM-0003
+program_id: NREV-PRG-0001
+title: Full Trace Feature Roles
+statement: Event amplitude is strongest for known-center temporal retrieval, while spatial context contributes localized structure
+  and full-field proposal or ranking value.
+scope: 106 confirmed occurrences at 50 immutable sites in one previously analyzed recording; displaced tissue and guarded
+  quiet frames have unknown biology.
+limitations:
+- 'No inference is registered beyond this scope: 106 confirmed occurrences at 50 immutable sites in one previously analyzed
+  recording; displaced tissue and guarded quiet frames have unknown biology.'
+claim_state: provisional
+evidence_tier: current_recording
+review_state: not_requested
+evidence_capsule_ids:
+- NREV-EVC-EXP-0004
+- NREV-EVC-EXP-0005
+decision_ids:
+- NREV-DEC-0004
+- NREV-DEC-0005
+tags:
+- full
+- trace
+- feature
+- roles
+visibility: public
+legacy_id: full_trace_feature_roles
+legacy_status: exploratory_supported_current_recording
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

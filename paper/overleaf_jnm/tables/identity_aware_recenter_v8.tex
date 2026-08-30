@@ -1,0 +1,23 @@
+\begin{table}[!htbp]
+\centering
+\caption{Canonical-v8 identity-aware interpretation of the frozen B58 recovery
+result. Only strict recall is an official detector metric. Audit-conditioned
+and hypothetical values are sensitivities, not replacement performance
+estimates.}
+\label{tab:identity-aware-v8}
+\small
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{0.31\linewidth} >{\raggedright\arraybackslash}p{0.20\linewidth} X}
+\toprule
+Quantity & Value & Interpretation \\
+\midrule
+Strict recovered occurrences & $94/106=88.7\%$ & Frozen official known-positive recall; unchanged by v8. \\
+Canonical-collapsed sensitivity & $93/102=91.2\%$ & Existing duplicate-collapsed sensitivity; unchanged by v8. \\
+All-lane misses & $12/106=11.3\%$ & Frozen miss count entering the identity-aware audit. \\
+Same-identity collisions & $2/12=16.7\%$ & Candidate approaches another geometry assigned to the same canonical identity. \\
+Different-identity collisions & $6/12=50.0\%$ & Candidate approaches a different labeled canonical identity. \\
+Identity-clear hypotheses & $4/12=33.3\%$ & ROI 19, 22, 25, and 27 remain unresolved localization, noise, ranking, or NMS hypotheses. \\
+Identity-resolved conditional sensitivity & $94/98=95.9\%$ & Descriptive sensitivity after excluding eight collision occurrences from the evaluable denominator; not official recall. \\
+Four-case rescue ceiling & $98/106=92.5\%$ & Hypothetical strict recall if every identity-clear candidate were independently validated and recovered. \\
+\bottomrule
+\end{tabularx}
+\end{table}

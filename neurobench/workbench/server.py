@@ -75,7 +75,7 @@ from neurobench.workbench.jobs import JobStore
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_APP_DIR = PROJECT_ROOT / "Outputs/NeuronReview/calcium_video_2/app"
-DEFAULT_FIJI = Path("/home/jibby2k1/.local/bin/fiji")
+DEFAULT_FIJI = Path(os.environ.get("NEUROBENCH_FIJI", shutil.which("fiji") or "fiji"))
 MAX_LOG_LINES = 300
 ALLOWED_BACKENDS = {"auto", "fiji_groovy", "python_gpu"}
 GENERATION_STAGES = "all"

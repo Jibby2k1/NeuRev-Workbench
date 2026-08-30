@@ -5,7 +5,13 @@ load only the workflow context needed for the current task.
 
 ## Always
 
-- Project root: `/home/jibby2k1/UF Dropbox/CNEL/State Analysis (Fish)/NeuRev-Workbench`.
+- Repository checkout: use the directory containing this `AGENTS.md`; verify
+  `git status --short --branch` before acting. Do not confuse it with an
+  external data checkout.
+- Historical source data and large frozen outputs may resolve through
+  `NEUROBENCH_DATA_ROOT` (or the active checkout when that variable is unset).
+  Treat that as an external data authority, not automatically as the active Git
+  checkout.
 - Use `.venv-neurobench/bin/python` for Python commands.
 - Preserve user changes and ignored local data under `Inputs/` and `Outputs/`.
 - Never delete archived experiment logs or overwrite completed output roots.
@@ -24,6 +30,22 @@ load only the workflow context needed for the current task.
   heartbeats, and resumable/idempotent outputs.
 - Do not restart the stopped grid128 Stage A sweep or launch its Stage B plan
   unless the user explicitly selects that GPU job.
+
+## Fast route
+
+Start with `docs/REPOSITORY_GUIDE.md`. Its machine-readable companion is
+`docs/navigation.json`.
+
+For the current neuron-identifiability work, read in this order:
+
+1. `paper/overleaf_jnm/CURRENT_RESEARCH_STATE.md`;
+2. `paper/overleaf_jnm/story/research_story.yaml`;
+3. the experiment-specific result or plan under `docs/research/`;
+4. the matching module under `neurobench/experiments/neuron_identifiability/`;
+5. the matching focused tests and small output indexes.
+
+Generated story files are not edit targets. Change the YAML ledger, run
+`make -C paper/overleaf_jnm story`, then run `story-check`.
 
 ## Current GPU state
 
@@ -192,8 +214,8 @@ measured-action logging, interlocks, and a passed shadow-mode gate.
 - `Inputs/`: ignored local source data.
 - `Outputs/`: ignored generated artifacts.
 
-Use `docs/CODEBASE_NAVIGATION.md` for ownership guidance and `VISIONS.md`
-selectively for broader goals.
+Use `docs/CODEBASE_NAVIGATION.md` for ownership guidance and
+`docs/archive/plans/VISIONS.md` selectively for historical broader goals.
 
 ## Interpretation
 

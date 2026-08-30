@@ -1,0 +1,26 @@
+schema_version: 1
+record_type: claim
+id: NREV-CLM-0015
+program_id: NREV-PRG-0001
+title: Temporal Transform Invertibility
+statement: The frozen six-component temporal transform is numerically invertible at the audited sites.
+scope: Maximum sitewise embedding inversion RMS is 5.69e-12; this is not denoising validation.
+limitations:
+- 'No inference is registered beyond this scope: Maximum sitewise embedding inversion RMS is 5.69e-12; this is not denoising
+  validation.'
+claim_state: supported
+evidence_tier: current_recording
+review_state: not_requested
+evidence_capsule_ids:
+- NREV-EVC-EXP-0018
+decision_ids:
+- NREV-DEC-0018
+tags:
+- temporal
+- transform
+- invertibility
+visibility: public
+legacy_id: temporal_transform_invertibility
+legacy_status: established_computational
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

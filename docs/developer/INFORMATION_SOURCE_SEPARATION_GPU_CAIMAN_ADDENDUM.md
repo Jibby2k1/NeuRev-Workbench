@@ -29,8 +29,8 @@ The installed contract is:
 - Miniforge `26.3.2-3`, verified against the release SHA-256;
 - Python `3.11`;
 - CaImAn `1.13.1` from conda-forge;
-- environment prefix
-  `/home/jibby2k1/.local/share/neurobench-caiman-1.13.1`;
+- isolated environment prefix supplied through `NEUROBENCH_CAIMAN_PYTHON`
+  (the variable points to that environment's Python executable);
 - explicit solved-package fingerprint
   `90586c2e03a7dec5c73cb7856f2edb82cd619b5f692c444b33ea291ab7a85b2d`.
 

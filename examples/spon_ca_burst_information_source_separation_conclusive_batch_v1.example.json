@@ -6,7 +6,7 @@
   "source_video": "../Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
   "source_tiff": "../Inputs/Spon Ca Burst/3 hindbrain to tail 488 20ms.tif",
   "labels_tsv": "../Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
-  "caiman_python": "/home/jibby2k1/.local/share/neurobench-caiman-1.13.1/bin/python",
+  "caiman_python": "${NEUROBENCH_CAIMAN_PYTHON}",
   "frames": {
     "review_start_ui": 1800,
     "review_end_ui": 2359,

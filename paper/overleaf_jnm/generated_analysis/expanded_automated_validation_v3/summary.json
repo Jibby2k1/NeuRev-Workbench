@@ -1,0 +1,117 @@
+{
+  "anomaly_auc": {
+    "isolation": 0.8138297872340425,
+    "robust_distance": 0.7597517730496454
+  },
+  "calibration": [
+    {
+      "brier": 0.10386116154161378,
+      "coverage": 0.25,
+      "error_rate": 0.1111111111111111,
+      "n": 27
+    },
+    {
+      "brier": 0.0892263724356552,
+      "coverage": 0.5,
+      "error_rate": 0.09433962264150944,
+      "n": 53
+    },
+    {
+      "brier": 0.13826534582791608,
+      "coverage": 0.75,
+      "error_rate": 0.175,
+      "n": 80
+    },
+    {
+      "brier": 0.15922892013170625,
+      "coverage": 1.0,
+      "error_rate": 0.20754716981132076,
+      "n": 106
+    }
+  ],
+  "graph_association": -0.00854893218365388,
+  "identity_grouped": {
+    "carrier_auc": 0.6108156028368794,
+    "carrier_log_loss": 0.6899294519943597,
+    "full_auc": 0.8333333333333334,
+    "full_log_loss": 0.49808260763210854
+  },
+  "importance_top": [
+    {
+      "drop_column_log_loss_increase": 0.0048467662646175524,
+      "feature": "auc__vst_center_annulus",
+      "within_burst_permutation_loss_increase": 0.04835565227951932
+    },
+    {
+      "drop_column_log_loss_increase": 0.012448254140506432,
+      "feature": "auc__multiscale_persistence",
+      "within_burst_permutation_loss_increase": 0.024377626418873977
+    },
+    {
+      "drop_column_log_loss_increase": 0.012974138553010661,
+      "feature": "auc__propagation_lag2_w15",
+      "within_burst_permutation_loss_increase": 0.02335751725784918
+    },
+    {
+      "drop_column_log_loss_increase": 0.0037695030883249103,
+      "feature": "auc__ls_center",
+      "within_burst_permutation_loss_increase": 0.01638299409033095
+    },
+    {
+      "drop_column_log_loss_increase": 0.003568981901910573,
+      "feature": "auc__coherence_w15",
+      "within_burst_permutation_loss_increase": 0.016362098987426466
+    }
+  ],
+  "limits": [
+    "same recording and reused labels",
+    "site grouped but not independent animal validation",
+    "only twelve misses",
+    "synthetic mixtures are one-dimensional",
+    "unmatched candidates remain unknown"
+  ],
+  "population": {
+    "missed": 12,
+    "occurrences": 106,
+    "recovered": 94,
+    "sites": 50
+  },
+  "prospective_transfer_boundary": {
+    "cross_burst_clear_pairs": 1,
+    "pre_event_clear": 4
+  },
+  "schema_version": 1,
+  "stability_top": [
+    {
+      "bootstrap_fits": 100,
+      "feature": "auc__vst_center_annulus",
+      "positive_fraction": 0.97,
+      "selection_fraction": 0.97
+    },
+    {
+      "bootstrap_fits": 100,
+      "feature": "auc__multiscale_persistence",
+      "positive_fraction": 0.73,
+      "selection_fraction": 0.73
+    },
+    {
+      "bootstrap_fits": 100,
+      "feature": "auc__propagation_lag2_w15",
+      "positive_fraction": 0.37,
+      "selection_fraction": 0.39
+    },
+    {
+      "bootstrap_fits": 100,
+      "feature": "auc__matched_filter_ls",
+      "positive_fraction": 0.29,
+      "selection_fraction": 0.29
+    },
+    {
+      "bootstrap_fits": 100,
+      "feature": "auc__ica_center",
+      "positive_fraction": 0.01,
+      "selection_fraction": 0.26
+    }
+  ],
+  "status": "complete_exploratory"
+}

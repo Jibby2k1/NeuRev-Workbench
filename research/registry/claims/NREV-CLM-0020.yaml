@@ -1,0 +1,29 @@
+schema_version: 1
+record_type: claim
+id: NREV-CLM-0020
+program_id: NREV-PRG-0001
+title: External Bounded Review Readiness
+statement: A staged portable Raw-first then assisted review package is ready for two independent reviewers, with public/private
+  separation, locked exports, blinding checks, agreement analysis, and mandatory adjudication.
+scope: One frozen enriched 192 by 192 region and 18 assisted candidates in the current recording; no independent annotations
+  or detector metric yet.
+limitations:
+- 'No inference is registered beyond this scope: One frozen enriched 192 by 192 region and 18 assisted candidates in the current
+  recording; no independent annotations or detector metric yet.'
+claim_state: provisional
+evidence_tier: descriptive
+review_state: pending
+evidence_capsule_ids:
+- NREV-EVC-EXP-0017
+decision_ids:
+- NREV-DEC-0017
+tags:
+- external
+- bounded
+- review
+- readiness
+visibility: public
+legacy_id: external_bounded_review_readiness
+legacy_status: implementation_complete_human_evidence_pending
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

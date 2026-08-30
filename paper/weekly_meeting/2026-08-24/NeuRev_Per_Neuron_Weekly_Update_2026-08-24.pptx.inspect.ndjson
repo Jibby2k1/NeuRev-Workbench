@@ -1,0 +1,166 @@
+{"kind":"deck","id":"pr/ad06bb","name":"Deck"}
+{"kind":"layout","layoutId":"42d86e5b-0e44-4ddc-ad02-04c77df4f1a2","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"16f501ce-28da-4583-abcd-d838cf17288b","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/fp5beu","slide":1,"title":"WEEKLY RESEARCH UPDATE","textShapes":4}
+{"kind":"textbox","id":"sh/n6t4na1c","slide":1,"text":"WEEKLY RESEARCH UPDATE","textPreview":"WEEKLY RESEARCH UPDATE","textChars":22,"textLines":1,"bbox":[64,52,400,28]}
+{"kind":"textbox","id":"sh/872lwf2x","slide":1,"text":"Building profiles\nfor individual neurons","textPreview":"Building profiles | for individual neurons","textChars":40,"textLines":2,"bbox":[64,155,610,150]}
+{"kind":"textbox","id":"sh/98bmpkji","slide":1,"text":"Why the same burst produces very different evidence for different neurons","textPreview":"Why the same burst produces very different evidence for different neurons","textChars":73,"textLines":1,"bbox":[68,360,590,80]}
+{"kind":"textbox","id":"sh/z29kjalg","slide":1,"text":"Raul Valle  •  24 August 2026","textPreview":"Raul Valle  •  24 August 2026","textChars":29,"textLines":1,"bbox":[68,636,500,24]}
+{"kind":"image","id":"im/v6xw7q5o","slide":1,"name":"","alt":"Spatial map of per-site observability","bbox":[700,110,520,440]}
+{"kind":"notes","id":"nt/fp5beu","slide":1,"text":"Frame the question at the neuron level: which sites are consistently observable, how do they differ, and do those differences relate to classes or coactivity?\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/analysis_visuals/spatial_observability_map.png\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/analysis_visuals/representative_selection.json\n[/Sources]"}
+{"kind":"slide","id":"sl/6xutot","slide":2,"title":"Shared bursts do not make neurons equally identifiable","textShapes":13}
+{"kind":"textbox","id":"sh/yl0nulcz","slide":2,"text":"Shared bursts do not make neurons equally identifiable","textPreview":"Shared bursts do not make neurons equally identifiable","textChars":54,"textLines":1,"bbox":[64,42,1135,55]}
+{"kind":"shape","id":"sh/lormp0ba","slide":2,"bbox":[64,108,1152,2]}
+{"kind":"textbox","id":"sh/0ni5wvu5","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1180,670,36,22]}
+{"kind":"textbox","id":"sh/byp4jqd8","slide":2,"text":"The problem","textPreview":"The problem","textChars":11,"textLines":1,"bbox":[72,155,280,32]}
+{"kind":"textbox","id":"sh/qxg3qlcn","slide":2,"text":"Every labeled neuron participates in the same recording-level bursts, yet the evidence at each site differs dramatically.","textPreview":"Every labeled neuron participates in the same recording-level bursts, yet the evidence at each site differs dramatically.","textChars":121,"textLines":1,"bbox":[72,205,430,110]}
+{"kind":"textbox","id":"sh/d0rmlgve","slide":2,"text":"Why this matters","textPreview":"Why this matters","textChars":16,"textLines":1,"bbox":[72,360,280,32]}
+{"kind":"textbox","id":"sh/czy5sbut","slide":2,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[72,410,24,68]}
+{"kind":"textbox","id":"sh/vut4vats","slide":2,"text":"A missed neuron may be a measurement failure—not a biological absence.","textPreview":"A missed neuron may be a measurement failure—not a biological absence.","textChars":70,"textLines":1,"bbox":[102,410,420,68]}
+{"kind":"textbox","id":"sh/atkn25c7","slide":2,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[72,478,24,68]}
+{"kind":"textbox","id":"sh/0n6hgfyx","slide":2,"text":"A detector can appear inconsistent when the neuron itself is inconsistently observable.","textPreview":"A detector can appear inconsistent when the neuron itself is inconsistently observable.","textChars":87,"textLines":1,"bbox":[102,478,420,68]}
+{"kind":"textbox","id":"sh/1ozipkfi","slide":2,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[72,546,24,68]}
+{"kind":"textbox","id":"sh/elozepgr","slide":2,"text":"We need a profile that separates stable neuron-level tendency from burst context.","textPreview":"We need a profile that separates stable neuron-level tendency from burst context.","textChars":81,"textLines":1,"bbox":[102,546,420,68]}
+{"kind":"textbox","id":"sh/sj6hcfy1","slide":2,"text":"Question","textPreview":"Question","textChars":8,"textLines":1,"bbox":[560,625,100,24]}
+{"kind":"textbox","id":"sh/dkfylkf6","slide":2,"text":"Does each neuron carry a repeatable measurement signature across bursts?","textPreview":"Does each neuron carry a repeatable measurement signature across bursts?","textChars":72,"textLines":1,"bbox":[675,618,530,38]}
+{"kind":"image","id":"im/gn2hs3y5","slide":2,"name":"","alt":"Overview of event-aligned traces across observation sites","bbox":[560,145,650,470]}
+{"kind":"notes","id":"nt/6xutot","slide":2,"text":"Start with the scientific tension. Shared timing alone does not make every neuron equally measurable. The rest of the deck tests whether those differences are repeatable and useful.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/03_trace_atlas/trace_atlas_overview.png\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/03_trace_atlas/trace_metrics.tsv\n[/Sources]"}
+{"kind":"slide","id":"sl/565xpo","slide":3,"title":"Three neurons show why a profile is needed","textShapes":13}
+{"kind":"textbox","id":"sh/3yd4ru1c","slide":3,"text":"Three neurons show why a profile is needed","textPreview":"Three neurons show why a profile is needed","textChars":42,"textLines":1,"bbox":[64,42,1135,55]}
+{"kind":"shape","id":"sh/ozm5kzix","slide":3,"bbox":[64,108,1152,2]}
+{"kind":"textbox","id":"sh/p0vmt4ji","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1180,670,36,22]}
+{"kind":"textbox","id":"sh/b2x4ve1o","slide":3,"text":"Why compare them?","textPreview":"Why compare them?","textChars":17,"textLines":1,"bbox":[970,150,245,30]}
+{"kind":"textbox","id":"sh/c365oji9","slide":3,"text":"The Raw event is visible in all three. What changes is localization, residual structure, and recovery.","textPreview":"The Raw event is visible in all three. What changes is localization, residual structure, and recovery.","textChars":102,"textLines":1,"bbox":[970,190,245,88]}
+{"kind":"textbox","id":"sh/d4fmxoje","slide":3,"text":"Objective selection","textPreview":"Objective selection","textChars":19,"textLines":1,"bbox":[970,300,245,30]}
+{"kind":"textbox","id":"sh/65k3a5kz","slide":3,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[970,340,24,48]}
+{"kind":"textbox","id":"sh/r6t4ja14","slide":3,"text":"Hero: roi_003","textPreview":"Hero: roi_003","textChars":13,"textLines":1,"bbox":[1000,340,220,48]}
+{"kind":"textbox","id":"sh/bi5obyxc","slide":3,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[970,388,24,48]}
+{"kind":"textbox","id":"sh/ahw72twr","slide":3,"text":"Typical: roi_002","textPreview":"Typical: roi_002","textChars":16,"textLines":1,"bbox":[1000,388,220,48]}
+{"kind":"textbox","id":"sh/xkn6d8fi","slide":3,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[970,436,24,48]}
+{"kind":"textbox","id":"sh/cjep43ex","slide":3,"text":"Hard case: roi_011","textPreview":"Hard case: roi_011","textChars":18,"textLines":1,"bbox":[1000,436,220,48]}
+{"kind":"textbox","id":"sh/nu5o7yx0","slide":3,"text":"Meaning","textPreview":"Meaning","textChars":7,"textLines":1,"bbox":[970,505,90,28]}
+{"kind":"textbox","id":"sh/2tc7ytwv","slide":3,"text":"Detectability is not binary. It is the outcome of a multidimensional neuron–measurement profile.","textPreview":"Detectability is not binary. It is the outcome of a multidimensional neuron–measurement profile.","textChars":96,"textLines":1,"bbox":[970,540,250,100]}
+{"kind":"image","id":"im/3uxk3m58","slide":3,"name":"","alt":"Objectively selected representative neuron profiles","bbox":[38,118,900,535]}
+{"kind":"notes","id":"nt/565xpo","slide":3,"text":"These examples were selected by a frozen rule among confirmed sites observed in all four bursts. They illustrate measurement phenotypes, not biological archetypes.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/analysis_visuals/representative_site_profiles.png\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/analysis_visuals/representative_selection.json\n[/Sources]"}
+{"kind":"slide","id":"sl/syacp7","slide":4,"title":"Repeatability turns anecdotes into neuron-level profiles","textShapes":19}
+{"kind":"textbox","id":"sh/dkrah8ba","slide":4,"text":"Repeatability turns anecdotes into neuron-level profiles","textPreview":"Repeatability turns anecdotes into neuron-level profiles","textChars":56,"textLines":1,"bbox":[64,42,1135,55]}
+{"kind":"shape","id":"sh/qhgb6tsz","slide":4,"bbox":[64,108,1152,2]}
+{"kind":"textbox","id":"sh/ripsfyt4","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1180,670,36,22]}
+{"kind":"textbox","id":"sh/1orul8bm","slide":4,"text":"The test","textPreview":"The test","textChars":8,"textLines":1,"bbox":[945,145,250,30]}
+{"kind":"textbox","id":"sh/el0badsv","slide":4,"text":"If a profile is real, relative neuron rankings should recur across bursts.","textPreview":"If a profile is real, relative neuron rankings should recur across bursts.","textChars":74,"textLines":1,"bbox":[945,182,270,70]}
+{"kind":"textbox","id":"sh/zm9cjitg","slide":4,"text":"What persists","textPreview":"What persists","textChars":13,"textLines":1,"bbox":[945,280,250,30]}
+{"kind":"textbox","id":"sh/gret0jah","slide":4,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[945,320,24,52]}
+{"kind":"textbox","id":"sh/hs7a9ob2","slide":4,"text":"Amplitude rank","textPreview":"Amplitude rank","textChars":14,"textLines":1,"bbox":[975,320,245,52]}
+{"kind":"textbox","id":"sh/donudw7m","slide":4,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[945,372,24,52]}
+{"kind":"textbox","id":"sh/snet4b61","slide":4,"text":"Residual rank","textPreview":"Residual rank","textChars":13,"textLines":1,"bbox":[975,372,245,52]}
+{"kind":"textbox","id":"sh/rm5cb6pg","slide":4,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[945,424,24,52]}
+{"kind":"textbox","id":"sh/qlcb21ov","slide":4,"text":"Spatial-specificity rank","textPreview":"Spatial-specificity rank","textChars":24,"textLines":1,"bbox":[975,424,245,52]}
+{"kind":"textbox","id":"sh/1snuhg7i","slide":4,"text":"What remains contextual","textPreview":"What remains contextual","textChars":23,"textLines":1,"bbox":[945,495,270,30]}
+{"kind":"textbox","id":"sh/0ret8b6x","slide":4,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[945,535,24,44]}
+{"kind":"textbox","id":"sh/fq5cf6ps","slide":4,"text":"Burst-wide intensity","textPreview":"Burst-wide intensity","textChars":20,"textLines":1,"bbox":[975,535,245,44]}
+{"kind":"textbox","id":"sh/epwb61o7","slide":4,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[945,579,24,44]}
+{"kind":"textbox","id":"sh/pg7ul07u","slide":4,"text":"SNR—especially burst 2","textPreview":"SNR—especially burst 2","textChars":22,"textLines":1,"bbox":[975,579,245,44]}
+{"kind":"textbox","id":"sh/ofytcv69","slide":4,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[945,623,24,44]}
+{"kind":"textbox","id":"sh/8z6doze5","slide":4,"text":"Missing observations","textPreview":"Missing observations","textChars":20,"textLines":1,"bbox":[975,623,245,44]}
+{"kind":"textbox","id":"sh/90feh4vq","slide":4,"text":"Profile = stable tendency + burst context","textPreview":"Profile = stable tendency + burst context","textChars":41,"textLines":1,"bbox":[945,640,275,32]}
+{"kind":"image","id":"im/9krm14ri","slide":4,"name":"","alt":"Site by burst observability heatmaps","bbox":[45,125,860,520]}
+{"kind":"notes","id":"nt/syacp7","slide":4,"text":"Walk down rows rather than across columns: each row is one immutable observation site. The visual supports neuron-level profiles while making missing bursts explicit.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/analysis_visuals/site_by_burst_atlas.png\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/05_scalar_observability/site_burst_metrics.tsv\n[/Sources]"}
+{"kind":"slide","id":"sl/vj4dw6","slide":5,"title":"Profiles matter because they help explain detector failures","textShapes":12}
+{"kind":"textbox","id":"sh/90nqlo3u","slide":5,"text":"Profiles matter because they help explain detector failures","textPreview":"Profiles matter because they help explain detector failures","textChars":59,"textLines":1,"bbox":[64,42,1135,55]}
+{"kind":"shape","id":"sh/mxw7q943","slide":5,"bbox":[64,108,1152,2]}
+{"kind":"textbox","id":"sh/7y58jelo","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1180,670,36,22]}
+{"kind":"textbox","id":"sh/lwn6h43i","slide":5,"text":"Why test recovery?","textPreview":"Why test recovery?","textChars":18,"textLines":1,"bbox":[815,145,360,30]}
+{"kind":"textbox","id":"sh/ytc7m947","slide":5,"text":"A useful profile should explain which known neurons are repeatedly recovered—and which are missed.","textPreview":"A useful profile should explain which known neurons are repeatedly recovered—and which are missed.","textChars":98,"textLines":1,"bbox":[815,180,360,76]}
+{"kind":"textbox","id":"sh/zulofulc","slide":5,"text":"Largest descriptive associations","textPreview":"Largest descriptive associations","textChars":32,"textLines":1,"bbox":[815,285,360,34]}
+{"kind":"textbox","id":"sh/4ryp03mh","slide":5,"text":"ρ = 0.63","textPreview":"ρ = 0.63","textChars":8,"textLines":1,"bbox":[815,330,180,46]}
+{"kind":"textbox","id":"sh/5s7qt83m","slide":5,"text":"spatial specificity","textPreview":"spatial specificity","textChars":19,"textLines":1,"bbox":[1000,338,190,32]}
+{"kind":"textbox","id":"sh/x0vq9krm","slide":5,"text":"ρ = 0.49","textPreview":"ρ = 0.49","textChars":8,"textLines":1,"bbox":[815,410,180,46]}
+{"kind":"textbox","id":"sh/czm90fa1","slide":5,"text":"peak amplitude","textPreview":"peak amplitude","textChars":14,"textLines":1,"bbox":[1000,418,190,32]}
+{"kind":"textbox","id":"sh/byd87u9w","slide":5,"text":"Boundary","textPreview":"Boundary","textChars":8,"textLines":1,"bbox":[815,500,150,30]}
+{"kind":"textbox","id":"sh/ax4rypsb","slide":5,"text":"SNR and crowding remain uncertain; these are descriptive associations, not a predictive model.","textPreview":"SNR and crowding remain uncertain; these are descriptive associations, not a predictive model.","textChars":94,"textLines":1,"bbox":[815,535,360,70]}
+{"kind":"textbox","id":"sh/pwvq5krq","slide":5,"text":"Question: should the profile predict failure type, not just overall recovery?","textPreview":"Question: should the profile predict failure type, not just overall recovery?","textChars":77,"textLines":1,"bbox":[815,600,360,58]}
+{"kind":"image","id":"im/honedsni","slide":5,"name":"","alt":"Site-level recovery associations","bbox":[55,135,710,500]}
+{"kind":"notes","id":"nt/vj4dw6","slide":5,"text":"The current endpoint is known-positive recovery at budget 58. Discuss decomposing future neuron-level outcomes into proposal, localization, timing, ranking, and NMS failures.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/analysis_visuals/recovery_associations.png\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/analysis_visuals/recovery_associations.tsv\n[/Sources]"}
+{"kind":"slide","id":"sl/8lq3mg","slide":6,"title":"Classes reveal patterns that single-neuron examples cannot","textShapes":14}
+{"kind":"textbox","id":"sh/ex8z2lgf","slide":6,"text":"Classes reveal patterns that single-neuron examples cannot","textPreview":"Classes reveal patterns that single-neuron examples cannot","textChars":58,"textLines":1,"bbox":[64,42,1135,55]}
+{"kind":"shape","id":"sh/10zid0f6","slide":6,"bbox":[64,108,1152,2]}
+{"kind":"textbox","id":"sh/gzqh4vyl","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1180,670,36,22]}
+{"kind":"textbox","id":"sh/6tozy1gj","slide":6,"text":"Why classes?","textPreview":"Why classes?","textChars":12,"textLines":1,"bbox":[820,145,340,30]}
+{"kind":"textbox","id":"sh/twzi9gfu","slide":6,"text":"Hero and hard cases are memorable, but the paper needs patterns that recur across many detections.","textPreview":"Hero and hard cases are memorable, but the paper needs patterns that recur across many detections.","textChars":98,"textLines":1,"bbox":[820,180,350,72]}
+{"kind":"textbox","id":"sh/svqh0by9","slide":6,"text":"Three event-level regimes","textPreview":"Three event-level regimes","textChars":25,"textLines":1,"bbox":[820,285,340,34]}
+{"kind":"textbox","id":"sh/bq10jax8","slide":6,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[820,330,24,64]}
+{"kind":"textbox","id":"sh/qpsja5gn","slide":6,"text":"Class 1: localized, high signal","textPreview":"Class 1: localized, high signal","textChars":31,"textLines":1,"bbox":[850,330,330,64]}
+{"kind":"textbox","id":"sh/c3edcbah","slide":6,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[820,394,24,64]}
+{"kind":"textbox","id":"sh/donelgb2","slide":6,"text":"Class 2: broad, low signal, early","textPreview":"Class 2: broad, low signal, early","textChars":33,"textLines":1,"bbox":[850,394,330,64]}
+{"kind":"textbox","id":"sh/q1wva1sr","slide":6,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[820,458,24,64]}
+{"kind":"textbox","id":"sh/b25cj6tw","slide":6,"text":"Class 3: broad, recurrent, lower signal","textPreview":"Class 3: broad, recurrent, lower signal","textChars":39,"textLines":1,"bbox":[850,458,330,64]}
+{"kind":"textbox","id":"sh/ozed8ral","slide":6,"text":"84%","textPreview":"84%","textChars":3,"textLines":1,"bbox":[820,535,150,52]}
+{"kind":"textbox","id":"sh/p0nuhwb6","slide":6,"text":"of ordered within-site transitions kept the same class","textPreview":"of ordered within-site transitions kept the same class","textChars":54,"textLines":1,"bbox":[820,588,330,48]}
+{"kind":"textbox","id":"sh/2xwv61sf","slide":6,"text":"A neuron may change class; class is a measurement state, not a neuron type.","textPreview":"A neuron may change class; class is a measurement state, not a neuron type.","textChars":75,"textLines":1,"bbox":[820,630,360,40]}
+{"kind":"image","id":"im/y1o7e5cf","slide":6,"name":"","alt":"Frozen detection class overview","bbox":[50,135,720,490]}
+{"kind":"notes","id":"nt/8lq3mg","slide":6,"text":"The classes let us discuss recurring patterns across many detections, while the trajectory view preserves the fact that an individual neuron can change state between bursts.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/paper/overleaf_jnm/figures/final/detection_class_overview.png\npaper/overleaf_jnm/generated_analysis/detection_profile_taxonomy_summary.json\npaper/overleaf_jnm/generated_analysis/detection_canonical_class_trajectories.tsv\n[/Sources]"}
+{"kind":"slide","id":"sl/a1hwhi","slide":7,"title":"A neuron’s class is stable enough to matter—but can change","textShapes":17}
+{"kind":"textbox","id":"sh/69kr2pgn","slide":7,"text":"A neuron’s class is stable enough to matter—but can change","textPreview":"A neuron’s class is stable enough to matter—but can change","textChars":58,"textLines":1,"bbox":[64,42,1135,55]}
+{"kind":"shape","id":"sh/tcvqx4fe","slide":7,"bbox":[64,108,1152,2]}
+{"kind":"textbox","id":"sh/8b294zyt","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[1180,670,36,22]}
+{"kind":"textbox","id":"sh/y5k7ypgr","slide":7,"text":"Why inspect trajectories?","textPreview":"Why inspect trajectories?","textChars":25,"textLines":1,"bbox":[880,145,300,30]}
+{"kind":"textbox","id":"sh/l8bqtkf2","slide":7,"text":"Class stability supports a neuron-level tendency; transitions reveal measurement context.","textPreview":"Class stability supports a neuron-level tendency; transitions reveal measurement context.","textChars":89,"textLines":1,"bbox":[880,180,310,72]}
+{"kind":"textbox","id":"sh/k72p0fyh","slide":7,"text":"Stable examples","textPreview":"Stable examples","textChars":15,"textLines":1,"bbox":[880,285,300,30]}
+{"kind":"textbox","id":"sh/32d83exg","slide":7,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[880,325,24,52]}
+{"kind":"textbox","id":"sh/i14ra9gv","slide":7,"text":"roi_010 remains Class 3","textPreview":"roi_010 remains Class 3","textChars":23,"textLines":1,"bbox":[910,325,280,52]}
+{"kind":"textbox","id":"sh/kr61krux","slide":7,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[880,377,24,52]}
+{"kind":"textbox","id":"sh/lsfidwb2","slide":7,"text":"roi_new_001 remains Class 1","textPreview":"roi_new_001 remains Class 1","textChars":27,"textLines":1,"bbox":[910,377,280,52]}
+{"kind":"textbox","id":"sh/y54jihcr","slide":7,"text":"Changing examples","textPreview":"Changing examples","textChars":17,"textLines":1,"bbox":[880,455,300,30]}
+{"kind":"textbox","id":"sh/j6x0bmtc","slide":7,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[880,495,24,46]}
+{"kind":"textbox","id":"sh/w3m1grul","slide":7,"text":"roi_014: 3 → 1 → 3","textPreview":"roi_014: 3 → 1 → 3","textChars":18,"textLines":1,"bbox":[910,495,280,46]}
+{"kind":"textbox","id":"sh/x4vi9wb6","slide":7,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[880,541,24,46]}
+{"kind":"textbox","id":"sh/a14jehcf","slide":7,"text":"roi_new_002: 1 → 3","textPreview":"roi_new_002: 1 → 3","textChars":18,"textLines":1,"bbox":[910,541,280,46]}
+{"kind":"textbox","id":"sh/b2d07mt0","slide":7,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[880,587,24,46]}
+{"kind":"textbox","id":"sh/ozm1c7up","slide":7,"text":"roi_006: 2 → 3","textPreview":"roi_006: 2 → 3","textChars":14,"textLines":1,"bbox":[910,587,280,46]}
+{"kind":"textbox","id":"sh/90vi5cba","slide":7,"text":"Review target: biological change, overlap, registration, or event strength?","textPreview":"Review target: biological change, overlap, registration, or event strength?","textChars":75,"textLines":1,"bbox":[880,635,315,38]}
+{"kind":"image","id":"im/i5w36xk7","slide":7,"name":"","alt":"Advanced class profiles including canonical trajectories","bbox":[45,125,790,520]}
+{"kind":"notes","id":"nt/a1hwhi","slide":7,"text":"Use the changing identities as focused case studies. The group can help decide which transitions are scientifically plausible and which likely reflect measurement context.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/paper/overleaf_jnm/figures/final/detection_class_advanced_extensions.png\npaper/overleaf_jnm/generated_analysis/detection_canonical_class_trajectories.tsv\n[/Sources]"}
+{"kind":"slide","id":"sl/1r65gw","slide":8,"title":"If classes capture shared dynamics, same-class neurons should coactivate","textShapes":13}
+{"kind":"textbox","id":"sh/ux03u9wf","slide":8,"text":"If classes capture shared dynamics, same-class neurons should coactivate","textPreview":"If classes capture shared dynamics, same-class neurons should coactivate","textChars":72,"textLines":1,"bbox":[64,42,1135,55]}
+{"kind":"shape","id":"sh/10r254v6","slide":8,"bbox":[64,108,1152,2]}
+{"kind":"textbox","id":"sh/gzilwzel","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[1180,670,36,22]}
+{"kind":"textbox","id":"sh/69g3qpwj","slide":8,"text":"The prediction","textPreview":"The prediction","textChars":14,"textLines":1,"bbox":[830,145,310,30]}
+{"kind":"textbox","id":"sh/twr214va","slide":8,"text":"Same-class pairs should share more activity than different-class pairs.","textPreview":"Same-class pairs should share more activity than different-class pairs.","textChars":71,"textLines":1,"bbox":[830,180,350,62]}
+{"kind":"textbox","id":"sh/svilszep","slide":8,"text":"Observed same − different","textPreview":"Observed same − different","textChars":25,"textLines":1,"bbox":[830,265,330,30]}
+{"kind":"textbox","id":"sh/b6t4byd8","slide":8,"text":"+0.085","textPreview":"+0.085","textChars":6,"textLines":1,"bbox":[830,310,180,42]}
+{"kind":"textbox","id":"sh/q5k32twn","slide":8,"text":"Raw  •  p = 0.0297","textPreview":"Raw  •  p = 0.0297","textChars":18,"textLines":1,"bbox":[1010,318,190,28]}
+{"kind":"textbox","id":"sh/cfmp0zmt","slide":8,"text":"+0.278","textPreview":"+0.278","textChars":6,"textLines":1,"bbox":[830,385,180,42]}
+{"kind":"textbox","id":"sh/xgvqt4ne","slide":8,"text":"Residual  •  p = 0.0001","textPreview":"Residual  •  p = 0.0001","textChars":23,"textLines":1,"bbox":[1010,393,200,28]}
+{"kind":"textbox","id":"sh/ad47yp4n","slide":8,"text":"+0.165","textPreview":"+0.165","textChars":6,"textLines":1,"bbox":[830,460,180,42]}
+{"kind":"textbox","id":"sh/bed8ru58","slide":8,"text":"Adjusted  •  p = 0.0006","textPreview":"Adjusted  •  p = 0.0006","textChars":23,"textLines":1,"bbox":[1010,468,200,28]}
+{"kind":"textbox","id":"sh/ormpwzmh","slide":8,"text":"Meaning","textPreview":"Meaning","textChars":7,"textLines":1,"bbox":[830,545,160,28]}
+{"kind":"textbox","id":"sh/psvqp4n2","slide":8,"text":"Classes capture shared dynamics, but shared drive and fluorescence kinetics prevent a wiring claim.","textPreview":"Classes capture shared dynamics, but shared drive and fluorescence kinetics prevent a wiring claim.","textChars":99,"textLines":1,"bbox":[830,580,360,70]}
+{"kind":"chart","id":"ch/fmpcn2po","slide":8,"name":"","chartType":"bar","title":"Mean absolute pairwise coactivity","bbox":[60,155,710,450]}
+{"kind":"notes","id":"nt/1r65gw","slide":8,"text":"This is the cross-neuron bridge. Same-class neuron pairs coactivate more strongly in Raw, residual, and global-adjusted views. Do not describe this as wiring or causal connectivity.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/13_cross_neural_class_certainty_v1/class_assortativity.tsv\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/13_cross_neural_class_certainty_v1/summary.json\n[/Sources]"}
+{"kind":"slide","id":"sl/gpwyc1","slide":9,"title":"The emerging story links neuron, state, and population","textShapes":24}
+{"kind":"textbox","id":"sh/7mpc3apc","slide":9,"text":"The emerging story links neuron, state, and population","textPreview":"The emerging story links neuron, state, and population","textChars":54,"textLines":1,"bbox":[64,42,1135,55]}
+{"kind":"shape","id":"sh/snytwf6h","slide":9,"bbox":[64,108,1152,2]}
+{"kind":"textbox","id":"sh/to7u5072","slide":9,"text":"09","textPreview":"09","textChars":2,"textLines":1,"bbox":[1180,670,36,22]}
+{"kind":"textbox","id":"sh/ixwbql8f","slide":9,"text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[90,170,55,48]}
+{"kind":"textbox","id":"sh/jy5czqp0","slide":9,"text":"Neuron profile","textPreview":"Neuron profile","textChars":14,"textLines":1,"bbox":[155,170,250,40]}
+{"kind":"textbox","id":"sh/kzetsv6l","slide":9,"text":"Stable tendency in amplitude, localization, and recovery","textPreview":"Stable tendency in amplitude, localization, and recovery","textChars":56,"textLines":1,"bbox":[155,220,285,75]}
+{"kind":"textbox","id":"sh/50nu1076","slide":9,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[450,205,55,40]}
+{"kind":"textbox","id":"sh/atcbml8j","slide":9,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[520,170,55,48]}
+{"kind":"textbox","id":"sh/vu5cvqp4","slide":9,"text":"Measurement state","textPreview":"Measurement state","textChars":17,"textLines":1,"bbox":[585,170,280,40]}
+{"kind":"textbox","id":"sh/bqd4nmh8","slide":9,"text":"Recurring class that can shift with burst context","textPreview":"Recurring class that can shift with burst context","textChars":49,"textLines":1,"bbox":[585,220,285,75]}
+{"kind":"textbox","id":"sh/ap43eh0n","slide":9,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[880,205,55,40]}
+{"kind":"textbox","id":"sh/xcvmpwze","slide":9,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[950,170,55,48]}
+{"kind":"textbox","id":"sh/crmlgrit","slide":9,"text":"Population structure","textPreview":"Population structure","textChars":20,"textLines":1,"bbox":[1015,170,210,40]}
+{"kind":"textbox","id":"sh/zex4r6h4","slide":9,"text":"Same-class neurons share stronger coactivity","textPreview":"Same-class neurons share stronger coactivity","textChars":44,"textLines":1,"bbox":[1015,220,210,75]}
+{"kind":"textbox","id":"sh/yd43i10j","slide":9,"text":"Why this matters for the paper","textPreview":"Why this matters for the paper","textChars":30,"textLines":1,"bbox":[90,350,350,32]}
+{"kind":"textbox","id":"sh/lgfmtwza","slide":9,"text":"The contribution is not merely a better detector. It is a framework for explaining why individual neurons are visible, how those profiles recur as classes, and how classes relate across the recorded population.","textPreview":"The contribution is not merely a better detector. It is a framework for explaining why individual neurons are visible, how those profiles...","textChars":210,"textLines":1,"bbox":[90,395,1090,100]}
+{"kind":"textbox","id":"sh/kf6lkrip","slide":9,"text":"Decisions for the group","textPreview":"Decisions for the group","textChars":23,"textLines":1,"bbox":[90,535,260,30]}
+{"kind":"textbox","id":"sh/fitkf2h0","slide":9,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[90,575,24,40]}
+{"kind":"textbox","id":"sh/ehk36x0f","slide":9,"text":"Approve this story hierarchy.","textPreview":"Approve this story hierarchy.","textChars":29,"textLines":1,"bbox":[120,575,1020,40]}
+{"kind":"textbox","id":"sh/id87e5k3","slide":9,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[90,615,24,40]}
+{"kind":"textbox","id":"sh/je1ona1o","slide":9,"text":"Choose the core profile dimensions.","textPreview":"Choose the core profile dimensions.","textChars":35,"textLines":1,"bbox":[120,615,1020,40]}
+{"kind":"textbox","id":"sh/4fapgf29","slide":9,"text":"•","textPreview":"•","textChars":1,"textLines":1,"bbox":[90,655,24,40]}
+{"kind":"textbox","id":"sh/5gj6pkje","slide":9,"text":"Select 3–5 neurons for deeper case analysis.","textPreview":"Select 3–5 neurons for deeper case analysis.","textChars":44,"textLines":1,"bbox":[120,655,1020,40]}
+{"kind":"textbox","id":"sh/u987a5kr","slide":9,"text":"Meeting outcome","textPreview":"Meeting outcome","textChars":15,"textLines":1,"bbox":[770,655,180,24]}
+{"kind":"textbox","id":"sh/vahojq1c","slide":9,"text":"A shared narrative—not just a list of results.","textPreview":"A shared narrative—not just a list of results.","textChars":46,"textLines":1,"bbox":[960,648,250,38]}
+{"kind":"notes","id":"nt/gpwyc1","slide":9,"text":"End with a concrete request: agree on the per-neuron profile dimensions and choose a small case set spanning stable hero, typical, hard, and class-transitioning neurons.\n\n[Sources]\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/05_scalar_observability/METRICS.json\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/analysis_visuals/representative_selection.json\n/home/jibby2k1/Documents/ChatGPT/Neuromechanics/NeuRev-Workbench-unsupervised-ica-eval/Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/13_cross_neural_class_certainty_v1/summary.json\n[/Sources]"}

@@ -1,0 +1,223 @@
+{
+  "status": "exploratory_single_recording",
+  "population": {
+    "sites": 50,
+    "occurrences": 106
+  },
+  "primary_contract": "shape-only, onset-aligned, per-occurrence amplitude removed, burst-averaged within immutable site",
+  "joint_pca": {
+    "components": 23,
+    "variance_explained": 0.9087143987243699
+  },
+  "candidate_k": {
+    "2": {
+      "silhouette": 0.26118036078457346,
+      "median_subsample_ari": 0.883710261938621,
+      "ari_q10": 0.33085253353536254,
+      "minimum_class_size": 12,
+      "viable": true,
+      "objective": 0.23080776504215894
+    },
+    "3": {
+      "silhouette": 0.15323565873046388,
+      "median_subsample_ari": 0.7268146163633417,
+      "ari_q10": 0.36000863238918124,
+      "minimum_class_size": 12,
+      "viable": true,
+      "objective": 0.11137391651336605
+    },
+    "4": {
+      "silhouette": 0.1735321508683151,
+      "median_subsample_ari": 0.9050192004440106,
+      "ari_q10": 0.5223291464020123,
+      "minimum_class_size": 4,
+      "viable": false,
+      "objective": -1.0
+    },
+    "5": {
+      "silhouette": 0.17803759876962888,
+      "median_subsample_ari": 0.8868147561077101,
+      "ari_q10": 0.6503663799262528,
+      "minimum_class_size": 4,
+      "viable": false,
+      "objective": -1.0
+    },
+    "6": {
+      "silhouette": 0.18359750144627587,
+      "median_subsample_ari": 0.8958419952378526,
+      "ari_q10": 0.7141819521713281,
+      "minimum_class_size": 3,
+      "viable": false,
+      "objective": -1.0
+    }
+  },
+  "selected_k": 2,
+  "joint_class_sizes": {
+    "1": 38,
+    "2": 12
+  },
+  "stage_comparison": [
+    {
+      "stage": "Raw",
+      "pca_components": 17,
+      "pca_variance": 0.9053590044177237,
+      "ari_vs_joint": 0.5777887388884719,
+      "nmi_vs_joint": 0.5061634187270512,
+      "aligned_confusion": [
+        [
+          38,
+          0
+        ],
+        [
+          5,
+          7
+        ]
+      ],
+      "label_mapping": {
+        "0": 0,
+        "1": 1
+      }
+    },
+    {
+      "stage": "CS-Parzen ICA",
+      "pca_components": 20,
+      "pca_variance": 0.9011439366592382,
+      "ari_vs_joint": 0.3320263813876194,
+      "nmi_vs_joint": 0.303683985513428,
+      "aligned_confusion": [
+        [
+          38,
+          0
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "label_mapping": {
+        "0": 0,
+        "1": 1
+      }
+    },
+    {
+      "stage": "Local standardization",
+      "pca_components": 21,
+      "pca_variance": 0.9080038770731821,
+      "ari_vs_joint": 0.4138150311990779,
+      "nmi_vs_joint": 0.3699690760245541,
+      "aligned_confusion": [
+        [
+          38,
+          0
+        ],
+        [
+          7,
+          5
+        ]
+      ],
+      "label_mapping": {
+        "0": 0,
+        "1": 1
+      }
+    }
+  ],
+  "all_stage_agreement_sites": 39,
+  "pca_cap_sensitivity": {
+    "8": {
+      "components": 8,
+      "variance": 0.6452685609940247,
+      "ari_vs_primary": 0.3581106370237293
+    },
+    "12": {
+      "components": 12,
+      "variance": 0.7509440386897944,
+      "ari_vs_primary": 0.9153567706827722
+    },
+    "20": {
+      "components": 20,
+      "variance": 0.8778664968753879,
+      "ari_vs_primary": 1.0
+    }
+  },
+  "amplitude_sensitivity": {
+    "0.1": {
+      "pca_components": 23,
+      "pca_variance": 0.9058139446066931,
+      "ari_vs_shape_only_joint": 0.7437683300771254,
+      "aligned_confusion": [
+        [
+          38,
+          0
+        ],
+        [
+          3,
+          9
+        ]
+      ]
+    },
+    "0.25": {
+      "pca_components": 22,
+      "pca_variance": 0.9021609420786001,
+      "ari_vs_shape_only_joint": 0.7437683300771254,
+      "aligned_confusion": [
+        [
+          38,
+          0
+        ],
+        [
+          3,
+          9
+        ]
+      ]
+    },
+    "0.5": {
+      "pca_components": 19,
+      "pca_variance": 0.9007068793249062,
+      "ari_vs_shape_only_joint": 0.08883290795187113,
+      "aligned_confusion": [
+        [
+          23,
+          15
+        ],
+        [
+          2,
+          10
+        ]
+      ]
+    },
+    "1.0": {
+      "pca_components": 12,
+      "pca_variance": 0.9024610265193059,
+      "ari_vs_shape_only_joint": 0.2516077170418006,
+      "aligned_confusion": [
+        [
+          28,
+          10
+        ],
+        [
+          2,
+          10
+        ]
+      ]
+    }
+  },
+  "interpretation_limits": [
+    "single recording",
+    "classes are measurement trace profiles, not neuron types",
+    "stage labels are aligned for comparison only",
+    "no peak alignment"
+  ],
+  "seed": 20260826,
+  "inputs": {
+    "media://v7_priority_neuron_media_cs_parzen/manifest.json": "b481b7e92fc4792482f6f4f00923e8ce23fcc5508dd0dcc8b5e401d87b2bca7d",
+    "data://Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy": "04dfbe2f7cb69d72ff75e23ad17c87b3fd406c96a4b872148de2285a9a44d449",
+    "data://Outputs/HierarchicalParzenICA/spon_ca_burst_multilag_msica_v5_all_roi_diagnostics/cache/recovery_msica.npy": "b83127865eac2ca828729868c80ae09030d5c042004703c1cc646b89ff8c3306",
+    "data://Outputs/HierarchicalParzenICA/spon_ca_burst_multilag_msica_v5_all_roi_diagnostics/cache/recovery_msln.npy": "339598552e293717df417918c767b2ba2a74e23c2d71e684bcedc7cc6519d6f7"
+  },
+  "outputs": {
+    "assignments": "repo://paper/overleaf_jnm/figures/final/fig04_trace_taxonomy_site_assignments.tsv",
+    "comparison_figure": "repo://paper/overleaf_jnm/figures/final/fig04b_trace_taxonomy_stage_agreement.png",
+    "assignments_sha256": "c1d5c2766c6850b6b7e766ad89b872fce45b1dcd3f8f37f0c37ddedb97568cd0",
+    "comparison_figure_sha256": "a6859cf5f8a6fe02a78a8c35b8e7d888b10be9ed90c04a18b6085a5bf7aa622b"
+  }
+}

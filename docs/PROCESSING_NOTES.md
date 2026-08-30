@@ -48,7 +48,7 @@ stage manually:
 ```bash
 python3 tools/run_neuron_review_pipeline.py \
   --dataset-manifest Outputs/Manifests/calcium_rest_cropped.dataset.json \
-  --fiji /home/jibby2k1/.local/bin/fiji
+  --fiji "$(command -v fiji)"
 ```
 
 The scripts still default to `calcium_video_2`, but they now accept

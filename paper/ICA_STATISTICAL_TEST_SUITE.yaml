@@ -1,0 +1,108 @@
+schema_version: 1
+frozen_on: "2026-08-24"
+scope: single_recording_within_recording
+representation_families:
+  temporal_two_frame_ica:
+    identity: frozen_two_frame_ica_sha256_705bbfe45097cebd2d56875b98fc90a598aa49311a6f9a7f893976d93134c7e7
+    primary_role: temporal_change_detection
+    prohibited_interpretation: independent_neural_source
+  spatial_dense_fastica_wiener:
+    identity: spon_ca_burst_spatial_ica_screen_v1__c2_dense_convolutional_fastica
+    primary_role: spatial_morphology_and_boundary_visibility
+    status: exploratory_audit_failed
+    reconstruction_stability: passed_across_seeds_and_held_burst_exclusions
+    individual_filter_interpretation: prohibited_due_seed_and_lobo_instability
+  tensor_factor_ica:
+    identity: frozen_two_frame_ica_site_by_burst_by_time_rank2
+    primary_role: representation_complexity
+    individual_factor_interpretation: prohibited_due_lobo_instability
+hypotheses:
+  - id: ICA_T1
+    question: Does temporal two-frame ICA add an operation beyond signed difference?
+    metric: equivalence_to_signed_difference
+    current_result: r_squared_0.9938_no_independent_operation
+  - id: ICA_S1
+    question: Does spatial ICA improve reviewer boundary visibility over Raw alone?
+    primary_outcomes: [boundary_resolvable, neuron_shape_resolvable, reviewer_confidence]
+    design: blinded_within_observation_raw_vs_ica_vs_combined
+    status: pending_panel_specific_review
+  - id: ICA_S2
+    question: Are spatial ICA footprints compact and localized relative to matched annular and translated controls?
+    primary_outcomes: [center_surround_contrast, compactness, footprint_radius, translated_control_delta]
+    design: frozen_spatial_ica_no_label_refit
+    status: completed_exploratory_supported
+    current_result: localized_contrast_boundary_radius_and_peak_offset_supported_vs_translated_controls
+  - id: ICA_S3
+    question: Does spatial ICA help difficult morphology strata without losing event timing?
+    strata: [localized_center, membrane_or_ring, overlapping, weak_signal, no_boundary]
+    primary_outcomes: [known_positive_recall, boundary_resolvable, peak_frame_error, peak_retention, area_retention]
+    status: automated_timing_and_recall_passed_manual_stratified_review_deferred
+  - id: ICA_S4
+    question: Is the dense spatial-ICA reconstruction stable even when individual filters are not?
+    primary_outcomes: [pixel_correlation, event_map_correlation, morphology_rank_correlation, peak_frame_error, fixed_budget_known_positive_recall]
+    design: three_new_seeds_full_window_plus_four_leave_one_burst_window_out_fits
+    evaluation_scope: seed_refits_all_bursts_lobo_only_excluded_burst
+    thresholds:
+      pixel_correlation_minimum: 0.90
+      event_map_correlation_minimum: 0.90
+      morphology_rank_correlation_minimum: 0.70
+      median_peak_frame_error_maximum: 1
+      fixed_budget_recall_absolute_delta_maximum: 0.05
+    current_result:
+      status: passed
+      pixel_correlation_range: [0.99846670, 0.99957423]
+      median_event_map_correlation_range: [0.99832269, 0.99922920]
+      median_morphology_spearman_range: [0.99480519, 1.0]
+      median_peak_frame_error_range: [0.0, 0.0]
+      seed_fixed_budget_recall_delta_range: [-0.0125, 0.01086957]
+      held_burst_fixed_budget_recall_delta_range: [0.0, 0.0]
+    interpretation: reconstructed_output_is_stable_but_individual_filters_remain_uninterpretable
+  - id: ICA_S5
+    question: Do objective spatial-ICA morphology metrics align with frozen detection classes or adjudicated certainty?
+    design:
+      protected_v1: one_to_one_matches_aggregated_to_immutable_observation_sites
+      canonical_v7_class_sensitivity: candidate_assisted_canonical_identity_grain
+      canonical_v7_certainty: class_and_burst_adjusted_then_aggregated_by_canonical_identity
+    multiplicity: BH_within_14_metric_representation_tests_per_analysis_layer
+    current_result:
+      protected_v1_sites_by_dominant_class: [7, 1, 9]
+      protected_three_class_inference: prohibited_only_one_class2_site
+      canonical_v7_identities_by_dominant_class: [3, 5, 16]
+      strongest_spatial_ica_class_metric: boundary_sharpness
+      strongest_spatial_ica_class_epsilon_squared: 0.3232341269841267
+      strongest_spatial_ica_class_nominal_p: 0.004849757512124394
+      strongest_spatial_ica_class_bh_q: 0.06789660516974151
+      certainty_dominant_class_cramers_v: 0.34641016151377546
+      certainty_dominant_class_permutation_p: 0.3128843557822109
+      adjusted_certainty_morphology_tests_surviving_bh: 0
+    interpretation: suggestive_profile_structure_not_validated_class_or_certainty_separation
+  - id: ICA_N1
+    question: Does ICA carry stable cross-neural coactivity information?
+    status: exploratory_supported
+  - id: ICA_F1
+    question: Are individual ICA tensor factors stable enough to interpret?
+    stability_threshold: 0.8
+    current_result: failed_component_stability
+gates:
+  provenance:
+    require_exact_displayed_panel_for_each_review: true
+    original_hard_roi_clip_panels: [raw_intensity, fixed_pseudocolor, positive_temporal_change]
+    do_not_relabel_positive_change_as_ica: true
+  morphology_promotion:
+    require_blinded_raw_ica_combined_ablation: true
+    require_site_blocked_uncertainty: true
+    require_morphology_stratum_reporting: true
+    require_matched_spatial_controls: true
+    require_class2_site_support_before_three_class_claim: true
+  interpretation:
+    visual_utility_does_not_require_native_signal_fidelity: true
+    visual_utility_does_not_establish_anatomical_identity: true
+    unmatched_candidates_remain_unknown: true
+existing_spatial_screen_checkpoint:
+  lane: c2_dense_convolutional_fastica
+  fixed_budget_recall: 0.6713768115942029
+  median_peak_retention: 0.9747201204299927
+  median_area_retention: 0.9520078301429749
+  median_peak_frame_error: 0
+  audit_pass: false
+  failure_reason: poor_exact_semisynthetic_preservation_and_pending_held_burst_seed_visual_confirmation

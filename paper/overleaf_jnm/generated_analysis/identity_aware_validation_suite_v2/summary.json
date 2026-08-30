@@ -1,0 +1,30 @@
+{
+  "families": {
+    "budget_nms": 540,
+    "controls": 200,
+    "exact_tests": 3,
+    "frozen_footprint": 12,
+    "identity": 12,
+    "spatial": 12,
+    "stage_out": 36,
+    "transfer": 35
+  },
+  "headline": {
+    "collision_vs_clear_max_neighbor_weight": [
+      0.29620569917775186,
+      0.22755705360854203,
+      0.1693548387096774
+    ],
+    "quiet_shift_median": 5.0,
+    "recovered_true_event_shift_median": 2.23606797749979
+  },
+  "limits": [
+    "same recording",
+    "four clear misses",
+    "exact tests descriptive after review-defined groups",
+    "unmatched candidates unknown",
+    "no detector refit"
+  ],
+  "schema_version": 1,
+  "status": "complete_exploratory"
+}

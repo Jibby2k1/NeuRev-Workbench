@@ -107,6 +107,7 @@ class MSLNResult:
     valid_frames: np.ndarray
     scale_floor: float
     diagnostics: dict[str, object]
+    site_diagnostics: dict[str, np.ndarray] | None = None
 
     def __post_init__(self) -> None:
         if (
@@ -118,6 +119,12 @@ class MSLNResult:
             or self.scale_floor <= 0
         ):
             raise ValueError("invalid MSLN result")
+        if self.site_diagnostics is not None:
+            shapes = {np.asarray(value).shape for value in self.site_diagnostics.values()}
+            if len(shapes) != 1 or next(iter(shapes))[0] != len(self.values):
+                raise ValueError("MSLN site diagnostics must share a [frames,sites] shape")
+            if any(not np.isfinite(np.asarray(value)).all() for value in self.site_diagnostics.values()):
+                raise ValueError("MSLN site diagnostics must be finite")
 
 
 def _validate_id(value: str) -> None:
@@ -417,6 +424,7 @@ def causal_joint_msln(
     *,
     scale_floor: float | None = None,
     quiet_mask: np.ndarray | None = None,
+    diagnostic_sites_yx: np.ndarray | None = None,
 ) -> MSLNResult:
     """Normalize against one causal 3-D annulus-by-time reference."""
     source = np.asarray(values)
@@ -428,6 +436,13 @@ def causal_joint_msln(
         raise NotImplementedError("joint full-field median/MAD is not implemented")
 
     frames, height, width = source.shape
+    sites = None
+    if diagnostic_sites_yx is not None:
+        sites = np.asarray(diagnostic_sites_yx, dtype=np.int64)
+        if sites.ndim != 2 or sites.shape[1] != 2 or not len(sites):
+            raise ValueError("diagnostic_sites_yx must be a non-empty [sites,2] array")
+        if np.any(sites < 0) or np.any(sites[:, 0] >= height) or np.any(sites[:, 1] >= width):
+            raise ValueError("diagnostic site lies outside the video")
     window = int(context.temporal_window_frames)
     temporal_guard = int(context.temporal_guard_frames)
     reference_frames = window - temporal_guard
@@ -510,6 +525,24 @@ def causal_joint_msln(
     )
     if not np.isfinite(fitted_floor) or fitted_floor <= 0:
         raise ValueError("scale_floor must be finite and positive")
+    site_diagnostics = None
+    if sites is not None:
+        yy, xx = sites.T
+        site_scale = local_scale[:, yy, xx].copy()
+        site_numerator = numerator[:, yy, xx].copy()
+        site_reference_mean = (
+            np.asarray(source[:, yy, xx], dtype=np.float32)
+            - np.float32(offset)
+            - site_numerator
+        )
+        site_denominator = np.maximum(site_scale, np.float32(fitted_floor))
+        site_diagnostics = {
+            "numerator": site_numerator,
+            "reference_mean_centered": site_reference_mean,
+            "local_scale": site_scale,
+            "denominator": site_denominator,
+            "floor_applied": (site_scale < fitted_floor).astype(np.float32),
+        }
     for start in range(0, frames, 16):
         stop = min(start + 16, frames)
         numerator[start:stop] /= np.maximum(
@@ -539,4 +572,5 @@ def causal_joint_msln(
             "centering_offset": offset,
             "invalid_prefix_frames": window,
         },
+        site_diagnostics=site_diagnostics,
     )

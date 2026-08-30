@@ -1,0 +1,221 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neurev.org/research/schemas/run.schema.json",
+  "title": "NeuRev experiment run record",
+  "description": "Portable execution record with reproducible code, input, configuration, environment, and artifact provenance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "id",
+    "experiment_id",
+    "program_id",
+    "lifecycle",
+    "planned_at",
+    "code",
+    "configuration",
+    "inputs",
+    "environment",
+    "randomization",
+    "artifacts",
+    "validation",
+    "visibility"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "record_type": {"const": "run"},
+    "id": {"$ref": "#/$defs/run_id"},
+    "experiment_id": {"$ref": "#/$defs/experiment_id"},
+    "program_id": {"$ref": "#/$defs/program_id"},
+    "lifecycle": {
+      "type": "string",
+      "enum": ["planned", "running", "succeeded", "failed", "cancelled", "invalidated"]
+    },
+    "planned_at": {"$ref": "#/$defs/date_time"},
+    "started_at": {"$ref": "#/$defs/date_time"},
+    "ended_at": {"$ref": "#/$defs/date_time"},
+    "code": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "commit", "dirty"],
+      "properties": {
+        "repository": {"type": "string", "format": "uri"},
+        "commit": {"$ref": "#/$defs/git_sha"},
+        "branch": {"type": "string", "minLength": 1},
+        "dirty": {"type": "boolean"},
+        "diff_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"dirty": {"const": true}}, "required": ["dirty"]},
+          "then": {"required": ["diff_sha256"]}
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/repository_path"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "schema": {"$ref": "#/$defs/repository_path"}
+      }
+    },
+    "inputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/input_record"}
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["platform", "runtime", "dependency_lock"],
+      "properties": {
+        "platform": {"$ref": "#/$defs/nonempty_text"},
+        "runtime": {"$ref": "#/$defs/nonempty_text"},
+        "dependency_lock": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256"],
+          "properties": {
+            "path": {"$ref": "#/$defs/repository_path"},
+            "sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "hardware": {"$ref": "#/$defs/nonempty_text"},
+        "container_digest": {"type": "string", "minLength": 1}
+      }
+    },
+    "randomization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["deterministic", "seeds"],
+      "properties": {
+        "deterministic": {"type": "boolean"},
+        "seeds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "integer", "minimum": 0}
+        },
+        "notes": {"$ref": "#/$defs/nonempty_text"}
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["output_root"],
+      "properties": {
+        "output_root": {"$ref": "#/$defs/repository_path"},
+        "manifest_path": {"$ref": "#/$defs/repository_path"},
+        "manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "archive_uri": {"type": "string", "format": "uri"}
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["preflight", "execution", "outputs", "checks"],
+      "properties": {
+        "preflight": {"$ref": "#/$defs/check_state"},
+        "execution": {"$ref": "#/$defs/check_state"},
+        "outputs": {"$ref": "#/$defs/check_state"},
+        "checks": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/validation_check"}
+        }
+      }
+    },
+    "failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "summary"],
+      "properties": {
+        "category": {
+          "type": "string",
+          "enum": ["preflight", "runtime", "resource", "data", "validation", "cancelled", "unknown"]
+        },
+        "summary": {"$ref": "#/$defs/nonempty_text"},
+        "recoverable": {"type": "boolean"}
+      }
+    },
+    "visibility": {"$ref": "#/$defs/visibility"},
+    "legacy_status": {"$ref": "#/$defs/legacy_status"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"lifecycle": {"enum": ["running", "succeeded", "failed", "cancelled", "invalidated"]}},
+        "required": ["lifecycle"]
+      },
+      "then": {"required": ["started_at"]}
+    },
+    {
+      "if": {
+        "properties": {"lifecycle": {"enum": ["succeeded", "failed", "cancelled", "invalidated"]}},
+        "required": ["lifecycle"]
+      },
+      "then": {"required": ["ended_at"]}
+    },
+    {
+      "if": {"properties": {"lifecycle": {"const": "succeeded"}}, "required": ["lifecycle"]},
+      "then": {
+        "properties": {
+          "artifacts": {"required": ["manifest_path", "manifest_sha256"]}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"lifecycle": {"enum": ["failed", "invalidated"]}}, "required": ["lifecycle"]},
+      "then": {"required": ["failure"]}
+    }
+  ],
+  "$defs": {
+    "run_id": {"type": "string", "pattern": "^NREV-RUN-[A-Z0-9][A-Z0-9-]{2,63}$"},
+    "experiment_id": {"type": "string", "pattern": "^NREV-EXP-[0-9]{4,}$"},
+    "program_id": {"type": "string", "pattern": "^NREV-PRG-[0-9]{4,}$"},
+    "nonempty_text": {"type": "string", "minLength": 1},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "git_sha": {"type": "string", "pattern": "^[a-f0-9]{7,40}$"},
+    "date_time": {"type": "string", "format": "date-time"},
+    "check_state": {"type": "string", "enum": ["not_run", "passed", "failed", "partial"]},
+    "visibility": {"type": "string", "enum": ["public", "internal", "restricted"]},
+    "legacy_status": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Original free-form status retained only for migration provenance."
+    },
+    "repository_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:[\\\\/])(?![A-Za-z][A-Za-z0-9+.-]*:)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "input_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "role", "sha256", "location"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "role": {"type": "string", "enum": ["data", "labels", "model", "configuration", "reference", "other"]},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "location": {
+          "oneOf": [
+            {"$ref": "#/$defs/repository_path"},
+            {"type": "string", "pattern": "^(?:https://|doi:).+"}
+          ]
+        }
+      }
+    },
+    "validation_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "summary"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{1,63}$"},
+        "status": {"$ref": "#/$defs/check_state"},
+        "summary": {"$ref": "#/$defs/nonempty_text"}
+      }
+    }
+  }
+}

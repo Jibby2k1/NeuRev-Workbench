@@ -1,0 +1,37 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0001
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical execution date
+  - run-level code, configuration, input, environment, and randomization provenance
+  - preregistered gates
+  - experiment-specific falsifiers
+  - normalized unit of analysis, comparison, and data scope
+program_id: NREV-PRG-0001
+title: Canonical V7 Trace Atlas
+question: What do Raw, temporal-ICA, and local-standardized signals look like at every confirmed occurrence?
+objective: What do Raw, temporal-ICA, and local-standardized signals look like at every confirmed occurrence?
+rationale: Migrated to preserve the v1 question-design-result-decision record; the v1 story did not encode a separate rationale.
+lifecycle: validated
+outcome: inconclusive
+evidence_tier: current_recording
+review_state: not_requested
+falsifiers: []
+design:
+  summary: Preserve immutable site coordinates and synchronized center traces across 106 occurrences; rank media by a frozen
+    LS-center criterion.
+gates: []
+claim_ids: []
+decision_ids:
+- NREV-DEC-0001
+evidence_capsule_id: NREV-EVC-EXP-0001
+visibility: public
+legacy_id: canonical_v7_trace_atlas
+legacy_status: complete_descriptive
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

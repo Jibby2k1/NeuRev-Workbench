@@ -1,0 +1,29 @@
+\begingroup
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{p{0.07\textwidth} p{0.22\textwidth} p{0.27\textwidth} p{0.30\textwidth}}
+\caption{Analysis stages, primary estimands, and stage gates.}\label{tab:analysis-plan}\\
+\toprule
+Stage & Workstream & Primary output & Continue/downgrade rule \\
+\midrule
+\endfirsthead
+\toprule
+Stage & Workstream & Primary output & Continue/downgrade rule \\
+\midrule
+\endhead
+00 & Preflight and source inventory & Data, label, code, and output hashes; schema audit & Fatal only for corrupted or uninterpretable canonical inputs \\
+01 & Identity and geometry repair & Immutable site key; canonical mapping; regression tests & Must prove no spatial-site overwrite \\
+02 & Label and timing contract & Original/adjudicated timing views; review panels & Continue with original timing while decisions remain pending \\
+03 & Raw-to-pipeline trace atlas & Complete trace/metric inventory for every occurrence & Missing mandatory trace or untracked unit blocks dependent analysis \\
+04 & Acquisition QC & Noise, saturation, drift, motion, field and optional-video reports & Optional videos may be absent; canonical QC is mandatory \\
+05 & Scalar observability & Variance components, ICCs, rank stability, burst sensitivity & Singular models downgrade to fixed/rank-based summaries \\
+06 & Spatial specificity & Radial profiles, matched controls, equivalence tests & Claims are downgraded if control matching or margins fail \\
+07 & Functional and tensor analysis & Shared, site, burst and residual temporal components & Run only after completeness and held-out stability gates \\
+08 & Measurement phenotype & Recoverability and failure-mode models & Clusters remain exploratory; continuous effects are primary \\
+09 & Bounded annotation & Blinded packet and local precision--recall & Nonblocking until completed reviewer labels return \\
+10 & Frozen representation panel & Utility, fidelity, burden and failure decomposition & No feature expansion; retain negative/equivalence results \\
+11 & Manuscript export & Macros, tables, figures and source maps & Every numerical claim must resolve to a validated source \\
+12 & Release validation & Reproducible package and aggregate decisions & Release fails if provisional or unresolved mandatory fields remain \\
+\bottomrule
+\end{longtable}
+\endgroup

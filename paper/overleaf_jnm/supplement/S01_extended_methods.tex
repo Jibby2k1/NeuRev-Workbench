@@ -1,0 +1,97 @@
+\section{Extended methods and validation contract}
+\label{sec:supp-extended-methods}
+
+\subsection{Stage artifact contract}
+
+Every analysis stage writes the following common files:
+\begin{itemize}
+  \item \texttt{STAGE\_SUMMARY.md}: scientific question, inputs, outputs, main findings, and limitations;
+  \item \texttt{METRICS.json}: typed metrics with units, direction, uncertainty, and evidence status;
+  \item \texttt{VALIDATION\_REPORT.md}: test results, validity checks, warnings, and stop/downgrade decisions;
+  \item \texttt{FIGURE\_INDEX.md}: figure purpose, source data, generation command, and interpretation;
+  \item \texttt{REVIEW\_REQUIRED.md}: only unresolved decisions that require a person;
+  \item \texttt{DECISIONS\_REQUESTED.yaml}: structured options, recommended conservative default, affected outputs, and review paths;
+  \item \texttt{source\_manifest.json}: input hashes, code revision, configuration, environment, and output checksums.
+\end{itemize}
+
+A stage is not considered complete merely because its executable returned zero. It must satisfy its scientific validity checks and produce the common artifact set. Optional or conditionally skipped stages emit the same files with a machine-readable skip reason.
+
+\subsection{Identity regression tests}
+
+The repaired identity layer must pass synthetic and repository-specific tests:
+\begin{enumerate}
+  \item two records sharing a canonical identity but holding different site identifiers and coordinates produce two independent traces;
+  \item row ordering cannot change the selected geometry;
+  \item canonical aggregation after extraction preserves the source-site membership list;
+  \item a merge cannot reduce the number of stored source traces;
+  \item original-site and canonical views reproduce the same occurrence count;
+  \item every exported metric points to an observation identifier and site identifier;
+  \item the ROI~010/015 repository fixture fails under the historical dictionary implementation and passes under the repaired implementation.
+\end{enumerate}
+
+\subsection{Trace-completeness checks}
+
+For each occurrence and mandatory representation, the trace inventory records frame range, spatial mask, units, transform, finite fraction, saturation fraction, baseline support, event support, and checksum. Mandatory traces are Raw, annulus, outer ring, residual, signed difference, and frozen ICA. A representation may be unavailable only when the stage declares a scientifically interpretable reason. Missing traces may not be silently omitted from denominators.
+
+\subsection{Temporal-null construction}
+
+Admissible shifted windows match the labeled window duration and field context while excluding the union of all labeled windows plus a protected temporal buffer. Circular shifts are used only if wraparound has a meaningful acquisition interpretation; otherwise shifts are clipped to valid contiguous regions. Null samples are blocked by burst and site. The code records the exact shifted windows so that every empirical probability can be reconstructed.
+
+For a statistic $T$ whose larger value supports the alternative, the Monte Carlo upper-tail probability is
+\begin{equation}
+  \hat p = \frac{1+\sum_{r=1}^{R}\mathbb I(T_r^{\mathrm{null}}\ge T^{\mathrm{obs}})}{R+1}.
+\end{equation}
+The number of unique admissible shifts is reported. The manuscript does not imply more resolution than the null sample count supports.
+
+\subsection{Spatial-control matching}
+
+Translated pseudo-ROIs are sampled within the same acquisition field and are matched on mask area, baseline intensity bin, boundary distance, and local saturation. A control is rejected if it overlaps a protected labeled region, leaves the image, or lacks the full annulus and outer ring. Each target receives the same requested number of controls unless geometric constraints make this impossible; control deficits are reported by site.
+
+\subsection{Bootstrap hierarchy}
+
+The primary two-way bootstrap samples sites and bursts with replacement and then includes all available occurrence-level measurements within the selected site--burst cells. With only four bursts, intervals are supplemented by leave-one-burst-out estimates and all individual burst effects. A site-only bootstrap is used for metrics whose temporal null already conditions on burst. Pixel or frame bootstrap intervals are not used for neuron-level claims.
+
+\subsection{Functional-analysis entry gates}
+
+Functional or tensor decomposition is executed only if all of the following hold:
+\begin{enumerate}
+  \item at least 95\% of included occurrences have complete mandatory event windows;
+  \item timing conventions are frozen for the primary view;
+  \item no single site or burst contributes more than a prespecified share of the squared norm after robust scaling;
+  \item basis rank or tensor rank is selected without the held-out burst;
+  \item component sign and permutation ambiguity are resolved using training data only;
+  \item held-out reconstruction improves over a shared-template baseline by the preregistered amount;
+  \item components are stable across at least three leave-one-burst-out fits.
+\end{enumerate}
+Failure of an entry gate produces a descriptive shared-template analysis rather than forcing a high-capacity decomposition.
+
+\subsection{Representation utility and fidelity}
+
+For each frozen representation, utility and fidelity are distinct outcome families. Utility includes known-positive recall at fixed budget, proposal-union coverage, nearest-candidate rank, and burden. Fidelity includes native-amplitude correlation, peak attenuation, area attenuation, peak-time shift, and waveform correlation. A representation cannot be promoted as a denoiser solely because it improves an onset score, nor as a detector solely because it preserves Raw morphology.
+
+\subsection{Evidence levels}
+
+Results are assigned one of four evidence levels:
+\begin{description}
+  \item[C0---descriptive:] generated correctly but not tested against a protected null or held-out unit;
+  \item[C1---controlled:] compared with matched temporal or spatial controls within the canonical recording;
+  \item[C2---internally confirmed:] frozen before protected leave-one-burst-out or bounded-field evaluation;
+  \item[C3---externally confirmed:] reproduced on an independent recording acquired and evaluated under the frozen contract.
+\end{description}
+The current paper is expected to contain C1 and C2 results. C3 is a future promotion criterion, not an implicit claim.
+
+\subsection{Complete-trace feature-panel checks}
+
+The exploratory complete-trace panel is validated at the occurrence, site, and
+burst grains. Each of the 106 occurrences must contribute exactly one row for
+each of 11 features, all primary percentiles must lie in $[0,1]$, and the
+immutable-site count must remain 50. Input movie hashes must match the validated
+canonical-v7 media manifest. Same-duration quiet windows may not intersect any
+burst or its 15-frame guard. Site-block bootstrap draws, burst-specific
+summaries, cross-burst correlations, the rendered figure, and an artifact index
+are retained. The manuscript importer independently verifies every indexed
+size and SHA-256 digest before copying any result.
+
+\subsection{Autonomous execution and human feedback}
+
+The program continues through all unaffected stages. Identity, timing, annotation, authorship, ethics, funding, and release questions are collected into one end-of-run decision file. Each item includes a conservative default, the scientific consequence of each option, direct paths to review figures, stages that are blocked, and stages that remain valid. The default conservative behavior preserves original sites and original timing and labels unresolved canonical identity as unresolved.

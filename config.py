@@ -1,5 +1,9 @@
 # config.py
-"""Centralized configuration and hyperparameter management."""
+"""Legacy grid-search configuration preserved for reproducibility.
+
+New maintained work belongs under :mod:`neurobench`; see
+``docs/CODEBASE_NAVIGATION.md`` before extending this compatibility surface.
+"""
 from pathlib import Path
 import numpy as np
 

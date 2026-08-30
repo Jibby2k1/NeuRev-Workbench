@@ -1,0 +1,32 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0004
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical decision effective date
+program_id: NREV-PRG-0001
+title: Decision after Full Trace Feature Panel
+lifecycle: active
+action: retain
+rationale: Freeze role-specific definitions and transfer them without tuning to an independent recording and exhaustively
+  reviewed bounded field.
+evidence_summary: Carrier, coherence, lag recurrence, and Raw amplitude were ceiling-limited at known centers; neither new
+  extension beat the carrier, while consensus and multiscale persistence retained cross-burst site-rank variation.
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0004
+claim_ids:
+- NREV-CLM-0003
+evidence_capsule_ids:
+- NREV-EVC-EXP-0004
+constraints:
+- The same recording and bursts motivated prior feature choices; quiet windows are temporal references, not biological negatives.
+- The historical decision date was not encoded in the v1 story and was not guessed during migration.
+visibility: public
+legacy_status: complete_exploratory
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

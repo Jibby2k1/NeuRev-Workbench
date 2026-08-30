@@ -1,0 +1,25 @@
+schema_version: 1
+record_type: program
+id: NREV-PRG-0002
+slug: source-separation
+title: Source Separation and Representation
+summary: Interpretable temporal, spatial, and multiscale representations for separating neural signal, structured artifact,
+  and measurement noise.
+lifecycle: active
+scientific_scope: Foundational representation and source-separation methods used by the repository's imaging workflows.
+objectives:
+- Develop interpretable representations that preserve event structure while reducing measurement noise.
+- Audit numerical behavior and biological interpretation separately.
+boundaries:
+- Latent or independent components do not by themselves establish one-to-one biological identity.
+- Representation gains have not been established on independent recordings across the repository.
+- Full-field specificity requires bounded exhaustive labels.
+related_program_ids:
+- NREV-PRG-0001
+- NREV-PRG-0004
+documentation:
+- docs/research/README.md
+- docs/workflows/README.md
+visibility: public
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

@@ -1,0 +1,13 @@
+observation_id	outcome	method	event_response	peak_mad
+b04__roi_015	collision	pre_event_variability	3.663843421397086	17.180864693927138
+b04__roi_011	collision	pre_event_variability	4.140532569331729	11.22610342551449
+b03__roi_011	collision	pre_event_variability	4.07986089238077	14.662932503306418
+b03__roi_010	collision	pre_event_variability	4.101795428568888	20.7957690226342
+b01__roi_015	collision	pre_event_variability	1.2451348613445994	6.044862657824136
+b03__roi_022	clear	pre_event_variability	0.8441109618625393	5.524265441075341
+b03__roi_019	clear	pre_event_variability	1.8883015807755203	12.484861760287684
+b04__roi_027	clear	pre_event_variability	1.564422949028725	9.85425137940613
+b02__roi_011	collision	pre_event_variability	2.475002041657725	4.250027826291063
+b04__roi_025	clear	pre_event_variability	1.171545452361189	9.164935978110716
+b04__roi_023	collision	pre_event_variability	1.6908865762220207	12.728521417206762
+b02__roi_012	collision	pre_event_variability	2.5889985332504684	6.481969918652169

@@ -1,0 +1,19 @@
+{
+  "checks": {
+    "feature_summary_rows": true,
+    "figure_exists": true,
+    "finite_primary_metrics": true,
+    "occurrence_rows": true,
+    "percentiles_in_range": true,
+    "site_count": true,
+    "source_hashes_match_manifest": true
+  },
+  "schema_version": 1,
+  "scientific_audit": {
+    "comparison": "figures/full_trace_feature_panel.png and tables",
+    "expert_annotations": "media://v7_priority_neuron_full_traces_cs_parzen/manifest.json",
+    "mode": "analysis_only_reuses_validated_upstream_expert_media",
+    "model_annotations": "not_applicable_no_new_detections"
+  },
+  "status": "passed"
+}

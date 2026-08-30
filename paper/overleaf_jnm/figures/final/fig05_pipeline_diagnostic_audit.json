@@ -1,0 +1,100 @@
+{
+  "status": "complete_descriptive_audit",
+  "grain": "one row per confirmed occurrence and pipeline stage",
+  "rows": 318,
+  "occurrences": 106,
+  "stages": [
+    "Raw",
+    "CS-Parzen ICA",
+    "Local standardization"
+  ],
+  "unique_composite_keys": 318,
+  "duplicate_composite_keys": 0,
+  "finite_rates": {
+    "robust_snr": 1.0,
+    "persistence_ratio": 1.0,
+    "center_annulus_contrast": 1.0,
+    "effective_radius_px": 1.0,
+    "peak_offset_px": 1.0,
+    "center_annulus_trace_correlation": 1.0
+  },
+  "candidate_metadata_coverage": 0.6698113207547169,
+  "diagnostic_availability": [
+    {
+      "diagnostic": "Raw/ICA/LS center traces",
+      "availability": "observed",
+      "evidence": "saved aligned movies"
+    },
+    {
+      "diagnostic": "Native amplitude, noise, timing, area",
+      "availability": "derived",
+      "evidence": "computed from center traces"
+    },
+    {
+      "diagnostic": "Annulus coupling and center-annulus contrast",
+      "availability": "derived",
+      "evidence": "3-6 px annulus"
+    },
+    {
+      "diagnostic": "Spatial footprint radius and peak offset",
+      "availability": "derived",
+      "evidence": "21x21 event-minus-baseline crop"
+    },
+    {
+      "diagnostic": "Raw saturation",
+      "availability": "derived",
+      "evidence": "uint16 ceiling 4095"
+    },
+    {
+      "diagnostic": "Candidate match/rank",
+      "availability": "partial",
+      "evidence": "available for original 27-ROI diagnostic set only"
+    },
+    {
+      "diagnostic": "Local-standardization denominator",
+      "availability": "derived",
+      "evidence": "exact bounded reproduction from frozen fit, causal pre-roll, and saved floor"
+    },
+    {
+      "diagnostic": "ICA component activations/contributions",
+      "availability": "observed",
+      "evidence": "exported from frozen fit at all 50 sites"
+    },
+    {
+      "diagnostic": "Mixing/unmixing matrices",
+      "availability": "observed",
+      "evidence": "exported directly from frozen temporal fit"
+    },
+    {
+      "diagnostic": "Embedding inversion residual",
+      "availability": "derived",
+      "evidence": "numerical transform audit; not denoising error"
+    },
+    {
+      "diagnostic": "Motion/registration residual",
+      "availability": "unavailable",
+      "evidence": "no motion field saved with this output"
+    },
+    {
+      "diagnostic": "Independent-recording validation",
+      "availability": "unavailable",
+      "evidence": "single recording in current analysis"
+    }
+  ],
+  "interpretation": "feature-rich descriptive audit; model-internal attribution remains blocked by unsaved artifacts",
+  "inputs": {
+    "media://v7_priority_neuron_media_cs_parzen/manifest.json": "b481b7e92fc4792482f6f4f00923e8ce23fcc5508dd0dcc8b5e401d87b2bca7d",
+    "repo://paper/overleaf_jnm/figures/final/fig04_trace_taxonomy_site_assignments.tsv": "c1d5c2766c6850b6b7e766ad89b872fce45b1dcd3f8f37f0c37ddedb97568cd0",
+    "data://Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy": "04dfbe2f7cb69d72ff75e23ad17c87b3fd406c96a4b872148de2285a9a44d449",
+    "data://Outputs/HierarchicalParzenICA/spon_ca_burst_multilag_msica_v5_all_roi_diagnostics/cache/recovery_msica.npy": "b83127865eac2ca828729868c80ae09030d5c042004703c1cc646b89ff8c3306",
+    "data://Outputs/HierarchicalParzenICA/spon_ca_burst_multilag_msica_v5_all_roi_diagnostics/cache/recovery_msln.npy": "339598552e293717df417918c767b2ba2a74e23c2d71e684bcedc7cc6519d6f7"
+  },
+  "outputs": {
+    "diagnostic_table": "repo://paper/overleaf_jnm/figures/final/fig05_pipeline_diagnostic_table.tsv",
+    "availability": "repo://paper/overleaf_jnm/figures/final/fig05_diagnostic_availability.tsv",
+    "figure": "repo://paper/overleaf_jnm/figures/final/fig05_pipeline_diagnostic_audit.png",
+    "diagnostic_table_sha256": "d4bf6f248b4957fce853e21100639e889829f5a740fcce2de6fbc19245cc06de",
+    "availability_sha256": "2e59eff160d04eac2f69bc6a855be9311d4f130f71764fc4b743847a1a9e0baa",
+    "figure_sha256": "6b6dcb2b00c3585ecef98f9882e0ff10fd1e77bde458a6efc2acd01db4b2b67e"
+  }
+}

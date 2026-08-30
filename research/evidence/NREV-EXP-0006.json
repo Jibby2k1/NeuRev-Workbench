@@ -1,0 +1,90 @@
+{
+  "artifact_manifest_sha256": "155af5b98350b36323d14f7503bdab5dc43d39f24837af6c9de2ffbd7078d5c1",
+  "artifacts": [
+    {
+      "access": "public",
+      "bytes": 546228,
+      "id": "artifact-01",
+      "media_type": "image/png",
+      "repository_path": "paper/overleaf_jnm/figures/final/fig11_feature_deep_dives.png",
+      "role": "figure",
+      "sha256": "8115247090593b6a0311ea9017874c2a34c5311b1fb3a3025745aef0b3ef3a8a"
+    },
+    {
+      "access": "public",
+      "bytes": 347957,
+      "id": "artifact-02",
+      "media_type": "image/png",
+      "repository_path": "paper/overleaf_jnm/figures/final/fig12_spatial_decay_crowding.png",
+      "role": "figure",
+      "sha256": "ab0919c188616707b7044774543e042441863ac9ccb38b7c84f961a9922d7e61"
+    },
+    {
+      "access": "public",
+      "bytes": 3519,
+      "id": "artifact-03",
+      "media_type": "application/json",
+      "repository_path": "paper/overleaf_jnm/generated_analysis/feature_deep_dives_v1/summary.json",
+      "role": "summary",
+      "sha256": "3d9b030bdac13b7fb09ad2ca3d0f35f85772d4eeae5638bc67407c85190064c7"
+    }
+  ],
+  "boundaries": {
+    "does_not_establish": [
+      "Claims beyond the registered finding and linked claim scopes.",
+      "Reproducible run provenance that was absent from the v1 story."
+    ],
+    "limitations": [
+      "Same recording, sparse positives, only 12 all-lane misses, incomplete crowding labels, and descriptive rather than causal proposal contrasts."
+    ],
+    "scope": "This capsule preserves the registered v1 experiment finding and its linked claim scopes."
+  },
+  "claim_impacts": [
+    {
+      "claim_id": "NREV-CLM-0005",
+      "effect": "supports",
+      "scope": "106 occurrences at 50 immutable sites; 12 all-lane B58 misses; 20 repeated site-grouped splits and four leave-one-burst-out kinetic folds.",
+      "summary": "The experiment supports this claim only within its registered scope."
+    }
+  ],
+  "evidence_tier": "current_recording",
+  "experiment_id": "NREV-EXP-0006",
+  "gates": [
+    {
+      "criterion": "Every artifact referenced by the v1 experiment story is available and checksum identified at migration.",
+      "id": "legacy-artifact-capture",
+      "observed": "Captured 3 of 3 referenced artifacts with SHA-256 identities.",
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-29T23:52:35Z",
+  "id": "NREV-EVC-EXP-0006",
+  "legacy_status": "complete_exploratory",
+  "lifecycle": "validated",
+  "metrics": [],
+  "outcome": "inconclusive",
+  "program_id": "NREV-PRG-0001",
+  "record_type": "evidence_capsule",
+  "review_state": "not_requested",
+  "run_ids": [],
+  "schema_version": 1,
+  "source_records_sha256": "9939e17dceee45c87a2ed2cfe982dabe631d6dbabf6c629119e2120f92620d87",
+  "summary": "Twelve occurrences were missed by all lanes; native early-budget gains substantially exceeded common-proposal ranking gains; a one-frame-rise, 20-frame-decay kernel was selected in every held-burst fold; and lag improved repeated recovery point estimates more than coherence.",
+  "validation": {
+    "checked_at": "2026-08-29T23:52:35Z",
+    "checks": [
+      {
+        "id": "portable-paths",
+        "status": "passed",
+        "summary": "Artifact references are repository-relative; ignored local outputs are metadata-only."
+      },
+      {
+        "id": "historical-provenance",
+        "status": "not_run",
+        "summary": "The v1 story did not encode run-level provenance, so no historical run record was invented."
+      }
+    ],
+    "status": "partial"
+  },
+  "visibility": "public"
+}

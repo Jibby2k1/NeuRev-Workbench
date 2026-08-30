@@ -1,6 +1,6 @@
 # Codebase Navigation
 
-Last updated: 2026-07-30.
+Last updated: 2026-08-29.
 
 This guide is a fast map for humans and coding agents. It names the stable
 entry points first, then points to the implementation modules behind common
@@ -8,6 +8,9 @@ tasks. Generated data under `Inputs/` and `Outputs/` is intentionally excluded
 from this map.
 
 ## Primary Entry Points
+
+For a shorter task-oriented route, start with `docs/REPOSITORY_GUIDE.md` or its
+machine-readable companion `docs/navigation.json`.
 
 | Goal | Start Here | Then Read |
 | --- | --- | --- |
@@ -36,6 +39,8 @@ from this map.
 | Work on grid dynamics experiments | `docs/GRID_LATENT_DYNAMICS.md` | `neurobench/dynamics/`, `neurobench/cli/dynamics.py` |
 | Add or inspect reports | `neurobench/cli/report.py` | `neurobench/reports/`, `neurobench/review_reports.py`, `docs/TEST_AND_EXPERIMENT_REPORT.md` |
 | Understand schemas and artifacts | `schemas/`, `neurobench/models/` | `neurobench/validation/schemas.py`, `examples/` |
+| Inspect or extend the neuron-identifiability program | `paper/overleaf_jnm/CURRENT_RESEARCH_STATE.md` | `paper/overleaf_jnm/story/research_story.yaml`, `neurobench/experiments/neuron_identifiability/`, matching focused tests |
+| Revisit the next automated learning program | `docs/research/SPON_CA_BURST_UNCERTAINTY_AWARE_LEARNING_PLAN_V1.md` | future manifest-driven module under `neurobench/experiments/neuron_identifiability/`; do not infer that the specified run has occurred |
 
 ## Package Map
 

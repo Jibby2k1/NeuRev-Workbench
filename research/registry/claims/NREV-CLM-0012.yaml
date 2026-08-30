@@ -1,0 +1,29 @@
+schema_version: 1
+record_type: claim
+id: NREV-CLM-0012
+program_id: NREV-PRG-0001
+title: Automated Challenge Boundaries
+statement: A twelve-family exact-truth challenge suite identifies spatial-context robustness alongside concrete limits in
+  weak-neighbor identifiability, deployable stopping, parameter stability, and kinetic direction selectivity.
+scope: Six seeds per condition across null normalization, suppression, source-count stopping, weak-neighbor, colored noise,
+  motion, morphology, severity, OOD, cross-simulator, stability, and negative-control tests.
+limitations:
+- 'No inference is registered beyond this scope: Six seeds per condition across null normalization, suppression, source-count
+  stopping, weak-neighbor, colored noise, motion, morphology, severity, OOD, cross-simulator, stability, and negative-control
+  tests.'
+claim_state: supported
+evidence_tier: computational_simulation
+review_state: not_requested
+evidence_capsule_ids:
+- NREV-EVC-EXP-0013
+decision_ids:
+- NREV-DEC-0013
+tags:
+- automated
+- challenge
+- boundaries
+visibility: public
+legacy_id: automated_challenge_boundaries
+legacy_status: established_computational_mixed_result
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

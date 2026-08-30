@@ -1,0 +1,90 @@
+{
+  "artifact_manifest_sha256": "525b446c9fb42d53381e237e44222d4a53b574fec2639d75a0df0e4b645f785c",
+  "artifacts": [
+    {
+      "access": "public",
+      "bytes": 558334,
+      "id": "artifact-01",
+      "media_type": "image/png",
+      "repository_path": "paper/overleaf_jnm/figures/final/fig08_full_trace_feature_panel.png",
+      "role": "figure",
+      "sha256": "cbb764b28ab52ed304c9837683d6723befc89eebba80e1ee9bcc8d06207c4333"
+    },
+    {
+      "access": "public",
+      "bytes": 1154,
+      "id": "artifact-02",
+      "media_type": "application/json",
+      "repository_path": "paper/overleaf_jnm/figures/final/fig08_full_trace_feature_panel.json",
+      "role": "report",
+      "sha256": "6db2f510ce1a0552fd45c9368c06de4845110b1929271c528dfe7ea6c7d3fb8e"
+    },
+    {
+      "access": "public",
+      "bytes": 1344,
+      "id": "artifact-03",
+      "media_type": "text/x-tex",
+      "repository_path": "paper/overleaf_jnm/tables/full_trace_feature_panel_summary.tex",
+      "role": "summary",
+      "sha256": "8dd2e36b54f8cd120faac27cf5e481c425fb58ba74008724730d785ac7da6fb4"
+    }
+  ],
+  "boundaries": {
+    "does_not_establish": [
+      "Claims beyond the registered finding and linked claim scopes.",
+      "Reproducible run provenance that was absent from the v1 story."
+    ],
+    "limitations": [
+      "The same recording and bursts motivated prior feature choices; quiet windows are temporal references, not biological negatives."
+    ],
+    "scope": "This capsule preserves the registered v1 experiment finding and its linked claim scopes."
+  },
+  "claim_impacts": [
+    {
+      "claim_id": "NREV-CLM-0003",
+      "effect": "supports",
+      "scope": "106 confirmed occurrences at 50 immutable sites in one previously analyzed recording; displaced tissue and guarded quiet frames have unknown biology.",
+      "summary": "The experiment supports this claim only within its registered scope."
+    }
+  ],
+  "evidence_tier": "current_recording",
+  "experiment_id": "NREV-EXP-0004",
+  "gates": [
+    {
+      "criterion": "Every artifact referenced by the v1 experiment story is available and checksum identified at migration.",
+      "id": "legacy-artifact-capture",
+      "observed": "Captured 3 of 3 referenced artifacts with SHA-256 identities.",
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-29T23:52:35Z",
+  "id": "NREV-EVC-EXP-0004",
+  "legacy_status": "complete_exploratory",
+  "lifecycle": "validated",
+  "metrics": [],
+  "outcome": "inconclusive",
+  "program_id": "NREV-PRG-0001",
+  "record_type": "evidence_capsule",
+  "review_state": "not_requested",
+  "run_ids": [],
+  "schema_version": 1,
+  "source_records_sha256": "8c58009d507809cacf917b020ac53e38e2649002b4affd771effc8ec798c8eb3",
+  "summary": "Carrier, coherence, lag recurrence, and Raw amplitude were ceiling-limited at known centers; neither new extension beat the carrier, while consensus and multiscale persistence retained cross-burst site-rank variation.",
+  "validation": {
+    "checked_at": "2026-08-29T23:52:35Z",
+    "checks": [
+      {
+        "id": "portable-paths",
+        "status": "passed",
+        "summary": "Artifact references are repository-relative; ignored local outputs are metadata-only."
+      },
+      {
+        "id": "historical-provenance",
+        "status": "not_run",
+        "summary": "The v1 story did not encode run-level provenance, so no historical run record was invented."
+      }
+    ],
+    "status": "partial"
+  },
+  "visibility": "public"
+}

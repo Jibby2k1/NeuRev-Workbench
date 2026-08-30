@@ -1,0 +1,10 @@
+{
+  "population": {
+    "bursts": 4,
+    "occurrences": 106,
+    "original_geometries": 50
+  },
+  "source_artifact_index_sha256": "345899d538b65b2efb8ebdffa9a1599db79a1dfb31b6776f86c7c845e721dc2a",
+  "source_run": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_feature_deep_dives_v2",
+  "status": "imported_from_validated_feature_deep_dives"
+}

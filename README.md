@@ -1,373 +1,201 @@
-# Separable Gamma CFAR And Neuron Review Workbench
+<div align="center">
 
-A toolkit for scientific calcium/voltage-imaging videos. The repository now has
-four connected workflow families:
+# NeuRev Workbench
 
-- a Python grid-search pipeline for Gamma/Kalman-MCC filtering, CFAR detection,
-  and report generation
-- a Fiji/Groovy plus browser workbench workflow for neuron ROI review, trace
-  denoising, event annotation, and user-guided parameter iteration
-- a template-aligned grid workflow for zebrafish left/right/neutral activity
-  modeling, including 128x128 max-pooled grid states, video-level splits, a
-  grid autoencoder, latent GRU prediction, and latent-code classification
-- a stage-gated fish intent and inverse-control program that separates
-  activation measurement, causal intent decoding, action-conditioned system
-  identification, simulation, and deployment safety
+### From neural-imaging video to evidence you can audit
 
----
+An evidence-first research workbench for calcium-imaging measurement,
+source separation, candidate detection, human review, and bounded scientific
+claims.
 
-## Features
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3158a5?style=flat-square)](pyproject.toml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-147d87?style=flat-square)](LICENSE)
+[![Research registry](https://img.shields.io/badge/research-registry--backed-6e53a4?style=flat-square)](research/README.md)
+[![Evidence boundary](https://img.shields.io/badge/evidence-bounded-102733?style=flat-square)](docs/PUBLICATION_BOUNDARY.md)
 
-* **Interchangeable pre-processing filters for grid search**
+[Research story](research/generated/PROJECT_STORY.md) ·
+[Repository guide](docs/REPOSITORY_GUIDE.md) ·
+[Documentation](docs/README.md) ·
+[Manuscript](paper/overleaf_jnm/README.md)
 
-  * **Gamma ST filter** (spatio-temporal enhancement)
-  * **Kalman–MCC** (robust background estimation via maximum correntropy)
-* **Parallel grid search** across filter & detector parameters
-* **Evaluation & selection**
+</div>
 
-  * FROC (TPR vs FPPI), truncated AUC, Youden’s J (balanced operating point)
-  * Top-K and balanced model summaries
-* **Reports & figures**
+![NeuRev evidence flow: a research question and provenance lead through a frozen experiment, bounded execution, scientific audit, evidence capsule, independent review, and the canonical registry; the registry generates synchronized GitHub, documentation, Overleaf, and LLM views.](docs/assets/diagrams/repository-evidence-flow.svg)
 
-  * Per-model detailed reports with diagnostics
-  * Event duration histogram, FROC, sensitivity heatmaps
-  * PSD comparison, frame-wise power, qualitative montages, error maps
-* **Neuron annotation workbench**
+[Open the evidence-flow diagram at full size](docs/assets/diagrams/repository-evidence-flow.svg).
 
-  * large video review surface with zoom, fullscreen, contrast, and overlay controls
-  * ROI-level accept/reject/unsure review
-  * event-level accept/reject/unsure review
-  * trace-level robust Kalman baseline/event visualization
-  * local autosave to `annotations.json`
-  * ROI and event TSV exports for downstream inverse-dynamics analysis
-* **Clean, modular codebase** (easy to add new filters or detectors)
+NeuRev is built for the awkward middle of scientific computing: the space
+between a promising signal and a conclusion that another person can inspect.
+It keeps measurements, algorithms, review decisions, execution provenance, and
+scientific interpretation connected without treating them as the same thing.
 
----
+<!-- BEGIN GENERATED RESEARCH SNAPSHOT -->
 
-## Repository Structure
+## Current research boundary
 
-The active, maintained implementation lives primarily under `neurobench/`. Older
-top-level modules remain for compatibility and historical workflows; check
-`docs/CODEBASE_NAVIGATION.md` before extending them.
+The flagship neuron-identifiability program currently studies **106 confirmed occurrences at 50 immutable sites in 1 recording**. Within that boundary, NeuRev has tested complete-trace features, identity-aware failure modes, truth-known movie stress tests, detector calibration, deblending alternatives, and a staged blinded-review package.
 
-```
-.
-├── neurobench/
-│   ├── algorithms/      # CFAR, motion, template matching, grid extraction
-│   ├── cli/             # `neurobench ...` command groups
-│   ├── data/            # manifests, video loading, QC, synthetic fixtures
-│   ├── dashboards/      # dashboard manifest contracts
-│   ├── discovery/       # candidate ranking, clustering, active learning
-│   ├── dynamics/        # grid/latent dynamics models, sweeps, reports
-│   ├── experiments/     # bounded manifest-driven case studies
-│   ├── exports/         # annotation, behavior, inverse-dynamics exports
-│   ├── integrations/    # Suite2p, PMD, OASIS import adapters
-│   ├── logging/         # atomic run logging
-│   ├── metrics/         # detection, event, comparison, summary metrics
-│   ├── models/          # JSON artifact model helpers
-│   ├── pipelines/       # stage catalog execution and sweeps
-│   ├── programs/        # stage-gated research-program auditing
-│   ├── realtime/        # streaming and latency contracts
-│   ├── reports/         # markdown/JSON report builders
-│   ├── review/          # reviewer agreement and provenance
-│   ├── validation/      # JSON schema validation helpers
-│   └── workbench/       # browser dashboard builder, server, assets, sidecars
-├── tools/               # user-facing scripts and compatibility wrappers
-├── scripts/             # experiment-specific research scripts
-├── docs/                # workflow docs, audits, and developer guides
-├── examples/            # small schema/workflow examples
-├── schemas/             # public JSON schemas
-├── tests/               # regression and workflow tests
-├── Inputs/              # local raw data, not committed
-└── Outputs/             # generated results and dashboards, not committed
-```
+The current evidence still leaves three boundaries unresolved:
 
-For current navigation and ownership guidance, start with
-`docs/CODEBASE_NAVIGATION.md`. For dashboard-specific organization, see
-`docs/DASHBOARD_CODE_AUDIT.md`.
+- Full-field precision is unresolved.
+- One-to-one biological source identity is unresolved.
+- Generalization to an independent recording is unresolved.
 
-For the current activation-to-control research program, start with
-`docs/programs/fish_inverse_control/README.md`. Its read-only machine audit is:
+Those are registered open questions, not footnotes. See the generated
+[claim ledger](research/generated/CLAIM_LEDGER.md),
+[experiment timeline](research/generated/EXPERIMENT_TIMELINE.md), and
+[current manuscript state](paper/overleaf_jnm/CURRENT_RESEARCH_STATE.md).
+
+## What lives here
+
+| Program | Purpose | Lifecycle |
+| --- | --- | --- |
+| [Neuron Identifiability](paper/overleaf_jnm/CURRENT_RESEARCH_STATE.md) | Evidence-first measurement, representation, detection, identity auditing, and blinded review in calcium imaging. | active |
+| [Source Separation and Representation](docs/research/README.md) | Interpretable temporal, spatial, and multiscale representations for separating neural signal, structured artifact, and measurement noise. | active |
+| [Fish Intent and Inverse Control](docs/programs/fish_inverse_control/README.md) | Stage-gated measurement, intent decoding, action-conditioned system identification, simulation, and safety-bounded control research. | draft |
+| [Grid and Latent Dynamics](docs/GRID_LATENT_DYNAMICS.md) | Template-aligned neural-state grids, latent representations, forecasting baselines, and video-level classifiers. | active |
+
+<!-- END GENERATED RESEARCH SNAPSHOT -->
+
+## Choose your route
+
+| I want to… | Start here |
+| --- | --- |
+| Understand the research in five minutes | [Generated research story](research/generated/PROJECT_STORY.md) |
+| Inspect every claim and its boundary | [Claim ledger](research/generated/CLAIM_LEDGER.md) |
+| Follow the question → result → decision history | [Experiment timeline](research/generated/EXPERIMENT_TIMELINE.md) |
+| Process a raw video into an auditable report | [Raw-video workflow](docs/workflows/raw_video_to_report.md) |
+| Review or annotate candidates | [Workbench guide](docs/NEURON_WORKBENCH.md) |
+| Run a reproducible experiment | [Scientific audit standard](docs/workflows/SCIENTIFIC_AUDIT_OUTPUT_STANDARD.md) |
+| Add a new experiment record | [Research registry guide](research/README.md) |
+| Extend the maintained Python package | [Codebase navigation](docs/CODEBASE_NAVIGATION.md) |
+| Add a new pipeline stage | [Pipeline-stage guide](docs/developer/adding_pipeline_stage.md) |
+| Inspect or build the paper | [Overleaf package](paper/overleaf_jnm/README.md) |
+| Navigate as a coding agent | [`llms.txt`](llms.txt) and [`docs/navigation.json`](docs/navigation.json) |
+
+## Quick start
+
+NeuRev supports Python 3.10 or newer. CPU setup is sufficient for navigation,
+tests, manifests, reports, and the local review workbench; CUDA is optional for
+larger experiments.
 
 ```bash
-.venv-neurobench/bin/python -m neurobench.cli.main program fish-control audit \
-  --manifest examples/fish_control_program.example.json
+git clone https://github.com/Jibby2k1/NeuRev-Workbench.git
+cd NeuRev-Workbench
+python -m venv .venv-neurobench
+source .venv-neurobench/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
 ```
 
----
-
-## Installation
-
-CPU-only setup is the recommended default for onboarding, tests, manifests,
-reports, and the local workbench server. A CUDA GPU is optional for heavier
-grid-search and Kalman-MCC experiments.
-
-1. Create the CPU environment:
+Verify the portable research story and focused contracts:
 
 ```bash
-conda env create -f environment.cpu.yml
+python -m neurobench.research.registry check
+make -C paper/overleaf_jnm story-check
+python -m pytest -q tests/test_research_registry_schemas.py \
+  tests/test_research_story.py tests/test_documentation_navigation.py
 ```
 
-2. Activate it:
+Explore the command surface:
 
 ```bash
-conda activate neurobench
+neurobench --help
 ```
 
-3. Install development/test dependencies when using pip or an existing Python:
+For an environment with pinned CPU or GPU dependencies, use
+[`environment.cpu.yml`](environment.cpu.yml) or
+[`environment.gpu.yml`](environment.gpu.yml).
+
+## The evidence model
+
+NeuRev does not use “complete” as a scientific verdict. It records six
+independent questions:
+
+| Dimension | What it answers |
+| --- | --- |
+| Lifecycle | Where is the work operationally? |
+| Outcome | What did the registered comparison find? |
+| Evidence tier | In what setting was the evidence produced? |
+| Review state | What scrutiny has it received? |
+| Claim state | What can currently be said? |
+| Decision | What should happen next? |
+
+![NeuRev experiment lifecycle: draft, preregistered, running, computed, validated, reviewed, and closed are auditable states; outcome, evidence tier, decision, and claim state are recorded independently, with failed gates preserved as new linked versions or runs.](docs/assets/diagrams/experiment-lifecycle.svg)
+
+[Open the experiment-lifecycle diagram at full size](docs/assets/diagrams/experiment-lifecycle.svg).
+
+Canonical YAML records live under [`research/registry/`](research/registry/).
+Small, checksum-backed public evidence capsules live under
+[`research/evidence/`](research/evidence/). GitHub summaries, machine context,
+navigation, and manuscript story views are generated from those records.
 
 ```bash
-python -m pip install -r requirements-dev.txt
+# Regenerate synchronized views after changing a canonical record
+python -m neurobench.research.registry build
+
+# Fail if a record is invalid or a generated view is stale
+python -m neurobench.research.registry check
+
+# On the research workstation, also reconcile ignored local artifacts
+python -m neurobench.research.registry verify-live --check
 ```
 
-4. Run the available tests:
+Historical v1 experiments intentionally have no invented run records: the old
+story did not contain commits, input hashes, configurations, environments, or
+seeds. Future native runs must satisfy the complete provenance schema.
 
-```bash
-python -m pytest -q
-```
-
-If `pytest` is not installed in the active environment, use the standard-library
-smoke suite until the development dependencies are installed:
-
-```bash
-python -m unittest discover -s tests
-```
-
-### Optional GPU Environment
-
-For CUDA/CuPy experimentation, create the optional GPU environment:
-
-```bash
-conda env create -f environment.gpu.yml
-conda activate neurobench-gpu
-```
-
-The existing `environment.yml` is a legacy local GPU snapshot and may contain
-machine-specific pins. Prefer `environment.cpu.yml` or `environment.gpu.yml` for
-new installs.
-
----
-
-## Inputs
-
-Place files in `Inputs/`:
-
-* `video1_cropped_adj.tif` — your TIFF video (T×H×W)
-* `Neuron and Blood Vessel labeled_CL(Video1_Neuron)_cropped_adj.csv` — neuron GT CSV
-  Required columns: `ID, Start Frame, End Frame, X, Y`
-* (Optional) Vessel GT CSV for FP taxonomy
-
-Update paths in `config.py` if your filenames differ.
-
----
-
-## Configuration
-
-Edit **`config.py`** to control paths and parameter sweeps.
-
-### CFAR & Shared Settings
-
-```python
-SHARED_PARAMS = {
-    'distance_tolerance': [6],
-    'neighborhood_config': [(3, 1)],
-    'cfar_config': [{
-        'type': 'local-separate-gamma',
-        'gamma_radial_params': (9, 35),
-        'kernel_size': (23, 23),
-        'eps': 64
-    }]
-}
-TRUNCATION_FPPI_LIMIT = 30.0
-TOP_K_MODELS_TO_REPORT = 16
-Z_SCORE_SWEEP = np.linspace(0, 2, 256)
-```
-
-### Choose Filters to Search
-
-You can search **Gamma**, **Kalman–MCC**, or **both** (combined).
-Uncomment / set either or both parameter blocks.
-
-**Gamma example:**
-
-```python
-GAMMA_PARAMS = {
-    'filter_type': ['gamma'],
-    't_decay': [2**(-3) * i for i in range(9)],
-    's_decay': [2**(-2) * i for i in range(3)],
-}
-```
-
-**Kalman–MCC example:**
-
-```python
-KALMAN_PARAMS = {
-    'filter_type': ['kalman_mcc'],
-    'sigma': [2**(-2) * i for i in range(5)],
-    'mu':    [2**(-2) * i for i in range(5)],
-}
-```
-
-> The pipeline treats filters as interchangeable.
-> If **both** `GAMMA_PARAMS` and `KALMAN_PARAMS` are defined, the grid search will run **each family separately** and also a **combined comparison** (to see the true overall best), while still reporting each family’s results individually.
-
----
-
-## Running
-
-### Python Grid Search
-
-```bash
-python main.py
-```
-
-What happens:
-
-1. Load video & ground truth.
-2. Build the parameter grid(s) for the selected filter(s).
-3. Run **parallel grid search** (uses `NUM_WORKERS`).
-4. Save `Outputs/GridSearch_Full_Report_*/…` with:
-
-   * `all_grid_search_results.csv`
-   * `top_models_at_100_tpr.csv`
-   * `top_models_balanced.csv`
-   * Per-model `Rank_*_Report/` folders
-   * Figures (`.png`) and diagnostics (`.tif`, `.csv`)
-
-### Neuron Review Workbench
-
-The workbench path is intended for interactive scientific review of candidate
-neurons and firing events. It depends on Fiji/ImageJ for TIFF stack handling and
-uses stdlib Python for the local browser UI/autosave server. New samples should
-be run through a dataset manifest so processed videos can be opened from one
-index page.
-
-For the full documentation map, start with
-[docs/README.md](docs/README.md). The most useful entry points are:
-
-- [docs/NEURON_WORKBENCH.md](docs/NEURON_WORKBENCH.md) for running and using
-  the local dashboard.
-- [docs/RESTING_VIDEO_ALGORITHM_BRIEF.md](docs/RESTING_VIDEO_ALGORITHM_BRIEF.md)
-  for a concise lab-shareable explanation of the current resting-video
-  algorithm, waveforms, event markers, and untuned baseline status.
-- [docs/workflows/raw_video_to_report.md](docs/workflows/raw_video_to_report.md)
-  for a CPU-only end-to-end path from a synthetic raw video to QC, pipeline
-  runs, reports, sweeps, and exports.
-- [docs/TEMPLATE_GRID_WORKFLOW.md](docs/TEMPLATE_GRID_WORKFLOW.md) for the
-  new manifest, template, per-video registration, and 32x32 grid-state
-  preprocessing path.
-- [docs/GRID_LATENT_DYNAMICS.md](docs/GRID_LATENT_DYNAMICS.md) for the
-  video-split dynamics dataset, persistence baseline, autoencoder, latent GRU,
-  and latent classifier commands.
-- [docs/developer/adding_pipeline_stage.md](docs/developer/adding_pipeline_stage.md)
-  for the developer path to add or wire a new Architecture Lab stage.
-- [docs/API_REFERENCE.md](docs/API_REFERENCE.md) for the generated Python API
-  reference.
-
-1. Create a manifest for the TIFF:
-
-```bash
-python3 tools/create_dataset_manifest.py \
-  --out Outputs/Manifests/calcium_rest_cropped.dataset.json \
-  --dataset-id calcium_rest_cropped \
-  --raw-video "Inputs/050126/050126/calcium_rest_cropped.tif" \
-  --app-dir Outputs/NeuronReview/calcium_rest_cropped/app \
-  --frame-rate-hz 5.0 \
-  --pixel-size-microns 0.5
-```
-
-2. Run the current Fiji/Groovy pipeline and build the dashboard:
-
-```bash
-python3 tools/run_neuron_review_pipeline.py \
-  --dataset-manifest Outputs/Manifests/calcium_rest_cropped.dataset.json \
-  --fiji /path/to/Fiji.app/ImageJ-linux64
-```
-
-3. Start the selected dataset through the canonical autosave server:
-
-```bash
-.venv-neurobench/bin/python -m neurobench.cli.main workbench serve \
-  --dataset-id calcium_rest_cropped --catalog-root . --port 8765
-```
-
-The legacy `tools/serve_neuron_workbench.py --root-dir ...` wrapper remains
-available when a multi-app index is specifically required.
-
-4. Open:
+## Repository map
 
 ```text
-http://127.0.0.1:8765/
+NeuRev-Workbench/
+├── neurobench/                 maintained Python package and CLI
+│   ├── algorithms/             signal, motion, detection, and representation methods
+│   ├── experiments/            bounded scientific experiment packages
+│   ├── workbench/              local review UI, server, and artifact contracts
+│   ├── dynamics/               grid and latent-state forecasting
+│   ├── programs/               stage-gated research-program audits
+│   └── research/               registry compiler and shared hashing
+├── research/
+│   ├── registry/               canonical programs, claims, experiments, decisions, runs
+│   ├── evidence/               sanitized evidence capsules
+│   ├── schemas/                strict JSON Schemas
+│   └── generated/              synchronized views; never edit by hand
+├── paper/overleaf_jnm/         journal manuscript and generated story views
+├── docs/                       human guides, workflows, decisions, and visual system
+├── examples/                   small public manifests and configuration examples
+├── tests/                      software and scientific-contract tests
+├── Inputs/                     local raw/private data; ignored by Git
+└── Outputs/                    local generated artifacts; ignored by Git
 ```
 
-See [docs/NEURON_WORKBENCH.md](docs/NEURON_WORKBENCH.md) for annotation
-shortcuts, autosave details, and export format notes.
+The maintained implementation is under [`neurobench/`](neurobench/). Older
+top-level modules remain only for compatibility; consult
+[`docs/CODEBASE_NAVIGATION.md`](docs/CODEBASE_NAVIGATION.md) before extending
+them.
 
----
+## Data and publication safety
 
-## Outputs & Figures
+Raw recordings, reviewer identities, private randomization keys, credentials,
+and complete run directories do not belong in Git. `Inputs/` and `Outputs/`
+are local workspaces. Public claims point instead to compact evidence capsules
+with logical artifact roles, checksums, explicit limitations, and access state.
 
-* **FROC**: `fig_froc_top_k.png`
-* **Sensitivity heatmaps**: `sensitivity_*_auc.png`
-* **Event duration histogram**: `fig_event_duration_histogram.png`
-* **PSD comparison**: `fig_psd_comparison.png`
-* **Frame-wise power**: `fig_power_analysis_*.png`
-* **Qualitative montage**: `fig_qualitative_montage.png`
-* **Error maps**: `fig_fp_density.png`, `fig_fn_per_id.png`
-* **Per-model video stack**: `diagnostic_video.tif` (raw | features | z-score | pre/post masks)
-
-Workbench outputs are written under:
+Before sharing a branch or release:
 
 ```bash
-Outputs/NeuronReview/calcium_video_2/app/
+python tools/audit_publication_boundary.py
+python -m neurobench.research.registry check
 ```
 
-Important workbench files:
+Read the full [publication boundary](docs/PUBLICATION_BOUNDARY.md) before
+preparing a reviewer package or public release.
 
-* `review_data.json`: generated ROI, trace, event, and video metadata
-* `annotations.json`: autosaved user labels and notes
-* `roi_summary.tsv`: compact candidate ROI summary
-* `frames/frame_###.png`: browser frame assets
+## Contributing and citation
 
-`Outputs/` is ignored by git. Export ROI/event TSVs from the workbench when a
-review pass is ready for downstream analysis.
+Scientific changes should begin with a question, falsifier, comparison, data
+scope, and gates—not with a result directory. See [CONTRIBUTING.md](CONTRIBUTING.md)
+for the code and experiment workflow, [SECURITY.md](SECURITY.md) for private
+reporting, and [CITATION.cff](CITATION.cff) for citation metadata.
 
----
-
-## Tips & Performance
-
-* **Kalman–MCC** is heavier than Gamma. To speed up:
-
-  * Shrink the Kalman grid (`sigma`, `mu`)
-  * Reduce CI bootstraps (see `analysis.calculate_bootstrap_ci`)
-  * Limit frames for Kalman visualization: `KALMAN_MCC['max_frames_for_plots']`
-  * Prefer GPU with CuPy if available
-* Ensure your ground-truth CSV covers valid frame indices.
-* If a plot looks off, delete the affected `Outputs/` folder and re-run to regenerate artifacts.
-* For sparse firing events, prefer trace-level denoising over aggressive
-  pixel-level video smoothing. See [docs/PROCESSING_NOTES.md](docs/PROCESSING_NOTES.md).
-* Do not commit generated scientific data or output stacks. Commit reusable
-  scripts and documentation only unless a data commit is explicitly intended.
-
----
-
-## Troubleshooting
-
-* **No models returned**
-  Verify GT frames overlap with the video; loosen `distance_tolerance`.
-* **CI very slow**
-  Reduce bootstrap count and/or sample sizes; disable CI for exploratory runs.
-* **Matplotlib missing**
-  Recreate the Conda env or `conda install matplotlib`.
-
----
-
-## License
-
-MIT - do whatever you want, just don't blame us if it breaks.
-
----
-
-## Citation
-
-If this pipeline helps your work, please cite the repository in your methods or acknowledgements.
+NeuRev Workbench is released under the [MIT License](LICENSE).

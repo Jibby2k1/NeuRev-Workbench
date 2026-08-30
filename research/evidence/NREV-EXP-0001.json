@@ -1,0 +1,74 @@
+{
+  "artifact_manifest_sha256": "eaa7208a350cf784ec18b914802fe505bc47c80b839a6bc801f77a98755e6e3c",
+  "artifacts": [
+    {
+      "access": "public",
+      "bytes": 293773,
+      "id": "artifact-01",
+      "media_type": "application/pdf",
+      "repository_path": "paper/overleaf_jnm/figures/final/fig03_trace_atlas_examples.pdf",
+      "role": "figure",
+      "sha256": "d9e8606744488aaa070f9f51478a95801b776d0bb5cc067193ee19af7f8848b3"
+    },
+    {
+      "access": "public",
+      "bytes": 972,
+      "id": "artifact-02",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "paper/overleaf_jnm/figures/final/fig03_trace_atlas_examples_source.tsv",
+      "role": "table",
+      "sha256": "25087e13f9d07de4884416ac5a488408307d9df8f5a6dbf0aee8482718c49500"
+    }
+  ],
+  "boundaries": {
+    "does_not_establish": [
+      "Claims beyond the registered finding and linked claim scopes.",
+      "Reproducible run provenance that was absent from the v1 story."
+    ],
+    "limitations": [
+      "Representative cases and sparse positives do not estimate precision."
+    ],
+    "scope": "This capsule preserves the registered v1 experiment finding and its linked claim scopes."
+  },
+  "claim_impacts": [],
+  "evidence_tier": "current_recording",
+  "experiment_id": "NREV-EXP-0001",
+  "gates": [
+    {
+      "criterion": "Every artifact referenced by the v1 experiment story is available and checksum identified at migration.",
+      "id": "legacy-artifact-capture",
+      "observed": "Captured 2 of 2 referenced artifacts with SHA-256 identities.",
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-29T23:52:35Z",
+  "id": "NREV-EVC-EXP-0001",
+  "legacy_status": "complete_descriptive",
+  "lifecycle": "validated",
+  "metrics": [],
+  "outcome": "inconclusive",
+  "program_id": "NREV-PRG-0001",
+  "record_type": "evidence_capsule",
+  "review_state": "not_requested",
+  "run_ids": [],
+  "schema_version": 1,
+  "source_records_sha256": "e1e88568d20dc2fa528c9cf33984c3620de6710c40f944dd38682471dc88ef14",
+  "summary": "The atlas exposes a strong shared burst waveform and substantial site-to-site heterogeneity.",
+  "validation": {
+    "checked_at": "2026-08-29T23:52:35Z",
+    "checks": [
+      {
+        "id": "portable-paths",
+        "status": "passed",
+        "summary": "Artifact references are repository-relative; ignored local outputs are metadata-only."
+      },
+      {
+        "id": "historical-provenance",
+        "status": "not_run",
+        "summary": "The v1 story did not encode run-level provenance, so no historical run record was invented."
+      }
+    ],
+    "status": "partial"
+  },
+  "visibility": "public"
+}

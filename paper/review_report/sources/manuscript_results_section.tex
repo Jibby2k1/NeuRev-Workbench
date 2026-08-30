@@ -1,0 +1,97 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{Current evidence status and protected-rerun requirement}
+
+The repository audit identified \NCurrentOccurrences{} labeled occurrences across \NCurrentBursts{} bursts. The current table contains \NCurrentOriginalSites{} distinct coordinate pairs but only \NCurrentCanonicalNeurons{} proposed canonical identities. A provisional ROI~015-to-ROI~010 identity mapping is combined with geometry dictionaries keyed only by canonical identity in two signature-analysis paths, allowing one spatial site to overwrite the other. All identity-sensitive signature statistics are therefore considered provisional until trace extraction is rebuilt around immutable site identifiers. \Cref{tab:current-evidence} summarizes the current evidence and the interpretation permitted before the rerun.
+
+\input{tables/current_evidence}
+
+\subsection{Two-frame ICA behaves as a temporal-difference operator}
+
+The learned two-frame independent component was almost perfectly explained by signed temporal difference, with provisional $R^2=\ICADiffRSquared{}$ and event-score correlation $r=\ICADiffScoreCorrelation{}$. Both representations exceeded the available shifted-label controls with an empirical upper-tail probability of \ICADiffShiftP{}. The result establishes that the labeled intervals contain unusual temporal change under the current control construction, but it does not establish recovery of an independent neuronal source. Instead, the learned component is interpreted as an onset- or change-sensitive operator whose fluorescence fidelity must be assessed separately.
+
+\ProvisionalFigure{0.94\linewidth}{provisional_operator_identification.png}{Operator-identification analysis for the learned two-frame representation. The protected rerun retains this comparison as an analytic equivalence control rather than treating ICA as an automatically novel representation.}{fig:operator-identification}
+
+\subsection{Raw event-aligned traces contain a strong shared waveform}
+
+The preliminary held-out Raw event-template correlation was \RawHeldoutCorrelation{}, and the first temporal principal component accounted for \RawFirstPCVariance{} of the event-aligned variance. These results are consistent with a strong shared burst waveform. However, the mean event-minus-matched-annulus correlation difference was \RawAnnulusDelta{} with a provisional 95\% interval from \RawAnnulusCILow{} to \RawAnnulusCIHigh{}. Thus, the same morphology was not demonstrably stronger at the labeled center than in adjacent tissue at the tested support. The appropriate current conclusion is that a reproducible recording- or neighborhood-level event waveform exists; its neuron specificity has not been established.
+
+\ProvisionalFigure{0.96\linewidth}{provisional_external_assay_summary.png}{Preliminary external assay comparing Raw and learned/difference representations at labeled occurrences and shifted-time controls.}{fig:external-assay}
+
+\ProvisionalFigure{0.92\linewidth}{provisional_raw_signature_heatmap.png}{Preliminary event-aligned Raw trace heatmap. The final version will preserve immutable site identity, display native-amplitude and robustly standardized views separately, and annotate burst and field membership.}{fig:raw-heatmap}
+
+\subsection{Local subtraction reveals event-associated amplitude but not a universal residual shape}
+
+Subtracting a local annulus from the ROI increased event-associated residual peak amplitude relative to matched shifted windows by \ResidualPeakAmplitudeDelta{} intensity units, with a provisional 95\% interval from \ResidualPeakAmplitudeCILow{} to \ResidualPeakAmplitudeCIHigh{}. This supports the presence of spatially localized event energy. In contrast, the held-out residual-template correlation was \ResidualHeldoutCorrelation{}, and the residual-minus-spatial-control correlation difference was \ResidualSpatialDelta{} with a provisional interval from \ResidualSpatialCILow{} to \ResidualSpatialCIHigh{}. The current evidence therefore distinguishes localized amplitude from universal morphology: local signal remains after common-mode subtraction, but its shape is heterogeneous and does not yet outperform the matched spatial control.
+
+\ProvisionalFigure{0.96\linewidth}{provisional_residual_signature_generalization.png}{Preliminary ROI-minus-annulus residual-signature analysis. Final inference will be regenerated after the identity/geometry repair and will include multiple spatial supports, matched translated controls, and prespecified equivalence margins.}{fig:residual-signature}
+
+\subsection{Repeatability appears to reside more strongly in observability than waveform morphology}
+
+The preliminary median within-identity pairwise correlation was \RawWithinSiteMedianCorrelation{} for Raw traces and \ResidualWithinSiteMedianCorrelation{} for residual traces. These modest values do not support a universal neuron-specific waveform under the current normalization. Exploratory inspection of occurrence-level metrics nevertheless suggested that the rank ordering of event amplitude may be substantially more stable across bursts than detailed trace shape. This observation motivates the protected variance-decomposition analysis of amplitude, SNR, event area, timing, annulus coupling, and spatial compactness. No numerical intraclass-correlation estimate is promoted in the present draft because the current identity mapping can contaminate site-level aggregation.
+
+\DraftFigure{A neuron-by-burst matrix of native Raw and residual amplitudes; cross-burst rank plots; variance components and site-associated ICCs; sensitivity to burst~2 and ROI~010/015 identity.}{Stable site-dependent observability. The figure will test whether repeated neurons or observation sites possess stable amplitude, SNR, timing, or spatial-specificity profiles even when waveform shape is heterogeneous.}{fig:observability}
+
+\subsection{Spatial/contextual features improve known-positive ranking without identifying precision}
+
+In existing full-field screens, carrier-only known-positive recall at candidate budget 20 was \CarrierRecallBtwenty{}, compared with \CoherenceRecallBtwenty{} for a local-coherence lane and \LagRecallBtwenty{} for a lagged-recurrence lane. These values indicate that spatial and temporal context can improve the ordering or proposal coverage of known positives. They do not identify full-field precision because unmatched candidates may be unlabeled neurons. The protected confirmation will hold proposals and non-maximum suppression fixed where possible, separate proposal from ranking gains, and reserve precision estimation for the exhaustively reviewed bounded field.
+
+\DraftFigure{Recall-versus-candidate-budget curves for the frozen representation panel, proposal-union ceilings, same-proposal ranking comparisons, and failure categories. A separate panel will report bounded-field precision--recall after blinded exhaustive review.}{Detection implications under positive--unlabeled annotation.}{fig:detection-implications}
+
+\subsection{Acquisition structure is a potential determinant of observability}
+
+Preliminary quiet-frame analysis reported an intensity--variance slope of approximately \QuietVarianceSlope{} with weighted $R^2$ between \QuietVarianceWeightedRtwo{}. The audit also identified a provisional field boundary near \ProvisionalFieldBoundaryX{} and a left--right global-trace correlation of \LeftRightGlobalCorrelation{}. These observations motivate stratification by field, saturation, baseline intensity, motion, and local effective rank. The final analysis will determine whether recurrently difficult sites are explained by biological event magnitude, acquisition position, local contamination, or a combination of these factors.
+
+\DraftFigure{Variance-versus-intensity fit, saturation and motion maps, field-boundary diagnostics, temporal spectra, and a comparison of the canonical recording with any available unlabeled recordings.}{Acquisition physics and recording-quality context.}{fig:acquisition-qc}
+
+\subsection{Detection occurrences form recurring measurement-profile classes}
+
+The maximum-filter audit revealed that flat feature-map plateaus could contribute adjacent pixels to a nominal non-maximum-suppressed candidate list. We therefore repeated the frozen analysis with explicit Euclidean object separation and a label-free event-maximum tie breaker. Both compact lanes retained their positive known-positive-recall gains across the prespecified 4, 6, and 8 pixel sensitivity settings. At the primary 6 pixel, budget-20 operating point, the cross-lane union contained 86 distinct detection occurrences at 36 consolidated spatial detection sites.
+
+We constructed an 11-variable profile for every detection occurrence using native and residual peak amplitude, robust signal-to-noise ratio, spatial specificity, annulus coupling, signed event area, relative peak time, lane agreement, candidate rank, cross-burst recurrence, and quiet intensity. Continuous measurement features were robustly standardized within burst so that clustering would not merely reproduce burst intensity. Expert labels were excluded from fitting. Candidate solutions with two through six classes were compared using silhouette separation and bootstrap adjusted Rand stability, with a minimum of five occurrences and two bursts per class. The selected three-class solution had silhouette 0.284 and mean bootstrap adjusted Rand index 0.724; every class occurred in all four bursts.
+
+\input{tables/detection_profile_classes}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.98\linewidth]{figures/final/detection_class_overview.png}
+  \caption{Label-free detection-profile taxonomy. Points are distinct strict-NMS detection occurrences. Class fitting did not use expert labels; hatched counts show post-freeze proximity to a sparse known-positive annotation and must not be interpreted as precision.}
+  \label{fig:detection-profile-overview}
+\end{figure}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.98\linewidth]{figures/final/detection_class_representatives.png}
+  \caption{Representative occurrence nearest each frozen class centroid. The top row shows event-maximum minus pre-event baseline crops; the bottom row shows native exact-site traces with the evaluated burst interval shaded. Classes describe measurement events, not biological cell types.}
+  \label{fig:detection-profile-representatives}
+\end{figure}
+
+The largest localized, high-signal class contained 35 occurrences and showed the greatest overlap with sparse known positives (28 occurrences). The broad, low-signal early-peaking class contained eight occurrences, and the broad, lower-signal recurrent class contained 43. These overlap counts characterize already frozen classes; unmatched detections remain unknown rather than negative. The result supports discussion of recurring detection-event archetypes while preserving the positive--unlabeled boundary.
+
+We next joined the frozen classes to adjudicated identity certainty without refitting or renaming the classes. In the frozen-v1 adjudicated subset, the strict budget-20 union matched 10 of 19 confirmed observations but none of five identity-uncertain observations (two-sided Fisher exact $p=0.053$); the single probable observation was retained as a separate category. This small subset suggests a possible observability gradient but is insufficient for a stable class-composition comparison. In expanded canonical v7, the union matched 34 of 54 confirmed and 10 of 22 identity-uncertain observations (Fisher exact $p=0.203$). Thus the expanded data do not establish a difference in overall detection coverage by certainty.
+
+Among the matched canonical-v7 observations, however, class composition differed descriptively. Confirmed observations contributed 8, 2, and 24 occurrences to Classes 1--3, whereas identity-uncertain observations contributed 0, 4, and 6. The confirmed-versus-uncertain association had Cramer's $V=0.454$ and a burst-stratified label-permutation value of $p=0.0097$. This pattern---absence of the localized high-signal class and enrichment of the broad early/episodic class among uncertain identities---is hypothesis-generating rather than independent validation because the v7 adjudication was candidate-assisted and observations recur across sites.
+
+Class membership was also longitudinally coherent. Among 50 ordered within-site transitions from 22 multiply detected sites, 42 (84\%) remained in the same class. Class 1 remained Class 1 in 22 of 24 transitions, Class 2 in 2 of 2, and Class 3 in 18 of 24. These results support treating the classes as recurring measurement regimes, while the observed transitions caution against assigning an immutable biological type to a spatial site.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.98\linewidth]{figures/final/detection_class_extensions.png}
+  \caption{Post-freeze class extensions. Detection coverage is reported against adjudicated certainty for frozen v1 and candidate-assisted canonical v7; class composition is shown only where both confirmed and identity-uncertain matched observations are available. The transition matrix follows repeated detection sites across ordered bursts. All associations are descriptive and do not redefine the frozen classes.}
+  \label{fig:detection-class-extensions}
+\end{figure}
+
+Further post-freeze profiling separated reviewer uncertainty from clustering ambiguity. We defined a relative centroid margin from the nearest and second-nearest frozen class centers; this is a geometric separation measure, not a calibrated probability. Median margins were 0.511, 0.440, and 0.474 for Classes 1--3. Confirmed and identity-uncertain canonical-v7 matches had similar margins (0.473 versus 0.511; Mann--Whitney $p=0.790$). Thus uncertain identity was not explained by detections simply lying near a class boundary.
+
+Reviewer morphology provided a more direct association. Among 45 matched adjudicated canonical-v7 observations, localized-boundary morphology contributed 8, 3, and 27 observations to Classes 1--3, whereas ambiguous or non-neuronal boundary morphology contributed 0, 4, and 3 ($V=0.503$). Challenging or structured contexts contributed 0, 5, and 5 observations, isolated contexts 8, 2, and 20, and overlapping contexts 0, 0, and 5 ($V=0.411$). These candidate-assisted associations reinforce the interpretation of Class 1 as spatially localized and Class 2 as a broad or difficult measurement regime, but they are not independent class validation.
+
+Spatial effects were evaluated at the 36-site consolidated grain to avoid counting recurrent sites repeatedly. Relative to the provisional $x=286$ field boundary, the left/right site counts were 1/9 for Class 1, 2/4 for Class 2, and 0/20 for Class 3. The post hoc site-label permutation value was $p=0.041$ ($V=0.433$). Because only three sites lay left of the boundary and the boundary remains provisional, this result motivates acquisition-field stratification rather than an anatomical class claim. Conversely, burst composition showed little evidence of drift ($V=0.178$, permutation $p=0.503$), consistent with the classes recurring across all four events.
+
+Canonical-v7 matching produced 24 identity trajectories, eight with detections in at least two bursts. The median dominant-class fraction among these multi-burst identities was 1.0, while specific identities such as ROI~014 and ROI-new-002 changed class in one burst. These cases provide a bounded review queue for distinguishing true measurement-regime changes from registration, overlap, or event-amplitude effects.
+
+\subsection{Prespecified confirmatory hypotheses}
+
+The protected rerun follows the hypothesis hierarchy in \Cref{tab:hypotheses}. Functional and tensor analyses are promoted only if trace completeness, held-out reconstruction, and component-stability gates pass. A null or heterogeneous result remains scientifically reportable because it defines the boundary between shared burst detection and neuron-specific identification.
+
+\input{tables/hypotheses}

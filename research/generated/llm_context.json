@@ -1,0 +1,363 @@
+{
+  "authority": "research/registry",
+  "claims": [
+    {
+      "claim_state": "supported",
+      "evidence_tier": "current_recording",
+      "id": "NREV-CLM-0001",
+      "limitations": [
+        "No inference is registered beyond this scope: 106 confirmed occurrences at 50 sites in one recording."
+      ],
+      "review_state": "not_requested",
+      "scope": "106 confirmed occurrences at 50 sites in one recording.",
+      "statement": "Raw traces contain a strong event-aligned population waveform that is also expressed in nearby tissue."
+    },
+    {
+      "claim_state": "provisional",
+      "evidence_tier": "current_recording",
+      "id": "NREV-CLM-0002",
+      "limitations": [
+        "No inference is registered beyond this scope: T1 has 38 sites and T2 has 12 sites; these are not biological neuron types."
+      ],
+      "review_state": "not_requested",
+      "scope": "T1 has 38 sites and T2 has 12 sites; these are not biological neuron types.",
+      "statement": "Two descriptive trace phenotypes summarize recurrent within-recording variation."
+    },
+    {
+      "claim_state": "provisional",
+      "evidence_tier": "current_recording",
+      "id": "NREV-CLM-0003",
+      "limitations": [
+        "No inference is registered beyond this scope: 106 confirmed occurrences at 50 immutable sites in one previously analyzed recording; displaced tissue and guarded quiet frames have unknown biology."
+      ],
+      "review_state": "not_requested",
+      "scope": "106 confirmed occurrences at 50 immutable sites in one previously analyzed recording; displaced tissue and guarded quiet frames have unknown biology.",
+      "statement": "Event amplitude is strongest for known-center temporal retrieval, while spatial context contributes localized structure and full-field proposal or ranking value."
+    },
+    {
+      "claim_state": "provisional",
+      "evidence_tier": "current_recording",
+      "id": "NREV-CLM-0004",
+      "limitations": [
+        "No inference is registered beyond this scope: 94 recovered and 12 missed original geometries at detector budget 58; site-bootstrap log-loss improvement interval crosses zero."
+      ],
+      "review_state": "not_requested",
+      "scope": "94 recovered and 12 missed original geometries at detector budget 58; site-bootstrap log-loss improvement interval crosses zero.",
+      "statement": "A role-specific feature set improves cross-fitted detector-recovery point estimates over a carrier-only model, but the site-bootstrap uncertainty gate is not passed."
+    },
+    {
+      "claim_state": "provisional",
+      "evidence_tier": "current_recording",
+      "id": "NREV-CLM-0005",
+      "limitations": [
+        "No inference is registered beyond this scope: 106 occurrences at 50 immutable sites; 12 all-lane B58 misses; 20 repeated site-grouped splits and four leave-one-burst-out kinetic folds."
+      ],
+      "review_state": "not_requested",
+      "scope": "106 occurrences at 50 immutable sites; 12 all-lane B58 misses; 20 repeated site-grouped splits and four leave-one-burst-out kinetic folds.",
+      "statement": "Early-budget coherence and lag gains are larger in native proposal streams than on a common proposal universe, while a fixed kinetic filter and lag add distinct exploratory recovery value."
+    },
+    {
+      "claim_state": "supported",
+      "evidence_tier": "reviewed_current_recording",
+      "id": "NREV-CLM-0006",
+      "limitations": [
+        "No inference is registered beyond this scope: Canonical-v8 interpretation audit of the 12 canonical-v7 all-lane B58 misses; 2 same-identity collisions, 6 other-identity collisions, and 4 identity-clear hypotheses under a fixed six-pixel guard."
+      ],
+      "review_state": "in_review",
+      "scope": "Canonical-v8 interpretation audit of the 12 canonical-v7 all-lane B58 misses; 2 same-identity collisions, 6 other-identity collisions, and 4 identity-clear hypotheses under a fixed six-pixel guard.",
+      "statement": "Most apparent local recentering improvements among the all-lane misses cross an existing identity boundary and therefore cannot be treated as safe coordinate corrections."
+    },
+    {
+      "claim_state": "provisional",
+      "evidence_tier": "current_recording",
+      "id": "NREV-CLM-0007",
+      "limitations": [
+        "No inference is registered beyond this scope: 106 occurrences at 50 sites in one recording; 12 misses; 100 site-bootstrap sparse fits; synthetic tests are one-dimensional and cross-burst transfer has only one identity-clear pair."
+      ],
+      "review_state": "not_requested",
+      "scope": "106 occurrences at 50 sites in one recording; 12 misses; 100 site-bootstrap sparse fits; synthetic tests are one-dimensional and cross-burst transfer has only one identity-clear pair.",
+      "statement": "Identity-grouped recovery prediction, stability selection, conditional importance, selective risk, and recovered-only anomaly detection support a compact observability-context stack beyond carrier amplitude alone."
+    },
+    {
+      "claim_state": "supported",
+      "evidence_tier": "computational_simulation",
+      "id": "NREV-CLM-0008",
+      "limitations": [
+        "No inference is registered beyond this scope: 432 paired simulator cells across 12 seeds; mean AUC gain 0.104 and 94.9 percent win fraction; not biological external validation."
+      ],
+      "review_state": "not_requested",
+      "scope": "432 paired simulator cells across 12 seeds; mean AUC gain 0.104 and 94.9 percent win fraction; not biological external validation.",
+      "statement": "Spatial context improves source-pixel discrimination over pixel variance in a paired truth-known movie stress test spanning proximity, amplitude imbalance, temporal correlation, and non-circular footprints."
+    },
+    {
+      "claim_state": "supported",
+      "evidence_tier": "computational_simulation",
+      "id": "NREV-CLM-0009",
+      "limitations": [
+        "No inference is registered beyond this scope: 432 movies, four frozen score stacks, proposal budgets 2, 4, and 8, three-pixel one-to-one identity matching; simulation is not biological transfer."
+      ],
+      "review_state": "not_requested",
+      "scope": "432 movies, four frozen score stacks, proposal budgets 2, 4, and 8, three-pixel one-to-one identity matching; simulation is not biological transfer.",
+      "statement": "In exact-truth movie detection, the combined carrier-context-kinetic stack improves compact-budget identity recovery and held-seed calibration, while spatial context most strongly improves localization and duplicate suppression."
+    },
+    {
+      "claim_state": "supported",
+      "evidence_tier": "computational_simulation",
+      "id": "NREV-CLM-0010",
+      "limitations": [
+        "No inference is registered beyond this scope: 108 exact-truth movies across six generator families, six seeds per family, and source counts 2, 4, and 8; empirical noise scale estimated label-free from one untouched 060126 recording."
+      ],
+      "review_state": "not_requested",
+      "scope": "108 exact-truth movies across six generator families, six seeds per family, and source counts 2, 4, and 8; empirical noise scale estimated label-free from one untouched 060126 recording.",
+      "statement": "Spatial context is the most robust frozen proposal score under held-out neuropil, bleaching, nonrigid-motion, empirical-noise, and compound-shift generator families, whereas naive equal-weight fusion retains better calibration but loses operating-point robustness."
+    },
+    {
+      "claim_state": "supported",
+      "evidence_tier": "computational_simulation",
+      "id": "NREV-CLM-0011",
+      "limitations": [
+        "No inference is registered beyond this scope: 54 untouched-family movies with 2, 4, or 8 sources; three development families for gate fitting and null calibration; target false-alarm rates 1, 2, and 4 per movie."
+      ],
+      "review_state": "not_requested",
+      "scope": "54 untouched-family movies with 2, 4, or 8 sources; three development families for gate fitting and null calibration; target false-alarm rates 1, 2, and 4 per movie.",
+      "statement": "A development-family-trained gated fusion does not improve aggregate F1 over frozen spatial context when thresholds are calibrated without labels on source-free development movies and evaluated on untouched generator families."
+    },
+    {
+      "claim_state": "supported",
+      "evidence_tier": "computational_simulation",
+      "id": "NREV-CLM-0012",
+      "limitations": [
+        "No inference is registered beyond this scope: Six seeds per condition across null normalization, suppression, source-count stopping, weak-neighbor, colored noise, motion, morphology, severity, OOD, cross-simulator, stability, and negative-control tests."
+      ],
+      "review_state": "not_requested",
+      "scope": "Six seeds per condition across null normalization, suppression, source-count stopping, weak-neighbor, colored noise, motion, morphology, severity, OOD, cross-simulator, stability, and negative-control tests.",
+      "statement": "A twelve-family exact-truth challenge suite identifies spatial-context robustness alongside concrete limits in weak-neighbor identifiability, deployable stopping, parameter stability, and kinetic direction selectivity."
+    },
+    {
+      "claim_state": "supported",
+      "evidence_tier": "computational_simulation",
+      "id": "NREV-CLM-0013",
+      "limitations": [
+        "No inference is registered beyond this scope: Six-seed targeted development package with disjoint artifact definitions, one-to-one weak-identity matching, and explicit forward and reversed kinetic gates."
+      ],
+      "review_state": "not_requested",
+      "scope": "Six-seed targeted development package with disjoint artifact definitions, one-to-one weak-identity matching, and explicit forward and reversed kinetic gates.",
+      "statement": "Parameter-consensus stopping, unconstrained rank-two NMF deblending, and a simple forward-minus-reverse kinetic contrast do not improve their frozen comparators under prospective exact-truth tests."
+    },
+    {
+      "claim_state": "supported",
+      "evidence_tier": "computational_simulation",
+      "id": "NREV-CLM-0014",
+      "limitations": [
+        "No inference is registered beyond this scope: New ellipse development grid followed by one-shot locked v8 crescent evaluation; six seeds; corrected kinetic audit uses unconstrained component coefficients."
+      ],
+      "review_state": "not_requested",
+      "scope": "New ellipse development grid followed by one-shot locked v8 crescent evaluation; six seeds; corrected kinetic audit uses unconstrained component coefficients.",
+      "statement": "A frozen constrained joint spatial-temporal factorization does not improve close-source identity recovery over spatial context, and component-specific forward-versus-reversed likelihoods remain non-directional after circularity-safe auditing."
+    },
+    {
+      "claim_state": "supported",
+      "evidence_tier": "current_recording",
+      "id": "NREV-CLM-0015",
+      "limitations": [
+        "No inference is registered beyond this scope: Maximum sitewise embedding inversion RMS is 5.69e-12; this is not denoising validation."
+      ],
+      "review_state": "not_requested",
+      "scope": "Maximum sitewise embedding inversion RMS is 5.69e-12; this is not denoising validation.",
+      "statement": "The frozen six-component temporal transform is numerically invertible at the audited sites."
+    },
+    {
+      "claim_state": "supported",
+      "evidence_tier": "current_recording",
+      "id": "NREV-CLM-0016",
+      "limitations": [
+        "No inference is registered beyond this scope: 50 centers over 560 frames; no full-field floor-inactivity claim."
+      ],
+      "review_state": "not_requested",
+      "scope": "50 centers over 560 frames; no full-field floor-inactivity claim.",
+      "statement": "Local-standardization scaling at audited centers is governed by measured local variability rather than the global floor."
+    },
+    {
+      "claim_state": "unresolved",
+      "evidence_tier": "none",
+      "id": "NREV-CLM-0017",
+      "limitations": [
+        "The cited evidence does not establish the registered claim."
+      ],
+      "review_state": "not_requested",
+      "scope": "Stable measurement representations do not establish biological source identity.",
+      "statement": "Pipeline outputs identify one-to-one biological neuronal sources."
+    },
+    {
+      "claim_state": "unresolved",
+      "evidence_tier": "none",
+      "id": "NREV-CLM-0018",
+      "limitations": [
+        "The cited evidence does not establish the registered claim."
+      ],
+      "review_state": "not_requested",
+      "scope": "Sparse positives do not make unmatched candidates verified negatives.",
+      "statement": "Full-field detection precision is known."
+    },
+    {
+      "claim_state": "provisional",
+      "evidence_tier": "reviewed_current_recording",
+      "id": "NREV-CLM-0019",
+      "limitations": [
+        "No inference is registered beyond this scope: 18 selected unmatched sites in one recording; 9 definite, 4 probable, 4 uncertain, and 1 artifact-or-noise call; no existing decisions changed."
+      ],
+      "review_state": "in_review",
+      "scope": "18 selected unmatched sites in one recording; 9 definite, 4 probable, 4 uncertain, and 1 artifact-or-noise call; no existing decisions changed.",
+      "statement": "Review of previously unmatched candidates expands the provisional appearance envelope to include small, discreet, low-SNR, and crescent-shaped neuron calls, while artifact-adjacent and neighbor-confounded sites remain unresolved."
+    },
+    {
+      "claim_state": "provisional",
+      "evidence_tier": "descriptive",
+      "id": "NREV-CLM-0020",
+      "limitations": [
+        "No inference is registered beyond this scope: One frozen enriched 192 by 192 region and 18 assisted candidates in the current recording; no independent annotations or detector metric yet."
+      ],
+      "review_state": "pending",
+      "scope": "One frozen enriched 192 by 192 region and 18 assisted candidates in the current recording; no independent annotations or detector metric yet.",
+      "statement": "A staged portable Raw-first then assisted review package is ready for two independent reviewers, with public/private separation, locked exports, blinding checks, agreement analysis, and mandatory adjudication."
+    }
+  ],
+  "counts": {
+    "claims": 20,
+    "completed_experiments": 19,
+    "evidence_capsules": 19,
+    "planned_experiments": 8,
+    "runs": 0
+  },
+  "generated_policy": "do_not_edit",
+  "identity": {
+    "flagship_program_id": "NREV-PRG-0001",
+    "python_package": "neurobench",
+    "repository": "NeuRev Workbench"
+  },
+  "next_experiments": [
+    {
+      "id": "NREV-EXP-0020",
+      "lifecycle": "draft",
+      "objective": "Obtain two locked Phase A and Phase B submissions, run agreement analysis, adjudicate all spatial, class, and identity disagreements, and freeze a local truth revision before any detector or learning evaluation.",
+      "priority": 1
+    },
+    {
+      "id": "NREV-EXP-0021",
+      "lifecycle": "draft",
+      "objective": "Run the prespecified harmonized feature audit, positive-unlabeled learning, label-sensitivity models, leakage-resistant grouped validation, feature stability, counterfactual perturbation, and hard-subgroup tests without promoting provisional labels.",
+      "priority": 2
+    },
+    {
+      "id": "NREV-EXP-0022",
+      "lifecycle": "draft",
+      "objective": "Exhaustively review the ambiguous ROI 10/15, ROI 11, ROI 12, and ROI 23 clusters with joint footprint and identity assignment.",
+      "priority": 3
+    },
+    {
+      "id": "NREV-EXP-0023",
+      "lifecycle": "draft",
+      "objective": "Exhaustively review a bounded field and estimate precision with verified negatives.",
+      "priority": 4
+    },
+    {
+      "id": "NREV-EXP-0024",
+      "lifecycle": "draft",
+      "objective": "Apply frozen pipeline and phenotype assignments to an independent recording.",
+      "priority": 5
+    },
+    {
+      "id": "NREV-EXP-0025",
+      "lifecycle": "draft",
+      "objective": "Export motion fields and registration residuals and relate them to shared waveform strength.",
+      "priority": 6
+    },
+    {
+      "id": "NREV-EXP-0026",
+      "lifecycle": "draft",
+      "objective": "Transfer the frozen carrier, coherence, recurrence, consensus, and persistence definitions without tuning and test task-specific utility.",
+      "priority": 7
+    },
+    {
+      "id": "NREV-EXP-0027",
+      "lifecycle": "draft",
+      "objective": "Preserve the current spatial-context and robust-stopping baseline; defer additional deblender complexity until bounded biological identity truth or a genuinely independent labelled recording is available.",
+      "priority": 8
+    }
+  ],
+  "programs": [
+    {
+      "boundaries": [
+        "Full-field precision is unresolved.",
+        "One-to-one biological source identity is unresolved.",
+        "Generalization to an independent recording is unresolved."
+      ],
+      "documentation": [
+        "paper/overleaf_jnm/CURRENT_RESEARCH_STATE.md",
+        "docs/workflows/spon_ca_burst_neuron_identifiability_paper.md",
+        "docs/research/README.md"
+      ],
+      "id": "NREV-PRG-0001",
+      "lifecycle": "active",
+      "scientific_scope": "An intensive within-recording methods study of 106 confirmed occurrences at 50 immutable sites in one calcium-imaging recording.",
+      "slug": "neuron-identifiability",
+      "title": "Neuron Identifiability"
+    },
+    {
+      "boundaries": [
+        "Latent or independent components do not by themselves establish one-to-one biological identity.",
+        "Representation gains have not been established on independent recordings across the repository.",
+        "Full-field specificity requires bounded exhaustive labels."
+      ],
+      "documentation": [
+        "docs/research/README.md",
+        "docs/workflows/README.md"
+      ],
+      "id": "NREV-PRG-0002",
+      "lifecycle": "active",
+      "scientific_scope": "Foundational representation and source-separation methods used by the repository's imaging workflows.",
+      "slug": "source-separation",
+      "title": "Source Separation and Representation"
+    },
+    {
+      "boundaries": [
+        "Causal pre-movement intent has not been established.",
+        "Action-conditioned dynamics have not been established from measured interventions.",
+        "No command-capable deployment is authorized outside a validated safety envelope."
+      ],
+      "documentation": [
+        "docs/programs/fish_inverse_control/README.md",
+        "docs/research/FISH_INVERSE_CONTROL_ROADMAP.md"
+      ],
+      "id": "NREV-PRG-0003",
+      "lifecycle": "draft",
+      "scientific_scope": "A downstream causal program that may proceed only after measurement, leakage, intervention, and safety gates are satisfied.",
+      "slug": "fish-inverse-control",
+      "title": "Fish Intent and Inverse Control"
+    },
+    {
+      "boundaries": [
+        "Independent-video generalization of learned latent dynamics is unresolved.",
+        "Passive neural-state forecasts do not establish causal interpretation.",
+        "Predicted state has not been shown to invert into a safe control action."
+      ],
+      "documentation": [
+        "docs/GRID_LATENT_DYNAMICS.md",
+        "docs/TEMPLATE_GRID_WORKFLOW.md"
+      ],
+      "id": "NREV-PRG-0004",
+      "lifecycle": "active",
+      "scientific_scope": "Measurement and forecasting methods for template-aligned neural state, without causal or control interpretation.",
+      "slug": "grid-dynamics",
+      "title": "Grid and Latent Dynamics"
+    }
+  ],
+  "rules": [
+    "Do not infer biological identity from a stable component or detected center.",
+    "Do not treat sparse unmatched candidates as verified negatives.",
+    "Do not promote a claim from run completion alone.",
+    "Do not hand-edit generated research-story views.",
+    "Do not require ignored Inputs or Outputs for clean-clone validation."
+  ],
+  "schema_version": 1
+}

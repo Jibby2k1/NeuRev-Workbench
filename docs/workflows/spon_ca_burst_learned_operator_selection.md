@@ -2,7 +2,7 @@
 
 This additive, sequential program tests learned whitening/operator selection and
 the marginal utility of ICA. The authoritative design is
-`NEUREV_LEARNED_WHITENING_ICA_SEQUENTIAL_CODEX_PLAN.md`.
+`docs/archive/plans/NEUREV_LEARNED_WHITENING_ICA_SEQUENTIAL_CODEX_PLAN.md`.
 
 The current implementation contains Milestones 1–3 and the deterministic-design
 portion of Milestone 4: strict configuration, state/dependency validation,

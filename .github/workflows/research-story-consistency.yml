@@ -1,0 +1,95 @@
+name: Research integrity and portable story
+
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: research-integrity-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  clean-clone-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the publication candidate
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install focused validation dependencies
+        run: python -m pip install pytest pyyaml jsonschema
+
+      - name: Validate normalized schemas, records, hashes, and generated views
+        run: PYTHONPATH=. python -m neurobench.research.registry check
+
+      - name: Validate the portable Overleaf story
+        run: make -C paper/overleaf_jnm story-check PYTHON=python
+
+      - name: Test registry, clean-clone story, navigation, links, and publication contracts
+        run: >-
+          python -m pytest
+          tests/test_research_registry.py
+          tests/test_research_registry_schemas.py
+          tests/test_research_story.py
+          tests/test_documentation_navigation.py
+          tests/test_publication_boundary.py
+          -q
+
+      - name: Report the complete publication boundary
+        if: always()
+        run: >-
+          python tools/audit_publication_boundary.py
+          --root .
+          --format json
+          --fail-on error
+          | tee "${RUNNER_TEMP}/publication-boundary.json"
+
+      - name: Reject publication errors in changed paths
+        if: ${{ always() && (github.event_name == 'pull_request' || github.event_name == 'push') }}
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
+            git diff --name-only --diff-filter=ACMR "${BASE_SHA}" HEAD > "${RUNNER_TEMP}/changed-paths.txt"
+          else
+            git show --pretty='' --name-only --diff-filter=ACMR HEAD > "${RUNNER_TEMP}/changed-paths.txt"
+          fi
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          report = json.loads((Path(os.environ["RUNNER_TEMP"]) / "publication-boundary.json").read_text())
+          changed = set((Path(os.environ["RUNNER_TEMP"]) / "changed-paths.txt").read_text().splitlines())
+          findings = [
+              item
+              for item in report["findings"]
+              if item["severity"] == "error" and item["path"] in changed
+          ]
+          if findings:
+              for item in findings:
+                  line = f":{item['line']}" if "line" in item else ""
+                  print(f"{item['severity'].upper()} [{item['code']}] {item['path']}{line}: {item['message']}")
+              raise SystemExit("publication-boundary errors affect files changed by this revision")
+          print(f"publication boundary clear for {len(changed)} changed paths")
+          PY
+
+      - name: Upload publication audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: publication-boundary-${{ github.run_id }}
+          path: ${{ runner.temp }}/publication-boundary.json
+          if-no-files-found: error
+          retention-days: 14

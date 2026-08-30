@@ -1,0 +1,35 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0010
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical decision effective date
+program_id: NREV-PRG-0001
+title: Decision after Realistic Movie Detector Benchmark V3
+lifecycle: active
+action: retain
+rationale: Freeze the compact combined proposal stack and test it under broader simulator families and a task-compatible independent
+  biological recording; retain spatial context for localization and NMS rather than interpreting it as source identity by
+  itself.
+evidence_summary: At budget four, combined achieved the highest F1 at 0.471 and recall at 0.707; spatial context localized
+  best at 0.835 px, reduced duplicates to 0.016 per movie, and had the best held-seed candidate average precision at 0.896;
+  combined had the best Brier score at 0.0286 and balanced accuracy at 0.862.
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0010
+claim_ids:
+- NREV-CLM-0009
+evidence_capsule_ids:
+- NREV-EVC-EXP-0010
+constraints:
+- Proposal precision includes all simulated background candidates but the movie generator remains simplified; candidate labels
+  use a fixed three-pixel geometry rule; calibration is seed-held-out rather than generator-family-held-out.
+- The historical decision date was not encoded in the v1 story and was not guessed during migration.
+visibility: public
+legacy_status: complete_computational
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

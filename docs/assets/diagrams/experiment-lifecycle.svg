@@ -1,0 +1,198 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 960" role="img" aria-labelledby="lifecycle-title lifecycle-desc">
+  <title id="lifecycle-title">NeuRev incremental experiment lifecycle</title>
+  <desc id="lifecycle-desc">Seven auditable lifecycle states progress from draft to preregistered, running, computed, validated, reviewed, and closed. A separate panel records outcome, evidence tier, decision, and claim state so computation is never confused with scientific success. Passed gates commit an evidence capsule and regenerate story views; failed gates preserve the result and open a new version or run.</desc>
+  <defs>
+    <filter id="lifecycle-shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="#071014" flood-opacity="0.13"/>
+    </filter>
+    <marker id="lifecycle-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path class="arrow-head" d="M 0 0 L 10 5 L 0 10 z"/>
+    </marker>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --canvas: #f7fafb;
+        --surface: #ffffff;
+        --surface-raised: #eef4f6;
+        --ink: #102733;
+        --muted: #526875;
+        --border: #b9cad1;
+        --line: #607b87;
+        --accent: #147d87;
+        --accent-text: #0f6670;
+        --accent-soft: #ddf4f5;
+        --blue: #3158a5;
+        --blue-soft: #e8eefb;
+        --violet: #6e53a4;
+        --violet-soft: #f0eafa;
+        --failure: #a74760;
+        --failure-soft: #f9e9ed;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --canvas: #091015;
+          --surface: #111b22;
+          --surface-raised: #16232c;
+          --ink: #eff7f8;
+          --muted: #a9bac1;
+          --border: #29404d;
+          --line: #76909b;
+          --accent: #61d4de;
+          --accent-text: #61d4de;
+          --accent-soft: #153b44;
+          --blue: #89a7f5;
+          --blue-soft: #1a2c51;
+          --violet: #c4b5fd;
+          --violet-soft: #31284d;
+          --failure: #ef91a2;
+          --failure-soft: #3b1f29;
+        }
+      }
+      text { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: var(--ink); }
+      .canvas { fill: var(--canvas); }
+      .eyebrow { fill: var(--accent-text); font-size: 13px; font-weight: 750; letter-spacing: 2.4px; }
+      .title { font-size: 34px; font-weight: 760; letter-spacing: -0.7px; }
+      .subtitle { fill: var(--muted); font-size: 17px; }
+      .section-label { fill: var(--muted); font-size: 12px; font-weight: 760; letter-spacing: 2px; }
+      .card { fill: var(--surface); stroke: var(--border); stroke-width: 1.4; filter: url(#lifecycle-shadow); }
+      .card-accent { fill: var(--accent-soft); stroke: var(--accent); }
+      .card-blue { fill: var(--blue-soft); stroke: var(--blue); }
+      .card-violet { fill: var(--violet-soft); stroke: var(--violet); }
+      .card-failure { fill: var(--failure-soft); stroke: var(--failure); stroke-dasharray: 6 4; }
+      .number { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.2; }
+      .number-text { fill: var(--accent-text); font-size: 12px; font-weight: 800; text-anchor: middle; dominant-baseline: middle; }
+      .stage-title { font-size: 16px; font-weight: 760; text-anchor: middle; }
+      .stage-copy { fill: var(--muted); font-size: 12.5px; text-anchor: middle; }
+      .connector { fill: none; stroke: var(--line); stroke-width: 2; marker-end: url(#lifecycle-arrow); }
+      .connector-fail { fill: none; stroke: var(--failure); stroke-width: 1.8; stroke-dasharray: 7 5; marker-end: url(#lifecycle-arrow); }
+      .arrow-head { fill: var(--line); }
+      .gate-label { fill: var(--muted); font-size: 11px; font-weight: 670; text-anchor: middle; }
+      .axis-label { fill: var(--accent-text); font-size: 13px; font-weight: 790; letter-spacing: 0.5px; }
+      .axis-copy { fill: var(--ink); font-size: 14px; }
+      .axis-divider { stroke: var(--border); stroke-width: 1; }
+      .panel-note { fill: var(--muted); font-size: 13px; font-style: italic; }
+      .branch-title { font-size: 16px; font-weight: 750; }
+      .branch-copy { fill: var(--muted); font-size: 13px; }
+      .caption { fill: var(--muted); font-size: 13px; font-style: italic; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <rect class="canvas" width="1440" height="960" rx="18"/>
+  <text class="eyebrow" x="40" y="52">NEUREV RESEARCH OPERATIONS</text>
+  <text class="title" x="40" y="96">An incremental, auditable experiment lifecycle</text>
+  <text class="subtitle" x="40" y="128">Each transition leaves a durable record; lifecycle and scientific outcome remain separate.</text>
+
+  <text class="section-label" x="40" y="158">LIFECYCLE — THE AUDITABLE SEQUENCE</text>
+
+  <g aria-label="Draft: question and falsifier">
+    <rect class="card card-accent" x="38" y="176" width="170" height="132" rx="14"/>
+    <circle class="number" cx="60" cy="199" r="13"/>
+    <text class="number-text" x="60" y="199">1</text>
+    <text class="stage-title" x="123" y="233">Draft</text>
+    <text class="stage-copy" x="123" y="263"><tspan x="123">Question +</tspan><tspan x="123" dy="19">falsifier</tspan></text>
+  </g>
+  <g aria-label="Preregistered: protocol frozen">
+    <rect class="card" x="237" y="176" width="170" height="132" rx="14"/>
+    <circle class="number" cx="259" cy="199" r="13"/>
+    <text class="number-text" x="259" y="199">2</text>
+    <text class="stage-title" x="322" y="233">Preregistered</text>
+    <text class="stage-copy" x="322" y="263"><tspan x="322">Protocol +</tspan><tspan x="322" dy="19">gates frozen</tspan></text>
+  </g>
+  <g aria-label="Running: bounded execution">
+    <rect class="card card-blue" x="436" y="176" width="170" height="132" rx="14"/>
+    <circle class="number" cx="458" cy="199" r="13"/>
+    <text class="number-text" x="458" y="199">3</text>
+    <text class="stage-title" x="521" y="233">Running</text>
+    <text class="stage-copy" x="521" y="263"><tspan x="521">Bounded</tspan><tspan x="521" dy="19">execution</tspan></text>
+  </g>
+  <g aria-label="Computed: artifacts present">
+    <rect class="card" x="635" y="176" width="170" height="132" rx="14"/>
+    <circle class="number" cx="657" cy="199" r="13"/>
+    <text class="number-text" x="657" y="199">4</text>
+    <text class="stage-title" x="720" y="233">Computed</text>
+    <text class="stage-copy" x="720" y="263"><tspan x="720">Artifacts</tspan><tspan x="720" dy="19">present</tspan></text>
+  </g>
+  <g aria-label="Validated: evidence gates checked">
+    <rect class="card card-accent" x="834" y="176" width="170" height="132" rx="14"/>
+    <circle class="number" cx="856" cy="199" r="13"/>
+    <text class="number-text" x="856" y="199">5</text>
+    <text class="stage-title" x="919" y="233">Validated</text>
+    <text class="stage-copy" x="919" y="263"><tspan x="919">Evidence gates</tspan><tspan x="919" dy="19">checked</tspan></text>
+  </g>
+  <g aria-label="Reviewed: interpretation recorded">
+    <rect class="card card-blue" x="1033" y="176" width="170" height="132" rx="14"/>
+    <circle class="number" cx="1055" cy="199" r="13"/>
+    <text class="number-text" x="1055" y="199">6</text>
+    <text class="stage-title" x="1118" y="233">Reviewed</text>
+    <text class="stage-copy" x="1118" y="263"><tspan x="1118">Interpretation</tspan><tspan x="1118" dy="19">recorded</tspan></text>
+  </g>
+  <g aria-label="Closed: durable decision">
+    <rect class="card card-violet" x="1232" y="176" width="170" height="132" rx="14"/>
+    <circle class="number" cx="1254" cy="199" r="13"/>
+    <text class="number-text" x="1254" y="199">7</text>
+    <text class="stage-title" x="1317" y="233">Closed</text>
+    <text class="stage-copy" x="1317" y="263"><tspan x="1317">Decision</tspan><tspan x="1317" dy="19">durable</tspan></text>
+  </g>
+
+  <path class="connector" d="M 208 242 H 230"/>
+  <path class="connector" d="M 407 242 H 429"/>
+  <path class="connector" d="M 606 242 H 628"/>
+  <path class="connector" d="M 805 242 H 827"/>
+  <path class="connector" d="M 1004 242 H 1026"/>
+  <path class="connector" d="M 1203 242 H 1225"/>
+
+  <path class="connector" d="M 919 308 V 350"/>
+  <g aria-label="Independent scientific state axes">
+    <rect class="card card-blue" x="40" y="358" width="1362" height="308" rx="17"/>
+    <text class="section-label" x="68" y="393">COMPLETION HAS MULTIPLE INDEPENDENT AXES</text>
+    <text class="panel-note" x="68" y="421">Record each axis explicitly. None is a substitute for the others.</text>
+
+    <text class="axis-label" x="68" y="468">LIFECYCLE</text>
+    <text class="axis-copy" x="238" y="468">proposed · preregistered · running · computed · validated · reviewed · closed</text>
+    <line class="axis-divider" x1="68" y1="490" x2="1372" y2="490"/>
+
+    <text class="axis-label" x="68" y="523">OUTCOME</text>
+    <text class="axis-copy" x="238" y="523">supported · rejected · mixed · inconclusive</text>
+    <line class="axis-divider" x1="68" y1="545" x2="1372" y2="545"/>
+
+    <text class="axis-label" x="68" y="578">EVIDENCE TIER</text>
+    <text class="axis-copy" x="238" y="578">descriptive · current recording · simulation · external · independent recording</text>
+    <line class="axis-divider" x1="68" y1="600" x2="1372" y2="600"/>
+
+    <text class="axis-label" x="68" y="633">DECISION</text>
+    <text class="axis-copy" x="238" y="633">promote · retain · hold · stop · supersede</text>
+    <text class="axis-label" x="742" y="633">CLAIM STATE</text>
+    <text class="axis-copy" x="896" y="633">proposed · provisional · supported · contradicted · retired</text>
+  </g>
+
+  <path class="connector-fail" d="M 395 666 V 718"/>
+  <path class="connector" d="M 1040 666 V 718"/>
+
+  <g aria-label="Failed gates preserve results">
+    <rect class="card card-failure" x="40" y="726" width="320" height="126" rx="14"/>
+    <text class="branch-title" x="62" y="766">If a gate fails</text>
+    <text class="branch-copy" x="62" y="798"><tspan x="62">Preserve the result and its</tspan><tspan x="62" dy="21">limitations; never rewrite history.</tspan></text>
+  </g>
+  <path class="connector-fail" d="M 360 789 H 390"/>
+  <g aria-label="Open a new version or run">
+    <rect class="card card-failure" x="398" y="726" width="320" height="126" rx="14"/>
+    <text class="branch-title" x="420" y="766">Open a new version or run</text>
+    <text class="branch-copy" x="420" y="798"><tspan x="420">Link the revision to its parent</tspan><tspan x="420" dy="21">and state what changed.</tspan></text>
+  </g>
+
+  <g aria-label="Passed gates commit an evidence capsule">
+    <rect class="card card-violet" x="756" y="726" width="320" height="126" rx="14"/>
+    <text class="branch-title" x="778" y="766">When review closes</text>
+    <text class="branch-copy" x="778" y="798"><tspan x="778">Commit the evidence capsule,</tspan><tspan x="778" dy="21">claim scope, and decision.</tspan></text>
+  </g>
+  <path class="connector" d="M 1076 789 H 1106"/>
+  <g aria-label="Regenerate synchronized story views">
+    <rect class="card card-violet" x="1114" y="726" width="288" height="126" rx="14"/>
+    <text class="branch-title" x="1136" y="766">Regenerate every view</text>
+    <text class="branch-copy" x="1136" y="798"><tspan x="1136">GitHub · docs · Overleaf</tspan><tspan x="1136" dy="21">LLM indexes · releases</tspan></text>
+  </g>
+
+  <path class="connector-fail" d="M 558 852 V 878 H 22 V 332 H 123 V 315"/>
+  <text class="gate-label" x="300" y="898">new question, version, or run</text>
+  <text class="caption" x="720" y="934">Computed is a lifecycle state—not a scientific verdict.</text>
+</svg>

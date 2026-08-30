@@ -1,0 +1,160 @@
+site_name: NeuRev Workbench
+site_description: >-
+  Evidence-first calcium-imaging measurement, detection, review, and research
+  provenance.
+site_author: NeuRev Workbench contributors
+site_url: https://jibby2k1.github.io/NeuRev-Workbench/
+repo_name: Jibby2k1/NeuRev-Workbench
+repo_url: https://github.com/Jibby2k1/NeuRev-Workbench
+edit_uri: edit/main/docs/
+
+docs_dir: docs
+site_dir: site
+use_directory_urls: true
+strict: true
+
+# Historical plans and binary manuscript artifacts remain available in Git,
+# but are intentionally kept out of the searchable, current documentation set.
+exclude_docs: |
+  /README.md
+  /CODEBASE_AUDIT.md
+  /plan.md
+  archive/plans/
+  **/*.docx
+  **/*.pdf
+  **/*.zip
+
+theme:
+  name: material
+  language: en
+  font: false
+  icon:
+    logo: material/brain
+    repo: fontawesome/brands/github
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - content.code.annotate
+    - content.code.copy
+    - navigation.footer
+    - navigation.indexes
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+
+plugins:
+  - search:
+      lang: en
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      permalink_title: Link to this section
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+extra_css:
+  - assets/brand/palette.css
+  - stylesheets/extra.css
+
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Jibby2k1/NeuRev-Workbench
+      name: NeuRev Workbench on GitHub
+
+copyright: >-
+  NeuRev Workbench contributors · Evidence state and scientific outcome are
+  recorded independently.
+
+# Existing research notes include repository-root links that MkDocs cannot
+# resolve from docs_dir. New site pages use full GitHub URLs for those targets.
+# Keep the legacy diagnostics visible without turning them into strict-build
+# failures; navigation itself remains fail-closed.
+validation:
+  nav:
+    omitted_files: info
+    not_found: warn
+    absolute_links: info
+  links:
+    not_found: warn
+    absolute_links: info
+    unrecognized_links: warn
+    anchors: warn
+
+nav:
+  - Home: index.md
+  - Start here:
+      - Repository guide: REPOSITORY_GUIDE.md
+      - Publication boundary: PUBLICATION_BOUNDARY.md
+  - Research and evidence:
+      - Current project story: https://github.com/Jibby2k1/NeuRev-Workbench/blob/main/research/generated/PROJECT_STORY.md
+      - Claim ledger: https://github.com/Jibby2k1/NeuRev-Workbench/blob/main/research/generated/CLAIM_LEDGER.md
+      - Experiment timeline: https://github.com/Jibby2k1/NeuRev-Workbench/blob/main/research/generated/EXPERIMENT_TIMELINE.md
+      - Result index: research/README.md
+      - Scientific audit standard: workflows/SCIENTIFIC_AUDIT_OUTPUT_STANDARD.md
+      - Neuron-identifiability study: research/SPON_CA_BURST_NEURON_IDENTIFIABILITY_PAPER_V1_RESULTS.md
+      - Uncertainty-aware learning plan: research/SPON_CA_BURST_UNCERTAINTY_AWARE_LEARNING_PLAN_V1.md
+      - External bounded review: research/SPON_CA_BURST_EXTERNAL_BOUNDED_REVIEW_V2_PACKAGE.md
+      - Repository decisions: decisions/README.md
+  - Run a workflow:
+      - Workflow index: workflows/README.md
+      - Raw video to report: workflows/raw_video_to_report.md
+      - Neuron-identifiability paper: workflows/spon_ca_burst_neuron_identifiability_paper.md
+      - Full-trace feature panel: workflows/spon_ca_burst_full_trace_feature_panel.md
+      - Automated feature validation: workflows/spon_ca_burst_automated_feature_validation.md
+      - External blinded review: workflows/external_blinded_bounded_review_v2.md
+  - Review and annotate:
+      - Neuron Workbench: NEURON_WORKBENCH.md
+      - Dashboard guide: HOW_TO_USE_DASHBOARD.md
+      - Annotation schema: ANNOTATION_SCHEMA.md
+      - Dataset intake and QC: DATASET_QC.md
+      - Metrics audit: METRICS_AUDIT.md
+  - Programs:
+      - Grid and latent dynamics: GRID_LATENT_DYNAMICS.md
+      - Grid32 real-data pilot: case_studies/grid32_real_data_pilot.md
+      - Fish inverse control: programs/fish_inverse_control/README.md
+      - Fish control roadmap: research/FISH_INVERSE_CONTROL_ROADMAP.md
+  - Developer guide:
+      - Codebase navigation: CODEBASE_NAVIGATION.md
+      - API reference: API_REFERENCE.md
+      - Architecture Lab: ARCHITECTURE_LAB.md
+      - Add a pipeline stage: developer/adding_pipeline_stage.md
+      - Developer handoffs: developer/README.md
+  - Project standards:
+      - Visual system: VISUAL_SYSTEM.md
+      - Release process: RELEASE_PROCESS.md
+      - Documentation archive: archive/README.md

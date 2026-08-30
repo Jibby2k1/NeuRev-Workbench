@@ -1,0 +1,28 @@
+schema_version: 1
+record_type: claim
+id: NREV-CLM-0013
+program_id: NREV-PRG-0001
+title: Targeted V8 Rejections
+statement: Parameter-consensus stopping, unconstrained rank-two NMF deblending, and a simple forward-minus-reverse kinetic
+  contrast do not improve their frozen comparators under prospective exact-truth tests.
+scope: Six-seed targeted development package with disjoint artifact definitions, one-to-one weak-identity matching, and explicit
+  forward and reversed kinetic gates.
+limitations:
+- 'No inference is registered beyond this scope: Six-seed targeted development package with disjoint artifact definitions,
+  one-to-one weak-identity matching, and explicit forward and reversed kinetic gates.'
+claim_state: supported
+evidence_tier: computational_simulation
+review_state: not_requested
+evidence_capsule_ids:
+- NREV-EVC-EXP-0014
+decision_ids:
+- NREV-DEC-0014
+tags:
+- targeted
+- v8
+- rejections
+visibility: public
+legacy_id: targeted_v8_rejections
+legacy_status: established_computational_negative_result
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

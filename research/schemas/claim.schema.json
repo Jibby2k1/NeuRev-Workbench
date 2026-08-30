@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neurev.org/research/schemas/claim.schema.json",
+  "title": "NeuRev scientific claim record",
+  "description": "Canonical atomic scientific claim with explicit evidence and interpretation boundaries.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "id",
+    "program_id",
+    "title",
+    "statement",
+    "scope",
+    "limitations",
+    "claim_state",
+    "evidence_tier",
+    "review_state",
+    "evidence_capsule_ids",
+    "visibility"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "record_type": {"const": "claim"},
+    "id": {"$ref": "#/$defs/claim_id"},
+    "program_id": {"$ref": "#/$defs/program_id"},
+    "title": {"$ref": "#/$defs/title"},
+    "statement": {"$ref": "#/$defs/nonempty_text"},
+    "scope": {"$ref": "#/$defs/nonempty_text"},
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonempty_text"}
+    },
+    "claim_state": {
+      "type": "string",
+      "enum": ["proposed", "provisional", "supported", "contradicted", "unresolved", "retired"]
+    },
+    "evidence_tier": {"$ref": "#/$defs/evidence_tier"},
+    "review_state": {"$ref": "#/$defs/review_state"},
+    "evidence_capsule_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/evidence_capsule_id"}
+    },
+    "decision_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/decision_id"}
+    },
+    "supersedes_claim_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/claim_id"}
+    },
+    "tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"}
+    },
+    "visibility": {"$ref": "#/$defs/visibility"},
+    "legacy_id": {"type": "string", "minLength": 1},
+    "legacy_status": {"$ref": "#/$defs/legacy_status"},
+    "created_on": {"$ref": "#/$defs/date"},
+    "updated_on": {"$ref": "#/$defs/date"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"claim_state": {"const": "supported"}}, "required": ["claim_state"]},
+      "then": {"properties": {"evidence_capsule_ids": {"minItems": 1}}}
+    },
+    {
+      "if": {"properties": {"claim_state": {"const": "retired"}}, "required": ["claim_state"]},
+      "then": {"properties": {"decision_ids": {"minItems": 1}}, "required": ["decision_ids"]}
+    }
+  ],
+  "$defs": {
+    "claim_id": {"type": "string", "pattern": "^NREV-CLM-[0-9]{4,}$"},
+    "program_id": {"type": "string", "pattern": "^NREV-PRG-[0-9]{4,}$"},
+    "decision_id": {"type": "string", "pattern": "^NREV-DEC-[0-9]{4,}$"},
+    "evidence_capsule_id": {
+      "type": "string",
+      "pattern": "^NREV-EVC-[A-Z0-9][A-Z0-9-]{2,63}$"
+    },
+    "title": {"type": "string", "minLength": 3, "maxLength": 160},
+    "nonempty_text": {"type": "string", "minLength": 1},
+    "evidence_tier": {
+      "type": "string",
+      "enum": [
+        "none",
+        "descriptive",
+        "current_recording",
+        "computational_simulation",
+        "reviewed_current_recording",
+        "external_review",
+        "independent_recording",
+        "causal_intervention",
+        "evidence_synthesis"
+      ]
+    },
+    "review_state": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "not_required",
+        "pending",
+        "in_review",
+        "changes_requested",
+        "approved",
+        "adjudication_required",
+        "adjudicated"
+      ]
+    },
+    "visibility": {"type": "string", "enum": ["public", "internal", "restricted"]},
+    "legacy_status": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Original free-form status retained only for migration provenance."
+    },
+    "date": {"type": "string", "format": "date"}
+  }
+}

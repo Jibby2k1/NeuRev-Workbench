@@ -1,0 +1,23 @@
+schema_version: 1
+canonical_document: main.tex
+documents:
+  technical:
+    entrypoint: main_technical.tex
+    purpose: Evidence-complete journal manuscript with full methods and boundaries.
+  overview:
+    entrypoint: main_overview.tex
+    purpose: High-level narrative for collaborators and interdisciplinary readers.
+  experiments:
+    entrypoint: main_experiment_story.tex
+    purpose: Chronological question-design-result-decision experiment record.
+  supplement:
+    entrypoint: supplement_main.tex
+    purpose: Extended methods and supporting analyses.
+migration:
+  original_source: paper/overleaf_jnm/story/research_story.yaml
+  original_source_sha256: fbd0889c305963a02199a012beccfe2fa405a296a851f2f62525c49931ddd029
+  replay_source: research/registry/migration/research_story_v1.yaml
+  snapshot: research/registry/migration/research_story_v1.yaml
+  snapshot_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_at: '2026-08-29'
+  semantic_change: none

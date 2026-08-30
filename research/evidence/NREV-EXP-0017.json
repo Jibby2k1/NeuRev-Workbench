@@ -1,0 +1,105 @@
+{
+  "artifact_manifest_sha256": "f7a90981904508ca8b3158b37035ae0a80c8bec9cea2d93c2f66c9b6eec94b25",
+  "artifacts": [
+    {
+      "access": "metadata_only",
+      "bytes": 1187,
+      "id": "artifact-01",
+      "media_type": "application/json",
+      "repository_path": "Outputs/NeuronIdentifiability/external_blinded_bounded_review_v2/experiment_contract.json",
+      "role": "report",
+      "sha256": "8e91235018a5ec3667c37df3be6abd1abc08803f8f2c24e57e61f231ea9b88c2"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 366,
+      "id": "artifact-02",
+      "media_type": "application/json",
+      "repository_path": "Outputs/NeuronIdentifiability/external_blinded_bounded_review_v2/validation.json",
+      "role": "report",
+      "sha256": "6acc0d1947798005f94665cb59ba0e42983906257f3e162b887973609cd55bfe"
+    },
+    {
+      "access": "public",
+      "bytes": 4690,
+      "id": "artifact-03",
+      "media_type": "text/markdown",
+      "repository_path": "docs/workflows/external_blinded_bounded_review_v2.md",
+      "role": "report",
+      "sha256": "3a1d1aa59aeee85237f7129195be687271df0773653c6e82b9d793cc713eab26"
+    },
+    {
+      "access": "public",
+      "bytes": 1537,
+      "id": "artifact-04",
+      "media_type": "text/markdown",
+      "repository_path": "docs/research/SPON_CA_BURST_EXTERNAL_BOUNDED_REVIEW_V2_PACKAGE.md",
+      "role": "report",
+      "sha256": "1e73c3f184484eae8cade11e802c6ec6f720da1c17945c6758cb8cb876badf33"
+    }
+  ],
+  "boundaries": {
+    "does_not_establish": [
+      "Claims beyond the registered finding and linked claim scopes.",
+      "Reproducible run provenance that was absent from the v1 story."
+    ],
+    "limitations": [
+      "No external reviewer has submitted labels; implementation readiness does not establish truth, precision, recall, identity, or independent-recording generalization."
+    ],
+    "scope": "This capsule preserves the registered v1 experiment finding and its linked claim scopes."
+  },
+  "claim_impacts": [
+    {
+      "claim_id": "NREV-CLM-0018",
+      "effect": "qualifies",
+      "scope": "Sparse positives do not make unmatched candidates verified negatives.",
+      "summary": "The experiment bears on this registered claim without resolving it."
+    },
+    {
+      "claim_id": "NREV-CLM-0020",
+      "effect": "supports",
+      "scope": "One frozen enriched 192 by 192 region and 18 assisted candidates in the current recording; no independent annotations or detector metric yet.",
+      "summary": "The experiment supports this claim only within its registered scope."
+    }
+  ],
+  "evidence_tier": "descriptive",
+  "experiment_id": "NREV-EXP-0017",
+  "gates": [
+    {
+      "criterion": "Every artifact referenced by the v1 experiment story is available and checksum identified at migration.",
+      "id": "legacy-artifact-capture",
+      "observed": "Captured 4 of 4 referenced artifacts with SHA-256 identities.",
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-29T23:52:35Z",
+  "id": "NREV-EVC-EXP-0017",
+  "legacy_status": "complete_implementation_human_gated",
+  "lifecycle": "validated",
+  "metrics": [],
+  "outcome": "not_evaluated",
+  "program_id": "NREV-PRG-0001",
+  "record_type": "evidence_capsule",
+  "review_state": "pending",
+  "run_ids": [],
+  "schema_version": 1,
+  "source_records_sha256": "d41908c7d5359e71c40b4b4c79e1cc6b2615c38c99c6786d1bf611f71de56f08",
+  "summary": "All 22 videos decode, three archives pass integrity checks, public scans find no private text or path leakage, and coordinate, submission, randomization, staged-cache, media, archive, and agreement checks pass.",
+  "validation": {
+    "checked_at": "2026-08-29T23:52:35Z",
+    "checks": [
+      {
+        "id": "portable-paths",
+        "status": "passed",
+        "summary": "Artifact references are repository-relative; ignored local outputs are metadata-only."
+      },
+      {
+        "id": "historical-provenance",
+        "status": "not_run",
+        "summary": "The v1 story did not encode run-level provenance, so no historical run record was invented."
+      }
+    ],
+    "status": "partial"
+  },
+  "visibility": "public"
+}

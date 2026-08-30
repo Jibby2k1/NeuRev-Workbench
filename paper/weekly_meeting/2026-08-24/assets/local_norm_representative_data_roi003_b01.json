@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "figure": "repo://paper/weekly_meeting/2026-08-24/assets/local_norm_representative_data_roi003_b01.png",
+  "representative_observation": "b01__roi_003",
+  "site_id": "roi_003",
+  "burst_id": 1,
+  "x_px": 405.575,
+  "y_px": 216.977,
+  "event_frames_ui_inclusive": [
+    2003,
+    2026
+  ],
+  "peak_frame_ui": 2007,
+  "fps": 50.0,
+  "geometry_px": {
+    "center_radius": 2,
+    "annulus_inner": 3,
+    "annulus_outer": 6
+  },
+  "movie_source": "data://Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+  "trace_source": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/03_trace_atlas/traces.npz",
+  "channels": [
+    "raw",
+    "annulus",
+    "residual"
+  ],
+  "interpretation": "Measured representative observation, not a population summary."
+}

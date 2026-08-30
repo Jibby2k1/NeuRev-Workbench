@@ -1,0 +1,59 @@
+{
+  "analysis_view": "original_site_original_timing",
+  "author_wording_review": {
+    "approved_at": "2026-08-22",
+    "scope": "wording approval only; scientific evidence statuses unchanged",
+    "status": "approved_as_written"
+  },
+  "claims": [
+    {
+      "claim": "Labeled intervals contain unusual transient activity.",
+      "id": "H1",
+      "outcome": "supported_provisionally",
+      "status": "provisional"
+    },
+    {
+      "claim": "Event amplitude is locally concentrated in native units; normalized specificity is unresolved.",
+      "id": "H2",
+      "outcome": "native_amplitude_superiority_normalized_unresolved",
+      "status": "provisional"
+    },
+    {
+      "claim": "Several site observability measures are repeatable within this recording.",
+      "id": "H3",
+      "outcome": "O2_to_O3",
+      "status": "provisional"
+    },
+    {
+      "claim": "Neuron-specific temporal morphology is not established.",
+      "id": "H4",
+      "outcome": "not_promoted",
+      "status": "held"
+    },
+    {
+      "claim": "Measurement phenotype does not yet explain recovery.",
+      "id": "H5",
+      "outcome": "unsupported_pending_candidate_join",
+      "status": "held"
+    },
+    {
+      "claim": "Two-frame ICA is nearly equivalent to signed temporal difference.",
+      "id": "H6",
+      "outcome": "rejected_provisionally",
+      "status": "provisional"
+    },
+    {
+      "claim": "Compact lanes show NMS-robust, visually audited native known-positive recall utility within this recording.",
+      "id": "H7",
+      "outcome": "C3_confirmed_publication_supported",
+      "status": "confirmed_for_within_recording_publication"
+    },
+    {
+      "claim": "Precision is not estimated; original two-expert positive-label provenance does not establish separately preserved exhaustive field coverage.",
+      "id": "H8",
+      "outcome": "unavailable_by_design",
+      "status": "not_in_scope"
+    }
+  ],
+  "schema_version": 1
+}

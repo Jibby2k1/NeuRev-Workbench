@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "program_id": null,
+  "stage_id": null,
+  "analysis_view": null,
+  "generated_at_utc": null,
+  "metrics": {
+    "example_metric": {
+      "value": null,
+      "unit": null,
+      "direction": "higher_or_lower_or_two_sided",
+      "estimand": null,
+      "uncertainty": {
+        "method": null,
+        "level": 0.95,
+        "low": null,
+        "high": null
+      },
+      "null_or_margin": null,
+      "evidence_level": "C0_descriptive",
+      "valid": false,
+      "source_artifact": null,
+      "notes": null
+    }
+  }
+}

@@ -1,7 +1,7 @@
 # Learned whitening and ICA sequential experiment handoff
 
 The authoritative 31-section program is
-`NEUREV_LEARNED_WHITENING_ICA_SEQUENTIAL_CODEX_PLAN.md`. The maintained entry
+`docs/archive/plans/NEUREV_LEARNED_WHITENING_ICA_SEQUENTIAL_CODEX_PLAN.md`. The maintained entry
 point is `neurobench.experiments.learned_operator_selection` and the user-facing
 workflow is `docs/workflows/spon_ca_burst_learned_operator_selection.md`.
 

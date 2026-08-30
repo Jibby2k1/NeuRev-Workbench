@@ -1,0 +1,41 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0010
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical execution date
+  - run-level code, configuration, input, environment, and randomization provenance
+  - preregistered gates
+  - experiment-specific falsifiers
+  - normalized unit of analysis, comparison, and data scope
+program_id: NREV-PRG-0001
+title: Realistic Movie Detector Benchmark V3
+question: Do carrier, spatial-context, kinetic, and combined feature stacks play distinct roles when converted into complete
+  source proposals?
+objective: Do carrier, spatial-context, kinetic, and combined feature stacks play distinct roles when converted into complete
+  source proposals?
+rationale: Migrated to preserve the v1 question-design-result-decision record; the v1 story did not encode a separate rationale.
+lifecycle: validated
+outcome: supported
+evidence_tier: computational_simulation
+review_state: not_requested
+falsifiers: []
+design:
+  summary: Freeze four score maps, apply five-pixel local-maximum suppression, evaluate proposal budgets 2, 4, and 8 with
+    three-pixel Hungarian one-to-one identity matching, and fit score calibration on seeds 0 through 5 for evaluation on seeds
+    6 through 11.
+gates: []
+claim_ids:
+- NREV-CLM-0009
+decision_ids:
+- NREV-DEC-0010
+evidence_capsule_id: NREV-EVC-EXP-0010
+visibility: public
+legacy_id: realistic_movie_detector_benchmark_v3
+legacy_status: complete_computational
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

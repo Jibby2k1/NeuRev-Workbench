@@ -1,14 +1,98 @@
-Outputs/
-Inputs/*.tif
-Inputs/*.tiff
-Inputs/**/*.tif
-Inputs/**/*.tiff
-Inputs/*.zip
-Inputs/*/
+# Publication boundary: local source data and generated experiment artifacts.
+# Inputs are private/local by default.  The optional README may document how a
+# user should obtain their own data, but must never contain local identifiers.
+/Inputs
+!/Inputs/
+/Inputs/*
+!/Inputs/README.md
+/Outputs
+
+# Python caches, environments, and workstation-bound environment symlinks.
 __pycache__/
 *.pyc
-.venv/
-.venv-*/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+/.venv
+/.venv-*
+/venv
+/env
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Temporary, editor, dependency, and generated build trees. These directory
+# names are excluded at any depth so meeting-deck and manuscript scratch trees
+# cannot become publication candidates accidentally.
+tmp
+temp
+.tmp
+*_tmp
+node_modules
+*.tmp
+*.tmp-*.verification-failure.png
+*.swp
+*~
+build
+dist
+site
+
+# LaTeX intermediates.  Curated source figures and intentional PDFs remain
+# eligible for version control; only reproducible compiler by-products are
+# excluded here.
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
+
+# Release archives belong in GitHub Releases or an external artifact store,
+# not Git history.
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+
+# Local meeting-deck packages may retain workstation paths in speaker-note
+# metadata. Curated source notes and rendered slide assets remain eligible.
+/paper/weekly_meeting/**/*.pptx
+
+# Reviewer responses, identity mappings, and administrator-only blinding keys.
+**/private_administrator/
+**/private_admin/
+**/*PRIVATE_ADMIN*
+**/*private_admin*
+**/*randomization_key*
+**/*reviewer_submission*
+**/*reviewer_response*
+**/*user_review*
+**/*reference_single_reviewer*
+**/annotations_reviewer_*.json
+
+# Credentials and signing material are never repository artifacts.
+*.pem
+*.key
+credentials.json
+service-account*.json
+service_account*.json
+secrets.json
 
 # Local agent diagnostics (not source artifacts)
 .codex/diagnostics/

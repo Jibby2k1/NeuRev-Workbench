@@ -1,5 +1,9 @@
 # data_loader.py
-"""Functions for loading video and ground truth data."""
+"""Legacy grid-search data loading preserved for reproducibility.
+
+New maintained work belongs under :mod:`neurobench`; see
+``docs/CODEBASE_NAVIGATION.md`` before extending this compatibility surface.
+"""
 import logging
 from pathlib import Path
 from collections import defaultdict

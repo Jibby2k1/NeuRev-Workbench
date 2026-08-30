@@ -1,0 +1,30 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0002
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical decision effective date
+program_id: NREV-PRG-0001
+title: Decision after All Site Trace Taxonomy
+lifecycle: active
+action: retain
+rationale: Freeze the assignment rule before applying it to an independent recording.
+evidence_summary: T1 contains 38 sites and T2 contains 12, with recurrent but imperfect stage and burst persistence.
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0002
+claim_ids:
+- NREV-CLM-0002
+evidence_capsule_ids:
+- NREV-EVC-EXP-0002
+constraints:
+- One recording; classes are descriptive measurement phenotypes.
+- The historical decision date was not encoded in the v1 story and was not guessed during migration.
+visibility: public
+legacy_status: complete_exploratory
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

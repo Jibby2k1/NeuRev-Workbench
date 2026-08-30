@@ -1,0 +1,38 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0020
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical execution date
+  - run-level code, configuration, input, environment, and randomization provenance
+  - preregistered gates
+  - experiment-specific falsifiers
+  - normalized unit of analysis, comparison, and data scope
+program_id: NREV-PRG-0001
+title: Complete External Bounded Review V2
+question: Obtain two locked Phase A and Phase B submissions, run agreement analysis, adjudicate all spatial, class, and identity
+  disagreements, and freeze a local truth revision before any detector or learning evaluation.
+objective: Obtain two locked Phase A and Phase B submissions, run agreement analysis, adjudicate all spatial, class, and identity
+  disagreements, and freeze a local truth revision before any detector or learning evaluation.
+rationale: Priority 1 item in the migrated v1 next-experiment queue.
+lifecycle: draft
+outcome: not_evaluated
+evidence_tier: none
+review_state: not_requested
+falsifiers: []
+design:
+  summary: Obtain two locked Phase A and Phase B submissions, run agreement analysis, adjudicate all spatial, class, and identity
+    disagreements, and freeze a local truth revision before any detector or learning evaluation.
+  protocol_path: docs/workflows/external_blinded_bounded_review_v2.md
+gates: []
+claim_ids: []
+decision_ids: []
+visibility: public
+legacy_id: complete_external_bounded_review_v2
+legacy_status: next_experiment
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

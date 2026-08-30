@@ -1,0 +1,39 @@
+%% NeuRev Workbench — repository evidence flow
+%% Semantic source for docs/assets/diagrams/repository-evidence-flow.svg
+%% Brand colors intentionally exclude reserved expert-green, model-orange, and match-yellow.
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"Inter, ui-sans-serif, system-ui, sans-serif","primaryColor":"#ddf4f5","primaryTextColor":"#102733","primaryBorderColor":"#147d87","lineColor":"#607b87","secondaryColor":"#e8eefb","tertiaryColor":"#f0eafa","clusterBkg":"#f7fafb","clusterBorder":"#b9cad1"},"flowchart":{"curve":"basis","htmlLabels":true}}}%%
+flowchart TB
+  subgraph EVIDENCE["AUTHORITATIVE EVIDENCE PATH"]
+    direction LR
+    Q["<b>Question + provenance</b><br/>Dataset identity<br/>Falsifier + primary metric"]
+    F["<b>Frozen experiment</b><br/>Protocol + comparison<br/>Config + code SHA"]
+    R["<b>Bounded execution</b><br/>Atomic run record<br/>Metrics + uncertainty"]
+    A["<b>Scientific audit</b><br/>Expert / Model / Comparison<br/>Media + machine indexes"]
+    C["<b>Evidence capsule</b><br/>Gates + limitations<br/>Checksums + claim scope"]
+    Q -->|freeze| F -->|execute| R -->|audit| A -->|package| C
+  end
+
+  C --> V["<b>Independent review</b><br/>Outcome + decision"]
+  V --> K["<b>Canonical registry</b><br/>Experiment · run · evidence<br/>Claim · decision · lineage"]
+
+  subgraph VIEWS["SYNCHRONIZED GENERATED VIEWS"]
+    direction LR
+    G["GitHub story<br/>and releases"]
+    D["Documentation<br/>portal"]
+    O["Overleaf<br/>manuscript"]
+    L["LLM navigation<br/>and indexes"]
+  end
+
+  K --> G
+  K --> D
+  K --> O
+  K --> L
+
+  classDef evidence fill:#ffffff,stroke:#147d87,color:#102733,stroke-width:1.5px;
+  classDef process fill:#e8eefb,stroke:#3158a5,color:#102733,stroke-width:1.5px;
+  classDef registry fill:#f0eafa,stroke:#6e53a4,color:#102733,stroke-width:2px;
+  classDef view fill:#eef4f6,stroke:#607b87,color:#102733,stroke-width:1px;
+  class Q,F,A,C evidence;
+  class R,V process;
+  class K registry;
+  class G,D,O,L view;

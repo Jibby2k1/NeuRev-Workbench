@@ -4,13 +4,14 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import os
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 
 
-DEFAULT_FIJI = Path("/home/jibby2k1/.local/bin/fiji")
+DEFAULT_FIJI = Path(os.environ.get("NEUROBENCH_FIJI", shutil.which("fiji") or "fiji"))
 
 
 def status(label: str, ok: bool, detail: str) -> None:

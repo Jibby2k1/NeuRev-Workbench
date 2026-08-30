@@ -1,0 +1,11 @@
+failure_taxonomy	occurrences	fraction	estimate	site_bootstrap_ci95_low	site_bootstrap_ci95_high
+recovered_all_lanes	83	0.7830188679245284			
+partial_lane_recovery	11	0.10377358490566038			
+all_lane_localization_miss	5	0.04716981132075472			
+all_lane_identity_conflict	4	0.03773584905660377			
+all_lane_mixed__nms_suppressed+ranking_miss	1	0.009433962264150943			
+all_lane_nms_suppressed	1	0.009433962264150943			
+all_lane_ranking_miss	1	0.009433962264150943			
+recovered_minus_missed_auc__carrier_signed	106		0.03670879203190147	-0.010873086705119116	0.09811951690761307
+recovered_minus_missed_auc__coherence_w15	106		0.0463577583295115	-0.008981074041696627	0.13149528073368852
+recovered_minus_missed_auc__propagation_lag2_w15	106		0.056166413212506594	-0.0052092743758063885	0.14436968142639922

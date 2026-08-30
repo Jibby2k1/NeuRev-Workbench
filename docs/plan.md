@@ -138,9 +138,9 @@ Required fix:
 
 #### P0.4 Hard-coded dataset paths
 
-Many scripts are hard-coded to:
+Several legacy scripts historically assumed:
 
-- `/home/jibby2k1/...`
+- a specific developer's home directory
 - `calcium_video_2`
 - fixed `Inputs/...` TIFF names
 - fixed `Outputs/.../calcium_video_2/...` folders
@@ -1190,7 +1190,7 @@ python tools/build_neuron_workbench_v2.py \
 Fallback behavior:
 
 - If only `--app-dir` is supplied, read `review_data.json` from that directory.
-- If no args are supplied, use relative defaults, not absolute `/home/...` paths.
+- If no args are supplied, use relative defaults, not workstation-specific paths.
 
 ### 11.3 Server improvements
 
@@ -1370,7 +1370,7 @@ Tasks:
 Acceptance criteria:
 
 - Workbench can be built with `--app-dir` and `--dataset-manifest`.
-- No committed Python script requires `/home/jibby2k1/...` by default.
+- No committed Python script requires a developer-specific home path by default.
 - Existing hard-coded Groovy scripts may remain temporarily, but docs should mark them as legacy until refactored.
 
 ### Phase 2 — Annotation schema v3
@@ -1749,4 +1749,3 @@ The next major milestone is complete when:
 8. The known metric casing and CPU import bugs are fixed.
 9. A small synthetic smoke test can build a minimal app and compute metrics.
 10. Documentation explains how to run the workflow from manifest creation through annotation export.
-

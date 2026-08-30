@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "program_id": "spon_ca_burst_neuron_identifiability_paper_v1",
+  "description": "Identity-aware trace, acquisition, observability, spatial-specificity, incomplete-label, and frozen-representation analysis for a Journal of Neuroscience Methods manuscript.",
+  "paths": {
+    "data_root": ".",
+    "canonical_video_npy": "Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+    "canonical_video_tiff": "Inputs/Spon Ca Burst/3 hindbrain to tail 488 20ms.tif",
+    "original_labels": "Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+    "final_adjudication_candidates": [
+      "Outputs/HardROIAdjudication/spon_ca_burst_hard_roi_adjudication_final_v1/adjudication_final.tsv"
+    ],
+    "frozen_two_frame_ica": "Outputs/UnsupervisedICAEval/two_frame_stage_a_v1/frozen_representation.json",
+    "carrier_signed_npy": "Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/carrier_signed.npy",
+    "other_video_manifest": null,
+    "output_root": "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1",
+    "overleaf_root": "paper/overleaf_jnm"
+  },
+  "execution": {
+    "resume": true,
+    "cpu_compatible": true,
+    "use_cuda_when_available": true,
+    "max_workers": 4,
+    "memory_limit_gib": 24,
+    "continue_on_optional_missing": true,
+    "aggregate_human_questions": true,
+    "never_overwrite_output": true
+  },
+  "identity": {
+    "primary_view": "original_site_original_timing",
+    "expected_occurrences": 79,
+    "expected_original_sites": 27,
+    "expected_proposed_canonical_identities": 26,
+    "preserve_original_sites": true,
+    "canonical_merge_requires_adjudication": true
+  },
+  "trace_geometry": {
+    "center_radius_px": 2,
+    "annulus_inner_px": 3,
+    "annulus_outer_px": 6,
+    "outer_ring_inner_px": 7,
+    "outer_ring_outer_px": 10,
+    "pre_frames": 20,
+    "post_frames": 20
+  },
+  "feature_frame_mapping": {
+    "review_start_frame_ui": 1800,
+    "expected_frames": 560
+  },
+  "statistics": {
+    "bootstrap_draws": 5000,
+    "permutation_draws": 9999,
+    "random_seed": 20260822,
+    "correlation_equivalence_margin_primary": 0.1,
+    "correlation_equivalence_margin_sensitivity": [
+      0.05,
+      0.15
+    ],
+    "fdr_alpha": 0.05,
+    "burst_2_exclusion_sensitivity": true
+  },
+  "representation_panel": {
+    "lanes": [
+      "carrier_raw",
+      "signed_difference",
+      "frozen_two_frame_ica",
+      "roi_minus_annulus",
+      "coherence_w15",
+      "propagation_lag2_w15",
+      "radial_cs_shell",
+      "noise_vst_auxiliary"
+    ],
+    "primary_budgets": [
+      20,
+      40,
+      58
+    ],
+    "secondary_budgets": [
+      80,
+      100
+    ],
+    "primary_nms_radius_px": 6,
+    "nms_sensitivity_px": [
+      4,
+      8
+    ]
+  },
+  "bounded_field": {
+    "enabled": true,
+    "nonblocking": true,
+    "selection_uses_detector_scores": false,
+    "preferred_size_px": [
+      192,
+      192
+    ],
+    "maximum_size_px": [
+      256,
+      192
+    ],
+    "reviewers_required": 2
+  },
+  "stages": [
+    "00_preflight",
+    "01_identity_geometry",
+    "02_label_timing_contract",
+    "03_trace_atlas",
+    "04_acquisition_qc",
+    "05_scalar_observability",
+    "06_spatial_specificity",
+    "07_functional_tensor",
+    "08_measurement_phenotypes",
+    "09_bounded_field_annotation",
+    "10_representation_confirmation",
+    "11_manuscript_exports",
+    "12_reproducibility_release"
+  ]
+}

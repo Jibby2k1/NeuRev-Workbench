@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neurev.org/research/schemas/program.schema.json",
+  "title": "NeuRev research program record",
+  "description": "Canonical definition and publication boundary for one NeuRev research program.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "id",
+    "slug",
+    "title",
+    "summary",
+    "lifecycle",
+    "scientific_scope",
+    "objectives",
+    "boundaries",
+    "visibility"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "record_type": {"const": "program"},
+    "id": {"$ref": "#/$defs/program_id"},
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "minLength": 3,
+      "maxLength": 64
+    },
+    "title": {"$ref": "#/$defs/title"},
+    "summary": {"$ref": "#/$defs/nonempty_text"},
+    "lifecycle": {
+      "type": "string",
+      "enum": ["draft", "active", "paused", "closed", "archived"]
+    },
+    "scientific_scope": {"$ref": "#/$defs/nonempty_text"},
+    "study_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recordings", "sites", "occurrences", "description"],
+      "properties": {
+        "recordings": {"type": "integer", "minimum": 0},
+        "sites": {"type": "integer", "minimum": 0},
+        "occurrences": {"type": "integer", "minimum": 0},
+        "description": {"$ref": "#/$defs/nonempty_text"}
+      }
+    },
+    "objectives": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonempty_text"}
+    },
+    "boundaries": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonempty_text"}
+    },
+    "owner_roles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/role"}
+    },
+    "related_program_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/program_id"}
+    },
+    "documentation": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/repository_path"}
+    },
+    "visibility": {"$ref": "#/$defs/visibility"},
+    "legacy_status": {"$ref": "#/$defs/legacy_status"},
+    "created_on": {"$ref": "#/$defs/date"},
+    "updated_on": {"$ref": "#/$defs/date"}
+  },
+  "$defs": {
+    "program_id": {
+      "type": "string",
+      "pattern": "^NREV-PRG-[0-9]{4,}$"
+    },
+    "title": {"type": "string", "minLength": 3, "maxLength": 160},
+    "nonempty_text": {"type": "string", "minLength": 1},
+    "role": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{1,63}$"
+    },
+    "visibility": {
+      "type": "string",
+      "enum": ["public", "internal", "restricted"]
+    },
+    "legacy_status": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Original free-form status retained only for migration provenance."
+    },
+    "date": {"type": "string", "format": "date"},
+    "repository_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:[\\\\/])(?![A-Za-z][A-Za-z0-9+.-]*:)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    }
+  }
+}

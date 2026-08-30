@@ -1,5 +1,11 @@
 # Test And Experiment Report
 
+> **Status — 2026-08-29:** This page preserves the historical grid-dynamics
+> validation and nine-hour soak below. Its software-health snapshot has been
+> refreshed against the current tree. Canonical scientific claims and their
+> evidence boundaries live in the
+> [research registry](https://github.com/Jibby2k1/NeuRev-Workbench/tree/main/research).
+
 This report summarizes the validation work and model experiments completed for
 Neurobench through the grid-dynamics workflow. It is intended to support design
 decisions for a later inverse-control system: what is already tested, what the
@@ -10,15 +16,16 @@ experiments show, and what cannot yet be inferred from the current evidence.
 The codebase now has broad automated coverage across data ingestion, annotation,
 pipeline execution, workbench behavior, metrics, reporting, grid-state
 extraction, template registration, latent dynamics, and dashboard visualization.
-The current source tree contains 96 test files with 395 collected test functions.
+The current source tree contains 307 test modules with 1,180 collected test
+cases.
 
 There are two important validation facts:
 
 - The previous overnight validation soak passed: 8,227 command runs, 0 failures,
   1,372 completed cycles, and 316 tests collected at that time.
 - A current post-grid local run with `.venv-neurobench/bin/python -m pytest -q`
-  produced 389 passed, 4 failed, 2 skipped, 76 subtests passed. The failures are
-  listed under "Current Open Test Failures".
+  produced 1,174 passed, 6 explicitly skipped, and 89 subtests passed. The
+  default suite has no failures.
 
 The grid-dynamics experiments provide useful forward-prediction evidence. The
 strongest and most consistent result is that temporal convolutional predictors
@@ -38,10 +45,10 @@ behavior-aligned outputs.
 
 ### Unit And Contract Tests
 
-The current test inventory covers 96 files and 395 test functions. The tests are
-not just syntax checks; they exercise model contracts, schemas, CLI behavior,
-pipeline runners, artifact manifests, report generation, browser assets, and
-scientific metrics.
+The current test inventory covers 307 modules and 1,180 collected cases. The
+tests are not just syntax checks; they exercise model contracts, schemas, CLI
+behavior, pipeline runners, artifact manifests, report generation, browser
+assets, and scientific metrics.
 
 | Area | Representative test files | What is validated |
 |---|---|---|
@@ -100,27 +107,18 @@ Command:
 
 Result:
 
-- 389 passed
-- 4 failed
-- 2 skipped
-- 7 warnings
-- 76 subtests passed
-- Runtime: 33.98 seconds
+- 1,174 passed
+- 6 skipped
+- 9 warnings
+- 89 subtests passed
+- Runtime: 47.71 seconds
 
-Current open failures:
-
-| Test | Failure mode | Likely meaning |
-|---|---|---|
-| `test_api_reference_generation.py::ApiReferenceGenerationTests::test_checked_in_reference_matches_generator_output` | Checked-in API reference differs from generated output. | Documentation needs regeneration after API/signature changes. |
-| `test_cfar_contrast_maps.py::CfarContrastMapTests::test_cli_attaches_shared_contrast_artifacts_to_runs` | CLI stdout was empty where JSON was expected. | CLI path or subprocess environment is not emitting the expected JSON contract. |
-| `test_cli_main.py::CliMainTests::test_cli_run_dry_run_json_example` | CLI stdout was empty where JSON was expected. | Same class of CLI-output contract issue. |
-| `test_cli_report.py::CliReportTests::test_cli_report_compare_requires_two_runs` | Return code was `-11` instead of expected `1`. | Possible segmentation fault or native-library crash in that CLI subprocess path. |
-
-Interpretation: the current tree is mostly healthy but should not be considered
-fully green until these failures are fixed. The failures are concentrated around
-documentation generation and CLI subprocess behavior, not around the core
-grid-dynamics model math. Still, CLI crashes matter for reproducibility and
-must be closed before a new release or a trusted automation workflow.
+Interpretation: the default local suite is green. The skipped cases are explicit
+optional or environment-dependent integrations rather than hidden passes. In
+particular, the opt-in real-Firefox screenshot check remains separate from the
+clean-clone gate. On this snap-confined desktop it reaches its 45-second bound
+and reports renderer diagnostics without hanging; the static Workbench,
+builder, server, and asset contracts all pass in the default suite.
 
 ## Experiment Families
 

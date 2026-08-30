@@ -1,0 +1,36 @@
+name: Documentation improvement
+description: Improve navigation, examples, accessibility, or technical clarity without changing scientific meaning silently.
+title: "[Docs]: "
+labels:
+  - documentation
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Page or generated view
+      placeholder: docs/... or research/generated/...
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Reader problem
+      description: Explain what a new human or automated reader cannot find, distinguish, or reproduce.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed improvement
+      description: If the page is generated, identify the canonical record that should change.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I verified whether this page is generated before proposing a direct edit.
+          required: true
+        - label: I removed private paths, data, identities, credentials, and large artifacts.
+          required: true

@@ -1,0 +1,37 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0022
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical execution date
+  - run-level code, configuration, input, environment, and randomization provenance
+  - preregistered gates
+  - experiment-specific falsifiers
+  - normalized unit of analysis, comparison, and data scope
+program_id: NREV-PRG-0001
+title: Identity Aware Bounded Review
+question: Exhaustively review the ambiguous ROI 10/15, ROI 11, ROI 12, and ROI 23 clusters with joint footprint and identity
+  assignment.
+objective: Exhaustively review the ambiguous ROI 10/15, ROI 11, ROI 12, and ROI 23 clusters with joint footprint and identity
+  assignment.
+rationale: Priority 3 item in the migrated v1 next-experiment queue.
+lifecycle: draft
+outcome: not_evaluated
+evidence_tier: none
+review_state: not_requested
+falsifiers: []
+design:
+  summary: Exhaustively review the ambiguous ROI 10/15, ROI 11, ROI 12, and ROI 23 clusters with joint footprint and identity
+    assignment.
+gates: []
+claim_ids: []
+decision_ids: []
+visibility: public
+legacy_id: identity_aware_bounded_review
+legacy_status: next_experiment
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

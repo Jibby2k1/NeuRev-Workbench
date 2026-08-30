@@ -58,10 +58,10 @@ def _sign_flip_p(values:np.ndarray,draws:int,rng:np.random.Generator)->float:
 def run(video_path:Path,labels_path:Path,output:Path,*,radius:int=2,inner:int=3,outer:int=6,pre:int=20,post:int=20,folds:int=5,shifts:int=199,bootstraps:int=5000,seed:int=20260820)->dict[str,Any]:
     if output.exists(): raise FileExistsError(f"refusing existing output: {output}")
     rows=_read_rows(labels_path); video=np.load(video_path,mmap_mode="r",allow_pickle=False)
-    if len(rows)!=79 or len({r["roi_id"] for r in rows})!=26: raise ValueError("canonical 79-occurrence/26-ROI contract failed")
+    if len(rows)!=79 or len({r["observation_site_id"] for r in rows})!=27: raise ValueError("79-occurrence/27-site contract failed")
     duration=max(r["stop"]-r["start"] for r in rows); length=pre+duration+post; rng=np.random.default_rng(seed)
-    geometry={r["roi_id"]:(r["x"],r["y"]) for r in rows}; roi_traces={rid:_roi_trace(video,*xy,radius) for rid,xy in geometry.items()}; annulus={rid:_annulus_trace(video,*xy,inner,outer) for rid,xy in geometry.items()}
-    by_roi={rid:[r for r in rows if r["roi_id"]==rid] for rid in sorted(geometry)}
+    geometry={r["observation_site_id"]:(r["x"],r["y"]) for r in rows}; roi_traces={rid:_roi_trace(video,*xy,radius) for rid,xy in geometry.items()}; annulus={rid:_annulus_trace(video,*xy,inner,outer) for rid,xy in geometry.items()}
+    by_roi={rid:[r for r in rows if r["observation_site_id"]==rid] for rid in sorted(geometry)}
     event_windows={rid:np.stack([_window(roi_traces[rid],r["start"],length,pre) for r in by_roi[rid]]) for rid in by_roi}
     annulus_windows={rid:np.stack([_window(annulus[rid],r["start"],length,pre) for r in by_roi[rid]]) for rid in by_roi}
     valid=_valid_shift_starts(len(video),length,_intervals(rows)); shift_starts=rng.choice(valid,shifts,replace=False)
@@ -86,7 +86,7 @@ def run(video_path:Path,labels_path:Path,output:Path,*,radius:int=2,inner:int=3,
     shift_stats["sign_flip_p_upper"]=_sign_flip_p(delta_shift,9999,rng); annulus_stats["sign_flip_p_upper"]=_sign_flip_p(delta_annulus,9999,rng)
     s1=bool(len(within)>0 and float(np.median(within))>0.5); s2=bool(shift_stats["ci95_low"]>0 and annulus_stats["ci95_low"]>0); s3=bool(s2 and shift_stats["sign_flip_p_upper"]<=.01 and annulus_stats["sign_flip_p_upper"]<=.01)
     level="S3_held_out_signature_within_recording" if s3 else "S2_across_roi_signature" if s2 else "S1_within_roi_repeatability" if s1 else "S0_no_reproducible_signature"
-    summary={"schema_version":1,"status":"signature_null_generalization_complete_audit_incomplete","occurrences":len(rows),"canonical_rois":len(records),"folds":folds,"window":{"pre":pre,"event_duration":duration,"post":post,"total":length},
+    summary={"schema_version":1,"status":"signature_null_generalization_complete_audit_incomplete","occurrences":len(rows),"original_sites":len(records),"proposed_canonical_identities":len({r["canonical_neuron_id"] for r in rows}),"analysis_view":"original_site_adjudicated_timing","folds":folds,"window":{"pre":pre,"event_duration":duration,"post":post,"total":length},
              "normalization":"subtract pre-event median and divide by pre-event MAD x 1.4826; no peak alignment or peak scaling",
              "held_out_event_correlation":{"mean":float(event.mean()),"median":float(np.median(event))},"within_roi_pairwise_correlation":{"mean":float(within.mean()),"median":float(np.median(within))},
              "delta_vs_same_roi_shift":shift_stats,"delta_vs_matched_annulus":annulus_stats,"signature_evidence_level":level,
@@ -104,5 +104,5 @@ def run(video_path:Path,labels_path:Path,output:Path,*,radius:int=2,inner:int=3,
 
 def main()->None:
     p=argparse.ArgumentParser(); p.add_argument("--video-npy",type=Path,required=True); p.add_argument("--labels",type=Path,required=True); p.add_argument("--output-dir",type=Path,required=True); p.add_argument("--shifts",type=int,default=199); p.add_argument("--bootstraps",type=int,default=5000); a=p.parse_args()
-    s=run(a.video_npy,a.labels,a.output_dir,shifts=a.shifts,bootstraps=a.bootstraps); print(json.dumps({k:s[k] for k in ("status","canonical_rois","signature_evidence_level")},indent=2))
+    s=run(a.video_npy,a.labels,a.output_dir,shifts=a.shifts,bootstraps=a.bootstraps); print(json.dumps({k:s[k] for k in ("status","original_sites","proposed_canonical_identities","signature_evidence_level")},indent=2))
 if __name__=="__main__": main()

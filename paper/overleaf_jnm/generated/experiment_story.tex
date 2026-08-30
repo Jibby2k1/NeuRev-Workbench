@@ -1,0 +1,292 @@
+\section{Experiment story}
+
+This document is generated from the canonical research-story registry. Each entry separates the question, design, result, limitation, and next decision.
+
+\subsection{1. Canonical V7 Trace Atlas}
+
+\textbf{Question.} What do Raw, temporal-ICA, and local-standardized signals look like at every confirmed occurrence?
+
+\textbf{Design.} Preserve immutable site coordinates and synchronized center traces across 106 occurrences; rank media by a frozen LS-center criterion.
+
+\textbf{Status.} complete\_descriptive
+
+\textbf{Finding.} The atlas exposes a strong shared burst waveform and substantial site-to-site heterogeneity.
+
+\textbf{Boundary.} Representative cases and sparse positives do not estimate precision.
+
+\textbf{Next decision.} Use the atlas for failure-mode review, not biological source naming.
+
+\subsection{2. All Site Trace Taxonomy}
+
+\textbf{Question.} Are recurring trace-shape patterns present without leaving most sites unassigned?
+
+\textbf{Design.} Fit an all-site joint two-class shape taxonomy and test leave-one-burst-out persistence at immutable-site grain.
+
+\textbf{Status.} complete\_exploratory
+
+\textbf{Finding.} T1 contains 38 sites and T2 contains 12, with recurrent but imperfect stage and burst persistence.
+
+\textbf{Boundary.} One recording; classes are descriptive measurement phenotypes.
+
+\textbf{Next decision.} Freeze the assignment rule before applying it to an independent recording.
+
+\subsection{3. Pipeline Diagnostic Audit}
+
+\textbf{Question.} Which signal, spatial, and transformation diagnostics explain pipeline behavior?
+
+\textbf{Design.} Compute occurrence-by-stage trace, annulus, spatial-footprint, transition, saturation, and availability diagnostics.
+
+\textbf{Status.} complete\_descriptive
+
+\textbf{Finding.} Raw-to-ICA is the larger shape transformation; ICA-to-LS is more shape-preserving, and burst 2 is weaker and timing-sensitive.
+
+\textbf{Boundary.} Candidate metadata are partial and motion fields are absent.
+
+\textbf{Next decision.} Add motion diagnostics and independent-recording QC.
+
+\subsection{4. Full Trace Feature Panel}
+
+\textbf{Question.} Which compact interpretable features localize confirmed events over the complete trace, and which retain site ordering across bursts?
+
+\textbf{Design.} Compare 11 frozen features against all same-duration guarded quiet windows and use 5,000-draw site-block bootstraps and burst-pair site-rank correlations.
+
+\textbf{Status.} complete\_exploratory
+
+\textbf{Finding.} Carrier, coherence, lag recurrence, and Raw amplitude were ceiling-limited at known centers; neither new extension beat the carrier, while consensus and multiscale persistence retained cross-burst site-rank variation.
+
+\textbf{Boundary.} The same recording and bursts motivated prior feature choices; quiet windows are temporal references, not biological negatives.
+
+\textbf{Next decision.} Freeze role-specific definitions and transfer them without tuning to an independent recording and exhaustively reviewed bounded field.
+
+\subsection{5. Automated Feature Validation}
+
+\textbf{Question.} Do the frozen full-trace features retain value under harder retrieval, spatial displacement, grouped recovery prediction, perturbation, repeatability, and falsification tests?
+
+\textbf{Design.} Run six prespecified automated analyses on 106 original geometries, with site-blocked inference, site-grouped cross-fitting, a 102-row canonical-collapsed sensitivity, 500 circular-shift null draws, and fixed synthetic transients.
+
+\textbf{Status.} complete\_exploratory
+
+\textbf{Finding.} Raw led temporal retrieval; all six compact features exceeded matched displaced tissue; a richer recovery model improved point estimates but not the uncertainty gate; and perturbation, null, and injection tests behaved directionally as expected.
+
+\textbf{Boundary.} Same-recording reuse, only 12 primary recovery misses, biologically unknown reference frames and tissue, and simplified one-dimensional injections prevent precision, identity, or generalization claims.
+
+\textbf{Next decision.} Freeze the compact role-specific stack; prioritize realistic movie-level simulation, bounded-field truth, and independent-recording transfer over further same-recording feature expansion.
+
+\subsection{6. Feature Deep Dives}
+
+\textbf{Question.} Which errors dominate, and do coherence, lag, and calcium kinetics contribute through proposal formation, ranking, or recovery prediction?
+
+\textbf{Design.} Reuse the exact frozen 106-occurrence population; classify B58 failures, compare native and common-proposal recall, measure spatial decay and crowding, select a fixed kinetic bank leave-one-burst-out, and repeat site-grouped recovery models 20 times.
+
+\textbf{Status.} complete\_exploratory
+
+\textbf{Finding.} Twelve occurrences were missed by all lanes; native early-budget gains substantially exceeded common-proposal ranking gains; a one-frame-rise, 20-frame-decay kernel was selected in every held-burst fold; and lag improved repeated recovery point estimates more than coherence.
+
+\textbf{Boundary.} Same recording, sparse positives, only 12 all-lane misses, incomplete crowding labels, and descriptive rather than causal proposal contrasts.
+
+\textbf{Next decision.} Preserve distinct proposal, ranking, and kinetic roles, but require bounded-field or independent-recording validation before promoting a richer selector.
+
+\subsection{7. Identity Aware Recenter Audit V8}
+
+\textbf{Question.} Are the 12 all-lane B58 misses primarily repairable localization errors, or do small response-maximizing shifts cross identity boundaries?
+
+\textbf{Design.} Search a fixed six-pixel neighborhood using cross-stage response consensus, retain immutable original centers, apply an explicit nearest-label identity guard, and visually inspect synchronized six-panel videos and traces.
+
+\textbf{Status.} complete\_reviewed\_interpretation\_update
+
+\textbf{Finding.} Two candidates collided with the same canonical identity, six with another identity, and only four were identity-clear. Collision shifts were more directionally consistent across stages and more coupled to neighboring traces than identity-clear shifts; footprint morphology alone was weakly separating.
+
+\textbf{Boundary.} The search and footprint weights are same-event response-selected; labeled geometry is not exhaustive biological truth, only four identity-clear misses remain, and no classifier was fit.
+
+\textbf{Next decision.} Add identity-aware exclusion or joint footprint assignment to future localization analyses and resolve ambiguous clusters through bounded-field review rather than automatic recentering.
+
+\subsection{8. Expanded Automated Validation V3}
+
+\textbf{Question.} Which feature roles survive identity grouping, perturbation, label-light anomaly analysis, and prospective or synthetic controls?
+
+\textbf{Design.} Run ten frozen test families spanning grouped prediction, 100 site-bootstrap stability fits, conditional importance, prospective-footprint reuse, controlled mixtures, metamorphic checks, abstention, recovered-only anomaly models, and graph crowding.
+
+\textbf{Status.} complete\_exploratory
+
+\textbf{Finding.} The full panel exceeded carrier-only grouped prediction; annular context, persistence, and lag were most stable, abstention reduced internal error, anomaly scores prioritized misses, and distance-only graph crowding added little.
+
+\textbf{Boundary.} Same recording, 12 misses, reused exploratory labels, one-dimensional mixtures, and only one identity-clear cross-burst pair.
+
+\textbf{Next decision.} Stop broad same-recording feature expansion and prioritize independent transfer, bounded identity truth, and realistic movie simulation.
+
+\subsection{9. Major Validation Next Steps V1}
+
+\textbf{Question.} Can the three highest-priority validation gaps be advanced without weakening their evidence contracts?
+
+\textbf{Design.} Inventory untouched 060126 recordings and fail closed on incompatible truth; prepare detector-blind two-reviewer identity and overlap adjudication templates; run 432 paired exact-truth simulated movie cells across proximity, amplitude, correlation, and shape factors.
+
+\textbf{Status.} mixed\_complete\_and\_human\_gated
+
+\textbf{Finding.} Independent transfer is blocked by a task and truth mismatch rather than producing a metric; the bounded review package is ready but unlabelled; spatial context improved mean simulator pixel AUC from 0.813 to 0.917 and won 94.9 percent of paired cells.
+
+\textbf{Boundary.} The simulator is a controlled mechanistic stress test, not an independent animal; bounded-field precision awaits two reviewers and adjudication; the available 060126 recordings are behavioral rather than a compatible spontaneous-burst replication.
+
+\textbf{Next decision.} Acquire or identify an independent identity-labelled spontaneous-burst recording, complete blinded dual review, and extend the simulator to full detector-level recall and precision before feature promotion.
+
+\subsection{10. Realistic Movie Detector Benchmark V3}
+
+\textbf{Question.} Do carrier, spatial-context, kinetic, and combined feature stacks play distinct roles when converted into complete source proposals?
+
+\textbf{Design.} Freeze four score maps, apply five-pixel local-maximum suppression, evaluate proposal budgets 2, 4, and 8 with three-pixel Hungarian one-to-one identity matching, and fit score calibration on seeds 0 through 5 for evaluation on seeds 6 through 11.
+
+\textbf{Status.} complete\_computational
+
+\textbf{Finding.} At budget four, combined achieved the highest F1 at 0.471 and recall at 0.707; spatial context localized best at 0.835 px, reduced duplicates to 0.016 per movie, and had the best held-seed candidate average precision at 0.896; combined had the best Brier score at 0.0286 and balanced accuracy at 0.862.
+
+\textbf{Boundary.} Proposal precision includes all simulated background candidates but the movie generator remains simplified; candidate labels use a fixed three-pixel geometry rule; calibration is seed-held-out rather than generator-family-held-out.
+
+\textbf{Next decision.} Freeze the compact combined proposal stack and test it under broader simulator families and a task-compatible independent biological recording; retain spatial context for localization and NMS rather than interpreting it as source identity by itself.
+
+\subsection{11. Generator Family Holdout V4}
+
+\textbf{Question.} Do the feature roles survive mechanism-level distribution shift rather than only new random seeds?
+
+\textbf{Design.} Hold out each of six complete generator families in turn; vary source count from 2 to 8; add explicit neuropil, bleaching, source-specific nonrigid motion, and a label-free noise scale estimated from an untouched 060126 TIFF; retain the previously frozen four score stacks and geometric matching rule.
+
+\textbf{Status.} complete\_computational
+
+\textbf{Finding.} Spatial context achieved the best mean operating F1 at 0.515, recall at 0.773, localization at 1.202 px, and duplicate rate at 0.083 per movie. It also led leave-one-family-out average precision at 0.824. Combined retained the best mean Brier score at 0.094 and balanced accuracy at 0.722, but compound-shift F1 fell to 0.319 versus 0.338 for spatial context.
+
+\textbf{Boundary.} The empirical recording contributes only a label-free scalar read-noise mapping, not its full noise spectrum; simulator mechanisms remain stylized; proposal budget is twice the known simulated source count and therefore not deployable as written.
+
+\textbf{Next decision.} Treat spatial context as the robust proposal backbone; test a frozen gated fusion learned only on simulator-development families, and replace truth-scaled proposal budgets with label-free score or false-alarm controls before biological transfer.
+
+\subsection{12. Label Free False Alarm Gated Fusion V5}
+
+\textbf{Question.} Can a development-only learned gate outperform frozen spatial context when proposal thresholds use source-free null movies instead of true source count?
+
+\textbf{Design.} Fit a balanced logistic gate on carrier, spatial-context, and kinetic proposal features from baseline, dense-neuropil, and bleaching families; set thresholds using only zero-source movies from those families; freeze the gate and thresholds; evaluate nonrigid-motion, empirical-noise, and compound-shift families at nominal false-alarm targets 1, 2, and 4.
+
+\textbf{Status.} complete\_computational\_negative\_result
+
+\textbf{Finding.} At the primary nominal target of two false alarms per movie, gated fusion F1 was 0.5441 versus 0.5450 for spatial context. Gating raised precision from 0.549 to 0.603 but lowered recall from 0.590 to 0.563 and increased duplicates from 0.22 to 0.87 per movie. Its empirical-noise benefit did not offset degradation under nonrigid motion.
+
+\textbf{Boundary.} Development-null thresholds did not guarantee the nominal rate after family shift; gates use simplified simulator truth; nulls omit biological non-neuronal transients; candidate-level NMS is shared but learned fusion can promote adjacent maxima.
+
+\textbf{Next decision.} Reject the current gate as a replacement for spatial context; preserve spatial context as the proposal backbone and investigate shift-aware null normalization plus explicit identity-level suppression before any new fusion model.
+
+\subsection{13. Automated Challenge Suite V7}
+
+\textbf{Question.} Which proposed automated controls improve deployability, and where do the frozen feature and proposal definitions fail under intervention, falsification, and simulator transfer?
+
+\textbf{Design.} Run twelve prespecified exact-truth families with six seeds per condition, correct weak-neighbor recovery by one-to-one identity assignment, use label-free nulls where required, and preserve separate tables for every hypothesis.
+
+\textbf{Status.} complete\_computational\_mixed\_result
+
+\textbf{Finding.} Movie-wise robust null normalization improved mean F1 from 0.505 to 0.523; OOD signatures separated the deliberately shifted challenges with AUC 1.0; and a second simulator passed the F1 gate. Conversely, BH stopping produced F1 0.299, suppression variants were equivalent, weak-neighbor 80-percent recovery required amplitude ratio 1.0 at 3 to 7 px, colored noise reduced top-eight recall from 0.833 to 0.708, stability F1 ranged from 0 to 0.5, and reversed-time kinetic AUC remained 0.731.
+
+\textbf{Boundary.} Several challenges are intentionally stylized and OOD separation is likely optimistic; the second simulator is easier than the primary; suppression is tested only after local-max proposal formation; six seeds limit precision of severity boundaries.
+
+\textbf{Next decision.} Preserve robust null normalization as a candidate improvement, reject current BH stopping and post-proposal suppression as solved components, make identity-aware close-source resolution and parameter-robust stopping the next automated development targets, and redesign kinetic falsification around directional kernels.
+
+\subsection{14. Targeted Automated Development V8}
+
+\textbf{Question.} Do parameter-consensus stopping, pre-proposal NMF separation, or an explicitly directional kinetic contrast repair the three principal v7 failures?
+
+\textbf{Design.} Calibrate a robust score threshold on zero-source development families and compare single-window with three-window persistence on new artifacts; compare frozen spatial proposals with rank-two NMF under close unequal sources using one-to-one identities; compare the current kinetic score with forward-minus-reverse contrast on forward and reversed movies.
+
+\textbf{Status.} complete\_computational\_negative\_result
+
+\textbf{Finding.} Consensus and single-window stopping were identical at F1 0.568 and radius sensitivity 0.0417. Rank-two NMF reduced weak-identity recovery from 0.354 to 0.069 and mean F1 from 0.580 to 0.354. Directional contrast reduced reversed AUC to 0.523 but also reduced forward AUC to 0.477, failing useful directionality. Only one of five gates passed.
+
+\textbf{Boundary.} Consensus is tested after spatial scoring rather than during source formation; NMF rank is fixed to the true two-source challenge and remains unconstrained by calcium kinetics; directional contrast uses maximum correlations and may cancel heterogeneous source asymmetries.
+
+\textbf{Next decision.} Retain single-window robust stopping; reject unconstrained NMF and simple directional subtraction; pursue joint spatial-temporal generative deblending and source-specific kinetic likelihood ratios only with new development conditions.
+
+\subsection{15. Joint Generative Deblending V10}
+
+\textbf{Question.} Can a constrained alternating spatial-temporal generative model and source-specific kinetic likelihoods repair the close-source and directionality failures without tuning on locked v8 conditions?
+
+\textbf{Design.} Freeze a two-component model with localized smooth nonnegative footprints, sparse calcium-kernel temporal projection, and alternating reconstruction on new ellipse conditions; evaluate once on the locked v8 crescent grid; audit directionality on unconstrained component coefficients to avoid forward-kernel circularity.
+
+\textbf{Status.} complete\_computational\_negative\_result
+
+\textbf{Finding.} On development conditions, generative weak recovery was 0.389 versus 0.407 spatial and F1 was 0.639 versus 0.648. On locked v8, weak recovery was 0.313 versus 0.521 and F1 was 0.608 versus 0.635. Corrected source-specific direction AUC was 0.367, with 91.7 percent of reversed components still assigned positive forward likelihood. Only one of six gates passed.
+
+\textbf{Boundary.} Component count remains fixed at two; spatial initialization begins from the same context map; the simplified alternating optimizer lacks background and explicit motion components; simulated kinetics are heterogeneous enough that the tested likelihood is not identifiable.
+
+\textbf{Next decision.} Reject this constrained factorization and likelihood model; stop escalating simulator-only deblenders until bounded biological identity truth is available, and retain spatial context plus robust stopping as the current automated baseline.
+
+\subsection{16. New Candidate Review V1}
+
+\textbf{Question.} Which previously unmatched detector sites appear neuronal under blinded six-panel full-trace review, and did the feature-derived priority score rank neuron likelihood?
+
+\textbf{Design.} Present all 18 unmatched consolidated sites in a deterministic blinded order; preserve exact centers and complete traces; normalize one expert's verbatim calls conservatively while retaining size, morphology, SNR, artifact, and overlap observations separately.
+
+\textbf{Status.} complete\_provisional\_single\_reviewer
+
+\textbf{Finding.} Nine sites were definite, four probable, four uncertain, and one artifact-or-noise; 13 of 18 were provisionally likely neurons. The review-priority score enriched difficult ambiguous cases but did not monotonically rank neuron likelihood.
+
+\textbf{Boundary.} One reviewer, selected candidates rather than exhaustive bounded-field sampling, no adjudication, and no biological identity or precision claim.
+
+\textbf{Next decision.} Obtain a second blinded review, adjudicate the four uncertain sites and identity-confounded observations, then separate review-value prioritization from calibrated neuron-likelihood modeling.
+
+\subsection{17. External Blinded Bounded Review V2}
+
+\textbf{Question.} Can an external team independently enumerate sources and review processed candidates without exposure to current labels, detector ranks, or site identities?
+
+\textbf{Design.} Build two separately distributed portable browser archives: four Raw-first bounded-field clips with click annotation and locked coverage export, followed only after submission by 18 re-randomized and re-blinded six-panel candidates; retain the scoring key and agreement tools in a private archive.
+
+\textbf{Status.} complete\_implementation\_human\_gated
+
+\textbf{Finding.} All 22 videos decode, three archives pass integrity checks, public scans find no private text or path leakage, and coordinate, submission, randomization, staged-cache, media, archive, and agreement checks pass.
+
+\textbf{Boundary.} No external reviewer has submitted labels; implementation readiness does not establish truth, precision, recall, identity, or independent-recording generalization.
+
+\textbf{Next decision.} Distribute Phase A to at least two independent reviewers, accept only locked complete submissions, release Phase B afterward, analyze agreement, and adjudicate before computing detector metrics or fitting label-aware models.
+
+\subsection{18. Temporal Ica Internals}
+
+\textbf{Question.} What components and matrices produce the frozen residual-group representation?
+
+\textbf{Design.} Export all six component traces, mixing/demixing matrices, energy fractions, and embedding inversion residuals at 50 sites.
+
+\textbf{Status.} complete\_computational
+
+\textbf{Finding.} The transform is numerically invertible with maximum sitewise RMS residual 5.69e-12.
+
+\textbf{Boundary.} Numerical invertibility is not denoising or biological recovery.
+
+\textbf{Next decision.} Relate component profiles to held-out detector errors without naming components as sources.
+
+\subsection{19. Ls Denominator Audit}
+
+\textbf{Question.} Is local standardization driven by true local variability or by its global scale floor?
+
+\textbf{Design.} Reproduce the frozen lane over 9,297 support pixels with the original 31-frame causal pre-roll and saved floor.
+
+\textbf{Status.} complete\_validated\_reproduction
+
+\textbf{Finding.} Median denominator is 0.7648; the 0.371705 floor is inactive at all audited centers; saved-output RMSE is 6.96e-7.
+
+\textbf{Boundary.} Center-level audit does not establish floor inactivity across the full field.
+
+\textbf{Next decision.} Extend floor-use mapping full-field only when suitable GPU compute is available.
+
+\section{Prioritized next experiments}
+
+\begin{enumerate}
+
+\item Obtain two locked Phase A and Phase B submissions, run agreement analysis, adjudicate all spatial, class, and identity disagreements, and freeze a local truth revision before any detector or learning evaluation. Plan: \texttt{../../docs/workflows/external\_blinded\_bounded\_review\_v2.md}.
+
+\item Run the prespecified harmonized feature audit, positive-unlabeled learning, label-sensitivity models, leakage-resistant grouped validation, feature stability, counterfactual perturbation, and hard-subgroup tests without promoting provisional labels. Plan: \texttt{../../docs/research/SPON\_CA\_BURST\_UNCERTAINTY\_AWARE\_LEARNING\_PLAN\_V1.md}.
+
+\item Exhaustively review the ambiguous ROI 10/15, ROI 11, ROI 12, and ROI 23 clusters with joint footprint and identity assignment.
+
+\item Exhaustively review a bounded field and estimate precision with verified negatives.
+
+\item Apply frozen pipeline and phenotype assignments to an independent recording.
+
+\item Export motion fields and registration residuals and relate them to shared waveform strength.
+
+\item Transfer the frozen carrier, coherence, recurrence, consensus, and persistence definitions without tuning and test task-specific utility.
+
+\item Preserve the current spatial-context and robust-stopping baseline; defer additional deblender complexity until bounded biological identity truth or a genuinely independent labelled recording is available.
+
+\end{enumerate}
+

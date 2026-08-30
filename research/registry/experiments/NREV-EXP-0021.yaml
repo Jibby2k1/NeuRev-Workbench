@@ -1,0 +1,41 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0021
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical execution date
+  - run-level code, configuration, input, environment, and randomization provenance
+  - preregistered gates
+  - experiment-specific falsifiers
+  - normalized unit of analysis, comparison, and data scope
+program_id: NREV-PRG-0001
+title: Uncertainty Aware Learning V1
+question: Run the prespecified harmonized feature audit, positive-unlabeled learning, label-sensitivity models, leakage-resistant
+  grouped validation, feature stability, counterfactual perturbation, and hard-subgroup tests without promoting provisional
+  labels.
+objective: Run the prespecified harmonized feature audit, positive-unlabeled learning, label-sensitivity models, leakage-resistant
+  grouped validation, feature stability, counterfactual perturbation, and hard-subgroup tests without promoting provisional
+  labels.
+rationale: Priority 2 item in the migrated v1 next-experiment queue.
+lifecycle: draft
+outcome: not_evaluated
+evidence_tier: none
+review_state: not_requested
+falsifiers: []
+design:
+  summary: Run the prespecified harmonized feature audit, positive-unlabeled learning, label-sensitivity models, leakage-resistant
+    grouped validation, feature stability, counterfactual perturbation, and hard-subgroup tests without promoting provisional
+    labels.
+  protocol_path: docs/research/SPON_CA_BURST_UNCERTAINTY_AWARE_LEARNING_PLAN_V1.md
+gates: []
+claim_ids: []
+decision_ids: []
+visibility: public
+legacy_id: uncertainty_aware_learning_v1
+legacy_status: next_experiment
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

@@ -13,7 +13,7 @@
 | Change workbench UI | [Dashboard user guide](../HOW_TO_USE_DASHBOARD.md), then [Neuron Workbench](../NEURON_WORKBENCH.md) | `neurobench/workbench/assets/src/` |
 | Query/build video review apps | [Workbench video/catalog refactor](WORKBENCH_VIDEO_CATALOG_REFACTOR.md) | `neurobench/data/catalog.py`, `neurobench/workbench/` |
 | Implement the NeuRev first release | [First-release handoff](NEUREV_FIRST_RELEASE_HANDOFF.md) | `neurobench/data/imports.py`, `neurobench/workbench/baseline.py`, `neurobench/workbench/server.py`, `neurobench/workbench/assets/src/` |
-| Review architecture debt | [Codebase audit](../CODEBASE_AUDIT.md) | use the current package map before acting |
+| Review historical architecture debt | [Codebase audit](https://github.com/Jibby2k1/NeuRev-Workbench/blob/main/docs/CODEBASE_AUDIT.md) | historical snapshot; use the current package map before acting |
 
 Public commands should use thin modules under `neurobench/cli/`. Reusable
 science belongs in `neurobench/`, not in one-off scripts. New schemas require

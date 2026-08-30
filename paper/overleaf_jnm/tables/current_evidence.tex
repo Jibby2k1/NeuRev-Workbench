@@ -1,0 +1,32 @@
+\begingroup
+\footnotesize
+\setlength{\LTpre}{0.4\baselineskip}
+\setlength{\LTpost}{0.4\baselineskip}
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.21\textwidth} >{\raggedright\arraybackslash}p{0.25\textwidth} >{\raggedright\arraybackslash}p{0.44\textwidth}}
+\caption{Current repository evidence and the strongest interpretation permitted before the protected rerun. Daggered values are provisional.}\label{tab:current-evidence}\\
+\toprule
+Question & Current evidence & Permitted interpretation \\
+\midrule
+\endfirsthead
+\multicolumn{3}{l}{\small\itshape Table \thetable\ continued from previous page}\\
+\toprule
+Question & Current evidence & Permitted interpretation \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\small\itshape Continued on next page}\\
+\endfoot
+\bottomrule
+\endlastfoot
+Do labeled times contain unusual temporal activity? & ICA and signed difference both exceed shifted-label controls; empirical $p=\ICADiffShiftP{}$. & Labeled windows contain transient change relative to the implemented temporal null. \\
+Does two-frame ICA identify a novel operator? & $R^2=\ICADiffRSquared{}$ against signed difference; event-score correlation $=\ICADiffScoreCorrelation{}$. & No independent added operation is established; the component is effectively derivative-like. \\
+Is there a repeatable event-aligned Raw waveform? & Held-out correlation $=\RawHeldoutCorrelation{}$; first temporal mode $=\RawFirstPCVariance{}$. & A strong recording/population-level burst waveform is present. \\
+Is the Raw waveform neuron-specific? & Event-minus-annulus correlation difference $=\RawAnnulusDelta{}$ (95\% interval \RawAnnulusCILow{} to \RawAnnulusCIHigh{}). & No practically meaningful center advantage has yet been established at the tested support. \\
+Does local subtraction retain event signal? & Residual peak-amplitude difference $=\ResidualPeakAmplitudeDelta{}$ (95\% interval \ResidualPeakAmplitudeCILow{} to \ResidualPeakAmplitudeCIHigh{}). & Event-associated localized amplitude remains after local subtraction. \\
+Is residual morphology universal? & Residual-minus-spatial-control difference $=\ResidualSpatialDelta{}$ (95\% interval \ResidualSpatialCILow{} to \ResidualSpatialCIHigh{}). & No universal neuron-specific residual waveform is established. \\
+Do contextual features assist recovery? & Budget-20 known-positive recall: carrier \CarrierRecallBtwenty{}, coherence \CoherenceRecallBtwenty{}, lagged recurrence \LagRecallBtwenty{}. & Context may improve proposal/ranking of labeled positives; precision remains unidentified. \\
+Are the B58 misses simple coordinate errors? & Eight of 12 local consensus shifts collide with existing labeled geometry; four are identity-clear. & No. Recentered-response gain must be separated from identity reassignment, noise, ranking, and NMS. \\
+Does v8 increase official B58 recall? & Strict recall remains $94/106=88.7\%$; $94/98=95.9\%$ is identity-conditioned and $98/106=92.5\%$ is a hypothetical four-case rescue ceiling. & No automatic promotion is permitted; both sensitivity values require their explicit denominator and boundary. \\
+Can full-field precision be reported? & Positive labels are not exhaustive. & No; unmatched candidates remain unknown outside an exhaustive review field. \\
+\end{longtable}
+\endgroup

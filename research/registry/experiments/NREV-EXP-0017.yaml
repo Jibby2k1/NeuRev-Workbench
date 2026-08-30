@@ -1,0 +1,42 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0017
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical execution date
+  - run-level code, configuration, input, environment, and randomization provenance
+  - preregistered gates
+  - experiment-specific falsifiers
+  - normalized unit of analysis, comparison, and data scope
+program_id: NREV-PRG-0001
+title: External Blinded Bounded Review V2
+question: Can an external team independently enumerate sources and review processed candidates without exposure to current
+  labels, detector ranks, or site identities?
+objective: Can an external team independently enumerate sources and review processed candidates without exposure to current
+  labels, detector ranks, or site identities?
+rationale: Migrated to preserve the v1 question-design-result-decision record; the v1 story did not encode a separate rationale.
+lifecycle: validated
+outcome: not_evaluated
+evidence_tier: descriptive
+review_state: pending
+falsifiers: []
+design:
+  summary: 'Build two separately distributed portable browser archives: four Raw-first bounded-field clips with click annotation
+    and locked coverage export, followed only after submission by 18 re-randomized and re-blinded six-panel candidates; retain
+    the scoring key and agreement tools in a private archive.'
+gates: []
+claim_ids:
+- NREV-CLM-0018
+- NREV-CLM-0020
+decision_ids:
+- NREV-DEC-0017
+evidence_capsule_id: NREV-EVC-EXP-0017
+visibility: public
+legacy_id: external_blinded_bounded_review_v2
+legacy_status: complete_implementation_human_gated
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

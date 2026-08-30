@@ -1,0 +1,30 @@
+name: External bounded review contracts
+
+on:
+  pull_request:
+    paths:
+      - "neurobench/experiments/neuron_identifiability/external_bounded_review.py"
+      - "neurobench/experiments/neuron_identifiability/external_review_assets/**"
+      - "tests/test_external_bounded_review.py"
+      - "docs/workflows/external_blinded_bounded_review_v2.md"
+      - ".github/workflows/external-bounded-review.yml"
+  push:
+    paths:
+      - "neurobench/experiments/neuron_identifiability/external_bounded_review.py"
+      - "neurobench/experiments/neuron_identifiability/external_review_assets/**"
+      - "tests/test_external_bounded_review.py"
+      - "docs/workflows/external_blinded_bounded_review_v2.md"
+      - ".github/workflows/external-bounded-review.yml"
+
+jobs:
+  review-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install focused dependencies
+        run: python -m pip install pytest numpy scipy
+      - name: Validate review contracts
+        run: python -m pytest tests/test_external_bounded_review.py -q

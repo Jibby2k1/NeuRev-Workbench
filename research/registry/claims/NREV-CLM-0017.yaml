@@ -1,0 +1,27 @@
+schema_version: 1
+record_type: claim
+id: NREV-CLM-0017
+program_id: NREV-PRG-0001
+title: Biological Source Identity
+statement: Pipeline outputs identify one-to-one biological neuronal sources.
+scope: Stable measurement representations do not establish biological source identity.
+limitations:
+- The cited evidence does not establish the registered claim.
+claim_state: unresolved
+evidence_tier: none
+review_state: not_requested
+evidence_capsule_ids:
+- NREV-EVC-EXP-0003
+- NREV-EVC-EXP-0018
+decision_ids:
+- NREV-DEC-0003
+- NREV-DEC-0018
+tags:
+- biological
+- source
+- identity
+visibility: public
+legacy_id: biological_source_identity
+legacy_status: unresolved
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

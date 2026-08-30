@@ -1,0 +1,87 @@
+{
+  "artifact_manifest_sha256": "92f2d567e0472157e9bf5f331f5e4b831343d49bfd1e25e67e566594350dd875",
+  "artifacts": [
+    {
+      "access": "public",
+      "bytes": 125781,
+      "id": "artifact-01",
+      "media_type": "image/png",
+      "repository_path": "paper/overleaf_jnm/figures/final/fig06_ica_model_internals.png",
+      "role": "figure",
+      "sha256": "c8af766a2bd4bf7b223ce362d9f9fc84bc61f8522dde10b5b4750e344469e539"
+    },
+    {
+      "access": "public",
+      "bytes": 1408,
+      "id": "artifact-02",
+      "media_type": "application/json",
+      "repository_path": "paper/overleaf_jnm/figures/final/fig06_ica_model_internals.json",
+      "role": "report",
+      "sha256": "bc6a36ec2c6b92c20f8225b73b0800c56ca022830aa4383f0e33a6cac6521b9e"
+    }
+  ],
+  "boundaries": {
+    "does_not_establish": [
+      "Claims beyond the registered finding and linked claim scopes.",
+      "Reproducible run provenance that was absent from the v1 story."
+    ],
+    "limitations": [
+      "Numerical invertibility is not denoising or biological recovery."
+    ],
+    "scope": "This capsule preserves the registered v1 experiment finding and its linked claim scopes."
+  },
+  "claim_impacts": [
+    {
+      "claim_id": "NREV-CLM-0015",
+      "effect": "supports",
+      "scope": "Maximum sitewise embedding inversion RMS is 5.69e-12; this is not denoising validation.",
+      "summary": "The experiment supports this claim only within its registered scope."
+    },
+    {
+      "claim_id": "NREV-CLM-0017",
+      "effect": "qualifies",
+      "scope": "Stable measurement representations do not establish biological source identity.",
+      "summary": "The experiment bears on this registered claim without resolving it."
+    }
+  ],
+  "evidence_tier": "current_recording",
+  "experiment_id": "NREV-EXP-0018",
+  "gates": [
+    {
+      "criterion": "Every artifact referenced by the v1 experiment story is available and checksum identified at migration.",
+      "id": "legacy-artifact-capture",
+      "observed": "Captured 2 of 2 referenced artifacts with SHA-256 identities.",
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-29T23:52:35Z",
+  "id": "NREV-EVC-EXP-0018",
+  "legacy_status": "complete_computational",
+  "lifecycle": "validated",
+  "metrics": [],
+  "outcome": "supported",
+  "program_id": "NREV-PRG-0001",
+  "record_type": "evidence_capsule",
+  "review_state": "not_requested",
+  "run_ids": [],
+  "schema_version": 1,
+  "source_records_sha256": "7a2cdf3a999cba82f34bf7dae0c4d79488aa0c2a04af8dd466cc92e1d80500db",
+  "summary": "The transform is numerically invertible with maximum sitewise RMS residual 5.69e-12.",
+  "validation": {
+    "checked_at": "2026-08-29T23:52:35Z",
+    "checks": [
+      {
+        "id": "portable-paths",
+        "status": "passed",
+        "summary": "Artifact references are repository-relative; ignored local outputs are metadata-only."
+      },
+      {
+        "id": "historical-provenance",
+        "status": "not_run",
+        "summary": "The v1 story did not encode run-level provenance, so no historical run record was invented."
+      }
+    ],
+    "status": "partial"
+  },
+  "visibility": "public"
+}

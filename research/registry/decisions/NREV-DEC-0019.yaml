@@ -1,0 +1,31 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0019
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical decision effective date
+program_id: NREV-PRG-0001
+title: Decision after Ls Denominator Audit
+lifecycle: active
+action: retain
+rationale: Extend floor-use mapping full-field only when suitable GPU compute is available.
+evidence_summary: Median denominator is 0.7648; the 0.371705 floor is inactive at all audited centers; saved-output RMSE is
+  6.96e-7.
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0019
+claim_ids:
+- NREV-CLM-0016
+evidence_capsule_ids:
+- NREV-EVC-EXP-0019
+constraints:
+- Center-level audit does not establish floor inactivity across the full field.
+- The historical decision date was not encoded in the v1 story and was not guessed during migration.
+visibility: public
+legacy_status: complete_validated_reproduction
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

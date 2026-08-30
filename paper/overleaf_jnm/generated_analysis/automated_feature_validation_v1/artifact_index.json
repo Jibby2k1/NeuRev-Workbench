@@ -1,0 +1,94 @@
+{
+  "artifacts": [
+    {
+      "bytes": 807,
+      "path": "REPORT.md",
+      "sha256": "5c35b12181b1730dc18179ed2df2b92fb9890d5d09bd17c943373f6b63126f59"
+    },
+    {
+      "bytes": 523604,
+      "path": "figures/automated_validation_overview.png",
+      "sha256": "5ea6a94581004bb47094c1240b3bcd7b0d5b5c63da56502e63bd90324582d536"
+    },
+    {
+      "bytes": 731679,
+      "path": "figures/robustness_falsification.png",
+      "sha256": "e762fb69869b445375eb0d4d2b3da93dc8315b9a46534b0a02848f823faab3c2"
+    },
+    {
+      "bytes": 2437,
+      "path": "preflight.json",
+      "sha256": "de5a1d31055088d790d628cd1f6f847b11b6f6ce8a251c475203c5ca9e67ab5d"
+    },
+    {
+      "bytes": 6617,
+      "path": "summary.json",
+      "sha256": "104b7872bae62e166ff4d9c022d671fe259aed497c880806aca4dd35df7bfab2"
+    },
+    {
+      "bytes": 293883,
+      "path": "tables/coordinate_perturbation.tsv",
+      "sha256": "0444aca52f65607236a0fda49255e44003cf6b0e8d98340c4af73f867a4f5047"
+    },
+    {
+      "bytes": 839,
+      "path": "tables/null_calibration.tsv",
+      "sha256": "95c3b8fb63df133b4a6e891c7512634a89d1c5c08bf18dd275976490b789838e"
+    },
+    {
+      "bytes": 583,
+      "path": "tables/recovery_model_ablation.tsv",
+      "sha256": "09e2be6c2b71955e447cc8c4a68e1da84ddf480b6793a93366b0dfd0b913d028"
+    },
+    {
+      "bytes": 37332,
+      "path": "tables/recovery_model_predictions.tsv",
+      "sha256": "e49ca68513ba76ebf0951a9e3abec6ccfad9eba7c6d7a8ef4b992194371cd9c2"
+    },
+    {
+      "bytes": 825,
+      "path": "tables/recovery_model_summary.tsv",
+      "sha256": "46880e5243ae71646a2f6f39f8ac46c652e7387b0c5c41d91ab3afafc2c831ab"
+    },
+    {
+      "bytes": 1705,
+      "path": "tables/reliability_summary.tsv",
+      "sha256": "10252883b50d089277bda34718f58a4267e1eacd6ce731f42f28002cd9817cfe"
+    },
+    {
+      "bytes": 75480,
+      "path": "tables/spatial_displacement_occurrence.tsv",
+      "sha256": "483895dd9b80521f67ab0be5540a9bd6ff9929d0ab8a9b01f7302b07656c5179"
+    },
+    {
+      "bytes": 691,
+      "path": "tables/spatial_displacement_summary.tsv",
+      "sha256": "278a77863a8617715365964747de9492fde27937ac194987737a841af96e5c83"
+    },
+    {
+      "bytes": 243133,
+      "path": "tables/synthetic_injection.tsv",
+      "sha256": "b780e939426f21da7f075b2a0991a3d3d62497cce78e7a9f2c22c40d4dd2d59c"
+    },
+    {
+      "bytes": 189968,
+      "path": "tables/temporal_retrieval_occurrence.tsv",
+      "sha256": "5c259a54912b4cbdea4c94cb36a16336c0137313e692a21e18dff94fd0dc53f7"
+    },
+    {
+      "bytes": 4837,
+      "path": "tables/temporal_retrieval_summary.tsv",
+      "sha256": "e1cf7830b9413ac148f1e3f5c6db2be9a4f8c5419a6be05a7ec6db62730911f8"
+    },
+    {
+      "bytes": 522558,
+      "path": "tables/timing_perturbation.tsv",
+      "sha256": "b06c0456810a488d5a6836f4b1ab81ce6e76f74d19eba6de3fdc785065038c65"
+    },
+    {
+      "bytes": 219,
+      "path": "validation.json",
+      "sha256": "7ff024e26c24048b65d65150e606a4f1cdb5af9196f270c0b1f307cc6eff17bc"
+    }
+  ]
+}

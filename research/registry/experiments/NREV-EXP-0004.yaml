@@ -1,0 +1,40 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0004
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical execution date
+  - run-level code, configuration, input, environment, and randomization provenance
+  - preregistered gates
+  - experiment-specific falsifiers
+  - normalized unit of analysis, comparison, and data scope
+program_id: NREV-PRG-0001
+title: Full Trace Feature Panel
+question: Which compact interpretable features localize confirmed events over the complete trace, and which retain site ordering
+  across bursts?
+objective: Which compact interpretable features localize confirmed events over the complete trace, and which retain site ordering
+  across bursts?
+rationale: Migrated to preserve the v1 question-design-result-decision record; the v1 story did not encode a separate rationale.
+lifecycle: validated
+outcome: inconclusive
+evidence_tier: current_recording
+review_state: not_requested
+falsifiers: []
+design:
+  summary: Compare 11 frozen features against all same-duration guarded quiet windows and use 5,000-draw site-block bootstraps
+    and burst-pair site-rank correlations.
+gates: []
+claim_ids:
+- NREV-CLM-0003
+decision_ids:
+- NREV-DEC-0004
+evidence_capsule_id: NREV-EVC-EXP-0004
+visibility: public
+legacy_id: full_trace_feature_panel
+legacy_status: complete_exploratory
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

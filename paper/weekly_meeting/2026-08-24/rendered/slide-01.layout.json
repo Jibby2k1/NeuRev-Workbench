@@ -1,0 +1,369 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/a8ntna",
+    "id": "a8ntna",
+    "slide": 1,
+    "layoutId": "3c6a8d35-080c-463b-9754-268429fe6fe5",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "47e08388-4761-497d-953b-6e2d637734b6",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#FFFFFF",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "+mn-lt"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "3c6a8d35-080c-463b-9754-268429fe6fe5",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "47e08388-4761-497d-953b-6e2d637734b6",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "47e08388-4761-497d-953b-6e2d637734b6",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/0fyd4bq9",
+      "id": "1",
+      "bbox": [
+        64,
+        52,
+        400,
+        28
+      ],
+      "geometry": "rect",
+      "text": "WEEKLY RESEARCH UPDATE",
+      "textPreview": "WEEKLY RESEARCH UPDATE",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 16,
+        "typeface": "+mn-lt",
+        "color": "#5F6368",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "WEEKLY RESEARCH UPDATE"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "WEEKLY RESEARCH UPDATE",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#5F6368",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "WEEKLY RESEARCH UPDATE",
+              "fontSize": 16,
+              "color": "#5F6368",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/fepwb69o",
+      "id": "2",
+      "bbox": [
+        64,
+        150,
+        680,
+        185
+      ],
+      "geometry": "rect",
+      "text": "What spatial ICA adds—\nand what it does not",
+      "textPreview": "What spatial ICA adds— | and what it does not",
+      "resolvedFontSize": 54,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 54,
+        "typeface": "+mn-lt",
+        "color": "#111111",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "What spatial ICA adds—"
+          },
+          {
+            "index": 2,
+            "text": "and what it does not"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "What spatial ICA adds—",
+          "resolvedTextStyle": {
+            "fontSize": 54,
+            "color": "#111111",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "What spatial ICA adds—",
+              "fontSize": 54,
+              "color": "#111111",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "and what it does not",
+          "resolvedTextStyle": {
+            "fontSize": 54,
+            "color": "#111111",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "and what it does not",
+              "fontSize": 54,
+              "color": "#111111",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/edgv2183",
+      "id": "3",
+      "bbox": [
+        68,
+        365,
+        600,
+        90
+      ],
+      "geometry": "rect",
+      "text": "Neuron identifiability, detection-event classes, and the next decisions",
+      "textPreview": "Neuron identifiability, detection-event classes, and the next decisions",
+      "resolvedFontSize": 25,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 25,
+        "typeface": "+mn-lt",
+        "color": "#5F6368",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Neuron identifiability, detection-event classes, and"
+          },
+          {
+            "index": 2,
+            "text": "the next decisions"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Neuron identifiability, detection-event classes, and the next decisions",
+          "resolvedTextStyle": {
+            "fontSize": 25,
+            "color": "#5F6368",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Neuron identifiability, detection-event classes, and the next decisions",
+              "fontSize": 25,
+              "color": "#5F6368",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "image",
+      "scope": "slide",
+      "aid": "im/gny5o3ed",
+      "id": "4",
+      "bbox": [
+        750,
+        82,
+        480,
+        500
+      ],
+      "alt": "Spatial ICA filter gallery",
+      "contentType": "image/png",
+      "imageFit": "contain",
+      "asset": {
+        "assetId": "fbf71c94-0ff1-49ee-b738-6671f500271d",
+        "contentType": "image/png",
+        "byteLength": 59164
+      }
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/sbyd0bqd",
+      "id": "5",
+      "bbox": [
+        68,
+        636,
+        500,
+        24
+      ],
+      "geometry": "rect",
+      "text": "Raul Valle  •  24 August 2026",
+      "textPreview": "Raul Valle  •  24 August 2026",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 16,
+        "typeface": "+mn-lt",
+        "color": "#5F6368",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Raul Valle  •  24 August 2026"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Raul Valle  •  24 August 2026",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#5F6368",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Raul Valle  •  24 August 2026",
+              "fontSize": 16,
+              "color": "#5F6368",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

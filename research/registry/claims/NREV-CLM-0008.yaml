@@ -1,0 +1,29 @@
+schema_version: 1
+record_type: claim
+id: NREV-CLM-0008
+program_id: NREV-PRG-0001
+title: Realistic Movie Spatial Context
+statement: Spatial context improves source-pixel discrimination over pixel variance in a paired truth-known movie stress test
+  spanning proximity, amplitude imbalance, temporal correlation, and non-circular footprints.
+scope: 432 paired simulator cells across 12 seeds; mean AUC gain 0.104 and 94.9 percent win fraction; not biological external
+  validation.
+limitations:
+- 'No inference is registered beyond this scope: 432 paired simulator cells across 12 seeds; mean AUC gain 0.104 and 94.9
+  percent win fraction; not biological external validation.'
+claim_state: supported
+evidence_tier: computational_simulation
+review_state: not_requested
+evidence_capsule_ids:
+- NREV-EVC-EXP-0009
+decision_ids:
+- NREV-DEC-0009
+tags:
+- realistic
+- movie
+- spatial
+- context
+visibility: public
+legacy_id: realistic_movie_spatial_context
+legacy_status: established_computational_simulation
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

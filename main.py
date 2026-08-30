@@ -1,5 +1,9 @@
 # main.py
-"""Main execution script to run the grid search, analysis, and reporting."""
+"""Legacy grid-search entry point preserved for reproducibility.
+
+New maintained work belongs under :mod:`neurobench`; see
+``docs/CODEBASE_NAVIGATION.md`` before extending this compatibility surface.
+"""
 
 import os
 import sys

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import signal
 import shutil
 import struct
 import subprocess
@@ -40,6 +41,26 @@ def _png_size(path: Path) -> tuple[int, int]:
     return struct.unpack(">II", header[16:24])
 
 
+def _diagnostic_text(value: str | bytes | None) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return value
+
+
+def _close_capture_pipes(process: subprocess.Popen[str]) -> None:
+    # A sandboxed or snap-confined browser can leave descendants holding the
+    # capture pipes even after its parent is killed. Closing our handles keeps
+    # the opt-in test bounded without masking the render failure.
+    for stream in (process.stdout, process.stderr):
+        if stream is not None:
+            try:
+                stream.close()
+            except OSError:
+                pass
+
+
 @unittest.skipUnless(
     os.environ.get("NEUROBENCH_BROWSER_SMOKE") == "1" and shutil.which("firefox"),
     "Set NEUROBENCH_BROWSER_SMOKE=1 with Firefox installed to run the browser smoke test",
@@ -66,6 +87,8 @@ class WorkbenchBrowserSmokeTests(unittest.TestCase):
                 js_fallback=legacy_builder.JS,
             )
             screenshot = root / "workbench.png"
+            profile = root / "firefox-profile"
+            profile.mkdir()
             env = os.environ.copy()
             env.update(
                 {
@@ -75,10 +98,14 @@ class WorkbenchBrowserSmokeTests(unittest.TestCase):
                     "MOZ_HEADLESS": "1",
                 }
             )
-            result = subprocess.run(
+            process = subprocess.Popen(
                 [
                     "firefox",
                     "--headless",
+                    "--no-remote",
+                    "--new-instance",
+                    "--profile",
+                    str(profile),
                     "--window-size",
                     "1280,900",
                     f"--screenshot={screenshot}",
@@ -87,13 +114,66 @@ class WorkbenchBrowserSmokeTests(unittest.TestCase):
                 cwd=ROOT,
                 env=env,
                 text=True,
-                capture_output=True,
-                timeout=45,
-                check=False,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                start_new_session=True,
             )
+            try:
+                stdout, stderr = process.communicate(timeout=45)
+            except subprocess.TimeoutExpired as timeout_error:
+                captured = [
+                    _diagnostic_text(timeout_error.output),
+                    _diagnostic_text(timeout_error.stderr),
+                ]
+                cleanup_errors: list[str] = []
+                try:
+                    if os.name == "posix":
+                        os.killpg(process.pid, signal.SIGKILL)
+                    else:
+                        process.kill()
+                except (OSError, PermissionError, ProcessLookupError) as error:
+                    cleanup_errors.append(f"process-group cleanup: {error}")
+                    try:
+                        process.kill()
+                    except (OSError, PermissionError, ProcessLookupError) as fallback_error:
+                        cleanup_errors.append(f"parent-process cleanup: {fallback_error}")
 
-            self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertTrue(screenshot.is_file())
+                try:
+                    stdout, stderr = process.communicate(timeout=5)
+                    captured.extend((stdout, stderr))
+                except subprocess.TimeoutExpired as cleanup_timeout:
+                    captured.extend(
+                        (
+                            _diagnostic_text(cleanup_timeout.output),
+                            _diagnostic_text(cleanup_timeout.stderr),
+                        )
+                    )
+                    cleanup_errors.append(
+                        "browser descendants retained capture pipes after forced cleanup"
+                    )
+                    _close_capture_pipes(process)
+
+                diagnostics = "\n".join(
+                    part.strip()[-2000:]
+                    for part in (*captured, *cleanup_errors)
+                    if part and part.strip()
+                )
+                self.fail(
+                    "isolated Firefox render exceeded the 45-second bound"
+                    + (f":\n{diagnostics}" if diagnostics else "")
+                )
+
+            diagnostics = "\n".join(
+                part[-2000:]
+                for part in (stdout.strip(), stderr.strip())
+                if part
+            )
+            self.assertEqual(process.returncode, 0, diagnostics)
+            self.assertTrue(
+                screenshot.is_file(),
+                "isolated Firefox exited without producing a screenshot"
+                + (f":\n{diagnostics}" if diagnostics else ""),
+            )
             width, height = _png_size(screenshot)
             size = screenshot.stat().st_size
 

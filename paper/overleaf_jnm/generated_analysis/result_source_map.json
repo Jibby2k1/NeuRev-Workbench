@@ -1,0 +1,132 @@
+{
+  "CoherenceNativeDeltaBtwenty": {
+    "analysis_view": "original_site_original_timing",
+    "code_revision": "fc814f7b5a9e5aa9cf4ea1a1cce94bca9cdfd6df",
+    "json_pointer": "/results/0/native/budget_20_macro_delta",
+    "rendered_value": "+0.0411",
+    "run_root": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8",
+    "source_file": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/10_representation_confirmation/METRICS.json",
+    "source_sha256": "b4a99cf02fa5411479da108e61e94cfdd3740be63ff163b64112e15400c6dee6",
+    "status": "provisional"
+  },
+  "CoherenceNativeRecallBtwenty": {
+    "analysis_view": "original_site_original_timing",
+    "code_revision": "fc814f7b5a9e5aa9cf4ea1a1cce94bca9cdfd6df",
+    "json_pointer": "/results/0/native_macro_recall/20",
+    "rendered_value": "0.6339",
+    "run_root": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8",
+    "source_file": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/10_representation_confirmation/METRICS.json",
+    "source_sha256": "b4a99cf02fa5411479da108e61e94cfdd3740be63ff163b64112e15400c6dee6",
+    "status": "provisional"
+  },
+  "DatasetOccurrenceCount": {
+    "analysis_view": "original_site_original_timing",
+    "code_revision": "fc814f7b5a9e5aa9cf4ea1a1cce94bca9cdfd6df",
+    "json_pointer": "/occurrences",
+    "rendered_value": "79",
+    "run_root": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8",
+    "source_file": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/01_identity_geometry/METRICS.json",
+    "source_sha256": "c5bba0d63e3238d413e18ae87dfdce2148da397ab39445b050a82b0c95348bb4",
+    "status": "provisional"
+  },
+  "FunctionalSiteVarianceFraction": {
+    "analysis_view": "original_site_original_timing",
+    "code_revision": "fc814f7b5a9e5aa9cf4ea1a1cce94bca9cdfd6df",
+    "json_pointer": "/functional_variance/integrated_variance_fraction_site",
+    "rendered_value": "0.524",
+    "run_root": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8",
+    "source_file": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/07_functional_tensor/METRICS.json",
+    "source_sha256": "1630ad89a1ef0254d620aabedab6e45f7a19766e20f9ec45f2b634be25c33f5c",
+    "status": "provisional"
+  },
+  "LagRecurrenceNativeDeltaBtwenty": {
+    "analysis_view": "original_site_original_timing",
+    "code_revision": "fc814f7b5a9e5aa9cf4ea1a1cce94bca9cdfd6df",
+    "json_pointer": "/results/1/native/budget_20_macro_delta",
+    "rendered_value": "+0.0702",
+    "run_root": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8",
+    "source_file": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/10_representation_confirmation/METRICS.json",
+    "source_sha256": "b4a99cf02fa5411479da108e61e94cfdd3740be63ff163b64112e15400c6dee6",
+    "status": "provisional"
+  },
+  "LagRecurrenceNativeRecallBtwenty": {
+    "analysis_view": "original_site_original_timing",
+    "code_revision": "fc814f7b5a9e5aa9cf4ea1a1cce94bca9cdfd6df",
+    "json_pointer": "/results/1/native_macro_recall/20",
+    "rendered_value": "0.6630",
+    "run_root": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8",
+    "source_file": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/10_representation_confirmation/METRICS.json",
+    "source_sha256": "b4a99cf02fa5411479da108e61e94cfdd3740be63ff163b64112e15400c6dee6",
+    "status": "provisional"
+  },
+  "NativeSpatialControlMean": {
+    "analysis_view": "original_site_original_timing",
+    "code_revision": "fc814f7b5a9e5aa9cf4ea1a1cce94bca9cdfd6df",
+    "json_pointer": "/native_matched_spatial_control/mean",
+    "rendered_value": "71.47",
+    "run_root": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8",
+    "source_file": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/06_spatial_specificity/METRICS.json",
+    "source_sha256": "108c57d19c1103378c3b12f92500949ef9af593d19c6ad7fe36a8eb36550e384",
+    "status": "provisional"
+  },
+  "OriginalSpatialSiteCount": {
+    "analysis_view": "original_site_original_timing",
+    "code_revision": "fc814f7b5a9e5aa9cf4ea1a1cce94bca9cdfd6df",
+    "json_pointer": "/original_sites",
+    "rendered_value": "27",
+    "run_root": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8",
+    "source_file": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/01_identity_geometry/METRICS.json",
+    "source_sha256": "c5bba0d63e3238d413e18ae87dfdce2148da397ab39445b050a82b0c95348bb4",
+    "status": "provisional"
+  },
+  "PairwiseICADifferenceRSquared": {
+    "analysis_view": "original_site_original_timing",
+    "code_revision": "fc814f7b5a9e5aa9cf4ea1a1cce94bca9cdfd6df",
+    "json_pointer": "/pairwise_ica/summary/analytic_comparisons/difference_signed/r_squared",
+    "rendered_value": "0.9938",
+    "run_root": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8",
+    "source_file": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/10_representation_confirmation/METRICS.json",
+    "source_sha256": "b4a99cf02fa5411479da108e61e94cfdd3740be63ff163b64112e15400c6dee6",
+    "status": "provisional"
+  },
+  "ProposedCanonicalIdentityCount": {
+    "analysis_view": "original_site_original_timing",
+    "code_revision": "fc814f7b5a9e5aa9cf4ea1a1cce94bca9cdfd6df",
+    "json_pointer": "/proposed_canonical_identities",
+    "rendered_value": "26",
+    "run_root": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8",
+    "source_file": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/01_identity_geometry/METRICS.json",
+    "source_sha256": "c5bba0d63e3238d413e18ae87dfdce2148da397ab39445b050a82b0c95348bb4",
+    "status": "provisional"
+  },
+  "RawAmplitudeICC": {
+    "analysis_view": "original_site_original_timing",
+    "code_revision": "fc814f7b5a9e5aa9cf4ea1a1cce94bca9cdfd6df",
+    "json_pointer": "/metrics/signed_peak_amplitude/conditional_site_icc_nonparametric",
+    "rendered_value": "0.756",
+    "run_root": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8",
+    "source_file": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/05_scalar_observability/METRICS.json",
+    "source_sha256": "f38b122c6ab505bc9b979245705de4d906708e9ed431ad28acadde6a862dd542",
+    "status": "provisional"
+  },
+  "ResidualAmplitudeICC": {
+    "analysis_view": "original_site_original_timing",
+    "code_revision": "fc814f7b5a9e5aa9cf4ea1a1cce94bca9cdfd6df",
+    "json_pointer": "/metrics/residual_peak_amplitude/conditional_site_icc_nonparametric",
+    "rendered_value": "0.850",
+    "run_root": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8",
+    "source_file": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/05_scalar_observability/METRICS.json",
+    "source_sha256": "f38b122c6ab505bc9b979245705de4d906708e9ed431ad28acadde6a862dd542",
+    "status": "provisional"
+  },
+  "SpatialSpecificityICC": {
+    "analysis_view": "original_site_original_timing",
+    "code_revision": "fc814f7b5a9e5aa9cf4ea1a1cce94bca9cdfd6df",
+    "json_pointer": "/metrics/normalized_spatial_specificity/conditional_site_icc_nonparametric",
+    "rendered_value": "0.934",
+    "run_root": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8",
+    "source_file": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/05_scalar_observability/METRICS.json",
+    "source_sha256": "f38b122c6ab505bc9b979245705de4d906708e9ed431ad28acadde6a862dd542",
+    "status": "provisional"
+  }
+}

@@ -1,0 +1,73 @@
+name: Scientific evidence or record correction
+description: Report a bounded mismatch in metrics, provenance, claims, decisions, or generated research views.
+title: "[Evidence]: "
+labels:
+  - research
+  - documentation
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Scientific corrections are first-class contributions. Do not upload raw
+        recordings, private reviewer submissions, identity maps, credentials,
+        or local output trees. Use the private security channel if disclosure is
+        involved.
+  - type: input
+    id: records
+    attributes:
+      label: Affected stable IDs and paths
+      placeholder: NREV-EXP-____, NREV-EVC-____, NREV-CLM-____, NREV-DEC-____
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Metric or population mismatch
+        - Provenance or checksum mismatch
+        - Gate or lifecycle mismatch
+        - Claim scope or limitation mismatch
+        - Decision mismatch
+        - Generated-view drift
+        - Missing or superseded evidence
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed mismatch
+      description: Quote only the minimum non-sensitive text or value needed to locate the issue.
+    validations:
+      required: true
+  - type: textarea
+    id: authority
+    attributes:
+      label: Authoritative evidence
+      description: Give committed capsule/manifest paths, public DOI or HTTPS locators, hashes, and exact validation commands.
+    validations:
+      required: true
+  - type: textarea
+    id: correction
+    attributes:
+      label: Proposed bounded correction
+      description: State which canonical record should change and whether a successor, withdrawal, or superseding decision is required.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Claim and release impact
+      description: Identify affected scope, what remains supported, and whether a public artifact or release must be held.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safeguards
+    attributes:
+      label: Safeguards
+      options:
+        - label: I did not treat unlabeled candidates as verified negatives or completion as scientific support.
+          required: true
+        - label: This report contains no restricted data, identity material, credentials, or workstation paths.
+          required: true

@@ -1,0 +1,34 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0017
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical decision effective date
+program_id: NREV-PRG-0001
+title: Decision after External Blinded Bounded Review V2
+lifecycle: active
+action: hold
+rationale: Distribute Phase A to at least two independent reviewers, accept only locked complete submissions, release Phase
+  B afterward, analyze agreement, and adjudicate before computing detector metrics or fitting label-aware models.
+evidence_summary: All 22 videos decode, three archives pass integrity checks, public scans find no private text or path leakage,
+  and coordinate, submission, randomization, staged-cache, media, archive, and agreement checks pass.
+review_state: pending
+experiment_ids:
+- NREV-EXP-0017
+claim_ids:
+- NREV-CLM-0018
+- NREV-CLM-0020
+evidence_capsule_ids:
+- NREV-EVC-EXP-0017
+constraints:
+- No external reviewer has submitted labels; implementation readiness does not establish truth, precision, recall, identity,
+  or independent-recording generalization.
+- The historical decision date was not encoded in the v1 story and was not guessed during migration.
+visibility: public
+legacy_status: complete_implementation_human_gated
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

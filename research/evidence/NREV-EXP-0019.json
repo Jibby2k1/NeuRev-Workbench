@@ -1,0 +1,81 @@
+{
+  "artifact_manifest_sha256": "53d7423f29559905ab512576be5adf85c03df23f9945bfab63fa3ab1ea7f298a",
+  "artifacts": [
+    {
+      "access": "public",
+      "bytes": 128952,
+      "id": "artifact-01",
+      "media_type": "image/png",
+      "repository_path": "paper/overleaf_jnm/figures/final/fig07_ls_denominator_diagnostics.png",
+      "role": "figure",
+      "sha256": "e082fe35a9fdac59c9252a399ec59cb3b47ce31a3230f8bf89addbe190119bef"
+    },
+    {
+      "access": "public",
+      "bytes": 1872,
+      "id": "artifact-02",
+      "media_type": "application/json",
+      "repository_path": "paper/overleaf_jnm/figures/final/fig07_ls_denominator_diagnostics.json",
+      "role": "report",
+      "sha256": "08aad57d4964eed9edc92ffe64ee65ca5e882092912df9ddf0a11725fa7e9a2b"
+    }
+  ],
+  "boundaries": {
+    "does_not_establish": [
+      "Claims beyond the registered finding and linked claim scopes.",
+      "Reproducible run provenance that was absent from the v1 story."
+    ],
+    "limitations": [
+      "Center-level audit does not establish floor inactivity across the full field."
+    ],
+    "scope": "This capsule preserves the registered v1 experiment finding and its linked claim scopes."
+  },
+  "claim_impacts": [
+    {
+      "claim_id": "NREV-CLM-0016",
+      "effect": "supports",
+      "scope": "50 centers over 560 frames; no full-field floor-inactivity claim.",
+      "summary": "The experiment supports this claim only within its registered scope."
+    }
+  ],
+  "evidence_tier": "current_recording",
+  "experiment_id": "NREV-EXP-0019",
+  "gates": [
+    {
+      "criterion": "Every artifact referenced by the v1 experiment story is available and checksum identified at migration.",
+      "id": "legacy-artifact-capture",
+      "observed": "Captured 2 of 2 referenced artifacts with SHA-256 identities.",
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-29T23:52:35Z",
+  "id": "NREV-EVC-EXP-0019",
+  "legacy_status": "complete_validated_reproduction",
+  "lifecycle": "validated",
+  "metrics": [],
+  "outcome": "supported",
+  "program_id": "NREV-PRG-0001",
+  "record_type": "evidence_capsule",
+  "review_state": "not_requested",
+  "run_ids": [],
+  "schema_version": 1,
+  "source_records_sha256": "1e3d3289e23fc5a07e4340de38d5be64f0d2e7430d0fb9048b26a9051f5a2092",
+  "summary": "Median denominator is 0.7648; the 0.371705 floor is inactive at all audited centers; saved-output RMSE is 6.96e-7.",
+  "validation": {
+    "checked_at": "2026-08-29T23:52:35Z",
+    "checks": [
+      {
+        "id": "portable-paths",
+        "status": "passed",
+        "summary": "Artifact references are repository-relative; ignored local outputs are metadata-only."
+      },
+      {
+        "id": "historical-provenance",
+        "status": "not_run",
+        "summary": "The v1 story did not encode run-level provenance, so no historical run record was invented."
+      }
+    ],
+    "status": "partial"
+  },
+  "visibility": "public"
+}

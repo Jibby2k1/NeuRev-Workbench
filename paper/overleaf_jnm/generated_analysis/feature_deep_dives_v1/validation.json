@@ -1,0 +1,16 @@
+{
+  "checks": {
+    "all_lane_misses": true,
+    "canonical_v7_trace_atlas_complete": true,
+    "detector_join_complete": true,
+    "figures": true,
+    "finite_headlines": true,
+    "kinetic_lobo_folds": true,
+    "kinetic_rows": true,
+    "occurrence_count": true,
+    "proposal_rows": true,
+    "recovery_models": true,
+    "source_audit_complete": true
+  },
+  "status": "passed"
+}

@@ -96,3 +96,24 @@ def test_joint_spatiotemporal_future_frames_do_not_change_past() -> None:
     left = causal_joint_msln(base, context, scale_floor=1.0)
     right = causal_joint_msln(changed, context, scale_floor=1.0)
     np.testing.assert_allclose(left.values[:9], right.values[:9])
+
+
+def test_joint_exports_bounded_site_denominator_diagnostics() -> None:
+    rng = np.random.default_rng(31)
+    values = (100 + rng.normal(size=(18, 11, 13))).astype(np.float32)
+    context = JointSTContext("joint_site_audit", 5, 1, 5, 1)
+    sites = np.asarray([[3, 4], [8, 10]], dtype=np.int32)
+    result = causal_joint_msln(
+        values, context, quiet_mask=np.ones(18, dtype=bool), diagnostic_sites_yx=sites
+    )
+    audit = result.site_diagnostics
+    assert audit is not None
+    assert all(item.shape == (18, 2) for item in audit.values())
+    valid = result.valid_frames
+    np.testing.assert_allclose(
+        audit["numerator"][valid] / audit["denominator"][valid],
+        result.values[valid][:, sites[:, 0], sites[:, 1]], rtol=1e-6, atol=1e-6,
+    )
+    np.testing.assert_array_equal(
+        audit["floor_applied"], (audit["local_scale"] < result.scale_floor).astype(np.float32)
+    )

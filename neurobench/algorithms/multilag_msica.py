@@ -56,6 +56,87 @@ class TemporalMSICAFit:
         }
 
 
+@dataclass(frozen=True)
+class TemporalProjectionSiteDiagnostics:
+    """Bounded component and invertibility diagnostics at selected YX sites."""
+
+    components: np.ndarray
+    embedded_input: np.ndarray
+    reconstructed_embedding: np.ndarray
+    embedding_reconstruction_residual: np.ndarray
+    residual_component_energy_fraction: np.ndarray
+    mixing: np.ndarray
+    history_frames: int
+
+    def __post_init__(self) -> None:
+        if self.components.ndim != 3 or self.embedded_input.ndim != 3:
+            raise ValueError("site diagnostics must use [channel,time,site] arrays")
+        if self.reconstructed_embedding.shape != self.embedded_input.shape:
+            raise ValueError("reconstructed embedding must align with its input")
+        if self.embedding_reconstruction_residual.shape != self.embedded_input.shape:
+            raise ValueError("embedding residual must align with its input")
+        if self.residual_component_energy_fraction.shape != self.components.shape:
+            raise ValueError("component energy fractions must align with components")
+        if not all(np.isfinite(item).all() for item in (
+            self.components, self.embedded_input, self.reconstructed_embedding,
+            self.embedding_reconstruction_residual, self.residual_component_energy_fraction,
+            self.mixing,
+        )):
+            raise ValueError("site diagnostics must be finite")
+
+
+def project_temporal_fit_at_sites(
+    values: Any,
+    fit: TemporalMSICAFit,
+    sites_yx: np.ndarray,
+) -> TemporalProjectionSiteDiagnostics:
+    """Project only selected sites and retain every learned component.
+
+    The reconstruction residual checks numerical invertibility of the learned
+    embedding transform. It is not a raw-movie denoising residual.
+    """
+    source = np.asarray(values, dtype=np.float32)
+    if source.ndim != 3 or not source.size or not np.isfinite(source).all():
+        raise ValueError("values must be a finite non-empty TYX array")
+    sites = np.asarray(sites_yx, dtype=np.int64)
+    if sites.ndim != 2 or sites.shape[1] != 2 or not len(sites):
+        raise ValueError("sites_yx must be a non-empty [sites,2] array")
+    if np.any(sites < 0) or np.any(sites[:, 0] >= source.shape[1]) or np.any(sites[:, 1] >= source.shape[2]):
+        raise ValueError("site lies outside the video")
+    yy, xx = sites.T
+    traces = source[:, yy, xx]
+    if fit.formulation == "delay_embedding":
+        history = max(fit.lags)
+        length = len(source) - history
+        embedded = np.stack(
+            [traces[history - lag:history - lag + length] for lag in fit.lags],
+            axis=0,
+        )
+    elif fit.formulation == "multilag_2d":
+        history = 1
+        embedded = np.stack((traces[:-1], traces[1:]), axis=0)
+    else:
+        raise ValueError(f"unknown formulation: {fit.formulation}")
+    centered = embedded.astype(np.float64) - np.asarray(fit.center, dtype=np.float64)[:, None, None]
+    demixing = np.asarray(fit.demixing, dtype=np.float64)
+    components = np.einsum("ci,its->cts", demixing, centered)
+    mixing = np.linalg.pinv(demixing)
+    reconstructed_centered = np.einsum("ic,cts->its", mixing, components)
+    reconstructed = reconstructed_centered + np.asarray(fit.center, dtype=np.float64)[:, None, None]
+    residual = embedded.astype(np.float64) - reconstructed
+    energy = np.square(components)
+    fractions = energy / np.maximum(energy.sum(axis=0, keepdims=True), np.finfo(float).tiny)
+    return TemporalProjectionSiteDiagnostics(
+        components=components,
+        embedded_input=embedded.astype(np.float64),
+        reconstructed_embedding=reconstructed,
+        embedding_reconstruction_residual=residual,
+        residual_component_energy_fraction=fractions,
+        mixing=mixing,
+        history_frames=history,
+    )
+
+
 def lag_weights(lags: Sequence[int], decay: float) -> np.ndarray:
     values = np.asarray(tuple(int(item) for item in lags), dtype=np.float64)
     if values.ndim != 1 or not len(values) or values[0] != 0 or np.any(np.diff(values) <= 0):

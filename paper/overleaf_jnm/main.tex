@@ -1,0 +1,89 @@
+\documentclass[preprint,12pt,authoryear]{elsarticle}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,bm,mathtools}
+\usepackage{booktabs,tabularx,longtable,array,multirow}
+\usepackage{graphicx,subcaption,float}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage[nameinlink,capitalize,noabbrev]{cleveref}
+
+\graphicspath{{figures/}}
+\setlength{\emergencystretch}{3em}
+\sisetup{detect-all,group-separator={,},group-minimum-digits=4}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!45!black,
+  citecolor=green!35!black,
+  urlcolor=blue!55!black,
+  pdftitle={Shared Burst Dynamics and Limits of Neuron-Specific Identifiability},
+  pdfauthor={Raul Valle, Jose Principe, Yinong Chen, Chenyu Liang, Xin Tang}
+}
+
+\input{macros/notation}
+\input{macros/provisional}
+\input{macros/results_macros}
+\input{macros/full_trace_feature_panel}
+\input{macros/automated_feature_validation}
+\input{macros/feature_deep_dives}
+
+\journal{Journal of Neuroscience Methods}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Shared burst dynamics and limits of neuron-specific identifiability in sparse-positive zebrafish fluorescence imaging}
+
+\author[uf]{Raul Valle}
+\author[affpending]{Jose Principe}
+\author[affpending]{Yinong Chen}
+\author[affpending]{Chenyu Liang}
+\author[affpending]{Xin Tang}
+
+\affiliation[uf]{organization={Department of Electrical and Computer Engineering, University of Florida},
+            addressline={\Missing{street address}},
+            city={Gainesville},
+            state={Florida},
+            postcode={\Missing{postcode}},
+            country={United States}}
+\affiliation[cnel]{organization={Computational NeuroEngineering Laboratory, University of Florida},
+            city={Gainesville},
+            state={Florida},
+            country={United States}}
+\affiliation[affpending]{organization={\Missing{confirm affiliation for Jose Principe, Yinong Chen, Chenyu Liang, and Xin Tang}}}
+
+\begin{abstract}
+Sparse fluorescence recordings pose a measurement problem before they pose a learning problem: event times may be partially known, active neurons may be incompletely annotated, and nearby tissue can express the same recording-level dynamics as a labeled region of interest. We present an identifiability-first analysis of one zebrafish fluorescence recording containing \NCurrentBursts{} shared burst intervals and \NCurrentOccurrences{} labeled neuron--burst occurrences at \NCurrentOriginalSites{} original spatial sites. The two-frame independent component was nearly equivalent to signed temporal differentiation, while Raw event-aligned traces exhibited a reproducible population waveform that was also present in adjacent tissue. Local ROI-minus-annulus subtraction retained event-associated amplitude without establishing a universal neuron-specific waveform. Across the complete trace at confirmed centers, amplitude localized events near the empirical ceiling, whereas the earlier full-field screen showed that local coherence improved scarce-budget known-positive recovery; no new full-trace transform improved on the frozen carrier. A harder automated suite ranked Raw first for frame-level event retrieval and found positive true-center versus displaced-tissue intervals for all six compact features. A role-specific recovery model improved cross-fitted point estimates but did not pass its site-bootstrap uncertainty gate. A separately fitted spatial ICA reconstruction was objectively localized at labeled coordinates relative to translated controls and its reconstructed output was highly stable across random seeds and leave-one-burst-out refits, even though individual ICA filters were not stable enough to interpret. Frozen detection-event classes recurred across bursts, but neither their spatial-ICA morphology nor their alignment with identity certainty survived multiplicity correction at the canonical-identity grain. Precision remains unidentified outside an exhaustively reviewed bounded field; unmatched candidates are not treated as negatives. The results support a task-specific feature stack and spatial ICA as a stable measurement representation, not as a set of named neuronal sources.
+\end{abstract}
+
+\begin{keyword}
+zebrafish \sep calcium imaging \sep sparse-positive annotation \sep source identifiability \sep fluorescence traces \sep positive-unlabeled evaluation \sep independent component analysis
+\end{keyword}
+
+\end{frontmatter}
+
+\DraftBanner
+
+\input{sections/01_introduction}
+\input{sections/02_materials_and_methods}
+\input{sections/03_results}
+\input{sections/04_discussion}
+\input{sections/05_conclusion}
+\input{sections/06_declarations}
+
+\appendix
+\section{Manuscript result-status convention}
+\label{app:result-status}
+Values marked with a dagger are imported from pre-repair repository artifacts and are provisional. They must be regenerated after the observation-site/canonical-identity repair. The final manuscript build must fail if a provisional macro remains enabled.
+
+\bibliographystyle{elsarticle-harv}
+\bibliography{references}
+
+\end{document}

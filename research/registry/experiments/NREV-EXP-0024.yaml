@@ -1,0 +1,34 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0024
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical execution date
+  - run-level code, configuration, input, environment, and randomization provenance
+  - preregistered gates
+  - experiment-specific falsifiers
+  - normalized unit of analysis, comparison, and data scope
+program_id: NREV-PRG-0001
+title: Independent Recording Confirmation
+question: Apply frozen pipeline and phenotype assignments to an independent recording.
+objective: Apply frozen pipeline and phenotype assignments to an independent recording.
+rationale: Priority 5 item in the migrated v1 next-experiment queue.
+lifecycle: draft
+outcome: not_evaluated
+evidence_tier: none
+review_state: not_requested
+falsifiers: []
+design:
+  summary: Apply frozen pipeline and phenotype assignments to an independent recording.
+gates: []
+claim_ids: []
+decision_ids: []
+visibility: public
+legacy_id: independent_recording_confirmation
+legacy_status: next_experiment
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

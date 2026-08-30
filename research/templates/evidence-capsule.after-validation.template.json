@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "record_type": "evidence_capsule",
+  "id": "__EVIDENCE_CAPSULE_ID__",
+  "experiment_id": "__EXPERIMENT_ID__",
+  "program_id": "__PROGRAM_ID__",
+  "generated_at": "__GENERATED_AT__",
+  "lifecycle": "draft",
+  "outcome": "not_evaluated",
+  "evidence_tier": "none",
+  "review_state": "not_requested",
+  "summary": "Replace only after validating the registered run; never pre-populate a favorable result.",
+  "run_ids": [],
+  "metrics": [],
+  "gates": [
+    {
+      "id": "scientific_audit",
+      "criterion": "The applicable scientific audit package passes its registered inventory and media checks.",
+      "status": "not_evaluated",
+      "observed": "Not evaluated in this template."
+    }
+  ],
+  "claim_impacts": [],
+  "artifacts": [],
+  "artifact_manifest_sha256": "__ARTIFACT_MANIFEST_SHA256__",
+  "validation": {
+    "status": "unverified",
+    "checked_at": "__CHECKED_AT__",
+    "checks": [
+      {
+        "id": "capsule_schema",
+        "status": "not_run",
+        "summary": "Validate this capsule against research/schemas/evidence-capsule.schema.json."
+      }
+    ]
+  },
+  "boundaries": {
+    "scope": "Replace with the exact population, recording, operating point, and comparison represented by this evidence.",
+    "limitations": [
+      "Replace with at least one evidence-specific limitation."
+    ],
+    "does_not_establish": [
+      "A completed computation alone does not establish a scientific claim."
+    ]
+  },
+  "source_records_sha256": "__SOURCE_RECORDS_SHA256__",
+  "visibility": "public"
+}

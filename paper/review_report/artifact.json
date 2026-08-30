@@ -1,0 +1,99 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Detection-Profile Classes: Author Review Package",
+    "description": "A compact technical review of the frozen detection-event taxonomy and post-freeze extensions.",
+    "generatedAt": "2026-08-24T10:00:00-04:00",
+    "sources": [
+      {"id": "taxonomy", "label": "Frozen detection-profile taxonomy v5", "path": "sources/detection_profile_taxonomy_v5_summary.json", "query": {"engine": "DuckDB", "language": "sql", "sql": "SELECT * FROM read_json_auto('sources/detection_profile_taxonomy_v5_summary.json')", "description": "Read the frozen taxonomy summary used to materialize the review snapshot.", "tables_used": ["sources/detection_profile_taxonomy_v5_summary.json"], "filters": ["taxonomy version v5; strict NMS radius 6 px; B20 union"], "metric_definitions": ["Detection occurrences are burst-specific events; detection sites are complete-linkage spatial consolidations within 6 px."]}},
+      {"id": "certainty", "label": "Post-freeze certainty and transition extension", "path": "sources/detection_class_extensions_v1_summary.json", "query": {"engine": "DuckDB", "language": "sql", "sql": "SELECT * FROM read_json_auto('sources/detection_class_extensions_v1_summary.json')", "description": "Read the post-freeze certainty and transition summary.", "tables_used": ["sources/detection_class_extensions_v1_summary.json"], "filters": ["canonical-v7 adjudicated rows; one-to-one spatial matching within 6 px"], "metric_definitions": ["Same-class persistence is diagonal transitions divided by all ordered within-site transitions."]}},
+      {"id": "advanced", "label": "Advanced post-freeze extensions", "path": "sources/detection_class_advanced_extensions_v1_summary.json", "query": {"engine": "DuckDB", "language": "sql", "sql": "SELECT * FROM read_json_auto('sources/detection_class_advanced_extensions_v1_summary.json')", "description": "Read the advanced morphology, centroid-margin, site-position, and trajectory summary.", "tables_used": ["sources/detection_class_advanced_extensions_v1_summary.json"], "filters": ["class fit frozen; spatial inference at 36 consolidated-site grain"], "metric_definitions": ["Centroid margin is relative nearest-versus-second-nearest Euclidean distance and is not a calibrated probability."]}},
+      {"id": "manuscript", "label": "Overleaf working manuscript results section", "path": "sources/manuscript_results_section.tex", "query": {"engine": "DuckDB", "language": "sql", "sql": "SELECT * FROM (VALUES (1, 'measurement classes'), (2, 'certainty alignment'), (3, 'Class 1 wording'), (4, 'Class 2 wording'), (5, 'field-position caveat'), (6, 'positive-unlabeled boundary')) AS author_review(item, topic)", "description": "Materialize the six author-language decisions summarized from the manuscript results section.", "tables_used": ["sources/manuscript_results_section.tex"], "filters": ["six scoped author-review statements"], "metric_definitions": ["Item is the fixed review-order identifier."]}}
+    ],
+    "cards": [
+      {"id": "occurrences", "dataset": "overview", "sourceId": "taxonomy", "description": "Strict-NMS detection events across four bursts.", "metrics": [{"label": "Detection occurrences", "field": "detection_occurrences", "format": "number"}]},
+      {"id": "sites", "dataset": "overview", "sourceId": "taxonomy", "description": "Spatially consolidated locations; sites are not assumed neurons.", "metrics": [{"label": "Consolidated sites", "field": "detection_sites", "format": "number"}]},
+      {"id": "classes", "dataset": "overview", "sourceId": "taxonomy", "description": "Frozen label-free measurement-event classes.", "metrics": [{"label": "Frozen classes", "field": "classes", "format": "number"}]},
+      {"id": "persistence", "dataset": "overview", "sourceId": "certainty", "description": "Same-class fraction across ordered within-site transitions.", "metrics": [{"label": "Same-class persistence", "field": "same_class_fraction", "format": "percent"}]},
+      {"id": "review_queue", "dataset": "overview", "sourceId": "advanced", "description": "Lowest centroid-margin quartile for optional visual review.", "metrics": [{"label": "Borderline assignments", "field": "ambiguous_occurrences", "format": "number"}]}
+    ],
+    "charts": [
+      {
+        "id": "class_counts_chart",
+        "title": "Frozen class sizes",
+        "subtitle": "Occurrence and consolidated-site denominators are shown together",
+        "type": "bar",
+        "dataset": "class_summary",
+        "sourceId": "taxonomy",
+        "encodings": {
+          "x": {"field": "class_label", "type": "nominal", "label": "Frozen class"},
+          "y": {"field": "occurrences", "type": "quantitative", "label": "Detection occurrences"},
+          "tooltip": [
+            {"field": "occurrences", "type": "quantitative", "label": "Occurrences"},
+            {"field": "sites", "type": "quantitative", "label": "Sites"},
+            {"field": "known_positive_overlap", "type": "quantitative", "label": "Sparse known-positive proximity"}
+          ]
+        },
+        "xAxisTitle": "Frozen class",
+        "yAxisTitle": "Detection occurrences",
+        "valueFormat": "number",
+        "layout": "full"
+      }
+    ],
+    "tables": [],
+    "blocks": [
+      {"id": "title", "type": "markdown", "body": "# Detection-Profile Classes: Author Review Package"},
+      {"id": "summary", "type": "markdown", "body": "## Technical summary\n\nThe strict, object-separated detector union produced **86 detection occurrences at 36 consolidated sites**. A label-free model froze three recurring measurement-event classes. Class 1 is localized and high-signal; Class 2 is broad, low-signal, and early or episodic; Class 3 is broad, lower-signal, and recurrent. The strongest extension is that Class 1 aligns with localized reviewer morphology, while Class 2 is enriched among uncertain or difficult observations. The classes are stable across bursts and recurring sites, but they are **not neuron types**, and sparse annotation cannot identify precision.", "sourceId": "taxonomy"},
+      {"id": "metrics", "type": "metric-strip", "cardIds": ["occurrences", "sites", "classes", "persistence", "review_queue"]},
+      {"id": "class_heading", "type": "markdown", "body": "## Three recurring measurement regimes\n\nThe class solution is useful because it replaces isolated hero-neuron anecdotes with recurring patterns. Class 1 contains the clearest localized events. Classes 2 and 3 separate broad low-signal events primarily by timing and recurrence. Sparse known-positive proximity is shown only after class freezing and is not precision."},
+      {"id": "class_chart_block", "type": "chart", "chartId": "class_counts_chart"},
+      {"id": "certainty_heading", "type": "markdown", "body": "## Identity uncertainty aligns with class composition, not cluster ambiguity\n\nIn canonical v7, matched confirmed observations contributed Classes 1/2/3 in counts of **8/2/24**, while identity-uncertain observations contributed **0/4/6**. Yet confirmed and uncertain observations had similar nearest-centroid margins. The uncertainty signal therefore appears related to measurement morphology and context rather than detections merely sitting between clusters. Canonical-v7 review was candidate-assisted, so this remains hypothesis-generating.", "sourceId": "certainty"},
+      {"id": "stability_heading", "type": "markdown", "body": "## Classes recur across events and spatial sites\n\nAcross 50 ordered within-site transitions, **42 remained in the same class (84%)**. Class composition did not materially drift across the four bursts. Twenty-four canonical identities were linked to matched classes; eight appeared in at least two bursts, and their median dominant-class fraction was 1.0. These results support recurring measurement regimes while still allowing occasional state changes.", "sourceId": "certainty"},
+      {"id": "advanced_heading", "type": "markdown", "body": "## Morphology supports the class interpretation; the field result is fragile\n\nLocalized-boundary morphology contributed Classes 1/2/3 in counts of **8/3/27**. Ambiguous or non-neuronal boundary morphology contributed **0/4/3**. Challenging or structured contexts also contained no Class 1 matches. At the corrected 36-site grain, only three sites were left of the provisional field boundary; two were Class 2. That spatial pattern is worth following, but it is too sparse and boundary-dependent for an anatomical claim.", "sourceId": "advanced"},
+      {"id": "definitions", "type": "markdown", "body": "## What the terms mean\n\n- **Occurrence:** one detector event in one burst.\n- **Site:** a consolidated image location that may recur across bursts; it is not automatically a neuron.\n- **Canonical identity:** an adjudicated grouping applied after geometry-preserving extraction.\n- **Class:** a label-free measurement-event archetype derived from 11 signal, spatial, temporal, recurrence, and context metrics.\n- **Centroid margin:** relative geometric separation from the nearest and second-nearest class centers; not a calibrated probability."},
+      {"id": "method", "type": "markdown", "body": "## How the result was constructed\n\nFlat feature-map plateaus were collapsed with deterministic Euclidean separation. Strict budget-20 proposals from the coherence and lag lanes were unioned within each burst, consolidated across bursts into sites, and profiled with 11 label-free variables. Features were robustly standardized within burst where appropriate. Candidate solutions with two through six classes were compared using silhouette separation and bootstrap adjusted-Rand stability. Expert labels, certainty, morphology, and context were joined only after the three-class solution was frozen."},
+      {"id": "limitations", "type": "markdown", "body": "## What this package does not establish\n\n- The classes are not biological cell types.\n- Unmatched detections are unknown, not negative.\n- Full-field precision, specificity, and false-positive rate remain unidentified.\n- Canonical-v7 certainty and morphology associations are candidate-assisted rather than independent validation.\n- The field-position result uses a provisional boundary and only three left-field sites.\n- All results are from one recording and do not establish population or cross-recording generalization."},
+      {"id": "next_steps", "type": "markdown", "body": "## Recommended review action\n\nPlease approve or revise these six statements:\n\n1. Use **measurement classes**, not neuron types. — Recommended: **Approve**\n2. Certainty aligns with class composition, not assignment margin. — Recommended: **Approve**\n3. Describe Class 1 as localized and high-signal. — Recommended: **Approve**\n4. Describe Class 2 as broad, low-signal, and early/episodic. — Recommended: **Approve or revise wording**\n5. Keep the field-position result fragile and hypothesis-generating. — Recommended: **Supplement preferred**\n6. Do not call sparse-label overlap precision or specificity. — Recommended: **Approve**\n\nIf this language is acceptable, the most valuable optional review is the 22-item lowest-margin queue, followed by the two canonical identities that changed class across bursts. A future independent recording should test whether the same profiles and morphology associations recur without refitting the class definitions."},
+      {"id": "questions", "type": "markdown", "body": "## Further questions\n\n1. Should the manuscript use **identity certainty** or **neuron certainty** as the reader-facing term?\n2. Should Class 2 be described as a difficult measurement regime, or more neutrally as broad, low-signal, early/episodic?\n3. Is the provisional field boundary scientifically meaningful enough to retain in the main text, or should it remain supplementary?\n4. Which independent recording should be used for the first locked replication?"}
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-24T10:00:00-04:00",
+    "status": "ready",
+    "datasets": {
+      "overview": [
+        {"detection_occurrences": 86, "detection_sites": 36, "classes": 3, "same_class_fraction": 0.84, "ambiguous_occurrences": 22}
+      ],
+      "class_summary": [
+        {"class_id": 1, "class_label": "Class 1", "description": "Localized, high-signal, recurrent", "occurrences": 35, "sites": 12, "raw_peak": 618.7, "residual_peak": 280.4, "spatial_specificity": 0.319, "known_positive_overlap": 28},
+        {"class_id": 2, "class_label": "Class 2", "description": "Broad, low-signal, early/episodic", "occurrences": 8, "sites": 6, "raw_peak": 269.5, "residual_peak": 94.0, "spatial_specificity": 0.170, "known_positive_overlap": 3},
+        {"class_id": 3, "class_label": "Class 3", "description": "Broad, lower-signal, recurrent", "occurrences": 43, "sites": 24, "raw_peak": 271.6, "residual_peak": 97.2, "spatial_specificity": 0.192, "known_positive_overlap": 23}
+      ],
+      "certainty_composition": [
+        {"group_class": "Conf C1", "certainty_group": "Confirmed", "class_id": 1, "matched_occurrences": 8, "eligible_labels": 54, "matched_labels": 34},
+        {"group_class": "Conf C2", "certainty_group": "Confirmed", "class_id": 2, "matched_occurrences": 2, "eligible_labels": 54, "matched_labels": 34},
+        {"group_class": "Conf C3", "certainty_group": "Confirmed", "class_id": 3, "matched_occurrences": 24, "eligible_labels": 54, "matched_labels": 34},
+        {"group_class": "Uncert C1", "certainty_group": "Identity uncertain", "class_id": 1, "matched_occurrences": 0, "eligible_labels": 22, "matched_labels": 10},
+        {"group_class": "Uncert C2", "certainty_group": "Identity uncertain", "class_id": 2, "matched_occurrences": 4, "eligible_labels": 22, "matched_labels": 10},
+        {"group_class": "Uncert C3", "certainty_group": "Identity uncertain", "class_id": 3, "matched_occurrences": 6, "eligible_labels": 22, "matched_labels": 10}
+      ],
+      "review_items": [
+        {"item": 1, "statement": "Use measurement classes, not neuron types.", "recommended_response": "Approve"},
+        {"item": 2, "statement": "Certainty aligns with composition, not assignment margin.", "recommended_response": "Approve"},
+        {"item": 3, "statement": "Describe Class 1 as localized and high-signal.", "recommended_response": "Approve"},
+        {"item": 4, "statement": "Describe Class 2 as broad, low-signal, and early/episodic.", "recommended_response": "Approve or revise"},
+        {"item": 5, "statement": "Keep the field-position result fragile and hypothesis-generating.", "recommended_response": "Supplement preferred"},
+        {"item": 6, "statement": "Do not call sparse-label overlap precision or specificity.", "recommended_response": "Approve"}
+      ]
+    }
+  },
+  "sources": [
+    {"id": "taxonomy", "label": "Frozen detection-profile taxonomy v5", "path": "sources/detection_profile_taxonomy_v5_summary.json", "query": {"engine": "DuckDB", "language": "sql", "sql": "SELECT * FROM read_json_auto('sources/detection_profile_taxonomy_v5_summary.json')", "description": "Read the frozen taxonomy summary used to materialize the review snapshot.", "tables_used": ["sources/detection_profile_taxonomy_v5_summary.json"], "filters": ["taxonomy version v5; strict NMS radius 6 px; B20 union"], "metric_definitions": ["Detection occurrences are burst-specific events; detection sites are complete-linkage spatial consolidations within 6 px."]}},
+    {"id": "certainty", "label": "Post-freeze certainty and transition extension", "path": "sources/detection_class_extensions_v1_summary.json", "query": {"engine": "DuckDB", "language": "sql", "sql": "SELECT * FROM read_json_auto('sources/detection_class_extensions_v1_summary.json')", "description": "Read the post-freeze certainty and transition summary.", "tables_used": ["sources/detection_class_extensions_v1_summary.json"], "filters": ["canonical-v7 adjudicated rows; one-to-one spatial matching within 6 px"], "metric_definitions": ["Same-class persistence is diagonal transitions divided by all ordered within-site transitions."]}},
+    {"id": "advanced", "label": "Advanced post-freeze extensions", "path": "sources/detection_class_advanced_extensions_v1_summary.json", "query": {"engine": "DuckDB", "language": "sql", "sql": "SELECT * FROM read_json_auto('sources/detection_class_advanced_extensions_v1_summary.json')", "description": "Read the advanced morphology, centroid-margin, site-position, and trajectory summary.", "tables_used": ["sources/detection_class_advanced_extensions_v1_summary.json"], "filters": ["class fit frozen; spatial inference at 36 consolidated-site grain"], "metric_definitions": ["Centroid margin is relative nearest-versus-second-nearest Euclidean distance and is not a calibrated probability."]}},
+    {"id": "manuscript", "label": "Overleaf working manuscript results section", "path": "sources/manuscript_results_section.tex", "query": {"engine": "DuckDB", "language": "sql", "sql": "SELECT * FROM (VALUES (1, 'measurement classes'), (2, 'certainty alignment'), (3, 'Class 1 wording'), (4, 'Class 2 wording'), (5, 'field-position caveat'), (6, 'positive-unlabeled boundary')) AS author_review(item, topic)", "description": "Materialize the six author-language decisions summarized from the manuscript results section.", "tables_used": ["sources/manuscript_results_section.tex"], "filters": ["six scoped author-review statements"], "metric_definitions": ["Item is the fixed review-order identifier."]}}
+  ]
+}

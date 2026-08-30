@@ -1,0 +1,4 @@
+role	observation_site_id	observation_id	burst_id	priority_rank_recovery_msln	x_px	y_px	clip_start_ui	clip_end_ui	raw_peak_value	raw_peak_ui	cs_parzen_peak_value	cs_parzen_peak_ui	local_standardization_peak_value	local_standardization_peak_ui	selection_provenance
+hero	roi_003	b03__roi_003	3	1	405.575	216.977	2107	2164	3246.0	2128	35.42924118041992	2130	26.19844627380371	2125	frozen high-observability confirmed site; occurrence selected by maximum recovery-MSLN score
+antihero	roi_011	b04__roi_011	4	37	419.847	143.3	2239	2315	1628.0	2265	11.682994842529297	2267	8.27901554107666	2262	frozen confirmed hard case; antihero is not a negative; occurrence selected by maximum recovery-MSLN score
+random	roi_010	b03__roi_010	3	53	388.694	138.907	2107	2164	1447.0	2129	7.719730377197266	2134	6.748332977294922	2127	seeded random eligible confirmed four-burst site seed 20260824; original observation-site geometry preserved; occurrence selected by maximum recovery-MSLN score

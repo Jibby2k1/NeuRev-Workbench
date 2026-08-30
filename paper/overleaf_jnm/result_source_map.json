@@ -1,0 +1,352 @@
+{
+  "macros": {
+    "CarrierRecallBtwenty": {
+      "locator": "Frozen carrier table, B20",
+      "provisional": true,
+      "rendered": "0.5409",
+      "source": "docs/research/SPON_CA_BURST_SCIENTIFIC_FEATURE_AUDIT_V1_RESULTS.md",
+      "source_sha256": "137d67cc70ef1dd74d1eb9736b0f70776f3f8d8526523aa87f87be0834719e94",
+      "value": 0.5409
+    },
+    "CertaintyDominantClassCramersV": {
+      "locator": "canonical_v7_certainty.certainty_class_association.cramers_v",
+      "provisional": false,
+      "rendered": "0.346",
+      "source": "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/20_spatial_ica_class_certainty_alignment_v3/summary.json",
+      "source_sha256": "96ae8a5b68196fda7b4f19fe4abc0ae085ca2da72b6e0ae696b39974f0be645d",
+      "value": 0.34641016151377546
+    },
+    "CertaintyDominantClassPermutationP": {
+      "locator": "canonical_v7_certainty.certainty_class_association.canonical_label_permutation_p",
+      "provisional": false,
+      "rendered": "0.313",
+      "source": "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/20_spatial_ica_class_certainty_alignment_v3/summary.json",
+      "source_sha256": "96ae8a5b68196fda7b4f19fe4abc0ae085ca2da72b6e0ae696b39974f0be645d",
+      "value": 0.3128843557822109
+    },
+    "CoherenceRecallBtwenty": {
+      "locator": "Local coherence table, B20",
+      "provisional": true,
+      "rendered": "0.6053",
+      "source": "docs/research/SPON_CA_BURST_SCIENTIFIC_FEATURE_AUDIT_V1_RESULTS.md",
+      "source_sha256": "137d67cc70ef1dd74d1eb9736b0f70776f3f8d8526523aa87f87be0834719e94",
+      "value": 0.6053
+    },
+    "ICADiffRSquared": {
+      "locator": "analytic_comparisons.difference_signed.r_squared",
+      "provisional": true,
+      "rendered": "0.9938",
+      "source": "Outputs/UnsupervisedICAEval/two_frame_stage_a_v1/summary.json",
+      "source_sha256": "3689cd1091447359da4cef3d30f20079178e49f954bb9d167f09c22326f5eb25",
+      "value": 0.9937704160179474
+    },
+    "ICADiffScoreCorrelation": {
+      "locator": "ica_vs_difference_event_score_correlation",
+      "provisional": true,
+      "rendered": "0.9988",
+      "source": "Outputs/UnsupervisedICAEval/two_frame_external_assay_v1/summary.json",
+      "source_sha256": "4000bc58dbd9756b3e4f11699a50e6876a88232f4c59ee310704f25ae5d37068",
+      "value": 0.9987937425492001
+    },
+    "ICADiffShiftP": {
+      "locator": "ica.label_shift_p_upper",
+      "provisional": true,
+      "rendered": "0.005",
+      "source": "Outputs/UnsupervisedICAEval/two_frame_external_assay_v1/summary.json",
+      "source_sha256": "4000bc58dbd9756b3e4f11699a50e6876a88232f4c59ee310704f25ae5d37068",
+      "value": 0.005
+    },
+    "LagRecallBtwenty": {
+      "locator": "standalone lagged lane, B20",
+      "provisional": true,
+      "rendered": "0.6220",
+      "source": "docs/research/SPON_CA_BURST_SCIENTIFIC_FEATURE_AUDIT_V1_RESULTS.md",
+      "source_sha256": "137d67cc70ef1dd74d1eb9736b0f70776f3f8d8526523aa87f87be0834719e94",
+      "value": 0.622
+    },
+    "LeftRightGlobalCorrelation": {
+      "locator": "left/right global correlation",
+      "provisional": true,
+      "rendered": "0.557",
+      "source": "docs/research/SPON_CA_BURST_SCIENTIFIC_FEATURE_AUDIT_V1_RESULTS.md",
+      "source_sha256": "137d67cc70ef1dd74d1eb9736b0f70776f3f8d8526523aa87f87be0834719e94",
+      "value": 0.557
+    },
+    "NCurrentBursts": {
+      "locator": "unique burst_id",
+      "provisional": true,
+      "rendered": "4",
+      "source": "Outputs/UnsupervisedICAEval/two_frame_external_assay_v1/tables/occurrence_metrics.csv",
+      "source_sha256": "ec1bb109e410d27fe31b1716dd0356d83e74e98741fe76aed9f0a7a594a797ba",
+      "value": 4
+    },
+    "NCurrentCanonicalNeurons": {
+      "locator": "unique roi_id",
+      "provisional": true,
+      "rendered": "26",
+      "source": "Outputs/UnsupervisedICAEval/two_frame_external_assay_v1/tables/occurrence_metrics.csv",
+      "source_sha256": "ec1bb109e410d27fe31b1716dd0356d83e74e98741fe76aed9f0a7a594a797ba",
+      "value": 26
+    },
+    "NCurrentOccurrences": {
+      "locator": "row count",
+      "provisional": true,
+      "rendered": "79",
+      "source": "Outputs/UnsupervisedICAEval/two_frame_external_assay_v1/tables/occurrence_metrics.csv",
+      "source_sha256": "ec1bb109e410d27fe31b1716dd0356d83e74e98741fe76aed9f0a7a594a797ba",
+      "value": 79
+    },
+    "NCurrentOriginalSites": {
+      "locator": "unique (x,y)",
+      "provisional": true,
+      "rendered": "27",
+      "source": "Outputs/UnsupervisedICAEval/two_frame_external_assay_v1/tables/occurrence_metrics.csv",
+      "source_sha256": "ec1bb109e410d27fe31b1716dd0356d83e74e98741fe76aed9f0a7a594a797ba",
+      "value": 27
+    },
+    "NCurrentRecordings": {
+      "locator": "study scope",
+      "provisional": true,
+      "rendered": "1",
+      "source": "Outputs/UnsupervisedICAEval/two_frame_external_assay_v1/summary.json",
+      "source_sha256": "4000bc58dbd9756b3e4f11699a50e6876a88232f4c59ee310704f25ae5d37068",
+      "value": 1
+    },
+    "ProvisionalFieldBoundaryX": {
+      "locator": "field-boundary paragraph",
+      "provisional": true,
+      "rendered": "x=286",
+      "source": "docs/research/SPON_CA_BURST_SCIENTIFIC_FEATURE_AUDIT_V1_RESULTS.md",
+      "source_sha256": "137d67cc70ef1dd74d1eb9736b0f70776f3f8d8526523aa87f87be0834719e94",
+      "value": "x=286"
+    },
+    "QuietVarianceSlope": {
+      "locator": "quiet variance table, full slope",
+      "provisional": true,
+      "rendered": "3.63",
+      "source": "docs/research/SPON_CA_BURST_SCIENTIFIC_FEATURE_AUDIT_V1_RESULTS.md",
+      "source_sha256": "137d67cc70ef1dd74d1eb9736b0f70776f3f8d8526523aa87f87be0834719e94",
+      "value": 3.6322
+    },
+    "QuietVarianceWeightedRtwo": {
+      "locator": "quiet variance table, weighted R2 range",
+      "provisional": true,
+      "rendered": "0.955\\text{--}0.959",
+      "source": "docs/research/SPON_CA_BURST_SCIENTIFIC_FEATURE_AUDIT_V1_RESULTS.md",
+      "source_sha256": "137d67cc70ef1dd74d1eb9736b0f70776f3f8d8526523aa87f87be0834719e94",
+      "value": "0.955\\text{--}0.959"
+    },
+    "RawAnnulusCIHigh": {
+      "locator": "delta_vs_matched_annulus.ci95_high",
+      "provisional": true,
+      "rendered": "0.0008",
+      "source": "Outputs/UnsupervisedICAEval/raw_signature_null_generalization_v1/summary.json",
+      "source_sha256": "1b6db79af536a0e5040275b2cf3ba5332f420744568c18688a1fd36e1540fb43",
+      "value": 0.0008473598158131104
+    },
+    "RawAnnulusCILow": {
+      "locator": "delta_vs_matched_annulus.ci95_low",
+      "provisional": true,
+      "rendered": "-0.0277",
+      "source": "Outputs/UnsupervisedICAEval/raw_signature_null_generalization_v1/summary.json",
+      "source_sha256": "1b6db79af536a0e5040275b2cf3ba5332f420744568c18688a1fd36e1540fb43",
+      "value": -0.027744145114669085
+    },
+    "RawAnnulusDelta": {
+      "locator": "delta_vs_matched_annulus.mean",
+      "provisional": true,
+      "rendered": "-0.0131",
+      "source": "Outputs/UnsupervisedICAEval/raw_signature_null_generalization_v1/summary.json",
+      "source_sha256": "1b6db79af536a0e5040275b2cf3ba5332f420744568c18688a1fd36e1540fb43",
+      "value": -0.01311490199479872
+    },
+    "RawFirstPCVariance": {
+      "locator": "candidate_signature.first_temporal_pca_variance_explained",
+      "provisional": true,
+      "rendered": "87.4\\%",
+      "source": "Outputs/UnsupervisedICAEval/two_frame_external_assay_v1/summary.json",
+      "source_sha256": "4000bc58dbd9756b3e4f11699a50e6876a88232f4c59ee310704f25ae5d37068",
+      "value": 0.8738954549529372
+    },
+    "RawHeldoutCorrelation": {
+      "locator": "held_out_event_correlation.mean",
+      "provisional": true,
+      "rendered": "0.8256",
+      "source": "Outputs/UnsupervisedICAEval/raw_signature_null_generalization_v1/summary.json",
+      "source_sha256": "1b6db79af536a0e5040275b2cf3ba5332f420744568c18688a1fd36e1540fb43",
+      "value": 0.8255504023799323
+    },
+    "RawWithinSiteMedianCorrelation": {
+      "locator": "within_roi_pairwise_correlation.median",
+      "provisional": true,
+      "rendered": "0.3720",
+      "source": "Outputs/UnsupervisedICAEval/raw_signature_null_generalization_v1/summary.json",
+      "source_sha256": "1b6db79af536a0e5040275b2cf3ba5332f420744568c18688a1fd36e1540fb43",
+      "value": 0.3719997955051316
+    },
+    "ResidualHeldoutCorrelation": {
+      "locator": "held_out_event_correlation.mean",
+      "provisional": true,
+      "rendered": "0.5307",
+      "source": "Outputs/UnsupervisedICAEval/roi_minus_annulus_signature_v1/summary.json",
+      "source_sha256": "799cfba6378a7271cd274ffb9dd7acb2505892243d74dac3f788f83d8a8bcfe6",
+      "value": 0.5306557311229898
+    },
+    "ResidualPeakAmplitudeCIHigh": {
+      "locator": "event_peak_amplitude_delta.ci95_high",
+      "provisional": true,
+      "rendered": "140.75",
+      "source": "Outputs/UnsupervisedICAEval/roi_minus_annulus_signature_v1/summary.json",
+      "source_sha256": "799cfba6378a7271cd274ffb9dd7acb2505892243d74dac3f788f83d8a8bcfe6",
+      "value": 140.7462834353147
+    },
+    "ResidualPeakAmplitudeCILow": {
+      "locator": "event_peak_amplitude_delta.ci95_low",
+      "provisional": true,
+      "rendered": "50.64",
+      "source": "Outputs/UnsupervisedICAEval/roi_minus_annulus_signature_v1/summary.json",
+      "source_sha256": "799cfba6378a7271cd274ffb9dd7acb2505892243d74dac3f788f83d8a8bcfe6",
+      "value": 50.640966018356636
+    },
+    "ResidualPeakAmplitudeDelta": {
+      "locator": "event_peak_amplitude_delta.mean",
+      "provisional": true,
+      "rendered": "91.33",
+      "source": "Outputs/UnsupervisedICAEval/roi_minus_annulus_signature_v1/summary.json",
+      "source_sha256": "799cfba6378a7271cd274ffb9dd7acb2505892243d74dac3f788f83d8a8bcfe6",
+      "value": 91.32843968531469
+    },
+    "ResidualSpatialCIHigh": {
+      "locator": "delta_vs_spatial_control.ci95_high",
+      "provisional": true,
+      "rendered": "0.0472",
+      "source": "Outputs/UnsupervisedICAEval/roi_minus_annulus_signature_v1/summary.json",
+      "source_sha256": "799cfba6378a7271cd274ffb9dd7acb2505892243d74dac3f788f83d8a8bcfe6",
+      "value": 0.04724617155656419
+    },
+    "ResidualSpatialCILow": {
+      "locator": "delta_vs_spatial_control.ci95_low",
+      "provisional": true,
+      "rendered": "-0.2560",
+      "source": "Outputs/UnsupervisedICAEval/roi_minus_annulus_signature_v1/summary.json",
+      "source_sha256": "799cfba6378a7271cd274ffb9dd7acb2505892243d74dac3f788f83d8a8bcfe6",
+      "value": -0.25597458858689165
+    },
+    "ResidualSpatialDelta": {
+      "locator": "delta_vs_spatial_control.mean",
+      "provisional": true,
+      "rendered": "-0.0953",
+      "source": "Outputs/UnsupervisedICAEval/roi_minus_annulus_signature_v1/summary.json",
+      "source_sha256": "799cfba6378a7271cd274ffb9dd7acb2505892243d74dac3f788f83d8a8bcfe6",
+      "value": -0.0952971099287779
+    },
+    "ResidualWithinSiteMedianCorrelation": {
+      "locator": "within_roi_pairwise_correlation.median",
+      "provisional": true,
+      "rendered": "0.3144",
+      "source": "Outputs/UnsupervisedICAEval/roi_minus_annulus_signature_v1/summary.json",
+      "source_sha256": "799cfba6378a7271cd274ffb9dd7acb2505892243d74dac3f788f83d8a8bcfe6",
+      "value": 0.3144231373206126
+    },
+    "SpatialICAContrastDelta": {
+      "locator": "tests[Spatial ICA,center_annulus_contrast].mean_observed_minus_control",
+      "provisional": false,
+      "rendered": "0.170",
+      "source": "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/17_spatial_ica_objective_morphology_v2/summary.json",
+      "source_sha256": "22ed591ab70a50a6c1a10b55d6af8d08b60778bb86aa574a88d8ee5bd06d230f",
+      "value": 0.16976072848701776
+    },
+    "SpatialICAContrastQ": {
+      "locator": "tests[Spatial ICA,center_annulus_contrast].bh_q_across_12_tests",
+      "provisional": false,
+      "rendered": "0.0001",
+      "source": "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/17_spatial_ica_objective_morphology_v2/summary.json",
+      "source_sha256": "22ed591ab70a50a6c1a10b55d6af8d08b60778bb86aa574a88d8ee5bd06d230f",
+      "value": 0.000119994000299985
+    },
+    "SpatialICAMinEventMapCorrelation": {
+      "locator": "reconstruction_stability.tsv:min(median_event_map_correlation)",
+      "provisional": false,
+      "rendered": "0.9983",
+      "source": "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/19_spatial_ica_reconstruction_stability_v2/summary.json",
+      "source_sha256": "344f5e9b7ea707027f79f1a067e0f0aa6358ea30be8c03643cb9b0e6a8198e8c",
+      "value": 0.9983226863501029
+    },
+    "SpatialICAMinMorphologySpearman": {
+      "locator": "reconstruction_stability.tsv:min(median_morphology_spearman)",
+      "provisional": false,
+      "rendered": "0.9948",
+      "source": "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/19_spatial_ica_reconstruction_stability_v2/summary.json",
+      "source_sha256": "344f5e9b7ea707027f79f1a067e0f0aa6358ea30be8c03643cb9b0e6a8198e8c",
+      "value": 0.9948051948051948
+    },
+    "SpatialICAMinPixelCorrelation": {
+      "locator": "reconstruction_stability.tsv:min(pixel_correlation)",
+      "provisional": false,
+      "rendered": "0.9985",
+      "source": "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/19_spatial_ica_reconstruction_stability_v2/summary.json",
+      "source_sha256": "344f5e9b7ea707027f79f1a067e0f0aa6358ea30be8c03643cb9b0e6a8198e8c",
+      "value": 0.9984666974055948
+    },
+    "SpatialICAPeakOffsetDelta": {
+      "locator": "tests[Spatial ICA,peak_offset_px].mean_observed_minus_control",
+      "provisional": false,
+      "rendered": "-3.990",
+      "source": "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/17_spatial_ica_objective_morphology_v2/summary.json",
+      "source_sha256": "22ed591ab70a50a6c1a10b55d6af8d08b60778bb86aa574a88d8ee5bd06d230f",
+      "value": -3.9903331544898895
+    },
+    "SpatialICAPeakOffsetQ": {
+      "locator": "tests[Spatial ICA,peak_offset_px].bh_q_across_12_tests",
+      "provisional": false,
+      "rendered": "0.0003",
+      "source": "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/17_spatial_ica_objective_morphology_v2/summary.json",
+      "source_sha256": "22ed591ab70a50a6c1a10b55d6af8d08b60778bb86aa574a88d8ee5bd06d230f",
+      "value": 0.0003428400008571
+    },
+    "SpatialICARadiusDelta": {
+      "locator": "tests[Spatial ICA,effective_radius_px].mean_observed_minus_control",
+      "provisional": false,
+      "rendered": "-1.335",
+      "source": "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/17_spatial_ica_objective_morphology_v2/summary.json",
+      "source_sha256": "22ed591ab70a50a6c1a10b55d6af8d08b60778bb86aa574a88d8ee5bd06d230f",
+      "value": -1.3353721105141416
+    },
+    "SpatialICARadiusQ": {
+      "locator": "tests[Spatial ICA,effective_radius_px].bh_q_across_12_tests",
+      "provisional": false,
+      "rendered": "0.0014",
+      "source": "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/17_spatial_ica_objective_morphology_v2/summary.json",
+      "source_sha256": "22ed591ab70a50a6c1a10b55d6af8d08b60778bb86aa574a88d8ee5bd06d230f",
+      "value": 0.001424928753562322
+    },
+    "SpatialICAReferenceRecall": {
+      "locator": "reference_fixed_budget_mean_recall",
+      "provisional": false,
+      "rendered": "0.6714",
+      "source": "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/19_spatial_ica_reconstruction_stability_v2/summary.json",
+      "source_sha256": "344f5e9b7ea707027f79f1a067e0f0aa6358ea30be8c03643cb9b0e6a8198e8c",
+      "value": 0.6713768115942029
+    },
+    "SpatialICAVsevenBoundaryEpsilon": {
+      "locator": "canonical_v7_class_sensitivity.class_tests[Spatial ICA,boundary_sharpness].epsilon_squared",
+      "provisional": false,
+      "rendered": "0.323",
+      "source": "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/20_spatial_ica_class_certainty_alignment_v3/summary.json",
+      "source_sha256": "96ae8a5b68196fda7b4f19fe4abc0ae085ca2da72b6e0ae696b39974f0be645d",
+      "value": 0.3232341269841267
+    },
+    "SpatialICAVsevenBoundaryQ": {
+      "locator": "canonical_v7_class_sensitivity.class_tests[Spatial ICA,boundary_sharpness].bh_q_across_14_class_tests",
+      "provisional": false,
+      "rendered": "0.0679",
+      "source": "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/20_spatial_ica_class_certainty_alignment_v3/summary.json",
+      "source_sha256": "96ae8a5b68196fda7b4f19fe4abc0ae085ca2da72b6e0ae696b39974f0be645d",
+      "value": 0.06789660516974151
+    }
+  },
+  "mode": "current_pre_repair",
+  "root": "media://NeuRev-Workbench-unsupervised-ica-eval",
+  "schema_version": 1,
+  "warnings": []
+}

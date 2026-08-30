@@ -1,0 +1,99 @@
+{
+  "artifact_manifest_sha256": "1785fdb69b3ff5b8ad6b4e1199d54cef513b16d991efc9bc79598686bdfe5154",
+  "artifacts": [
+    {
+      "access": "public",
+      "bytes": 4504,
+      "id": "artifact-01",
+      "media_type": "text/markdown",
+      "repository_path": "docs/research/SPON_CA_BURST_AUTOMATED_CHALLENGE_SUITE_V7_RESULTS.md",
+      "role": "report",
+      "sha256": "64c1ea5ab10090a92e25e033793071a72c1e3f642e85e8f054405e605f359265"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 4506,
+      "id": "artifact-02",
+      "media_type": "application/json",
+      "repository_path": "Outputs/NeuronIdentifiability/automated_challenge_suite_v7/summary.json",
+      "role": "summary",
+      "sha256": "c703c491573ef7a157fd9c43c6a600431243294fc2a1a0cc7be629ed43e46981"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 1159,
+      "id": "artifact-03",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "Outputs/NeuronIdentifiability/automated_challenge_suite_v7/weak_neighbor_frontier.tsv",
+      "role": "table",
+      "sha256": "09e1083020458d44c503f27714b97fe456d91eb4b57faeaee658b9653d609332"
+    },
+    {
+      "access": "metadata_only",
+      "bytes": 987,
+      "id": "artifact-04",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "Outputs/NeuronIdentifiability/automated_challenge_suite_v7/negative_controls.tsv",
+      "role": "table",
+      "sha256": "3d9c4a9940cdb64bc402c08570cb4992c6fa6a95c53427e3a20e15df2236472f"
+    }
+  ],
+  "boundaries": {
+    "does_not_establish": [
+      "Claims beyond the registered finding and linked claim scopes.",
+      "Reproducible run provenance that was absent from the v1 story."
+    ],
+    "limitations": [
+      "Several challenges are intentionally stylized and OOD separation is likely optimistic; the second simulator is easier than the primary; suppression is tested only after local-max proposal formation; six seeds limit precision of severity boundaries."
+    ],
+    "scope": "This capsule preserves the registered v1 experiment finding and its linked claim scopes."
+  },
+  "claim_impacts": [
+    {
+      "claim_id": "NREV-CLM-0012",
+      "effect": "supports",
+      "scope": "Six seeds per condition across null normalization, suppression, source-count stopping, weak-neighbor, colored noise, motion, morphology, severity, OOD, cross-simulator, stability, and negative-control tests.",
+      "summary": "The experiment supports this claim only within its registered scope."
+    }
+  ],
+  "evidence_tier": "computational_simulation",
+  "experiment_id": "NREV-EXP-0013",
+  "gates": [
+    {
+      "criterion": "Every artifact referenced by the v1 experiment story is available and checksum identified at migration.",
+      "id": "legacy-artifact-capture",
+      "observed": "Captured 4 of 4 referenced artifacts with SHA-256 identities.",
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-29T23:52:35Z",
+  "id": "NREV-EVC-EXP-0013",
+  "legacy_status": "complete_computational_mixed_result",
+  "lifecycle": "validated",
+  "metrics": [],
+  "outcome": "mixed",
+  "program_id": "NREV-PRG-0001",
+  "record_type": "evidence_capsule",
+  "review_state": "not_requested",
+  "run_ids": [],
+  "schema_version": 1,
+  "source_records_sha256": "6f82fb49c08b5fc2b2affddf41557677b8a5e06073e21dc8d3c9eae2f443d3bb",
+  "summary": "Movie-wise robust null normalization improved mean F1 from 0.505 to 0.523; OOD signatures separated the deliberately shifted challenges with AUC 1.0; and a second simulator passed the F1 gate. Conversely, BH stopping produced F1 0.299, suppression variants were equivalent, weak-neighbor 80-percent recovery required amplitude ratio 1.0 at 3 to 7 px, colored noise reduced top-eight recall from 0.833 to 0.708, stability F1 ranged from 0 to 0.5, and reversed-time kinetic AUC remained 0.731.",
+  "validation": {
+    "checked_at": "2026-08-29T23:52:35Z",
+    "checks": [
+      {
+        "id": "portable-paths",
+        "status": "passed",
+        "summary": "Artifact references are repository-relative; ignored local outputs are metadata-only."
+      },
+      {
+        "id": "historical-provenance",
+        "status": "not_run",
+        "summary": "The v1 story did not encode run-level provenance, so no historical run record was invented."
+      }
+    ],
+    "status": "partial"
+  },
+  "visibility": "public"
+}

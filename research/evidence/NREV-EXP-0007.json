@@ -1,0 +1,108 @@
+{
+  "artifact_manifest_sha256": "2386537ece73bb2aa932ea8baeb9ef04e0d89ea83e94dd0e13a99cb062f21885",
+  "artifacts": [
+    {
+      "access": "public",
+      "bytes": 8083,
+      "id": "artifact-01",
+      "media_type": "text/markdown",
+      "repository_path": "docs/research/SPON_CA_BURST_IDENTITY_AWARE_RECENTER_AUDIT_V8_RESULTS.md",
+      "role": "report",
+      "sha256": "7f24de64b86ce7b76986d4d311f619baa05a44dd24dd08a82d4c805700437f1e"
+    },
+    {
+      "access": "public",
+      "bytes": 1556,
+      "id": "artifact-02",
+      "media_type": "text/x-tex",
+      "repository_path": "paper/overleaf_jnm/tables/identity_aware_recenter_v8.tex",
+      "role": "report",
+      "sha256": "8b01900431f2ae1d61d776aca2e58ef7c158f8bd230c6422687daa04060923e5"
+    },
+    {
+      "access": "public",
+      "bytes": 246795,
+      "id": "artifact-03",
+      "media_type": "image/png",
+      "repository_path": "paper/overleaf_jnm/figures/final/fig13_identity_aware_feature_inspection_v8.png",
+      "role": "figure",
+      "sha256": "907dc83533edfe8c9bde42dfb54c2d501771f48e720a68e778dd195a69bddd3d"
+    },
+    {
+      "access": "public",
+      "bytes": 1084,
+      "id": "artifact-04",
+      "media_type": "application/json",
+      "repository_path": "paper/overleaf_jnm/generated_analysis/identity_aware_feature_inspection_v8/summary.json",
+      "role": "summary",
+      "sha256": "6cec38fbdc9d49397fb20b556f7242e77f231f6e833f05da6c7835fcf94eb928"
+    },
+    {
+      "access": "public",
+      "bytes": 685,
+      "id": "artifact-05",
+      "media_type": "application/json",
+      "repository_path": "paper/overleaf_jnm/generated_analysis/identity_aware_validation_suite_v2/summary.json",
+      "role": "summary",
+      "sha256": "d365b6f838606472ea1017bcdff30be21c1f3ec3792e3facff2316052321e467"
+    }
+  ],
+  "boundaries": {
+    "does_not_establish": [
+      "Claims beyond the registered finding and linked claim scopes.",
+      "Reproducible run provenance that was absent from the v1 story."
+    ],
+    "limitations": [
+      "The search and footprint weights are same-event response-selected; labeled geometry is not exhaustive biological truth, only four identity-clear misses remain, and no classifier was fit."
+    ],
+    "scope": "This capsule preserves the registered v1 experiment finding and its linked claim scopes."
+  },
+  "claim_impacts": [
+    {
+      "claim_id": "NREV-CLM-0006",
+      "effect": "supports",
+      "scope": "Canonical-v8 interpretation audit of the 12 canonical-v7 all-lane B58 misses; 2 same-identity collisions, 6 other-identity collisions, and 4 identity-clear hypotheses under a fixed six-pixel guard.",
+      "summary": "The experiment supports this claim only within its registered scope."
+    }
+  ],
+  "evidence_tier": "reviewed_current_recording",
+  "experiment_id": "NREV-EXP-0007",
+  "gates": [
+    {
+      "criterion": "Every artifact referenced by the v1 experiment story is available and checksum identified at migration.",
+      "id": "legacy-artifact-capture",
+      "observed": "Captured 5 of 5 referenced artifacts with SHA-256 identities.",
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-29T23:52:35Z",
+  "id": "NREV-EVC-EXP-0007",
+  "legacy_status": "complete_reviewed_interpretation_update",
+  "lifecycle": "validated",
+  "metrics": [],
+  "outcome": "supported",
+  "program_id": "NREV-PRG-0001",
+  "record_type": "evidence_capsule",
+  "review_state": "in_review",
+  "run_ids": [],
+  "schema_version": 1,
+  "source_records_sha256": "d68526a7a8a7610edb6084dd4a12f6ef94626dddc28f98469ff4cef1b82ae234",
+  "summary": "Two candidates collided with the same canonical identity, six with another identity, and only four were identity-clear. Collision shifts were more directionally consistent across stages and more coupled to neighboring traces than identity-clear shifts; footprint morphology alone was weakly separating.",
+  "validation": {
+    "checked_at": "2026-08-29T23:52:35Z",
+    "checks": [
+      {
+        "id": "portable-paths",
+        "status": "passed",
+        "summary": "Artifact references are repository-relative; ignored local outputs are metadata-only."
+      },
+      {
+        "id": "historical-provenance",
+        "status": "not_run",
+        "summary": "The v1 story did not encode run-level provenance, so no historical run record was invented."
+      }
+    ],
+    "status": "partial"
+  },
+  "visibility": "public"
+}

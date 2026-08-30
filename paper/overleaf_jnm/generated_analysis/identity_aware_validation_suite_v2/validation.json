@@ -1,0 +1,12 @@
+{
+  "checks": {
+    "budget_grid_complete": true,
+    "exact_tests": true,
+    "negative_controls_present": true,
+    "source_audit_passed": true,
+    "twelve_identity": true,
+    "twelve_spatial": true,
+    "twelve_stageout_x3": true
+  },
+  "status": "passed"
+}

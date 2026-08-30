@@ -3,7 +3,7 @@
 ## Scope and status
 
 This workflow implements the global event-mass diagnostic specified in
-`Event_Balanced_CS_Parzen_ICA_CODEX_SPEC.md`. It asks whether controlled
+`docs/archive/plans/Event_Balanced_CS_Parzen_ICA_CODEX_SPEC.md`. It asks whether controlled
 training mass on annotated event observations produces a stable,
 held-out-generalizing departure from the derivative-like global two-frame
 CS-Parzen ICA solution.

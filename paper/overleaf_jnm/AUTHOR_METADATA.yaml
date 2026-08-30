@@ -1,0 +1,31 @@
+schema_version: 1
+source: user_supplied_2026-08-23
+order_status: recorded_as_supplied
+authors:
+  - order: 1
+    name: Raul Valle
+    supplied_role: Student
+    affiliation_status: existing_draft_lists_uf_ece_needs_confirmation
+  - order: 2
+    name: Jose Principe
+    supplied_role: Professor
+    affiliation_status: pending
+  - order: 3
+    name: Yinong Chen
+    supplied_role: Student
+    affiliation_status: pending
+  - order: 4
+    name: Chenyu Liang
+    supplied_role: Student
+    affiliation_status: pending
+  - order: 5
+    name: Xin Tang
+    supplied_role: Professor
+    affiliation_status: pending
+corresponding_author:
+  status: pending
+  name: null
+  email: null
+credit_contributions:
+  status: pending
+  note: Student and Professor are supplied position labels, not CRediT contributions.

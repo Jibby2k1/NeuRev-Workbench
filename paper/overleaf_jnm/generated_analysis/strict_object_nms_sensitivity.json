@@ -1,0 +1,2147 @@
+{
+  "budgets": [
+    20,
+    40,
+    58,
+    80,
+    100
+  ],
+  "candidate_unit": "distinct spatial object proposal rather than plateau pixel",
+  "decision": {
+    "coherence_w15": "C3_confirmed_under_strict_object_nms",
+    "propagation_lag2_w15": "C3_confirmed_under_strict_object_nms"
+  },
+  "estimand": "known-positive recall on 79 immutable original occurrences",
+  "gates": {
+    "coherence_w15": {
+      "4": {
+        "burst_deltas_b20": [
+          0.0,
+          0.04999999999999999,
+          0.09523809523809523,
+          0.0
+        ],
+        "catastrophic_drop": false,
+        "macro_delta_b20": 0.03630952380952379,
+        "nonnegative_bursts": 4,
+        "passed": true,
+        "positive_aggregate": true
+      },
+      "6": {
+        "burst_deltas_b20": [
+          0.06666666666666665,
+          0.050000000000000044,
+          0.04761904761904756,
+          0.0
+        ],
+        "catastrophic_drop": false,
+        "macro_delta_b20": 0.041071428571428426,
+        "nonnegative_bursts": 4,
+        "passed": true,
+        "positive_aggregate": true
+      },
+      "8": {
+        "burst_deltas_b20": [
+          0.0,
+          0.050000000000000044,
+          0.0,
+          0.04347826086956519
+        ],
+        "catastrophic_drop": false,
+        "macro_delta_b20": 0.02336956521739142,
+        "nonnegative_bursts": 4,
+        "passed": true,
+        "positive_aggregate": true
+      }
+    },
+    "propagation_lag2_w15": {
+      "4": {
+        "burst_deltas_b20": [
+          0.0,
+          0.04999999999999999,
+          0.04761904761904767,
+          0.0
+        ],
+        "catastrophic_drop": false,
+        "macro_delta_b20": 0.02440476190476193,
+        "nonnegative_bursts": 4,
+        "passed": true,
+        "positive_aggregate": true
+      },
+      "6": {
+        "burst_deltas_b20": [
+          0.1333333333333333,
+          0.09999999999999998,
+          0.04761904761904756,
+          0.0
+        ],
+        "catastrophic_drop": false,
+        "macro_delta_b20": 0.07023809523809521,
+        "nonnegative_bursts": 4,
+        "passed": true,
+        "positive_aggregate": true
+      },
+      "8": {
+        "burst_deltas_b20": [
+          0.0,
+          0.09999999999999998,
+          -0.04761904761904756,
+          0.04347826086956519
+        ],
+        "catastrophic_drop": false,
+        "macro_delta_b20": 0.023964803312629512,
+        "nonnegative_bursts": 3,
+        "passed": true,
+        "positive_aggregate": true
+      }
+    }
+  },
+  "label_free_tie_breaker": "within-event maximum of the frozen lane",
+  "primary_c3_pattern": {
+    "coherence_w15": true,
+    "propagation_lag2_w15": true
+  },
+  "primary_nms_px": 6,
+  "reason_for_corrected_contract": "maximum-filter plateaus produced adjacent pixel duplicates under the legacy candidate extractor",
+  "results": [
+    {
+      "feature_id": "carrier_signed",
+      "folds": [
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 15,
+              "matched": 14,
+              "recall": 0.9333333333333333
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 15,
+              "matched": 10,
+              "recall": 0.6666666666666666
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 15,
+              "matched": 10,
+              "recall": 0.6666666666666666
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 15,
+              "matched": 12,
+              "recall": 0.8
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 15,
+              "matched": 14,
+              "recall": 0.9333333333333333
+            }
+          },
+          "burst_id": 1,
+          "event_frames_ui_inclusive": [
+            2003,
+            2026
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "matched": 12,
+            "ranking_miss": 2
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 20,
+              "matched": 17,
+              "recall": 0.85
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 20,
+              "matched": 9,
+              "recall": 0.45
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 20,
+              "matched": 12,
+              "recall": 0.6
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 20,
+              "matched": 16,
+              "recall": 0.8
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 20,
+              "matched": 17,
+              "recall": 0.85
+            }
+          },
+          "burst_id": 2,
+          "event_frames_ui_inclusive": [
+            2040,
+            2063
+          ],
+          "failure_counts_at_budget_58": {
+            "localization_miss": 1,
+            "matched": 16,
+            "ranking_miss": 3
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 21,
+              "matched": 18,
+              "recall": 0.8571428571428571
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 21,
+              "matched": 12,
+              "recall": 0.5714285714285714
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 21,
+              "matched": 15,
+              "recall": 0.7142857142857143
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            }
+          },
+          "burst_id": 3,
+          "event_frames_ui_inclusive": [
+            2122,
+            2149
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 1,
+            "matched": 17,
+            "ranking_miss": 2
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 23,
+              "matched": 18,
+              "recall": 0.782608695652174
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 23,
+              "matched": 15,
+              "recall": 0.6521739130434783
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 23,
+              "matched": 17,
+              "recall": 0.7391304347826086
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 23,
+              "matched": 17,
+              "recall": 0.7391304347826086
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 23,
+              "matched": 18,
+              "recall": 0.782608695652174
+            }
+          },
+          "burst_id": 4,
+          "event_frames_ui_inclusive": [
+            2254,
+            2300
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 2,
+            "matched": 17,
+            "nms_suppressed": 1,
+            "ranking_miss": 2
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        }
+      ],
+      "label_view": "original",
+      "macro_recall": {
+        "100": 0.8557712215320911,
+        "20": 0.5850672877846791,
+        "40": 0.6800207039337474,
+        "58": 0.7871635610766046,
+        "80": 0.8438664596273291
+      },
+      "nms_contract": "explicit_greedy_euclidean_separation_with_label_free_event_max_tie_breaker",
+      "nms_distance_px": 4,
+      "pooled_counts": {
+        "100": {
+          "labels": 79,
+          "matched": 67
+        },
+        "20": {
+          "labels": 79,
+          "matched": 46
+        },
+        "40": {
+          "labels": 79,
+          "matched": 54
+        },
+        "58": {
+          "labels": 79,
+          "matched": 62
+        },
+        "80": {
+          "labels": 79,
+          "matched": 66
+        }
+      },
+      "timing_view": "original"
+    },
+    {
+      "feature_id": "carrier_signed",
+      "folds": [
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 15,
+              "matched": 13,
+              "recall": 0.8666666666666667
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 15,
+              "matched": 9,
+              "recall": 0.6
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 15,
+              "matched": 11,
+              "recall": 0.7333333333333333
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 15,
+              "matched": 12,
+              "recall": 0.8
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 15,
+              "matched": 13,
+              "recall": 0.8666666666666667
+            }
+          },
+          "burst_id": 1,
+          "event_frames_ui_inclusive": [
+            2003,
+            2026
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 1,
+            "matched": 12,
+            "ranking_miss": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 20,
+              "matched": 16,
+              "recall": 0.8
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 20,
+              "matched": 10,
+              "recall": 0.5
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 20,
+              "matched": 14,
+              "recall": 0.7
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 20,
+              "matched": 15,
+              "recall": 0.75
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 20,
+              "matched": 16,
+              "recall": 0.8
+            }
+          },
+          "burst_id": 2,
+          "event_frames_ui_inclusive": [
+            2040,
+            2063
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 3,
+            "matched": 15,
+            "ranking_miss": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 21,
+              "matched": 13,
+              "recall": 0.6190476190476191
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            }
+          },
+          "burst_id": 3,
+          "event_frames_ui_inclusive": [
+            2122,
+            2149
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 2,
+            "matched": 17,
+            "nms_suppressed": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 23,
+              "matched": 19,
+              "recall": 0.8260869565217391
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 23,
+              "matched": 15,
+              "recall": 0.6521739130434783
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 23,
+              "matched": 17,
+              "recall": 0.7391304347826086
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 23,
+              "matched": 18,
+              "recall": 0.782608695652174
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 23,
+              "matched": 18,
+              "recall": 0.782608695652174
+            }
+          },
+          "burst_id": 4,
+          "event_frames_ui_inclusive": [
+            2254,
+            2300
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 2,
+            "matched": 18,
+            "nms_suppressed": 1,
+            "ranking_miss": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        }
+      ],
+      "label_view": "original",
+      "macro_recall": {
+        "100": 0.8255693581780539,
+        "20": 0.5928053830227744,
+        "40": 0.7454968944099378,
+        "58": 0.7855331262939959,
+        "80": 0.8146997929606625
+      },
+      "nms_contract": "explicit_greedy_euclidean_separation_with_label_free_event_max_tie_breaker",
+      "nms_distance_px": 6,
+      "pooled_counts": {
+        "100": {
+          "labels": 79,
+          "matched": 65
+        },
+        "20": {
+          "labels": 79,
+          "matched": 47
+        },
+        "40": {
+          "labels": 79,
+          "matched": 59
+        },
+        "58": {
+          "labels": 79,
+          "matched": 62
+        },
+        "80": {
+          "labels": 79,
+          "matched": 64
+        }
+      },
+      "timing_view": "original"
+    },
+    {
+      "feature_id": "carrier_signed",
+      "folds": [
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 15,
+              "matched": 11,
+              "recall": 0.7333333333333333
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 15,
+              "matched": 8,
+              "recall": 0.5333333333333333
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 15,
+              "matched": 10,
+              "recall": 0.6666666666666666
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 15,
+              "matched": 11,
+              "recall": 0.7333333333333333
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 15,
+              "matched": 11,
+              "recall": 0.7333333333333333
+            }
+          },
+          "burst_id": 1,
+          "event_frames_ui_inclusive": [
+            2003,
+            2026
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 1,
+            "matched": 11,
+            "nms_suppressed": 2
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 20,
+              "matched": 16,
+              "recall": 0.8
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 20,
+              "matched": 10,
+              "recall": 0.5
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 20,
+              "matched": 15,
+              "recall": 0.75
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 20,
+              "matched": 15,
+              "recall": 0.75
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 20,
+              "matched": 16,
+              "recall": 0.8
+            }
+          },
+          "burst_id": 2,
+          "event_frames_ui_inclusive": [
+            2040,
+            2063
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 3,
+            "matched": 15,
+            "ranking_miss": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 21,
+              "matched": 14,
+              "recall": 0.6666666666666666
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            }
+          },
+          "burst_id": 3,
+          "event_frames_ui_inclusive": [
+            2122,
+            2149
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 2,
+            "matched": 17,
+            "nms_suppressed": 1
+          },
+          "nms_candidate_count": 440,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 23,
+              "matched": 18,
+              "recall": 0.782608695652174
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 23,
+              "matched": 15,
+              "recall": 0.6521739130434783
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 23,
+              "matched": 16,
+              "recall": 0.6956521739130435
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 23,
+              "matched": 17,
+              "recall": 0.7391304347826086
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 23,
+              "matched": 18,
+              "recall": 0.782608695652174
+            }
+          },
+          "burst_id": 4,
+          "event_frames_ui_inclusive": [
+            2254,
+            2300
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 2,
+            "localization_miss": 2,
+            "matched": 17,
+            "nms_suppressed": 1,
+            "ranking_miss": 1
+          },
+          "nms_candidate_count": 463,
+          "raw_local_maximum_count": 5000
+        }
+      ],
+      "label_view": "original",
+      "macro_recall": {
+        "100": 0.7813664596273291,
+        "20": 0.5880434782608694,
+        "40": 0.7304606625258799,
+        "58": 0.7579968944099378,
+        "80": 0.7813664596273291
+      },
+      "nms_contract": "explicit_greedy_euclidean_separation_with_label_free_event_max_tie_breaker",
+      "nms_distance_px": 8,
+      "pooled_counts": {
+        "100": {
+          "labels": 79,
+          "matched": 62
+        },
+        "20": {
+          "labels": 79,
+          "matched": 47
+        },
+        "40": {
+          "labels": 79,
+          "matched": 58
+        },
+        "58": {
+          "labels": 79,
+          "matched": 60
+        },
+        "80": {
+          "labels": 79,
+          "matched": 62
+        }
+      },
+      "timing_view": "original"
+    },
+    {
+      "feature_id": "coherence_w15",
+      "folds": [
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 15,
+              "matched": 15,
+              "recall": 1.0
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 15,
+              "matched": 10,
+              "recall": 0.6666666666666666
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 15,
+              "matched": 11,
+              "recall": 0.7333333333333333
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 15,
+              "matched": 12,
+              "recall": 0.8
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 15,
+              "matched": 14,
+              "recall": 0.9333333333333333
+            }
+          },
+          "burst_id": 1,
+          "event_frames_ui_inclusive": [
+            2003,
+            2026
+          ],
+          "failure_counts_at_budget_58": {
+            "matched": 12,
+            "ranking_miss": 3
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 20,
+              "matched": 18,
+              "recall": 0.9
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 20,
+              "matched": 10,
+              "recall": 0.5
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 20,
+              "matched": 14,
+              "recall": 0.7
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 20,
+              "matched": 17,
+              "recall": 0.85
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 20,
+              "matched": 18,
+              "recall": 0.9
+            }
+          },
+          "burst_id": 2,
+          "event_frames_ui_inclusive": [
+            2040,
+            2063
+          ],
+          "failure_counts_at_budget_58": {
+            "localization_miss": 2,
+            "matched": 17,
+            "ranking_miss": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 21,
+              "matched": 19,
+              "recall": 0.9047619047619048
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 21,
+              "matched": 14,
+              "recall": 0.6666666666666666
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 21,
+              "matched": 18,
+              "recall": 0.8571428571428571
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 21,
+              "matched": 18,
+              "recall": 0.8571428571428571
+            }
+          },
+          "burst_id": 3,
+          "event_frames_ui_inclusive": [
+            2122,
+            2149
+          ],
+          "failure_counts_at_budget_58": {
+            "localization_miss": 1,
+            "matched": 18,
+            "ranking_miss": 2
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 23,
+              "matched": 19,
+              "recall": 0.8260869565217391
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 23,
+              "matched": 15,
+              "recall": 0.6521739130434783
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 23,
+              "matched": 17,
+              "recall": 0.7391304347826086
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 23,
+              "matched": 18,
+              "recall": 0.782608695652174
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 23,
+              "matched": 18,
+              "recall": 0.782608695652174
+            }
+          },
+          "burst_id": 4,
+          "event_frames_ui_inclusive": [
+            2254,
+            2300
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 1,
+            "matched": 18,
+            "ranking_miss": 3
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        }
+      ],
+      "label_view": "original",
+      "macro_recall": {
+        "100": 0.907712215320911,
+        "20": 0.6213768115942029,
+        "40": 0.7454968944099378,
+        "58": 0.8224378881987577,
+        "80": 0.8682712215320911
+      },
+      "nms_contract": "explicit_greedy_euclidean_separation_with_label_free_event_max_tie_breaker",
+      "nms_distance_px": 4,
+      "pooled_counts": {
+        "100": {
+          "labels": 79,
+          "matched": 71
+        },
+        "20": {
+          "labels": 79,
+          "matched": 49
+        },
+        "40": {
+          "labels": 79,
+          "matched": 59
+        },
+        "58": {
+          "labels": 79,
+          "matched": 65
+        },
+        "80": {
+          "labels": 79,
+          "matched": 68
+        }
+      },
+      "timing_view": "original"
+    },
+    {
+      "feature_id": "coherence_w15",
+      "folds": [
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 15,
+              "matched": 13,
+              "recall": 0.8666666666666667
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 15,
+              "matched": 10,
+              "recall": 0.6666666666666666
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 15,
+              "matched": 10,
+              "recall": 0.6666666666666666
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 15,
+              "matched": 12,
+              "recall": 0.8
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 15,
+              "matched": 13,
+              "recall": 0.8666666666666667
+            }
+          },
+          "burst_id": 1,
+          "event_frames_ui_inclusive": [
+            2003,
+            2026
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "matched": 12,
+            "nms_suppressed": 1,
+            "ranking_miss": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 20,
+              "matched": 16,
+              "recall": 0.8
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 20,
+              "matched": 11,
+              "recall": 0.55
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 20,
+              "matched": 15,
+              "recall": 0.75
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 20,
+              "matched": 16,
+              "recall": 0.8
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 20,
+              "matched": 16,
+              "recall": 0.8
+            }
+          },
+          "burst_id": 2,
+          "event_frames_ui_inclusive": [
+            2040,
+            2063
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 2,
+            "matched": 16,
+            "nms_suppressed": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 21,
+              "matched": 18,
+              "recall": 0.8571428571428571
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 21,
+              "matched": 14,
+              "recall": 0.6666666666666666
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            }
+          },
+          "burst_id": 3,
+          "event_frames_ui_inclusive": [
+            2122,
+            2149
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 2,
+            "matched": 17,
+            "ranking_miss": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 23,
+              "matched": 19,
+              "recall": 0.8260869565217391
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 23,
+              "matched": 15,
+              "recall": 0.6521739130434783
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 23,
+              "matched": 17,
+              "recall": 0.7391304347826086
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 23,
+              "matched": 17,
+              "recall": 0.7391304347826086
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 23,
+              "matched": 18,
+              "recall": 0.782608695652174
+            }
+          },
+          "burst_id": 4,
+          "event_frames_ui_inclusive": [
+            2254,
+            2300
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 1,
+            "matched": 17,
+            "nms_suppressed": 1,
+            "ranking_miss": 3
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        }
+      ],
+      "label_view": "original",
+      "macro_recall": {
+        "100": 0.8374741200828157,
+        "20": 0.6338768115942028,
+        "40": 0.7413302277432712,
+        "58": 0.7871635610766046,
+        "80": 0.8146997929606625
+      },
+      "nms_contract": "explicit_greedy_euclidean_separation_with_label_free_event_max_tie_breaker",
+      "nms_distance_px": 6,
+      "pooled_counts": {
+        "100": {
+          "labels": 79,
+          "matched": 66
+        },
+        "20": {
+          "labels": 79,
+          "matched": 50
+        },
+        "40": {
+          "labels": 79,
+          "matched": 59
+        },
+        "58": {
+          "labels": 79,
+          "matched": 62
+        },
+        "80": {
+          "labels": 79,
+          "matched": 64
+        }
+      },
+      "timing_view": "original"
+    },
+    {
+      "feature_id": "coherence_w15",
+      "folds": [
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 15,
+              "matched": 11,
+              "recall": 0.7333333333333333
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 15,
+              "matched": 8,
+              "recall": 0.5333333333333333
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 15,
+              "matched": 10,
+              "recall": 0.6666666666666666
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 15,
+              "matched": 11,
+              "recall": 0.7333333333333333
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 15,
+              "matched": 11,
+              "recall": 0.7333333333333333
+            }
+          },
+          "burst_id": 1,
+          "event_frames_ui_inclusive": [
+            2003,
+            2026
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 2,
+            "matched": 11,
+            "nms_suppressed": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 20,
+              "matched": 15,
+              "recall": 0.75
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 20,
+              "matched": 11,
+              "recall": 0.55
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 20,
+              "matched": 15,
+              "recall": 0.75
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 20,
+              "matched": 15,
+              "recall": 0.75
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 20,
+              "matched": 15,
+              "recall": 0.75
+            }
+          },
+          "burst_id": 2,
+          "event_frames_ui_inclusive": [
+            2040,
+            2063
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 2,
+            "matched": 15,
+            "nms_suppressed": 2
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 21,
+              "matched": 14,
+              "recall": 0.6666666666666666
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            }
+          },
+          "burst_id": 3,
+          "event_frames_ui_inclusive": [
+            2122,
+            2149
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 2,
+            "matched": 17,
+            "nms_suppressed": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 23,
+              "matched": 18,
+              "recall": 0.782608695652174
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 23,
+              "matched": 16,
+              "recall": 0.6956521739130435
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 23,
+              "matched": 16,
+              "recall": 0.6956521739130435
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 23,
+              "matched": 17,
+              "recall": 0.7391304347826086
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 23,
+              "matched": 18,
+              "recall": 0.782608695652174
+            }
+          },
+          "burst_id": 4,
+          "event_frames_ui_inclusive": [
+            2254,
+            2300
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 2,
+            "localization_miss": 2,
+            "matched": 17,
+            "nms_suppressed": 1,
+            "ranking_miss": 1
+          },
+          "nms_candidate_count": 488,
+          "raw_local_maximum_count": 5000
+        }
+      ],
+      "label_view": "original",
+      "macro_recall": {
+        "100": 0.7688664596273291,
+        "20": 0.6114130434782609,
+        "40": 0.7304606625258799,
+        "58": 0.7579968944099378,
+        "80": 0.7688664596273291
+      },
+      "nms_contract": "explicit_greedy_euclidean_separation_with_label_free_event_max_tie_breaker",
+      "nms_distance_px": 8,
+      "pooled_counts": {
+        "100": {
+          "labels": 79,
+          "matched": 61
+        },
+        "20": {
+          "labels": 79,
+          "matched": 49
+        },
+        "40": {
+          "labels": 79,
+          "matched": 58
+        },
+        "58": {
+          "labels": 79,
+          "matched": 60
+        },
+        "80": {
+          "labels": 79,
+          "matched": 61
+        }
+      },
+      "timing_view": "original"
+    },
+    {
+      "feature_id": "propagation_lag2_w15",
+      "folds": [
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 15,
+              "matched": 13,
+              "recall": 0.8666666666666667
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 15,
+              "matched": 10,
+              "recall": 0.6666666666666666
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 15,
+              "matched": 11,
+              "recall": 0.7333333333333333
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 15,
+              "matched": 13,
+              "recall": 0.8666666666666667
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 15,
+              "matched": 13,
+              "recall": 0.8666666666666667
+            }
+          },
+          "burst_id": 1,
+          "event_frames_ui_inclusive": [
+            2003,
+            2026
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "matched": 13,
+            "ranking_miss": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 20,
+              "matched": 18,
+              "recall": 0.9
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 20,
+              "matched": 10,
+              "recall": 0.5
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 20,
+              "matched": 14,
+              "recall": 0.7
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 20,
+              "matched": 18,
+              "recall": 0.9
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 20,
+              "matched": 18,
+              "recall": 0.9
+            }
+          },
+          "burst_id": 2,
+          "event_frames_ui_inclusive": [
+            2040,
+            2063
+          ],
+          "failure_counts_at_budget_58": {
+            "localization_miss": 1,
+            "matched": 18,
+            "nms_suppressed": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 21,
+              "matched": 18,
+              "recall": 0.8571428571428571
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 21,
+              "matched": 13,
+              "recall": 0.6190476190476191
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            }
+          },
+          "burst_id": 3,
+          "event_frames_ui_inclusive": [
+            2122,
+            2149
+          ],
+          "failure_counts_at_budget_58": {
+            "localization_miss": 1,
+            "matched": 17,
+            "ranking_miss": 3
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 23,
+              "matched": 20,
+              "recall": 0.8695652173913043
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 23,
+              "matched": 15,
+              "recall": 0.6521739130434783
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 23,
+              "matched": 17,
+              "recall": 0.7391304347826086
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 23,
+              "matched": 18,
+              "recall": 0.782608695652174
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 23,
+              "matched": 18,
+              "recall": 0.782608695652174
+            }
+          },
+          "burst_id": 4,
+          "event_frames_ui_inclusive": [
+            2254,
+            2300
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 1,
+            "matched": 18,
+            "ranking_miss": 3
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        }
+      ],
+      "label_view": "original",
+      "macro_recall": {
+        "100": 0.873343685300207,
+        "20": 0.609472049689441,
+        "40": 0.7454968944099378,
+        "58": 0.8396997929606624,
+        "80": 0.8396997929606624
+      },
+      "nms_contract": "explicit_greedy_euclidean_separation_with_label_free_event_max_tie_breaker",
+      "nms_distance_px": 4,
+      "pooled_counts": {
+        "100": {
+          "labels": 79,
+          "matched": 69
+        },
+        "20": {
+          "labels": 79,
+          "matched": 48
+        },
+        "40": {
+          "labels": 79,
+          "matched": 59
+        },
+        "58": {
+          "labels": 79,
+          "matched": 66
+        },
+        "80": {
+          "labels": 79,
+          "matched": 66
+        }
+      },
+      "timing_view": "original"
+    },
+    {
+      "feature_id": "propagation_lag2_w15",
+      "folds": [
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 15,
+              "matched": 13,
+              "recall": 0.8666666666666667
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 15,
+              "matched": 11,
+              "recall": 0.7333333333333333
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 15,
+              "matched": 12,
+              "recall": 0.8
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 15,
+              "matched": 13,
+              "recall": 0.8666666666666667
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 15,
+              "matched": 13,
+              "recall": 0.8666666666666667
+            }
+          },
+          "burst_id": 1,
+          "event_frames_ui_inclusive": [
+            2003,
+            2026
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 1,
+            "matched": 13
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 20,
+              "matched": 17,
+              "recall": 0.85
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 20,
+              "matched": 12,
+              "recall": 0.6
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 20,
+              "matched": 15,
+              "recall": 0.75
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 20,
+              "matched": 17,
+              "recall": 0.85
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 20,
+              "matched": 17,
+              "recall": 0.85
+            }
+          },
+          "burst_id": 2,
+          "event_frames_ui_inclusive": [
+            2040,
+            2063
+          ],
+          "failure_counts_at_budget_58": {
+            "localization_miss": 2,
+            "matched": 17,
+            "nms_suppressed": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 21,
+              "matched": 14,
+              "recall": 0.6666666666666666
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 21,
+              "matched": 16,
+              "recall": 0.7619047619047619
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 21,
+              "matched": 16,
+              "recall": 0.7619047619047619
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 21,
+              "matched": 17,
+              "recall": 0.8095238095238095
+            }
+          },
+          "burst_id": 3,
+          "event_frames_ui_inclusive": [
+            2122,
+            2149
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 3,
+            "matched": 16,
+            "ranking_miss": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 23,
+              "matched": 20,
+              "recall": 0.8695652173913043
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 23,
+              "matched": 15,
+              "recall": 0.6521739130434783
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 23,
+              "matched": 17,
+              "recall": 0.7391304347826086
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 23,
+              "matched": 19,
+              "recall": 0.8260869565217391
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 23,
+              "matched": 19,
+              "recall": 0.8260869565217391
+            }
+          },
+          "burst_id": 4,
+          "event_frames_ui_inclusive": [
+            2254,
+            2300
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 1,
+            "matched": 19,
+            "nms_suppressed": 1,
+            "ranking_miss": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        }
+      ],
+      "label_view": "original",
+      "macro_recall": {
+        "100": 0.8489389233954451,
+        "20": 0.6630434782608696,
+        "40": 0.7627587991718425,
+        "58": 0.826164596273292,
+        "80": 0.8380693581780538
+      },
+      "nms_contract": "explicit_greedy_euclidean_separation_with_label_free_event_max_tie_breaker",
+      "nms_distance_px": 6,
+      "pooled_counts": {
+        "100": {
+          "labels": 79,
+          "matched": 67
+        },
+        "20": {
+          "labels": 79,
+          "matched": 52
+        },
+        "40": {
+          "labels": 79,
+          "matched": 60
+        },
+        "58": {
+          "labels": 79,
+          "matched": 65
+        },
+        "80": {
+          "labels": 79,
+          "matched": 66
+        }
+      },
+      "timing_view": "original"
+    },
+    {
+      "feature_id": "propagation_lag2_w15",
+      "folds": [
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 15,
+              "matched": 10,
+              "recall": 0.6666666666666666
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 15,
+              "matched": 8,
+              "recall": 0.5333333333333333
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 15,
+              "matched": 10,
+              "recall": 0.6666666666666666
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 15,
+              "matched": 10,
+              "recall": 0.6666666666666666
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 15,
+              "matched": 10,
+              "recall": 0.6666666666666666
+            }
+          },
+          "burst_id": 1,
+          "event_frames_ui_inclusive": [
+            2003,
+            2026
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 3,
+            "matched": 10,
+            "nms_suppressed": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 20,
+              "matched": 17,
+              "recall": 0.85
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 20,
+              "matched": 12,
+              "recall": 0.6
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 20,
+              "matched": 17,
+              "recall": 0.85
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 20,
+              "matched": 17,
+              "recall": 0.85
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 20,
+              "matched": 17,
+              "recall": 0.85
+            }
+          },
+          "burst_id": 2,
+          "event_frames_ui_inclusive": [
+            2040,
+            2063
+          ],
+          "failure_counts_at_budget_58": {
+            "localization_miss": 2,
+            "matched": 17,
+            "nms_suppressed": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 21,
+              "matched": 16,
+              "recall": 0.7619047619047619
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 21,
+              "matched": 13,
+              "recall": 0.6190476190476191
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 21,
+              "matched": 15,
+              "recall": 0.7142857142857143
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 21,
+              "matched": 15,
+              "recall": 0.7142857142857143
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 21,
+              "matched": 16,
+              "recall": 0.7619047619047619
+            }
+          },
+          "burst_id": 3,
+          "event_frames_ui_inclusive": [
+            2122,
+            2149
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 4,
+            "matched": 15,
+            "ranking_miss": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        },
+        {
+          "budgets": {
+            "100": {
+              "candidates": 100,
+              "labels": 23,
+              "matched": 17,
+              "recall": 0.7391304347826086
+            },
+            "20": {
+              "candidates": 20,
+              "labels": 23,
+              "matched": 16,
+              "recall": 0.6956521739130435
+            },
+            "40": {
+              "candidates": 40,
+              "labels": 23,
+              "matched": 16,
+              "recall": 0.6956521739130435
+            },
+            "58": {
+              "candidates": 58,
+              "labels": 23,
+              "matched": 17,
+              "recall": 0.7391304347826086
+            },
+            "80": {
+              "candidates": 80,
+              "labels": 23,
+              "matched": 17,
+              "recall": 0.7391304347826086
+            }
+          },
+          "burst_id": 4,
+          "event_frames_ui_inclusive": [
+            2254,
+            2300
+          ],
+          "failure_counts_at_budget_58": {
+            "identity_conflict": 1,
+            "localization_miss": 4,
+            "matched": 17,
+            "nms_suppressed": 1
+          },
+          "nms_candidate_count": 500,
+          "raw_local_maximum_count": 5000
+        }
+      ],
+      "label_view": "original",
+      "macro_recall": {
+        "100": 0.7544254658385092,
+        "20": 0.612008281573499,
+        "40": 0.7316511387163561,
+        "58": 0.7425207039337474,
+        "80": 0.7544254658385092
+      },
+      "nms_contract": "explicit_greedy_euclidean_separation_with_label_free_event_max_tie_breaker",
+      "nms_distance_px": 8,
+      "pooled_counts": {
+        "100": {
+          "labels": 79,
+          "matched": 60
+        },
+        "20": {
+          "labels": 79,
+          "matched": 49
+        },
+        "40": {
+          "labels": 79,
+          "matched": 58
+        },
+        "58": {
+          "labels": 79,
+          "matched": 59
+        },
+        "80": {
+          "labels": 79,
+          "matched": 60
+        }
+      },
+      "timing_view": "original"
+    }
+  ],
+  "schema_version": 1,
+  "sensitivity_nms_px": [
+    4,
+    8
+  ],
+  "status": "complete",
+  "strict_nms_robust_c3": {
+    "coherence_w15": true,
+    "propagation_lag2_w15": true
+  },
+  "unmatched_candidates": "unknown_not_negative"
+}

@@ -1,0 +1,27 @@
+{
+  "four_case_rescue_ceiling": 0.9245283018867925,
+  "headline": {
+    "ls_eccentricity_median_clear": 0.8102553482938293,
+    "ls_eccentricity_median_collision": 0.7735999619808598,
+    "ls_neighbor_partial_r_median_clear": 0.181718831138775,
+    "ls_neighbor_partial_r_median_collision": 0.4743746310403284,
+    "offset_direction_cosine_median_clear": 0.4484400975643285,
+    "offset_direction_cosine_median_collision": 0.9718297215439611
+  },
+  "identity_resolved_conditional_sensitivity": 0.9591836734693877,
+  "interpretation_limits": [
+    "Only four identity-clear misses; no classifier is fit.",
+    "Response-selected candidates and footprint weights reuse the same events.",
+    "Nearest labeled geometry is not exhaustive biological identity truth.",
+    "Same recording and four bursts; descriptive within-recording analysis only."
+  ],
+  "population": {
+    "identity_clear_misses": 4,
+    "identity_collision_misses": 8,
+    "occurrences": 106,
+    "recovered": 94
+  },
+  "schema_version": 1,
+  "status": "complete_exploratory",
+  "strict_recall": 0.8867924528301887
+}

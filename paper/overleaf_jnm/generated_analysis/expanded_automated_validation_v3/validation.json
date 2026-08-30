@@ -1,0 +1,11 @@
+{
+  "checks": {
+    "grouped_predictions_complete": true,
+    "metamorphic_14": true,
+    "mixture_grid_75": true,
+    "source_audit_reused": true,
+    "stability_100": true,
+    "ten_families_present": true
+  },
+  "status": "passed"
+}

@@ -16,7 +16,7 @@ function argValue(args, key, defaultValue) {
 }
 
 args = getArgument();
-projectRoot = "/home/jibby2k1/CNEL/State Analysis (Fish)/Separable-Gamma-CFAR";
+projectRoot = argValue(args, "project_root", getDirectory("current"));
 datasetId = argValue(args, "dataset_id", "calcium_video_2");
 inputPath = argValue(args, "input_path", projectRoot + "/Inputs/050126/050126/calcium video 2.tif");
 outputRoot = argValue(args, "output_root", projectRoot + "/Outputs");

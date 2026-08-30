@@ -1,0 +1,96 @@
+{
+  "artifact_manifest_sha256": "43f86877462ad4d369c47f372a8dbde9d65608d23f87ef6a107fc4296fd96e7c",
+  "artifacts": [
+    {
+      "access": "public",
+      "bytes": 523604,
+      "id": "artifact-01",
+      "media_type": "image/png",
+      "repository_path": "paper/overleaf_jnm/figures/final/fig09_automated_feature_validation.png",
+      "role": "figure",
+      "sha256": "5ea6a94581004bb47094c1240b3bcd7b0d5b5c63da56502e63bd90324582d536"
+    },
+    {
+      "access": "public",
+      "bytes": 731679,
+      "id": "artifact-02",
+      "media_type": "image/png",
+      "repository_path": "paper/overleaf_jnm/figures/final/fig10_robustness_falsification.png",
+      "role": "figure",
+      "sha256": "e762fb69869b445375eb0d4d2b3da93dc8315b9a46534b0a02848f823faab3c2"
+    },
+    {
+      "access": "public",
+      "bytes": 825,
+      "id": "artifact-03",
+      "media_type": "text/tab-separated-values",
+      "repository_path": "paper/overleaf_jnm/generated_analysis/automated_feature_validation_v1/recovery_model_summary.tsv",
+      "role": "summary",
+      "sha256": "46880e5243ae71646a2f6f39f8ac46c652e7387b0c5c41d91ab3afafc2c831ab"
+    }
+  ],
+  "boundaries": {
+    "does_not_establish": [
+      "Claims beyond the registered finding and linked claim scopes.",
+      "Reproducible run provenance that was absent from the v1 story."
+    ],
+    "limitations": [
+      "Same-recording reuse, only 12 primary recovery misses, biologically unknown reference frames and tissue, and simplified one-dimensional injections prevent precision, identity, or generalization claims."
+    ],
+    "scope": "This capsule preserves the registered v1 experiment finding and its linked claim scopes."
+  },
+  "claim_impacts": [
+    {
+      "claim_id": "NREV-CLM-0003",
+      "effect": "supports",
+      "scope": "106 confirmed occurrences at 50 immutable sites in one previously analyzed recording; displaced tissue and guarded quiet frames have unknown biology.",
+      "summary": "The experiment supports this claim only within its registered scope."
+    },
+    {
+      "claim_id": "NREV-CLM-0004",
+      "effect": "supports",
+      "scope": "94 recovered and 12 missed original geometries at detector budget 58; site-bootstrap log-loss improvement interval crosses zero.",
+      "summary": "The experiment supports this claim only within its registered scope."
+    }
+  ],
+  "evidence_tier": "current_recording",
+  "experiment_id": "NREV-EXP-0005",
+  "gates": [
+    {
+      "criterion": "Every artifact referenced by the v1 experiment story is available and checksum identified at migration.",
+      "id": "legacy-artifact-capture",
+      "observed": "Captured 3 of 3 referenced artifacts with SHA-256 identities.",
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-29T23:52:35Z",
+  "id": "NREV-EVC-EXP-0005",
+  "legacy_status": "complete_exploratory",
+  "lifecycle": "validated",
+  "metrics": [],
+  "outcome": "inconclusive",
+  "program_id": "NREV-PRG-0001",
+  "record_type": "evidence_capsule",
+  "review_state": "not_requested",
+  "run_ids": [],
+  "schema_version": 1,
+  "source_records_sha256": "7518dafc6fe0b047e76b817a7d10424766b5e4ec83b681db1678e04cfd72a920",
+  "summary": "Raw led temporal retrieval; all six compact features exceeded matched displaced tissue; a richer recovery model improved point estimates but not the uncertainty gate; and perturbation, null, and injection tests behaved directionally as expected.",
+  "validation": {
+    "checked_at": "2026-08-29T23:52:35Z",
+    "checks": [
+      {
+        "id": "portable-paths",
+        "status": "passed",
+        "summary": "Artifact references are repository-relative; ignored local outputs are metadata-only."
+      },
+      {
+        "id": "historical-provenance",
+        "status": "not_run",
+        "summary": "The v1 story did not encode run-level provenance, so no historical run record was invented."
+      }
+    ],
+    "status": "partial"
+  },
+  "visibility": "public"
+}

@@ -1,0 +1,29 @@
+schema_version: 1
+record_type: claim
+id: NREV-CLM-0007
+program_id: NREV-PRG-0001
+title: Expanded Automated Feature Validation
+statement: Identity-grouped recovery prediction, stability selection, conditional importance, selective risk, and recovered-only
+  anomaly detection support a compact observability-context stack beyond carrier amplitude alone.
+scope: 106 occurrences at 50 sites in one recording; 12 misses; 100 site-bootstrap sparse fits; synthetic tests are one-dimensional
+  and cross-burst transfer has only one identity-clear pair.
+limitations:
+- 'No inference is registered beyond this scope: 106 occurrences at 50 sites in one recording; 12 misses; 100 site-bootstrap
+  sparse fits; synthetic tests are one-dimensional and cross-burst transfer has only one identity-clear pair.'
+claim_state: provisional
+evidence_tier: current_recording
+review_state: not_requested
+evidence_capsule_ids:
+- NREV-EVC-EXP-0008
+decision_ids:
+- NREV-DEC-0008
+tags:
+- expanded
+- automated
+- feature
+- validation
+visibility: public
+legacy_id: expanded_automated_feature_validation
+legacy_status: exploratory_supported_current_recording
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

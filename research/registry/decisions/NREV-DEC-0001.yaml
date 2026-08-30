@@ -1,0 +1,29 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0001
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical decision effective date
+program_id: NREV-PRG-0001
+title: Decision after Canonical V7 Trace Atlas
+lifecycle: active
+action: retain
+rationale: Use the atlas for failure-mode review, not biological source naming.
+evidence_summary: The atlas exposes a strong shared burst waveform and substantial site-to-site heterogeneity.
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0001
+claim_ids: []
+evidence_capsule_ids:
+- NREV-EVC-EXP-0001
+constraints:
+- Representative cases and sparse positives do not estimate precision.
+- The historical decision date was not encoded in the v1 story and was not guessed during migration.
+visibility: public
+legacy_status: complete_descriptive
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

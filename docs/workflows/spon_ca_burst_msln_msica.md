@@ -101,7 +101,7 @@ for the design, diagnostics, and interpretation.
 
 ## Frozen standard design
 
-The standard manifest is [spon_ca_burst_msln_msica_v1.example.json](../../examples/spon_ca_burst_msln_msica_v1.example.json). Its eight contexts are ordered deterministically:
+The standard manifest is [spon_ca_burst_msln_msica_v1.example.json](https://github.com/Jibby2k1/NeuRev-Workbench/blob/main/examples/spon_ca_burst_msln_msica_v1.example.json). Its eight contexts are ordered deterministically:
 
 1. spatial 5, 7, and 15 pixel square-annulus mean/std contexts;
 2. causal temporal 5, 15, and 31 frame contexts;

@@ -1,0 +1,35 @@
+schema_version: 1
+record_type: program
+id: NREV-PRG-0001
+slug: neuron-identifiability
+title: Neuron Identifiability
+summary: Evidence-first measurement, representation, detection, identity auditing, and blinded review in calcium imaging.
+lifecycle: active
+scientific_scope: An intensive within-recording methods study of 106 confirmed occurrences at 50 immutable sites in one calcium-imaging
+  recording.
+study_scope:
+  recordings: 1
+  sites: 50
+  occurrences: 106
+  description: Confirmed occurrences at immutable registered centers in the current recording.
+objectives:
+- Determine which interpretable temporal and spatial measurements recover registered neural-activity occurrences.
+- Expose detector failure modes and distinguish measurement recovery from biological source identity.
+- Prepare bounded, blinded review and independent-recording tests without treating sparse positives as verified negatives.
+boundaries:
+- Full-field precision is unresolved.
+- One-to-one biological source identity is unresolved.
+- Generalization to an independent recording is unresolved.
+owner_roles:
+- research_team
+related_program_ids:
+- NREV-PRG-0002
+- NREV-PRG-0003
+- NREV-PRG-0004
+documentation:
+- paper/overleaf_jnm/CURRENT_RESEARCH_STATE.md
+- docs/workflows/spon_ca_burst_neuron_identifiability_paper.md
+- docs/research/README.md
+visibility: public
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

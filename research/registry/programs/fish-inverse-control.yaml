@@ -1,0 +1,27 @@
+schema_version: 1
+record_type: program
+id: NREV-PRG-0003
+slug: fish-inverse-control
+title: Fish Intent and Inverse Control
+summary: Stage-gated measurement, intent decoding, action-conditioned system identification, simulation, and safety-bounded
+  control research.
+lifecycle: draft
+scientific_scope: A downstream causal program that may proceed only after measurement, leakage, intervention, and safety gates
+  are satisfied.
+objectives:
+- Test pre-movement intent under leakage-resistant validation.
+- Estimate action-conditioned dynamics from measured interventions before considering control.
+boundaries:
+- Causal pre-movement intent has not been established.
+- Action-conditioned dynamics have not been established from measured interventions.
+- No command-capable deployment is authorized outside a validated safety envelope.
+related_program_ids:
+- NREV-PRG-0001
+- NREV-PRG-0004
+documentation:
+- docs/programs/fish_inverse_control/README.md
+- docs/research/FISH_INVERSE_CONTROL_ROADMAP.md
+visibility: public
+legacy_status: gated
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

@@ -1,0 +1,38 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0003
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical execution date
+  - run-level code, configuration, input, environment, and randomization provenance
+  - preregistered gates
+  - experiment-specific falsifiers
+  - normalized unit of analysis, comparison, and data scope
+program_id: NREV-PRG-0001
+title: Pipeline Diagnostic Audit
+question: Which signal, spatial, and transformation diagnostics explain pipeline behavior?
+objective: Which signal, spatial, and transformation diagnostics explain pipeline behavior?
+rationale: Migrated to preserve the v1 question-design-result-decision record; the v1 story did not encode a separate rationale.
+lifecycle: validated
+outcome: inconclusive
+evidence_tier: current_recording
+review_state: not_requested
+falsifiers: []
+design:
+  summary: Compute occurrence-by-stage trace, annulus, spatial-footprint, transition, saturation, and availability diagnostics.
+gates: []
+claim_ids:
+- NREV-CLM-0001
+- NREV-CLM-0017
+decision_ids:
+- NREV-DEC-0003
+evidence_capsule_id: NREV-EVC-EXP-0003
+visibility: public
+legacy_id: pipeline_diagnostic_audit
+legacy_status: complete_descriptive
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

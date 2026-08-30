@@ -1,0 +1,39 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0011
+origin:
+  kind: migrated_legacy
+  source_path: research/registry/migration/research_story_v1.yaml
+  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
+  recorded_on: '2026-08-29'
+  missing_fields:
+  - historical execution date
+  - run-level code, configuration, input, environment, and randomization provenance
+  - preregistered gates
+  - experiment-specific falsifiers
+  - normalized unit of analysis, comparison, and data scope
+program_id: NREV-PRG-0001
+title: Generator Family Holdout V4
+question: Do the feature roles survive mechanism-level distribution shift rather than only new random seeds?
+objective: Do the feature roles survive mechanism-level distribution shift rather than only new random seeds?
+rationale: Migrated to preserve the v1 question-design-result-decision record; the v1 story did not encode a separate rationale.
+lifecycle: validated
+outcome: supported
+evidence_tier: computational_simulation
+review_state: not_requested
+falsifiers: []
+design:
+  summary: Hold out each of six complete generator families in turn; vary source count from 2 to 8; add explicit neuropil,
+    bleaching, source-specific nonrigid motion, and a label-free noise scale estimated from an untouched 060126 TIFF; retain
+    the previously frozen four score stacks and geometric matching rule.
+gates: []
+claim_ids:
+- NREV-CLM-0010
+decision_ids:
+- NREV-DEC-0011
+evidence_capsule_id: NREV-EVC-EXP-0011
+visibility: public
+legacy_id: generator_family_holdout_v4
+legacy_status: complete_computational
+created_on: '2026-08-29'
+updated_on: '2026-08-29'

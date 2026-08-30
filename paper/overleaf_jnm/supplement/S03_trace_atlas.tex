@@ -1,0 +1,39 @@
+\section{Trace-atlas and reviewer-packet specification}
+\label{sec:supp-atlas}
+
+\subsection{Per-occurrence atlas page}
+
+Each labeled occurrence receives a stable page keyed by observation identifier. The page contains:
+\begin{enumerate}
+  \item a full-frame context image with original site, canonical mapping, annulus, outer ring, nearest labeled sites, field boundary, and translated controls;
+  \item a high-resolution crop at baseline, proposed onset, Raw peak, residual peak, and event offset;
+  \item synchronized native-amplitude traces for Raw, annulus, outer ring, residual, difference, and ICA;
+  \item a separate robustly standardized trace panel for shape comparison;
+  \item onset, peak, offset, burst interval, saturation, and motion annotations;
+  \item a metric card with units and validity flags;
+  \item direct links to the source row, mask, trace array, configuration, and generation command.
+\end{enumerate}
+
+\DraftFigure{Example layout: context crop at left; full and event-centered traces in the middle; spatial event map, radial profile, and metric/provenance card at right.}{Planned per-occurrence trace-atlas page.}{fig:supp-atlas-page}
+
+\subsection{Per-site summary}
+
+Each immutable site receives a neuron-by-burst summary showing all available occurrences without peak scaling. Required panels are:
+\begin{itemize}
+  \item Raw and residual traces by burst;
+  \item native amplitude and SNR by burst;
+  \item spatial event maps and radial profiles;
+  \item annulus coupling and specificity;
+  \item candidate rank and recovery failure category;
+  \item repeatability metrics and uncertainty;
+  \item acquisition covariates and field membership;
+  \item canonical-identity history and unresolved decisions.
+\end{itemize}
+
+\subsection{Reviewer packet}
+
+Review frames are generated independently of detector candidates to avoid circular adjudication. Reviewers receive original-intensity and contrast-normalized views, event movies, the original label, and a standardized response schema. They do not receive representation scores, candidate ranks, or model interpretations. The packet records completion state and supports re-review without changing the immutable source observations.
+
+\subsection{Aggregate atlas index}
+
+The final atlas index supports filtering by burst, original site, proposed canonical identity, field, SNR quantile, morphology, saturation, annulus coupling, timing uncertainty, and recovery status. A machine-readable index mirrors every visual filter and prevents the HTML or PDF atlas from becoming the sole source of truth.

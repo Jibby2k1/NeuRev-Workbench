@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neurev.org/research/schemas/evidence-capsule.schema.json",
+  "title": "NeuRev public evidence capsule",
+  "description": "Small, sanitized, checksum-backed bridge from validated runs to bounded scientific claims.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "id",
+    "experiment_id",
+    "program_id",
+    "generated_at",
+    "lifecycle",
+    "outcome",
+    "evidence_tier",
+    "review_state",
+    "summary",
+    "run_ids",
+    "metrics",
+    "gates",
+    "claim_impacts",
+    "artifacts",
+    "artifact_manifest_sha256",
+    "validation",
+    "boundaries",
+    "source_records_sha256",
+    "visibility"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "record_type": {"const": "evidence_capsule"},
+    "id": {"$ref": "#/$defs/evidence_capsule_id"},
+    "experiment_id": {"$ref": "#/$defs/experiment_id"},
+    "program_id": {"$ref": "#/$defs/program_id"},
+    "generated_at": {"$ref": "#/$defs/date_time"},
+    "lifecycle": {"type": "string", "enum": ["draft", "validated", "published", "withdrawn", "superseded"]},
+    "outcome": {"type": "string", "enum": ["not_evaluated", "supported", "rejected", "mixed", "inconclusive"]},
+    "evidence_tier": {"$ref": "#/$defs/evidence_tier"},
+    "review_state": {"$ref": "#/$defs/review_state"},
+    "summary": {"$ref": "#/$defs/nonempty_text"},
+    "run_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/run_id"}
+    },
+    "metrics": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/metric"}
+    },
+    "gates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/gate_result"}
+    },
+    "claim_impacts": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/claim_impact"}
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/artifact"}
+    },
+    "artifact_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "checked_at", "checks"],
+      "properties": {
+        "status": {"type": "string", "enum": ["unverified", "partial", "passed", "failed"]},
+        "checked_at": {"$ref": "#/$defs/date_time"},
+        "checks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/validation_check"}
+        }
+      }
+    },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "limitations", "does_not_establish"],
+      "properties": {
+        "scope": {"$ref": "#/$defs/nonempty_text"},
+        "limitations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonempty_text"}
+        },
+        "does_not_establish": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonempty_text"}
+        }
+      }
+    },
+    "source_records_sha256": {"$ref": "#/$defs/sha256"},
+    "visibility": {"const": "public"},
+    "legacy_status": {"$ref": "#/$defs/legacy_status"}
+  },
+  "$defs": {
+    "evidence_capsule_id": {
+      "type": "string",
+      "pattern": "^NREV-EVC-[A-Z0-9][A-Z0-9-]{2,63}$"
+    },
+    "experiment_id": {"type": "string", "pattern": "^NREV-EXP-[0-9]{4,}$"},
+    "program_id": {"type": "string", "pattern": "^NREV-PRG-[0-9]{4,}$"},
+    "run_id": {"type": "string", "pattern": "^NREV-RUN-[A-Z0-9][A-Z0-9-]{2,63}$"},
+    "claim_id": {"type": "string", "pattern": "^NREV-CLM-[0-9]{4,}$"},
+    "nonempty_text": {"type": "string", "minLength": 1},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "date_time": {"type": "string", "format": "date-time"},
+    "legacy_status": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Original free-form status retained only for migration provenance."
+    },
+    "repository_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:[\\\\/])(?![A-Za-z][A-Za-z0-9+.-]*:)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "evidence_tier": {
+      "type": "string",
+      "enum": [
+        "none",
+        "descriptive",
+        "current_recording",
+        "computational_simulation",
+        "reviewed_current_recording",
+        "external_review",
+        "independent_recording",
+        "causal_intervention",
+        "evidence_synthesis"
+      ]
+    },
+    "review_state": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "not_required",
+        "pending",
+        "in_review",
+        "changes_requested",
+        "approved",
+        "adjudication_required",
+        "adjudicated"
+      ]
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "estimate", "unit", "primary", "population"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{1,79}$"},
+        "label": {"$ref": "#/$defs/nonempty_text"},
+        "estimate": {"type": "number"},
+        "unit": {"$ref": "#/$defs/nonempty_text"},
+        "primary": {"type": "boolean"},
+        "population": {"$ref": "#/$defs/nonempty_text"},
+        "comparator": {"$ref": "#/$defs/nonempty_text"},
+        "interval": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["lower", "upper", "level", "method"],
+          "properties": {
+            "lower": {"type": "number"},
+            "upper": {"type": "number"},
+            "level": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1},
+            "method": {"$ref": "#/$defs/nonempty_text"}
+          }
+        }
+      }
+    },
+    "gate_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "criterion", "status", "observed"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{1,63}$"},
+        "criterion": {"$ref": "#/$defs/nonempty_text"},
+        "status": {"type": "string", "enum": ["passed", "failed", "not_evaluated", "not_applicable"]},
+        "observed": {"$ref": "#/$defs/nonempty_text"}
+      }
+    },
+    "claim_impact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_id", "effect", "summary", "scope"],
+      "properties": {
+        "claim_id": {"$ref": "#/$defs/claim_id"},
+        "effect": {"type": "string", "enum": ["supports", "contradicts", "qualifies", "no_bearing"]},
+        "summary": {"$ref": "#/$defs/nonempty_text"},
+        "scope": {"$ref": "#/$defs/nonempty_text"}
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "role", "media_type", "sha256", "access"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{1,79}$"},
+        "role": {"type": "string", "enum": ["summary", "table", "figure", "manifest", "report", "media", "data", "other"]},
+        "media_type": {"type": "string", "pattern": "^[a-z0-9.+-]+/[a-z0-9.+-]+$"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 0},
+        "access": {"type": "string", "enum": ["public", "metadata_only"]},
+        "repository_path": {"$ref": "#/$defs/repository_path"},
+        "external_uri": {"type": "string", "pattern": "^(?:https://|doi:).+"}
+      },
+      "oneOf": [
+        {"required": ["repository_path"], "not": {"required": ["external_uri"]}},
+        {"required": ["external_uri"], "not": {"required": ["repository_path"]}}
+      ]
+    },
+    "validation_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "summary"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{1,63}$"},
+        "status": {"type": "string", "enum": ["passed", "failed", "not_run", "not_applicable"]},
+        "summary": {"$ref": "#/$defs/nonempty_text"}
+      }
+    }
+  }
+}

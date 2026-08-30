@@ -1,0 +1,39 @@
+{
+  "status": "observed_from_frozen_fit",
+  "config_id": "delay_embedding__cs_parzen__long__bandwidth-0p25",
+  "objective_family": "cs_parzen",
+  "objective_parameter": {
+    "bandwidth": 0.25
+  },
+  "lags_frames": [
+    0,
+    1,
+    2,
+    4,
+    8,
+    16
+  ],
+  "site_count": 50,
+  "frame_count": 560,
+  "component_count": 6,
+  "persistence_index": 1,
+  "innovation_index": 0,
+  "residual_indices": [
+    2,
+    3,
+    4,
+    5
+  ],
+  "embedding_reconstruction_rms_max": 5.681000676547583e-12,
+  "interpretation_boundary": "Embedding inversion residual is a numerical transform audit, not a denoising or biological reconstruction error.",
+  "inputs": {
+    "media://v7_priority_neuron_media_cs_parzen/manifest.json": "b481b7e92fc4792482f6f4f00923e8ce23fcc5508dd0dcc8b5e401d87b2bca7d",
+    "data://Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy": "04dfbe2f7cb69d72ff75e23ad17c87b3fd406c96a4b872148de2285a9a44d449",
+    "data://Outputs/HierarchicalParzenICA/spon_ca_burst_multilag_msica_v5/stage_a/surface.json": "d494a14bef06f63aea921dec88240b67c5fba60b3d4a5d3f754a134479076c1d"
+  },
+  "outputs": [
+    "repo://paper/overleaf_jnm/figures/final/fig06_ica_model_internals.png",
+    "repo://paper/overleaf_jnm/figures/final/fig06_ica_model_internals.npz",
+    "repo://paper/overleaf_jnm/figures/final/fig06_ica_component_energy_by_site.tsv"
+  ]
+}

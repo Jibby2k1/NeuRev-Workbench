@@ -1,0 +1,13 @@
+cohort	certainty_group	class_id	matched_occurrences	certainty_group_total	fraction_within_certainty_group
+frozen_v1_adjudicated	confirmed	1	1	10	0.1
+frozen_v1_adjudicated	confirmed	2	0	10	0.0
+frozen_v1_adjudicated	confirmed	3	9	10	0.9
+canonical_v7_adjudicated	confirmed	1	8	34	0.23529411764705882
+canonical_v7_adjudicated	confirmed	2	2	34	0.058823529411764705
+canonical_v7_adjudicated	confirmed	3	24	34	0.7058823529411765
+canonical_v7_adjudicated	artifact	1	0	1	0.0
+canonical_v7_adjudicated	artifact	2	1	1	1.0
+canonical_v7_adjudicated	artifact	3	0	1	0.0
+canonical_v7_adjudicated	identity uncertain	1	0	10	0.0
+canonical_v7_adjudicated	identity uncertain	2	4	10	0.4
+canonical_v7_adjudicated	identity uncertain	3	6	10	0.6

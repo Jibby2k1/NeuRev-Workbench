@@ -1,0 +1,91 @@
+name: Research experiment proposal
+description: Propose a bounded, falsifiable experiment before implementation or execution.
+title: "[Experiment]: "
+labels:
+  - research
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This form creates a proposal, not run authorization. Read the owning
+        workflow and the Scientific Audit Output Standard first. Do not attach
+        raw data, private labels, reviewer identities, or generated output trees.
+  - type: input
+    id: program
+    attributes:
+      label: Program and related record IDs
+      placeholder: NREV-PRG-0001; NREV-CLM-____; dependencies NREV-EXP-____
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Scientific question and objective
+      description: State one decision-relevant question and the exact objective.
+    validations:
+      required: true
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Rationale and current evidence gap
+      description: Link the claim, decision, or boundary this work could change.
+    validations:
+      required: true
+  - type: textarea
+    id: design
+    attributes:
+      label: Frozen comparison design
+      description: Include unit of analysis, comparator, operating point, grouping/blocking, sample plan, randomization, blinding, and uncertainty method.
+    validations:
+      required: true
+  - type: textarea
+    id: data_scope
+    attributes:
+      label: Data scope and leakage controls
+      description: Identify recordings or sanitized dataset IDs, split boundaries, label access, and what remains unknown rather than negative.
+    validations:
+      required: true
+  - type: textarea
+    id: falsifiers
+    attributes:
+      label: Falsifiers and gates
+      description: List prespecified criteria, stage, action on failure, and what result would stop or qualify the claim.
+    validations:
+      required: true
+  - type: textarea
+    id: audit
+    attributes:
+      label: Scientific audit output plan
+      description: State section applicability, expected counts, media/traces/tables, compact indexes, and validation. Record any requested opt-out explicitly.
+    validations:
+      required: true
+  - type: textarea
+    id: resources
+    attributes:
+      label: Resources, provenance, and output root
+      description: Give bounded CPU/GPU/RAM/disk/time, config path, seeds, resume policy, and a new non-colliding Outputs path.
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Public/private and release boundary
+      description: Distinguish public records/capsules from ignored inputs/outputs, private review material, and any external archive.
+    validations:
+      required: true
+  - type: textarea
+    id: decision
+    attributes:
+      label: Decision rule and interpretation boundary
+      description: State what each gate outcome permits and what this experiment cannot establish.
+    validations:
+      required: true
+  - type: checkboxes
+    id: acknowledgment
+    attributes:
+      label: Proposal acknowledgment
+      options:
+        - label: I understand that issue acceptance and record scaffolding do not authorize a run.
+          required: true
+        - label: I will preserve negative, mixed, inconclusive, stopped, and invalidated outcomes.
+          required: true

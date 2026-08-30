@@ -33,7 +33,7 @@ static Path resolvePath(Path projectRoot, String value) {
     return path.isAbsolute() ? path : projectRoot.resolve(path)
 }
 
-final Path projectRoot = Paths.get(setting("project_root", "/home/jibby2k1/CNEL/State Analysis (Fish)/Separable-Gamma-CFAR"))
+final Path projectRoot = Paths.get(setting("project_root", System.getProperty("user.dir")))
 final String datasetId = setting("dataset_id", "calcium_video_2")
 final Path outputRoot = resolvePath(projectRoot, setting("output_root", "Outputs"))
 final Path highPassDir = outputRoot.resolve("HighPass").resolve(datasetId)

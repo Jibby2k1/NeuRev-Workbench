@@ -1,0 +1,23 @@
+\begin{table}[!htbp]
+\centering
+\scriptsize
+\begin{tabularx}{\linewidth}{X r r r}
+\toprule
+Feature & Mean percentile [95\% CI] & $\Delta$ vs carrier & Median $\rho$ \\
+\midrule
+Raw center & 0.991 [0.973, 1.000] & -0.003 & -- \\
+CS-Parzen ICA center & 0.964 [0.927, 0.992] & -0.030 & -- \\
+Local standardization center & 0.935 [0.894, 0.969] & -0.059 & 0.524 \\
+Raw center-annulus & 0.907 [0.857, 0.949] & -0.086 & 0.377 \\
+VST center-annulus & 0.883 [0.824, 0.934] & -0.111 & 0.492 \\
+LS exponential matched filter & 0.958 [0.918, 0.990] & -0.036 & -- \\
+Frozen amplitude carrier & 0.994 [0.981, 1.000] & +0.000 & -- \\
+Local coherence (15 frames) & 0.994 [0.981, 1.000] & +0.000 & -- \\
+Lag-2 recurrence (15 frames) & 0.996 [0.987, 1.000] & +0.002 & -- \\
+Raw/ICA/LS consensus & 0.986 [0.963, 0.999] & -0.008 & 0.633 \\
+LS multiscale persistence & 0.972 [0.945, 0.992] & -0.022 & 0.649 \\
+\bottomrule
+\end{tabularx}
+\caption{Exploratory full-trace feature panel at confirmed ROI centers. Percentiles compare each confirmed event maximum with all same-duration quiet-window maxima at the same immutable site; intervals use a 5,000-draw site bootstrap. The final column is the median available burst-pair Spearman correlation of site ranks; dashes denote ceiling-induced undefined correlations.}
+\label{tab:full-trace-feature-panel}
+\end{table}
