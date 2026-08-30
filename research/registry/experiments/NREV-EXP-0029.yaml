@@ -1,0 +1,135 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0029
+origin:
+  kind: native
+program_id: NREV-PRG-0001
+title: Frozen-JEPA Conditional-Background Residual Screen V1 with v1.1 domain amendment
+question: Can a full-time spatially blind pixel decoder on the frozen Screen-B JEPA suppress predictable background while
+  retaining exact injected calcium sources and improving paired recovery over the identical HC endpoint on raw video?
+objective: Run a bounded one-seed engineering screen of normalized signed video-minus-conditional-prediction residuals with
+  exact target isolation, source-off-only calibration, paired signal-retention accounting, and no scientific promotion.
+rationale: The direct JEPA latent-temporal-change head was weak, but that endpoint does not test whether the frozen representation
+  can predict structured background; a pixel-space residual screen can test this narrower mechanism while measuring signal
+  absorption explicitly. Run A failed closed before residual interpretation because v1 applied normalization to a parent
+  raw-HC endpoint defined in native units; v1.1 corrected only that domain mismatch in a fresh run without relaxing the anchor.
+  Run B completed the bounded engineering screen and retained injected amplitude, but its JEPA-residual recall point estimate
+  was below native raw HC while background RMS, dynamic-MAD, and tiling-seam ratios exceeded one. This technically valid
+  screen is recorded for design triage only; it does not resolve a formal scientific benefit gate or change the experiment's
+  draft, not-evaluated, evidence-tier-none state.
+lifecycle: draft
+outcome: not_evaluated
+evidence_tier: none
+review_state: not_requested
+falsifiers:
+- Any parent artifact, checkpoint, cache, or pinned implementation hash mismatches.
+- Any frozen provider parameter changes, enters the optimizer, or receives a gradient.
+- The complete decoder sampling-schedule SHA-256 differs between the matched JEPA and random-provider arms.
+- Target-tube adversarial invariance is nonzero, a reflected alias is unmasked, exact 64-tile coverage fails, or registered
+  footprint leakage differs from its frozen exact reference beyond tolerance.
+- Source-on information enters calibration, decoder selection, normalization, or endpoint tuning.
+- Projection closure or voxelwise pair closure exceeds 1e-5 absolute error or any required diagnostic is nonfinite.
+- The native-unit raw HC endpoint differs from the exact Screen-B frozen-handcrafted recovery anchor on any field of any
+  source-on or intervention RecoveryResult; numeric tolerance and candidate-coordinate/count exceptions are both zero.
+- A JEPA-specific mechanism interpretation must be withheld if the frozen-random-provider residual equals or exceeds the JEPA
+  residual; this comparison remains descriptive and is not a formal benefit gate.
+- The screen is described as formally passing or failing a scientific benefit gate, or produces a scientific claim or evidence
+  capsule.
+design:
+  summary: Under the schema-2 v1.1 amendment, hash-verify and freeze the non-scientific seed-1001 500-step JEPA and 512/96
+    normalized clip banks from Screen B; first reproduce all 216 native-unit parent raw-HC RecoveryResults exactly, then
+    train one 16385-parameter ConvTranspose3d pixel decoder per frozen JEPA/random provider for 500 matched steps on full-time
+    3-by-3-token spatially blind targets after mask-before-reflect processing; tile 64 central 8-by-8 patches exactly once;
+    evaluate both normalized signed-residual HC endpoints versus the native raw-HC anchor and each other on the frozen 12-window,
+    108-cell, 252-source paired injection grid; report prediction coverage, retention, absorption, closure, total error,
+    orthogonal distortion, background suppression, and descriptive grouped uncertainty without treating screen thresholds
+    as formal experiment gates.
+  protocol_path: docs/workflows/conditional_background_residual_v1_1.md
+  unit_of_analysis: held empirical-background recording by disjoint 32-frame 64-by-64 window by injection seed, with source
+    count nested; one upstream JEPA seed and one decoder seed are engineering factors, not independent biological replicates
+  comparison: primary normalized signed frozen-JEPA conditional-residual HC versus the exact source-off-calibrated native-unit
+    HC endpoint from Screen B; required secondary specificity comparisons are normalized frozen-random-provider residual
+    versus native raw HC and JEPA residual versus random residual under matched decoder schedules; cross-domain score magnitudes
+    are not compared
+  data_scope: the exact hash-frozen Screen-B 512 training and 96 validation normalized clip banks, frozen seed-1001 JEPA checkpoint,
+    12 empirical background windows, and 108 paired exact-injection cells containing 252 sources; native background candidates
+    remain unknown
+  grouping_or_blocking: preserve complete recording, background window, and injection-seed groups; nest source count; never
+    split sources or nearby patches as independent replicates and never use source-on information for calibration or selection
+  sample_plan: one shared 500-step decoder initialization and target-schedule seed per JEPA/random provider over 512 frozen
+    training clips, 96 hash-verified reserved validation clips, and the complete 12-window by 3 source-count by 3 injection-seed
+    grid of 108 paired cells and 252 exact sources; this is a bounded engineering screen only
+  randomization: reuse JEPA seed 1001, validation seed 2001, and injection seeds 3101 through 3103; fix decoder initialization
+    seed 6201, target schedule seed 6202, and grouped-bootstrap seed 6203; share initialization and schedules across both
+    provider arms
+  blinding: decoder training receives only frozen normalized training clips and masked context; freeze provider, decoder objective,
+    geometry, endpoint, fixtures, and source-off calibration before exact injected truth is scored; do not access biological
+    ROI labels or treat native candidates as negatives
+  analysis_plan: match up to four separated local maxima to exact footprint-peak centers one-to-one within three pixels; compare
+    macro source recall for JEPA residual minus raw, random residual minus raw, and JEPA residual minus random residual; report
+    actual candidates, placement-center sensitivity, recording-wise effects, descriptive grouped bootstraps, aligned retained
+    gain, predictor absorption, projection closure, total signal error, orthogonal distortion, centered background RMS and
+    MAD ratios, dynamic MAD, and audit incompleteness; screen advancement thresholds are nonformal engineering triage only
+gates:
+- id: output_collision
+  criterion: The registered output root is absent immediately before execution.
+  stage: preflight
+  required: true
+- id: scientific_audit
+  criterion: The applicable scientific audit inventory and media validation pass before audit completion.
+  stage: review
+  required: true
+- id: publication_boundary
+  criterion: The public evidence capsule and release candidates pass the publication-boundary audit.
+  stage: publication
+  required: true
+- id: parent_artifact_identity
+  criterion: Every required Screen-B artifact hash, cache shape, dtype, normalization contract, fixture identity, and checkpoint
+    identity matches before any read or optimization.
+  stage: preflight
+  required: true
+- id: motion_dependency
+  criterion: NREV-EXP-0025 must provide evidence-backed usable motion and registration-residual fields before claim-bearing
+    execution; while unresolved this run remains an engineering screen.
+  stage: preflight
+  required: true
+- id: blind_tube_geometry
+  criterion: Before the first optimizer step, masking occurs before reflection, all reflected aliases are mask-valued, the
+    full-time 3-by-3-token blind halo and exact 64-target coverage pass, all 252 source leakage values reproduce their frozen
+    float64 reference, and adversarial target-tube influence is exactly zero at all 64 target tiles.
+  stage: preflight
+  required: true
+- id: frozen_provider
+  criterion: The JEPA provider is optimizer-excluded, gradient-free, and state-hash identical before and after decoder training;
+    the 16385-parameter decoder is the only trainable module.
+  stage: execution
+  required: true
+- id: screen_scope
+  criterion: Bounded-engineering authorization is true while scientific and claim-bearing authorization remain false; the
+    run uses exactly one upstream JEPA seed, matched JEPA/random decoder seeds, complete sampling-schedule hash identity,
+    and 500 decoder steps and records that the screen cannot resolve a formal scientific benefit gate.
+  stage: execution
+  required: true
+- id: pair_safe_evaluation
+  criterion: Every endpoint calibration uses source-off only and applies one frozen callable unchanged to source-off and source-on
+    on the exact 108-cell fixture grid, raw HC receives native float32 input with no normalization, and all 216 Screen-B source-on/intervention
+    RecoveryResult objects reproduce exactly at tolerance zero before either residual endpoint is interpreted.
+  stage: analysis
+  required: true
+- id: retention_accounting
+  criterion: Retention, absorption, total signal error, orthogonal distortion, background suppression, projection closure,
+    and voxelwise pair closure are finite and both maximum closure absolute errors are at most 1e-5.
+  stage: analysis
+  required: true
+claim_ids: []
+decision_ids:
+- NREV-DEC-0021
+- NREV-DEC-0022
+run_ids:
+- NREV-RUN-EXP-0029-SCREEN-20260830-A
+- NREV-RUN-EXP-0029-SCREEN-20260830-B
+depends_on_experiment_ids:
+- NREV-EXP-0025
+visibility: public
+created_on: '2026-08-30'
+updated_on: '2026-08-30'

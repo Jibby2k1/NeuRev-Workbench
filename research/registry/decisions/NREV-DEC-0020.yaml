@@ -1,0 +1,42 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0020
+origin:
+  kind: native
+program_id: NREV-PRG-0001
+title: Planning hold for Compact Spatiotemporal JEPA Representation Pilot V1
+lifecycle: draft
+action: hold
+rationale: A bounded non-scientific screen completed successfully as an engineering run and produced an unfavorable primary-gain
+  estimate plus screen-level representation-collapse threshold violations. Keep the full experiment on a conservative post-screen
+  hold; the incomplete experiment-level gates remain unresolved and claim-bearing execution remains unauthorized.
+evidence_summary: Screen B evaluated one of three seeds for 500 of 5000 steps on the full 108-fixture grid. JEPA macro recall
+  was 0.01852 versus 0.18750 for the handcrafted comparator, with JEPA-minus-strongest hierarchical 95 percent interval
+  [-0.31713, -0.03698]; JEPA also crossed both collapse thresholds at the screen budget. The screen is not a completed scientific
+  experiment and does not formally resolve the registered gates.
+effective_on: '2026-08-30'
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0028
+claim_ids: []
+evidence_capsule_ids: []
+constraints:
+- This draft does not authorize claim-bearing execution, promotion, or a scientific claim.
+- The successful engineering run does not change NREV-EXP-0028 from draft, not_evaluated, and evidence tier none.
+- One seed at 500 steps cannot substitute for the registered three seeds at 5000 steps. The unfavorable estimate and screen-level
+  threshold violations justify a conservative post-hoc engineering hold, not a formal experiment-level gate failure or a prespecified
+  futility stop.
+- Run into the registered non-colliding output root and preserve exact code, input, configuration, seed, and environment provenance.
+- Complete the applicable scientific audit package before treating computation as audit-complete.
+- Keep raw inputs, reviewer identities, private randomization material, credentials, and large generated artifacts outside
+  Git.
+follow_up:
+- Complete NREV-EXP-0025 motion and registration-residual evidence before any claim-bearing representation run.
+- Advance uncertainty-aware learning with the frozen interpretable feature stack while JEPA v1 remains on hold.
+- Before any future representation run, make the canonical run ID and bootstrap-draw override explicit in the resolved runtime
+  record and emit every registered secondary diagnostic.
+- Treat any anti-collapse objective, nuisance-residual target, or new score head as a new versioned experiment and run.
+- Replace this planning hold only with an evidence-backed decision linked to a validated capsule.
+visibility: public
+created_on: '2026-08-30'
+updated_on: '2026-08-30'

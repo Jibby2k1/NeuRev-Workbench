@@ -1552,6 +1552,125 @@
       "title": "Decision after Ls Denominator Audit",
       "updated_on": "2026-08-29",
       "visibility": "public"
+    },
+    {
+      "action": "hold",
+      "claim_ids": [],
+      "constraints": [
+        "This draft does not authorize claim-bearing execution, promotion, or a scientific claim.",
+        "The successful engineering run does not change NREV-EXP-0028 from draft, not_evaluated, and evidence tier none.",
+        "One seed at 500 steps cannot substitute for the registered three seeds at 5000 steps. The unfavorable estimate and screen-level threshold violations justify a conservative post-hoc engineering hold, not a formal experiment-level gate failure or a prespecified futility stop.",
+        "Run into the registered non-colliding output root and preserve exact code, input, configuration, seed, and environment provenance.",
+        "Complete the applicable scientific audit package before treating computation as audit-complete.",
+        "Keep raw inputs, reviewer identities, private randomization material, credentials, and large generated artifacts outside Git."
+      ],
+      "created_on": "2026-08-30",
+      "effective_on": "2026-08-30",
+      "evidence_capsule_ids": [],
+      "evidence_summary": "Screen B evaluated one of three seeds for 500 of 5000 steps on the full 108-fixture grid. JEPA macro recall was 0.01852 versus 0.18750 for the handcrafted comparator, with JEPA-minus-strongest hierarchical 95 percent interval [-0.31713, -0.03698]; JEPA also crossed both collapse thresholds at the screen budget. The screen is not a completed scientific experiment and does not formally resolve the registered gates.",
+      "experiment_ids": [
+        "NREV-EXP-0028"
+      ],
+      "follow_up": [
+        "Complete NREV-EXP-0025 motion and registration-residual evidence before any claim-bearing representation run.",
+        "Advance uncertainty-aware learning with the frozen interpretable feature stack while JEPA v1 remains on hold.",
+        "Before any future representation run, make the canonical run ID and bootstrap-draw override explicit in the resolved runtime record and emit every registered secondary diagnostic.",
+        "Treat any anti-collapse objective, nuisance-residual target, or new score head as a new versioned experiment and run.",
+        "Replace this planning hold only with an evidence-backed decision linked to a validated capsule."
+      ],
+      "id": "NREV-DEC-0020",
+      "lifecycle": "draft",
+      "origin": {
+        "kind": "native"
+      },
+      "program_id": "NREV-PRG-0001",
+      "rationale": "A bounded non-scientific screen completed successfully as an engineering run and produced an unfavorable primary-gain estimate plus screen-level representation-collapse threshold violations. Keep the full experiment on a conservative post-screen hold; the incomplete experiment-level gates remain unresolved and claim-bearing execution remains unauthorized.",
+      "record_type": "decision",
+      "review_state": "not_requested",
+      "schema_version": 1,
+      "title": "Planning hold for Compact Spatiotemporal JEPA Representation Pilot V1",
+      "updated_on": "2026-08-30",
+      "visibility": "public"
+    },
+    {
+      "action": "hold",
+      "claim_ids": [],
+      "constraints": [
+        "This initial record authorized only NREV-RUN-EXP-0029-SCREEN-20260830-A at scaffold time. It does not authorize resuming A; the separately versioned B engineering run is governed by NREV-DEC-0022.",
+        "One frozen JEPA seed and one 500-step decoder seed cannot formally pass or fail a preregistered scientific benefit gate, even if the descriptive advancement panel crosses or misses its thresholds.",
+        "NREV-EXP-0025 must provide evidence-backed motion and registration-residual fields before claim-bearing execution or a nuisance-robust conclusion.",
+        "The decoded movie is a conditional prediction and the signed residual includes prediction error; neither is automatically biological background, noise, or neuron-only signal.",
+        "A residual gain over raw is not JEPA-specific unless the JEPA residual also exceeds the matched frozen-random-provider residual; the grouped JEPA-minus-random interval is required as stronger descriptive context.",
+        "This draft does not authorize publication, promotion, a scientific claim, or an evidence capsule.",
+        "Run into the registered non-colliding output root and preserve exact code, input, configuration, seed, and environment provenance.",
+        "Record the expected incomplete scientific-audit status for the bounded screen; complete the applicable candidate-surrogate media and comparison package before treating any future computation as audit-complete.",
+        "Keep raw inputs, reviewer identities, private randomization material, credentials, and large generated artifacts outside Git."
+      ],
+      "created_on": "2026-08-30",
+      "effective_on": "2026-08-30",
+      "evidence_capsule_ids": [],
+      "evidence_summary": "This was the initial planning record for the hash-frozen v1 protocol, configuration, parent checkpoint, clip banks, fixture identity, decoder geometry, and implementation contract. Run A is now preserved as a failed nonresumable partial with no residual endpoint result or scientific outcome.",
+      "experiment_ids": [
+        "NREV-EXP-0029"
+      ],
+      "follow_up": [
+        "Preserve run A and its partial output unchanged and follow NREV-DEC-0022 for the fresh v1.1 B preflight and execution.",
+        "Independently recompute the 108-cell and 252-source denominators, all raw/JEPA/random paired recall effects and grouped intervals, retention, absorption, closure, total error, orthogonal distortion, suppression, and recording-wise direction from the emitted tables.",
+        "If the descriptive panel is coherent, design a new multi-seed claim-bearing experiment rather than promoting this screen in place.",
+        "Replace this planning hold only with an evidence-backed decision linked to a validated capsule."
+      ],
+      "id": "NREV-DEC-0021",
+      "lifecycle": "draft",
+      "origin": {
+        "kind": "native"
+      },
+      "program_id": "NREV-PRG-0001",
+      "rationale": "At scaffold time, no NREV-EXP-0029 result had been evaluated and the user's 2026-08-30 selection permitted only run A as a bounded engineering screen. Run A later failed closed before endpoint interpretation; NREV-DEC-0022 now governs the fresh v1.1 run while this record preserves the original planning boundary.",
+      "record_type": "decision",
+      "review_state": "not_requested",
+      "schema_version": 1,
+      "title": "Initial planning hold for Frozen-JEPA Conditional-Background Residual Screen V1",
+      "updated_on": "2026-08-30",
+      "visibility": "public"
+    },
+    {
+      "action": "hold",
+      "claim_ids": [],
+      "constraints": [
+        "Preserve NREV-RUN-EXP-0029-SCREEN-20260830-A and its `.partial` output as a failed, immutable, nonresumable engineering run; do not relabel it succeeded or use it as endpoint evidence.",
+        "Preserve the succeeded Run-B output and exact portable `resolved_config.json` and `artifact_index.json`; do not turn its engineering completion into a scientific PASS, claim, or evidence capsule.",
+        "The raw-HC anchor remains complete serialized equality across all 108 fixtures and 216 source-on/intervention RecoveryResult objects at numeric tolerance zero; coordinate, cardinality, or unmatched-count exceptions remain forbidden.",
+        "Keep native raw HC, normalized JEPA residual, and normalized random-provider residual as distinct endpoint domains; never compare their score magnitudes or describe the decoded prediction as identified biological background.",
+        "Native unmatched candidates remain biologically unknown and cannot be counted as verified false positives or specificity.",
+        "The fixture grid, truth centers, proposal cap, calibration API, decoder, checkpoint, caches, seeds, budgets, geometry, diagnostics, grouping, and descriptive advancement panel are frozen historical facts of this screen, not permission to rerun or widen it in place.",
+        "NREV-EXP-0025 motion evidence, multi-seed confirmation, independent-recording generalization, biological identity evidence, and the complete scientific audit remain unresolved."
+      ],
+      "created_on": "2026-08-30",
+      "effective_on": "2026-08-30",
+      "evidence_capsule_ids": [],
+      "evidence_summary": "Run A's safe failure was traced to normalized input being supplied to a native-unit raw-HC endpoint; native-unit reconstruction reproduced all 216 parent RecoveryResults exactly. Run B passed the 108-fixture and 216-object raw anchor, all 240 prediction-coverage rows, both algebraic closures, and the 27-artifact index. Across 252 sources, macro recall was 0.1875 raw, 0.09027777777777778 JEPA residual, and 0.06712962962962964 random residual. JEPA minus raw was -0.09722222222222222 with grouped 95 percent interval [-0.24305555555555552, 0.027835648148148106]; JEPA minus random was 0.023148148148148154 with interval [-0.043981481481481476, 0.09722222222222227]. Median JEPA aligned retention was 0.9990785812365571, but background RMS ratio was 1.7102741349511534, dynamic-MAD ratio 1.1093322124630185, and seam-to-interior jump ratio 2.5786383127702. The scientific audit, motion dependency, multi-seed stability, independent-recording generalization, and biological identity evidence remain unresolved.",
+      "experiment_ids": [
+        "NREV-EXP-0029"
+      ],
+      "follow_up": [
+        "Keep native raw HC as the current reference endpoint for this bounded fixture grid and retain NREV-EXP-0029 as draft, not evaluated, evidence tier none, and without a capsule.",
+        "Do not escalate the same nonoverlapping tiled one-layer decoder merely by adding steps; the observed background amplification, orthogonal distortion, seams, and lower recall require an architectural change and a new versioned protocol.",
+        "If conditional-background learning is revisited, freeze a separate design that directly falsifies patch-boundary and prediction-error failure through full-field or overlap-add decoding, matched random controls, and multiple upstream and decoder seeds.",
+        "Resolve the motion dependency and complete the required full-field, close-up, trace, matched-figure, decode-validation, and independent-recording audit before any claim-bearing experiment is considered."
+      ],
+      "id": "NREV-DEC-0022",
+      "lifecycle": "draft",
+      "origin": {
+        "kind": "native"
+      },
+      "program_id": "NREV-PRG-0001",
+      "rationale": "Run A correctly stopped on an exact parent-anchor mismatch before any conditional-residual endpoint was interpreted, and the schema-2 v1.1 correction restored exact native-unit continuity without relaxing that guard. Run B then completed the bounded engineering screen, but native raw HC had the strongest recall point estimate while the JEPA residual amplified registered background and seam diagnostics. Keep this exact tiled one-layer conditional-residual design on hold; the screen is not a formal scientific gate and does not resolve the broader conditional-background-learning hypothesis.",
+      "record_type": "decision",
+      "review_state": "not_requested",
+      "schema_version": 1,
+      "title": "Post-screen hold for the Frozen-JEPA conditional-background residual v1.1 design",
+      "updated_on": "2026-08-30",
+      "visibility": "public"
     }
   ],
   "evidence_capsules": [
@@ -4505,6 +4624,308 @@
       "title": "Realistic Movie Simulation",
       "updated_on": "2026-08-29",
       "visibility": "public"
+    },
+    {
+      "claim_ids": [],
+      "created_on": "2026-08-30",
+      "decision_ids": [
+        "NREV-DEC-0020"
+      ],
+      "depends_on_experiment_ids": [
+        "NREV-EXP-0025"
+      ],
+      "design": {
+        "analysis_plan": "match primary local maxima to footprint_peak_centers_yx at an up-to-four cap with actual counts and no fillers; report placement_centers_yx morphology sensitivity separately; reselect the strongest comparator within every recording-window-injection-seed hierarchical bootstrap draw; require collapse, seed-stability, leave-recording-out, nuisance-residualized, and counterfactual gates before feature export",
+        "blinding": "forbid labels, ROIs, bursts, processed stages, and Spon data during self-supervision; use burst intervals but no ROI identities only for Spon background exclusion; freeze source-off calibration callables, score heads, checkpoints, fixtures, and primary analysis before exact-truth or secondary Spon diagnostics",
+        "comparison": "compact JEPA versus capacity-matched MAE and same-architecture random encoders under identical frozen latent_temporal_change_norm, plus one legacy-equivalent handcrafted carrier/context/kinetic comparator calibrated component-wise from source-off; objective-native error heads are secondary only",
+        "data_scope": "eleven hash-frozen 060126 raw recordings split eight training and three validation; Spon is excluded from self-supervision and selected post-training only through registered burst-interval exclusion without ROI identity labels",
+        "grouping_or_blocking": "block all fitting and uncertainty by complete recording, background window, and injection seed; source count is nested, neighboring patches are never split as independent replicates, and seed-specific score maps are never collapsed or selected across seeds",
+        "protocol_path": "docs/workflows/spatiotemporal_jepa_representation_v1.md",
+        "randomization": "use training and training-plan seeds 1001, 1002, and 1003, validation sampling seed 2001, injection seeds 3101, 3102, and 3103, grouped-bootstrap seed 4101, and label-permutation seed 5101; share per-seed training clips, masks, initial encoder weights, and exact optimizer budgets across trainable arms",
+        "sample_plan": "for each of three training seeds draw 512 unique label-free clips as 256 uniform, 128 high-temporal-MAD, and 128 low-temporal-MAD; hold one shared 96-clip uniform validation bank with 32 per held recording; evaluate 108 paired cells containing 252 exact sources and at most 4320 primary proposals across ten primary arm instances, reporting actual candidate cardinality",
+        "summary": "Train compact matched JEPA and MAE encoders for exactly 5000 updates on eight of eleven raw 060126 recordings using 512 unique label-free clips per training seed in a fixed 256/128/128 uniform/high/low split and one shared seed-2001 validation bank of 96 uniform clips; retain three validation recordings and Spon as post-training empirical backgrounds, evaluate 108 paired-injection cells under an up-to-four separated-local-maximum proposal cap, and apply common-head, source-off calibration, implementation-hash, collapse, dependency, nuisance, and counterfactual gates.",
+        "unit_of_analysis": "background recording by disjoint 32-frame 64-by-64 window by injection seed; source count is nested and training seed is a repeated model factor rather than an independent biological replicate"
+      },
+      "evidence_tier": "none",
+      "falsifiers": [
+        "JEPA fails to exceed the strongest comparator by 0.02 absolute macro source recall with a strictly positive hierarchical interval that reselects the comparator within every draw.",
+        "The apparent gain disappears under leave-recording-out or nuisance-matched analysis.",
+        "Any JEPA seed crosses the frozen finite-variance, effective-rank, or principal-component collapse threshold.",
+        "The primary effect changes sign across seeds or a source-free or randomized control reproduces it.",
+        "Improvement appears only in the secondary near-ceiling Spon known-center diagnostic.",
+        "A learned arm uses a different primary score head, any calibration uses source-on, objective-native errors enter the primary comparison, or seed-specific maps are collapsed or selected."
+      ],
+      "gates": [
+        {
+          "criterion": "The registered output root is absent immediately before execution.",
+          "id": "output_collision",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "The applicable scientific audit inventory and media validation pass before audit completion.",
+          "id": "scientific_audit",
+          "required": true,
+          "stage": "review"
+        },
+        {
+          "criterion": "The public evidence capsule and release candidates pass the publication-boundary audit.",
+          "id": "publication_boundary",
+          "required": true,
+          "stage": "publication"
+        },
+        {
+          "criterion": "All eleven 060126 TIFF hashes, shapes, dtype, total frame count, and portable URIs match the committed sanitized descriptor.",
+          "id": "raw_inventory",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "The self-supervised data API exposes only the eight registered raw training recordings and cannot expose Spon, labels, ROIs, bursts, processed stages, or detector scores.",
+          "id": "raw_only_boundary",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "The exact eight-training and three-validation recording split is disjoint, and normalization fits only the eight training recordings.",
+          "id": "recording_split",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "Spon is absent from self-supervision, normalization, selection, and gate tuning; background windows use registered burst-interval exclusion without ROI identity labels.",
+          "id": "spon_holdout",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "NREV-EXP-0025 must provide an evidence-backed usable motion and registration-residual contract; while it is draft and not_evaluated, this experiment is not ready for claim-bearing execution.",
+          "id": "motion_dependency",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "Exactly 108 paired empirical-background cells close within 0.51 float32 ULP, corresponding to one correctly rounded addition; absolute residual remains reported but is not a pass threshold; cells use frozen generator constants and both named center fields, and a degenerate unfloored source-off frame-difference MAD aborts without automatic replacement.",
+          "id": "empirical_fixture",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "Each training seed has exactly 512 unique label-free clips in a 256/128/128 uniform/high/low split sampled with that registered training seed, and one shared seed-2001 validation bank has 96 unique uniform clips with 32 per held recording.",
+          "id": "clip_bank_contract",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "JEPA, MAE, and random use identical frozen latent_temporal_change_norm primary heads; objective-native errors remain separate secondary lanes; every calibration uses fit_source_off returning a frozen callable applied unchanged to source-off and source-on.",
+          "id": "score_head_contract",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "The native_background_calcium_injection_v1 generator complete-file SHA-256 and essential constants match the maintained configuration and resolved manifest.",
+          "id": "fixture_implementation_hash",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "The jepa_primary_comparator_suite_v1 source versions and complete-file SHA-256 values, including pair-safe handcrafted and legacy equivalence reference, match the maintained configuration.",
+          "id": "comparator_implementation_hash",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "JEPA and MAE share clips, masks, encoder initialization, predictor capacity, and exactly 5000 updates under AdamW LR 1e-4 constant, betas 0.9 and 0.999, epsilon 1e-8, weight decay 0.05, batch size 8, and gradient clip norm 1.0; trainable parameter counts differ by at most one percent, and any increase requires a new configuration and run ID.",
+          "id": "capacity_match",
+          "required": true,
+          "stage": "execution"
+        },
+        {
+          "criterion": "Four non-overlapping target cuboids of exactly 2 by 4 by 8 tokens cover 50 percent of the token grid and masking occurs before context encoding.",
+          "id": "mask_contract",
+          "required": true,
+          "stage": "execution"
+        },
+        {
+          "criterion": "CUDA uses bfloat16 autocast with float32 loss and metrics, all losses and gradients remain finite, and float16 fallback is disabled.",
+          "id": "numerical_precision",
+          "required": true,
+          "stage": "execution"
+        },
+        {
+          "criterion": "Every method returns only separated local maxima up to cap four, reports actual candidate count, never fills to four, and retains all learned seed instances without cross-seed collapse or selection.",
+          "id": "proposal_cap_contract",
+          "required": true,
+          "stage": "analysis"
+        },
+        {
+          "criterion": "All three JEPA seeds pass finite, feature-variance, effective-rank, and principal-component dominance thresholds.",
+          "id": "collapse",
+          "required": true,
+          "stage": "analysis"
+        },
+        {
+          "criterion": "JEPA exceeds the strongest comparator by at least 0.02 macro recall, the hierarchical 95 percent lower bound with within-draw comparator reselection exceeds zero, and no background recording loses more than 0.02.",
+          "id": "primary_gain",
+          "required": true,
+          "stage": "analysis"
+        },
+        {
+          "criterion": "The primary effect is positive for all three training seeds and its recall range is at most 0.05.",
+          "id": "seed_stability",
+          "required": true,
+          "stage": "analysis"
+        },
+        {
+          "criterion": "The JEPA primary advantage retains a strictly positive grouped interval after registered nuisance matching or residualization; dtype_rail_fraction is not interpreted as sensor saturation.",
+          "id": "nuisance_residualized_gain",
+          "required": true,
+          "stage": "analysis"
+        },
+        {
+          "criterion": "Source-free, temporally reversed, phase-randomized, spatially shuffled, and recording-blocked permutation controls do not reproduce the claimed effect.",
+          "id": "counterfactuals",
+          "required": true,
+          "stage": "analysis"
+        }
+      ],
+      "id": "NREV-EXP-0028",
+      "lifecycle": "draft",
+      "objective": "Test a bounded raw-only JEPA representation against capacity-matched MAE and random encoders under one common frozen primary head and against a pair-safe source-off-calibrated handcrafted comparator, while keeping objective-native error heads secondary.",
+      "origin": {
+        "kind": "native"
+      },
+      "outcome": "not_evaluated",
+      "program_id": "NREV-PRG-0001",
+      "question": "Does compact raw-video masked latent prediction improve exact injected-source recovery on held-out empirical backgrounds under an identical frozen latent-temporal-change primary head beyond matched and interpretable comparators without collapse or nuisance-only gains?",
+      "rationale": "Known-center localization is near ceiling, while exact-truth empirical-background recovery and acquisition-confound robustness remain unresolved; a small self-supervised pilot can test learned representation value without promoting provisional labels.",
+      "record_type": "experiment",
+      "review_state": "not_requested",
+      "run_ids": [
+        "NREV-RUN-EXP-0028-PILOT-01",
+        "NREV-RUN-EXP-0028-SCREEN-20260829-B"
+      ],
+      "schema_version": 1,
+      "title": "Compact Spatiotemporal JEPA Representation Pilot V1",
+      "updated_on": "2026-08-30",
+      "visibility": "public"
+    },
+    {
+      "claim_ids": [],
+      "created_on": "2026-08-30",
+      "decision_ids": [
+        "NREV-DEC-0021",
+        "NREV-DEC-0022"
+      ],
+      "depends_on_experiment_ids": [
+        "NREV-EXP-0025"
+      ],
+      "design": {
+        "analysis_plan": "match up to four separated local maxima to exact footprint-peak centers one-to-one within three pixels; compare macro source recall for JEPA residual minus raw, random residual minus raw, and JEPA residual minus random residual; report actual candidates, placement-center sensitivity, recording-wise effects, descriptive grouped bootstraps, aligned retained gain, predictor absorption, projection closure, total signal error, orthogonal distortion, centered background RMS and MAD ratios, dynamic MAD, and audit incompleteness; screen advancement thresholds are nonformal engineering triage only",
+        "blinding": "decoder training receives only frozen normalized training clips and masked context; freeze provider, decoder objective, geometry, endpoint, fixtures, and source-off calibration before exact injected truth is scored; do not access biological ROI labels or treat native candidates as negatives",
+        "comparison": "primary normalized signed frozen-JEPA conditional-residual HC versus the exact source-off-calibrated native-unit HC endpoint from Screen B; required secondary specificity comparisons are normalized frozen-random-provider residual versus native raw HC and JEPA residual versus random residual under matched decoder schedules; cross-domain score magnitudes are not compared",
+        "data_scope": "the exact hash-frozen Screen-B 512 training and 96 validation normalized clip banks, frozen seed-1001 JEPA checkpoint, 12 empirical background windows, and 108 paired exact-injection cells containing 252 sources; native background candidates remain unknown",
+        "grouping_or_blocking": "preserve complete recording, background window, and injection-seed groups; nest source count; never split sources or nearby patches as independent replicates and never use source-on information for calibration or selection",
+        "protocol_path": "docs/workflows/conditional_background_residual_v1_1.md",
+        "randomization": "reuse JEPA seed 1001, validation seed 2001, and injection seeds 3101 through 3103; fix decoder initialization seed 6201, target schedule seed 6202, and grouped-bootstrap seed 6203; share initialization and schedules across both provider arms",
+        "sample_plan": "one shared 500-step decoder initialization and target-schedule seed per JEPA/random provider over 512 frozen training clips, 96 hash-verified reserved validation clips, and the complete 12-window by 3 source-count by 3 injection-seed grid of 108 paired cells and 252 exact sources; this is a bounded engineering screen only",
+        "summary": "Under the schema-2 v1.1 amendment, hash-verify and freeze the non-scientific seed-1001 500-step JEPA and 512/96 normalized clip banks from Screen B; first reproduce all 216 native-unit parent raw-HC RecoveryResults exactly, then train one 16385-parameter ConvTranspose3d pixel decoder per frozen JEPA/random provider for 500 matched steps on full-time 3-by-3-token spatially blind targets after mask-before-reflect processing; tile 64 central 8-by-8 patches exactly once; evaluate both normalized signed-residual HC endpoints versus the native raw-HC anchor and each other on the frozen 12-window, 108-cell, 252-source paired injection grid; report prediction coverage, retention, absorption, closure, total error, orthogonal distortion, background suppression, and descriptive grouped uncertainty without treating screen thresholds as formal experiment gates.",
+        "unit_of_analysis": "held empirical-background recording by disjoint 32-frame 64-by-64 window by injection seed, with source count nested; one upstream JEPA seed and one decoder seed are engineering factors, not independent biological replicates"
+      },
+      "evidence_tier": "none",
+      "falsifiers": [
+        "Any parent artifact, checkpoint, cache, or pinned implementation hash mismatches.",
+        "Any frozen provider parameter changes, enters the optimizer, or receives a gradient.",
+        "The complete decoder sampling-schedule SHA-256 differs between the matched JEPA and random-provider arms.",
+        "Target-tube adversarial invariance is nonzero, a reflected alias is unmasked, exact 64-tile coverage fails, or registered footprint leakage differs from its frozen exact reference beyond tolerance.",
+        "Source-on information enters calibration, decoder selection, normalization, or endpoint tuning.",
+        "Projection closure or voxelwise pair closure exceeds 1e-5 absolute error or any required diagnostic is nonfinite.",
+        "The native-unit raw HC endpoint differs from the exact Screen-B frozen-handcrafted recovery anchor on any field of any source-on or intervention RecoveryResult; numeric tolerance and candidate-coordinate/count exceptions are both zero.",
+        "A JEPA-specific mechanism interpretation must be withheld if the frozen-random-provider residual equals or exceeds the JEPA residual; this comparison remains descriptive and is not a formal benefit gate.",
+        "The screen is described as formally passing or failing a scientific benefit gate, or produces a scientific claim or evidence capsule."
+      ],
+      "gates": [
+        {
+          "criterion": "The registered output root is absent immediately before execution.",
+          "id": "output_collision",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "The applicable scientific audit inventory and media validation pass before audit completion.",
+          "id": "scientific_audit",
+          "required": true,
+          "stage": "review"
+        },
+        {
+          "criterion": "The public evidence capsule and release candidates pass the publication-boundary audit.",
+          "id": "publication_boundary",
+          "required": true,
+          "stage": "publication"
+        },
+        {
+          "criterion": "Every required Screen-B artifact hash, cache shape, dtype, normalization contract, fixture identity, and checkpoint identity matches before any read or optimization.",
+          "id": "parent_artifact_identity",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "NREV-EXP-0025 must provide evidence-backed usable motion and registration-residual fields before claim-bearing execution; while unresolved this run remains an engineering screen.",
+          "id": "motion_dependency",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "Before the first optimizer step, masking occurs before reflection, all reflected aliases are mask-valued, the full-time 3-by-3-token blind halo and exact 64-target coverage pass, all 252 source leakage values reproduce their frozen float64 reference, and adversarial target-tube influence is exactly zero at all 64 target tiles.",
+          "id": "blind_tube_geometry",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "The JEPA provider is optimizer-excluded, gradient-free, and state-hash identical before and after decoder training; the 16385-parameter decoder is the only trainable module.",
+          "id": "frozen_provider",
+          "required": true,
+          "stage": "execution"
+        },
+        {
+          "criterion": "Bounded-engineering authorization is true while scientific and claim-bearing authorization remain false; the run uses exactly one upstream JEPA seed, matched JEPA/random decoder seeds, complete sampling-schedule hash identity, and 500 decoder steps and records that the screen cannot resolve a formal scientific benefit gate.",
+          "id": "screen_scope",
+          "required": true,
+          "stage": "execution"
+        },
+        {
+          "criterion": "Every endpoint calibration uses source-off only and applies one frozen callable unchanged to source-off and source-on on the exact 108-cell fixture grid, raw HC receives native float32 input with no normalization, and all 216 Screen-B source-on/intervention RecoveryResult objects reproduce exactly at tolerance zero before either residual endpoint is interpreted.",
+          "id": "pair_safe_evaluation",
+          "required": true,
+          "stage": "analysis"
+        },
+        {
+          "criterion": "Retention, absorption, total signal error, orthogonal distortion, background suppression, projection closure, and voxelwise pair closure are finite and both maximum closure absolute errors are at most 1e-5.",
+          "id": "retention_accounting",
+          "required": true,
+          "stage": "analysis"
+        }
+      ],
+      "id": "NREV-EXP-0029",
+      "lifecycle": "draft",
+      "objective": "Run a bounded one-seed engineering screen of normalized signed video-minus-conditional-prediction residuals with exact target isolation, source-off-only calibration, paired signal-retention accounting, and no scientific promotion.",
+      "origin": {
+        "kind": "native"
+      },
+      "outcome": "not_evaluated",
+      "program_id": "NREV-PRG-0001",
+      "question": "Can a full-time spatially blind pixel decoder on the frozen Screen-B JEPA suppress predictable background while retaining exact injected calcium sources and improving paired recovery over the identical HC endpoint on raw video?",
+      "rationale": "The direct JEPA latent-temporal-change head was weak, but that endpoint does not test whether the frozen representation can predict structured background; a pixel-space residual screen can test this narrower mechanism while measuring signal absorption explicitly. Run A failed closed before residual interpretation because v1 applied normalization to a parent raw-HC endpoint defined in native units; v1.1 corrected only that domain mismatch in a fresh run without relaxing the anchor. Run B completed the bounded engineering screen and retained injected amplitude, but its JEPA-residual recall point estimate was below native raw HC while background RMS, dynamic-MAD, and tiling-seam ratios exceeded one. This technically valid screen is recorded for design triage only; it does not resolve a formal scientific benefit gate or change the experiment's draft, not-evaluated, evidence-tier-none state.",
+      "record_type": "experiment",
+      "review_state": "not_requested",
+      "run_ids": [
+        "NREV-RUN-EXP-0029-SCREEN-20260830-A",
+        "NREV-RUN-EXP-0029-SCREEN-20260830-B"
+      ],
+      "schema_version": 1,
+      "title": "Frozen-JEPA Conditional-Background Residual Screen V1 with v1.1 domain amendment",
+      "updated_on": "2026-08-30",
+      "visibility": "public"
     }
   ],
   "index": {
@@ -4570,7 +4991,10 @@
       "NREV-DEC-0016",
       "NREV-DEC-0017",
       "NREV-DEC-0018",
-      "NREV-DEC-0019"
+      "NREV-DEC-0019",
+      "NREV-DEC-0020",
+      "NREV-DEC-0021",
+      "NREV-DEC-0022"
     ],
     "evidence_capsules": [
       "NREV-EVC-EXP-0001",
@@ -4620,7 +5044,9 @@
       "NREV-EXP-0024",
       "NREV-EXP-0025",
       "NREV-EXP-0026",
-      "NREV-EXP-0027"
+      "NREV-EXP-0027",
+      "NREV-EXP-0028",
+      "NREV-EXP-0029"
     ],
     "flagship_program_id": "NREV-PRG-0001",
     "migration": {
@@ -4707,7 +5133,9 @@
       "NREV-EXP-0024",
       "NREV-EXP-0025",
       "NREV-EXP-0026",
-      "NREV-EXP-0027"
+      "NREV-EXP-0027",
+      "NREV-EXP-0028",
+      "NREV-EXP-0029"
     ],
     "programs": [
       "NREV-PRG-0001",
@@ -4715,7 +5143,12 @@
       "NREV-PRG-0003",
       "NREV-PRG-0004"
     ],
-    "runs": [],
+    "runs": [
+      "NREV-RUN-EXP-0028-PILOT-01",
+      "NREV-RUN-EXP-0028-SCREEN-20260829-B",
+      "NREV-RUN-EXP-0029-SCREEN-20260830-A",
+      "NREV-RUN-EXP-0029-SCREEN-20260830-B"
+    ],
     "schema_version": 1
   },
   "programs": [
@@ -4854,7 +5287,484 @@
       "visibility": "public"
     }
   ],
-  "runs": [],
+  "runs": [
+    {
+      "artifacts": {
+        "output_root": "Outputs/NeuronIdentifiability/NREV-EXP-0028/runs/NREV-RUN-EXP-0028-PILOT-01"
+      },
+      "code": {
+        "branch": "codex/neuron-identifiability-paper-20260822",
+        "commit": "e1e64725fb9c1a87edf3380306ef0f1f464485df",
+        "diff_sha256": "b2bb97ca4768e6e2b446878e8aa1f18f03416b1b658de95e1b9a576c66b4cd57",
+        "dirty": true,
+        "repository": "https://github.com/Jibby2k1/NeuRev-Workbench"
+      },
+      "configuration": {
+        "path": "examples/spatiotemporal_jepa_representation_v1.example.json",
+        "sha256": "5a2a0a8fc174dc770165deb1c634552800223ba91e96f8158fe5a451ff630679"
+      },
+      "environment": {
+        "dependency_lock": {
+          "path": "pyproject.toml",
+          "sha256": "87709b08b0d8d7e32beecd563c9ae83762c8a4669bbb4c94d5f111ea6b665737"
+        },
+        "platform": "linux/x86_64",
+        "runtime": "CPython 3.12.13"
+      },
+      "experiment_id": "NREV-EXP-0028",
+      "id": "NREV-RUN-EXP-0028-PILOT-01",
+      "inputs": [
+        {
+          "id": "JEPA-RAW-VIDEO-SOURCES-V1",
+          "location": "research/data-registry/jepa_raw_video_sources_v1.json",
+          "role": "data",
+          "sha256": "42f1dedaee1a1acc2b24c1933ac10859cc06c8e8e6b53d5f3525c99dd21910ba"
+        }
+      ],
+      "lifecycle": "planned",
+      "planned_at": "2026-08-30T03:24:58Z",
+      "program_id": "NREV-PRG-0001",
+      "randomization": {
+        "deterministic": true,
+        "seeds": [
+          1001,
+          1002,
+          1003,
+          2001,
+          3101,
+          3102,
+          3103,
+          4101,
+          5101
+        ]
+      },
+      "record_type": "run",
+      "schema_version": 1,
+      "validation": {
+        "checks": [
+          {
+            "id": "output_collision",
+            "status": "not_run",
+            "summary": "Confirm the registered output root is absent immediately before execution."
+          },
+          {
+            "id": "scientific_audit",
+            "status": "not_run",
+            "summary": "Validate the applicable scientific audit inventory and media contract."
+          },
+          {
+            "id": "publication_boundary",
+            "status": "not_run",
+            "summary": "Scan public records and release candidates for private or non-portable content."
+          }
+        ],
+        "execution": "not_run",
+        "outputs": "not_run",
+        "preflight": "not_run"
+      },
+      "visibility": "public"
+    },
+    {
+      "artifacts": {
+        "manifest_path": "research/run-provenance/NREV-RUN-EXP-0028-SCREEN-20260829-B/artifact_index.json",
+        "manifest_sha256": "6e6c7ef9d8c70c2c52fcb809ea1f4a65578987e558302a3a63b576cb9eb448bd",
+        "output_root": "Outputs/NeuronIdentifiability/NREV-EXP-0028/runs/NREV-RUN-EXP-0028-SCREEN-20260829-B"
+      },
+      "code": {
+        "branch": "codex/neuron-identifiability-paper-20260822",
+        "commit": "e1e64725fb9c1a87edf3380306ef0f1f464485df",
+        "diff_sha256": "61e7190f86f0c7c7b6e6864361f05eca1b2cc008c6968040e0951f3f97490fb9",
+        "dirty": true,
+        "repository": "https://github.com/Jibby2k1/NeuRev-Workbench"
+      },
+      "configuration": {
+        "path": "research/run-provenance/NREV-RUN-EXP-0028-SCREEN-20260829-B/resolved_config.json",
+        "sha256": "669dd51f1725fa52cac0e29932cbf9d7203795c223f974e5cc1f88ff81b3d046"
+      },
+      "ended_at": "2026-08-30T03:26:40.032776Z",
+      "environment": {
+        "dependency_lock": {
+          "path": "pyproject.toml",
+          "sha256": "87709b08b0d8d7e32beecd563c9ae83762c8a4669bbb4c94d5f111ea6b665737"
+        },
+        "hardware": "NVIDIA GeForce RTX 4070 SUPER, 11865 MiB, bfloat16 supported",
+        "platform": "linux/x86_64",
+        "runtime": "CPython 3.12.13 with PyTorch CUDA bfloat16 autocast and four CPU threads"
+      },
+      "experiment_id": "NREV-EXP-0028",
+      "id": "NREV-RUN-EXP-0028-SCREEN-20260829-B",
+      "inputs": [
+        {
+          "id": "JEPA-RAW-VIDEO-SOURCES-V1",
+          "location": "research/data-registry/jepa_raw_video_sources_v1.json",
+          "role": "data",
+          "sha256": "42f1dedaee1a1acc2b24c1933ac10859cc06c8e8e6b53d5f3525c99dd21910ba"
+        }
+      ],
+      "lifecycle": "succeeded",
+      "planned_at": "2026-08-30T03:26:19.537864Z",
+      "program_id": "NREV-PRG-0001",
+      "randomization": {
+        "deterministic": true,
+        "notes": "Seed 1001 trained the bounded screen; 2001 fixed the shared validation bank; 3101-3103 generated injections; 4101 is the registered grouped-bootstrap base and 5102 is its seed-1001 derived bootstrap stream.",
+        "seeds": [
+          1001,
+          2001,
+          3101,
+          3102,
+          3103,
+          4101,
+          5102
+        ]
+      },
+      "record_type": "run",
+      "schema_version": 1,
+      "started_at": "2026-08-30T03:26:19.538299Z",
+      "validation": {
+        "checks": [
+          {
+            "id": "engineering_completion",
+            "status": "passed",
+            "summary": "The bounded command completed on CUDA, evaluated the full 108-fixture and 252-source injection grid, and wrote a hash-verified 25-artifact manifest."
+          },
+          {
+            "id": "registered_budget",
+            "status": "partial",
+            "summary": "The screen evaluated one of three registered training seeds and 500 of 5000 registered optimizer steps per trainable arm; it is not the claim-bearing run."
+          },
+          {
+            "id": "primary_gain",
+            "status": "partial",
+            "summary": "At the incomplete screen budget, JEPA macro recall was 0.01852 versus 0.18750 for the handcrafted comparator; JEPA minus the strongest comparator was -0.16898 with draw-wise-reselected hierarchical 95 percent interval [-0.31713, -0.03698]. This crosses the numeric threshold but does not formally resolve the three-seed, 5000-step gate."
+          },
+          {
+            "id": "recording_consistency",
+            "status": "partial",
+            "summary": "At the incomplete screen budget, JEPA-minus-handcrafted recall was negative on all four held empirical-background recordings; the registered experiment-level consistency gate remains unresolved."
+          },
+          {
+            "id": "collapse_gate",
+            "status": "partial",
+            "summary": "At the incomplete screen budget, JEPA effective-rank fraction was 0.05147 and first-principal-component variance fraction was 0.73705, outside both numeric thresholds; the complete cross-seed gate remains unresolved."
+          },
+          {
+            "id": "unresolved_scientific_gates",
+            "status": "partial",
+            "summary": "Motion-residual evidence, nuisance residualization, counterfactuals, leave-one-recording-out sensitivity, cross-seed stability, and the scientific-audit media inventory remain incomplete."
+          },
+          {
+            "id": "bootstrap_draw_contract",
+            "status": "partial",
+            "summary": "The registered configuration requests 5000 grouped-bootstrap draws, while Screen B stored 1000 without serializing an override. A post-run 5000-draw recomputation retained the negative interval [-0.31713, -0.03704]."
+          },
+          {
+            "id": "secondary_metric_panel",
+            "status": "partial",
+            "summary": "The screen did not emit the registered duplicate and weak-neighbor recovery or source-pixel AUC diagnostics."
+          },
+          {
+            "id": "scientific_promotion",
+            "status": "passed",
+            "summary": "The fail-closed safeguard held; the bounded screen explicitly records scientific_completion=false and scientific_promotion_allowed=false."
+          },
+          {
+            "id": "runtime_identifier",
+            "status": "partial",
+            "summary": "The canonical run ID follows the non-colliding output directory; the runner's internal non-scientific label contains underscores and is not a schema-valid registry ID."
+          },
+          {
+            "id": "dirty_state_provenance",
+            "status": "partial",
+            "summary": "The dirty-worktree digest was reconstructed immediately after execution rather than serialized by the runner; the config and five scientific implementation-file hashes were independently verified before execution."
+          },
+          {
+            "id": "scientific_audit",
+            "status": "partial",
+            "summary": "Numeric fixtures and result integrity passed, but required truth, model, comparison, and decode-validation media were intentionally not produced by screen mode."
+          },
+          {
+            "id": "publication_boundary",
+            "status": "passed",
+            "summary": "The committed run provenance and public result narrative use portable paths and contain no raw recordings or workstation identifiers."
+          }
+        ],
+        "execution": "passed",
+        "outputs": "partial",
+        "preflight": "passed"
+      },
+      "visibility": "public"
+    },
+    {
+      "artifacts": {
+        "manifest_path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-A/failed_provenance_index.json",
+        "manifest_sha256": "da4cb7681bb19c43f77211a2f2620e2540256a7768d1789cf140eb5b8802fce9",
+        "output_root": "Outputs/NeuronIdentifiability/NREV-EXP-0029/runs/NREV-RUN-EXP-0029-SCREEN-20260830-A"
+      },
+      "code": {
+        "branch": "codex/neuron-identifiability-paper-20260822",
+        "commit": "e1e64725fb9c1a87edf3380306ef0f1f464485df",
+        "diff_sha256": "3c88e2a5894849287da81ec5ed91b2f2c61fff99315f3689e8f1286655701afd",
+        "dirty": true,
+        "repository": "https://github.com/Jibby2k1/NeuRev-Workbench"
+      },
+      "configuration": {
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-A/resolved_config.json",
+        "sha256": "938a35f6f857ab895b0512f12a298bece20540ced5f27e744bcceddff02d582e"
+      },
+      "ended_at": "2026-08-30T05:37:26.362932Z",
+      "environment": {
+        "dependency_lock": {
+          "path": "pyproject.toml",
+          "sha256": "87709b08b0d8d7e32beecd563c9ae83762c8a4669bbb4c94d5f111ea6b665737"
+        },
+        "hardware": "NVIDIA GeForce RTX 4070 SUPER, CUDA capability 8.9, bfloat16 supported",
+        "platform": "linux/x86_64",
+        "runtime": "CPython 3.12.13 with PyTorch 2.11.0+cu130 and CUDA 13.0"
+      },
+      "experiment_id": "NREV-EXP-0029",
+      "failure": {
+        "category": "validation",
+        "recoverable": false,
+        "summary": "The raw-HC exact parent anchor failed because v1 scored normalized pixels instead of the parent's native raw float32 domain. The partial run is immutable and nonresumable; a separate schema-2 v1.1 run is required."
+      },
+      "id": "NREV-RUN-EXP-0029-SCREEN-20260830-A",
+      "inputs": [
+        {
+          "id": "JEPA-RAW-VIDEO-SOURCES-V1",
+          "location": "research/data-registry/jepa_raw_video_sources_v1.json",
+          "role": "data",
+          "sha256": "42f1dedaee1a1acc2b24c1933ac10859cc06c8e8e6b53d5f3525c99dd21910ba"
+        },
+        {
+          "id": "NREV-RUN-EXP-0028-SCREEN-B",
+          "location": "research/registry/runs/NREV-RUN-EXP-0028-SCREEN-20260829-B.yaml",
+          "role": "reference",
+          "sha256": "9ccfdf120c39261bff8d6100f7555e38b1929db11adadbb7ad05af7c6560997a"
+        }
+      ],
+      "lifecycle": "failed",
+      "planned_at": "2026-08-30T04:56:17Z",
+      "program_id": "NREV-PRG-0001",
+      "randomization": {
+        "deterministic": true,
+        "notes": "The upstream JEPA, fixture, decoder, tile-schedule, and grouped-bootstrap seeds were frozen. The run stopped before residual endpoint interpretation.",
+        "seeds": [
+          1001,
+          2001,
+          3101,
+          3102,
+          3103,
+          6201,
+          6202,
+          6203
+        ]
+      },
+      "record_type": "run",
+      "schema_version": 1,
+      "started_at": "2026-08-30T05:36:35.835561Z",
+      "validation": {
+        "checks": [
+          {
+            "id": "preflight_integrity",
+            "status": "passed",
+            "summary": "Parent artifacts, pinned v1 implementation files, CUDA/BF16 resources, RAM/disk, authorization boundaries, and output-collision checks passed before execution."
+          },
+          {
+            "id": "blind_tube_geometry",
+            "status": "passed",
+            "summary": "The registered mask-before-reflect geometry, 64-tile coverage, reflected-alias masking, adversarial invariance, and exact 252-source footprint-leakage checks passed."
+          },
+          {
+            "id": "bounded_decoder_training",
+            "status": "passed",
+            "summary": "The matched one-seed JEPA/random pixel decoders completed the frozen 500-step engineering schedule; this is implementation provenance, not endpoint evidence."
+          },
+          {
+            "id": "raw_hc_cross_run_anchor",
+            "status": "failed",
+            "summary": "The v1 raw-HC arm used normalized pixels while the immutable EXP-0028 Screen-B parent used native raw float32 units. Complete serialized recovery identity matched 104 of 108 fixtures, so the zero-tolerance guard stopped the run."
+          },
+          {
+            "id": "mismatch_localization_audit",
+            "status": "passed",
+            "summary": "Independent reconstruction found all 108 source-on RecoveryResults exact and all 108 intervention recall, recovered-source, matched-index, and localization-error fields unchanged; candidate coordinates differed in 53 fixtures and cardinality differed in four."
+          },
+          {
+            "id": "native_domain_diagnosis",
+            "status": "passed",
+            "summary": "Reconstructing raw HC in native float32 units reproduced all 216 parent source-on/intervention RecoveryResult objects exactly, identifying the v1 input domain as the cause without relaxing the guard."
+          },
+          {
+            "id": "residual_endpoint_evidence",
+            "status": "not_run",
+            "summary": "The fail-closed stop occurred before JEPA or random conditional-residual comparisons were accepted; run A supplies no residual-method endpoint conclusion."
+          },
+          {
+            "id": "scientific_audit",
+            "status": "partial",
+            "summary": "The failed partial run has no complete candidate-surrogate media and comparison inventory and is not audit-complete."
+          },
+          {
+            "id": "publication_boundary",
+            "status": "passed",
+            "summary": "No scientific claim or evidence capsule was created; only small sanitized failure provenance is committed."
+          }
+        ],
+        "execution": "failed",
+        "outputs": "partial",
+        "preflight": "passed"
+      },
+      "visibility": "public"
+    },
+    {
+      "artifacts": {
+        "manifest_path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/artifact_index.json",
+        "manifest_sha256": "34bd983ffdf55cb0941bbd1443adf939f4cb86ac4ffe51a736b2d6d9383cfc1c",
+        "output_root": "Outputs/NeuronIdentifiability/NREV-EXP-0029/runs/NREV-RUN-EXP-0029-SCREEN-20260830-B"
+      },
+      "code": {
+        "branch": "codex/neuron-identifiability-paper-20260822",
+        "commit": "e1e64725fb9c1a87edf3380306ef0f1f464485df",
+        "diff_sha256": "f51a7e5ceacfc660e3222daed1b7d0b845d7f99d1e730332aab35953208e1ac2",
+        "dirty": true,
+        "repository": "https://github.com/Jibby2k1/NeuRev-Workbench"
+      },
+      "configuration": {
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/resolved_config.json",
+        "sha256": "1ff575fd0110e4d65e275ce4ced705a3aa47b0d9a83b01d10a2270bbc865218c"
+      },
+      "ended_at": "2026-08-30T06:19:23.403796Z",
+      "environment": {
+        "dependency_lock": {
+          "path": "pyproject.toml",
+          "sha256": "87709b08b0d8d7e32beecd563c9ae83762c8a4669bbb4c94d5f111ea6b665737"
+        },
+        "hardware": "NVIDIA GeForce RTX 4070 SUPER, CUDA capability 8.9, bfloat16 supported",
+        "platform": "Linux 7.0.0-28-generic x86_64 with glibc 2.39",
+        "runtime": "CPython 3.12.13, PyTorch 2.11.0+cu130, CUDA 13.0, cuDNN 91900"
+      },
+      "experiment_id": "NREV-EXP-0029",
+      "id": "NREV-RUN-EXP-0029-SCREEN-20260830-B",
+      "inputs": [
+        {
+          "id": "JEPA-RAW-VIDEO-SOURCES-V1",
+          "location": "research/data-registry/jepa_raw_video_sources_v1.json",
+          "role": "data",
+          "sha256": "42f1dedaee1a1acc2b24c1933ac10859cc06c8e8e6b53d5f3525c99dd21910ba"
+        },
+        {
+          "id": "NREV-RUN-EXP-0028-SCREEN-B",
+          "location": "research/registry/runs/NREV-RUN-EXP-0028-SCREEN-20260829-B.yaml",
+          "role": "reference",
+          "sha256": "9ccfdf120c39261bff8d6100f7555e38b1929db11adadbb7ad05af7c6560997a"
+        },
+        {
+          "id": "NREV-RUN-EXP-0029-SCREEN-A-FAILURE",
+          "location": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-A/failed_provenance_index.json",
+          "role": "reference",
+          "sha256": "da4cb7681bb19c43f77211a2f2620e2540256a7768d1789cf140eb5b8802fce9"
+        }
+      ],
+      "lifecycle": "succeeded",
+      "planned_at": "2026-08-30T06:05:55Z",
+      "program_id": "NREV-PRG-0001",
+      "randomization": {
+        "deterministic": true,
+        "notes": "Run B repeated the exact upstream JEPA, validation-sampling, fixture, decoder-initialization, tile-schedule, and grouped-bootstrap seeds. JEPA/random decoder initialization and the complete sampling-schedule SHA-256 matched.",
+        "seeds": [
+          1001,
+          2001,
+          3101,
+          3102,
+          3103,
+          6201,
+          6202,
+          6203
+        ]
+      },
+      "record_type": "run",
+      "schema_version": 1,
+      "started_at": "2026-08-30T06:18:33.910042Z",
+      "validation": {
+        "checks": [
+          {
+            "id": "engineering_completion",
+            "status": "passed",
+            "summary": "The schema-2 v1.1 CUDA screen completed all 500 decoder steps, 108 fixtures, 252 injected sources, and 324 endpoint rows and atomically promoted a 27-artifact, 13600885-byte package whose index verifies exactly."
+          },
+          {
+            "id": "version_and_provenance_binding",
+            "status": "passed",
+            "summary": "Run B used config SHA-256 d9928f98d11903f963e38de93537134060b0d3a89785c36bc7568d495537e83b and stable runner SHA-256 e3b4cb4cebe155b2a46c1c8b4ff810b28ec3bedb5415b5aed1e1097f01c531d9. Runtime captured dirty-status SHA-256 a6e2a5eb8529ccfb32b37ee80085554ee08056080a3c20fc4d39e4c22271631e."
+          },
+          {
+            "id": "raw_hc_exact_parent_anchor",
+            "status": "passed",
+            "summary": "Native-unit raw HC reproduced all 108 fixtures and all 216 source-on/intervention parent RecoveryResult objects exactly at tolerance zero before decoder construction or training."
+          },
+          {
+            "id": "prediction_coverage",
+            "status": "passed",
+            "summary": "All 240 JEPA/random source-off/source-on prediction records were finite, shape-exact at 1 by 1 by 32 by 64 by 64, and covered every voxel exactly once with 64 tiles."
+          },
+          {
+            "id": "frozen_provider_and_parent_integrity",
+            "status": "passed",
+            "summary": "Both frozen providers remained hash-identical before training, after decoder training, and after evaluation; all 25 parent artifacts remained byte-identical at snapshot SHA-256 9045cb7f70e6ab805e961a36b00255242377c713c12741151129ad00683d0139."
+          },
+          {
+            "id": "paired_recall_screen",
+            "status": "partial",
+            "summary": "Descriptive macro recall was 0.1875 for native raw HC, 0.09027777777777778 for JEPA residual HC, and 0.06712962962962964 for random-residual HC. JEPA minus raw was -0.09722222222222222 with grouped 95 percent interval [-0.24305555555555552, 0.027835648148148106]; this is a bounded one-seed engineering result, not a formal scientific gate outcome."
+          },
+          {
+            "id": "architecture_specificity_screen",
+            "status": "partial",
+            "summary": "JEPA residual minus random residual was 0.023148148148148154 with grouped interval [-0.043981481481481476, 0.09722222222222227], while random residual minus raw was -0.12037037037037038 with interval [-0.23148148148148145, -0.020775462962963013]. The JEPA-random interval crosses zero and supports no JEPA-specific claim."
+          },
+          {
+            "id": "candidate_proposal_screen",
+            "status": "partial",
+            "summary": "JEPA residual and random residual each emitted 432 source-on and 432 intervention candidates; native raw HC emitted 432 source-on and 420 intervention candidates. All counts respected the frozen cap of four, no filler was configured, and unmatched native candidates remain biologically unknown rather than verified false positives."
+          },
+          {
+            "id": "residual_signal_accounting",
+            "status": "partial",
+            "summary": "Median JEPA aligned retention was 0.9990785812365571 and absorption 0.0009214898117940085, while total error was 0.5311968898315003 and orthogonal distortion 0.5310664520161973. Projection closure maximum 2.1157932494908493e-7 and voxelwise closure maximum 1.4156103134155273e-6 passed their 1e-5 engineering limits, but closure and retention alone do not establish useful separation."
+          },
+          {
+            "id": "background_suppression_screen",
+            "status": "partial",
+            "summary": "Median JEPA background RMS ratio was 1.7102741349511534, dynamic-MAD ratio 1.1093322124630185, and seam-to-interior jump ratio 2.5786383127702. The residual amplified rather than suppressed the registered background diagnostics and exhibited tiling discontinuities."
+          },
+          {
+            "id": "recording_consistency_screen",
+            "status": "partial",
+            "summary": "JEPA-minus-raw effects were -0.2314814814814815, -0.1759259259259259, -0.01851851851851852, and 0.03703703703703704 for 060126_10_rest, 060126_12_left, 060126_15_right, and Spon Ca Burst respectively; the descriptive nonnegative-every-recording value was not met."
+          },
+          {
+            "id": "scientific_audit",
+            "status": "partial",
+            "summary": "Numeric outputs passed, but required candidate-surrogate full-field videos, close-ups, traces, matched comparison, and media validation are absent, so the scientific audit is incomplete."
+          },
+          {
+            "id": "scientific_promotion",
+            "status": "passed",
+            "summary": "The fail-closed boundary held; scientific_completion and scientific_promotion_allowed remain false and no claim or evidence capsule was created."
+          },
+          {
+            "id": "publication_boundary",
+            "status": "passed",
+            "summary": "The committed provenance copies are small, portable, path-sanitized exact artifacts; raw data, caches, checkpoints, private roots, and large output tables remain outside Git."
+          }
+        ],
+        "execution": "passed",
+        "outputs": "partial",
+        "preflight": "passed"
+      },
+      "visibility": "public"
+    }
+  ],
   "schema_version": 1,
   "views": {
     "canonical_document": "main.tex",

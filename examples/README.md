@@ -20,6 +20,9 @@ them into subdirectories would silently change input/output resolution.
 | `spon_ca_burst_learnable_contrast.example.json` | guarded learnable contrast v1 | CUDA |
 | `spon_ca_burst_learnable_contrast_spatiotemporal_diagnostic.example.json` | 2×2×2 v2 diagnostic | CUDA |
 | `spon_ca_burst_learnable_direct_tuning.example.json` | direct-initialized v3 tuning | CUDA |
+| `spatiotemporal_jepa_representation_v1.example.json` | raw-only compact JEPA/MAE/random/handcrafted pilot; draft planning hold | bounded CUDA, explicit run |
+| `conditional_background_residual_v1.example.json` | frozen-JEPA spatially blind conditional-background residual screen; no claim-bearing execution | CPU preflight/smoke; bounded CUDA screen |
+| `conditional_background_residual_v1_1.example.json` | frozen schema-2 descriptor for completed Run B; exact native raw-HC anchor with normalized JEPA/random residual arms; post-screen hold | historical preflight/smoke; no unchanged rerun |
 | `gamma_cfar_cascade_sweep.example.json` | Gamma-CFAR cascade sweep | mixed |
 
 ## Pipelines and grid dynamics
@@ -36,4 +39,3 @@ them into subdirectories would silently change input/output resolution.
 
 Run preflight/audit commands before any long execution. Example presence does
 not authorize a stopped sweep, Stage B, or a GPU experiment.
-

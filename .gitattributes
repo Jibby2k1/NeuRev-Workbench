@@ -15,6 +15,7 @@ docs/archive/plans/** -whitespace
 
 # Keep binary scientific artifacts out of text diffs.
 paper/**/*.tsv linguist-generated=true -diff
+research/run-provenance/**/*.tsv linguist-generated=true -diff -whitespace
 *.pdf binary
 *.png binary
 *.npz binary

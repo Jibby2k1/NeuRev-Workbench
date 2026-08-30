@@ -1,0 +1,56 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0022
+origin:
+  kind: native
+program_id: NREV-PRG-0001
+title: Post-screen hold for the Frozen-JEPA conditional-background residual v1.1 design
+lifecycle: draft
+action: hold
+rationale: Run A correctly stopped on an exact parent-anchor mismatch before any conditional-residual endpoint was interpreted,
+  and the schema-2 v1.1 correction restored exact native-unit continuity without relaxing that guard. Run B then completed
+  the bounded engineering screen, but native raw HC had the strongest recall point estimate while the JEPA residual amplified
+  registered background and seam diagnostics. Keep this exact tiled one-layer conditional-residual design on hold; the screen
+  is not a formal scientific gate and does not resolve the broader conditional-background-learning hypothesis.
+evidence_summary: Run A's safe failure was traced to normalized input being supplied to a native-unit raw-HC endpoint; native-unit
+  reconstruction reproduced all 216 parent RecoveryResults exactly. Run B passed the 108-fixture and 216-object raw anchor,
+  all 240 prediction-coverage rows, both algebraic closures, and the 27-artifact index. Across 252 sources, macro recall was
+  0.1875 raw, 0.09027777777777778 JEPA residual, and 0.06712962962962964 random residual. JEPA minus raw was -0.09722222222222222
+  with grouped 95 percent interval [-0.24305555555555552, 0.027835648148148106]; JEPA minus random was 0.023148148148148154
+  with interval [-0.043981481481481476, 0.09722222222222227]. Median JEPA aligned retention was 0.9990785812365571, but
+  background RMS ratio was 1.7102741349511534, dynamic-MAD ratio 1.1093322124630185, and seam-to-interior jump ratio 2.5786383127702.
+  The scientific audit, motion dependency, multi-seed stability, independent-recording generalization, and biological identity
+  evidence remain unresolved.
+effective_on: '2026-08-30'
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0029
+claim_ids: []
+evidence_capsule_ids: []
+constraints:
+- Preserve NREV-RUN-EXP-0029-SCREEN-20260830-A and its `.partial` output as a failed, immutable, nonresumable engineering
+  run; do not relabel it succeeded or use it as endpoint evidence.
+- Preserve the succeeded Run-B output and exact portable `resolved_config.json` and `artifact_index.json`; do not turn its
+  engineering completion into a scientific PASS, claim, or evidence capsule.
+- The raw-HC anchor remains complete serialized equality across all 108 fixtures and 216 source-on/intervention RecoveryResult
+  objects at numeric tolerance zero; coordinate, cardinality, or unmatched-count exceptions remain forbidden.
+- Keep native raw HC, normalized JEPA residual, and normalized random-provider residual as distinct endpoint domains; never
+  compare their score magnitudes or describe the decoded prediction as identified biological background.
+- Native unmatched candidates remain biologically unknown and cannot be counted as verified false positives or specificity.
+- The fixture grid, truth centers, proposal cap, calibration API, decoder, checkpoint, caches, seeds, budgets, geometry,
+  diagnostics, grouping, and descriptive advancement panel are frozen historical facts of this screen, not permission to
+  rerun or widen it in place.
+- NREV-EXP-0025 motion evidence, multi-seed confirmation, independent-recording generalization, biological identity evidence,
+  and the complete scientific audit remain unresolved.
+follow_up:
+- Keep native raw HC as the current reference endpoint for this bounded fixture grid and retain NREV-EXP-0029 as draft,
+  not evaluated, evidence tier none, and without a capsule.
+- Do not escalate the same nonoverlapping tiled one-layer decoder merely by adding steps; the observed background amplification,
+  orthogonal distortion, seams, and lower recall require an architectural change and a new versioned protocol.
+- If conditional-background learning is revisited, freeze a separate design that directly falsifies patch-boundary and prediction-error
+  failure through full-field or overlap-add decoding, matched random controls, and multiple upstream and decoder seeds.
+- Resolve the motion dependency and complete the required full-field, close-up, trace, matched-figure, decode-validation,
+  and independent-recording audit before any claim-bearing experiment is considered.
+visibility: public
+created_on: '2026-08-30'
+updated_on: '2026-08-30'

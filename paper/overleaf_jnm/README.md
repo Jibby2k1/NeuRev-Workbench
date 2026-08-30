@@ -21,7 +21,8 @@ be completed before journal submission.
   validated results and figures but emphasizes the research question, current
   evidence, interpretation, and next experiments.
 - `main_experiment_story.tex` is a generated question--design--result--decision
-  record for each completed experiment and the prioritized next queue.
+  record for each validated experiment, explicitly bounded non-claim-bearing
+  engineering-run history, and the prioritized next queue.
 
 Both documents are drafts and deliberately preserve unresolved author and
 submission metadata. See `CURRENT_RESEARCH_STATE.md` for a concise handoff.

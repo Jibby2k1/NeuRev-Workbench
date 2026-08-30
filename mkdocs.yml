@@ -128,6 +128,9 @@ nav:
       - Scientific audit standard: workflows/SCIENTIFIC_AUDIT_OUTPUT_STANDARD.md
       - Neuron-identifiability study: research/SPON_CA_BURST_NEURON_IDENTIFIABILITY_PAPER_V1_RESULTS.md
       - Uncertainty-aware learning plan: research/SPON_CA_BURST_UNCERTAINTY_AWARE_LEARNING_PLAN_V1.md
+      - Compact JEPA bounded screen: research/SPATIOTEMPORAL_JEPA_SCREEN_V1_RESULTS.md
+      - Conditional-background residual run-A failure: research/CONDITIONAL_BACKGROUND_RESIDUAL_V1_RUN_A_FAILURE.md
+      - Conditional-background residual v1.1 screen: research/CONDITIONAL_BACKGROUND_RESIDUAL_V1_1_RESULTS.md
       - External bounded review: research/SPON_CA_BURST_EXTERNAL_BOUNDED_REVIEW_V2_PACKAGE.md
       - Repository decisions: decisions/README.md
   - Run a workflow:
@@ -136,6 +139,9 @@ nav:
       - Neuron-identifiability paper: workflows/spon_ca_burst_neuron_identifiability_paper.md
       - Full-trace feature panel: workflows/spon_ca_burst_full_trace_feature_panel.md
       - Automated feature validation: workflows/spon_ca_burst_automated_feature_validation.md
+      - Compact spatiotemporal JEPA pilot: workflows/spatiotemporal_jepa_representation_v1.md
+      - Conditional-background residual screen v1: workflows/conditional_background_residual_v1.md
+      - Conditional-background residual screen v1.1: workflows/conditional_background_residual_v1_1.md
       - External blinded review: workflows/external_blinded_bounded_review_v2.md
   - Review and annotate:
       - Neuron Workbench: NEURON_WORKBENCH.md

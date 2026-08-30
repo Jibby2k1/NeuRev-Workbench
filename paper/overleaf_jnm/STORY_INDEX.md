@@ -2,7 +2,7 @@
 
 Generated from the repository research registry through `story/research_story.yaml`; do not edit by hand.
 
-Registry SHA-256: `d5fdae4e004c881ae4c406863b61e1be18d92cdf8de6f6a252ae6106a27b5b93`
+Registry SHA-256: `22036f50f8bf06da3eace3fa2b018cf4a05d53d1a6a223ea6f503aa2dd124d48`
 
 ## Document profiles
 

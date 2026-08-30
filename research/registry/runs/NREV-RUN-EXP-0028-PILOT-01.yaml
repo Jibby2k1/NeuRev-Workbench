@@ -1,0 +1,56 @@
+schema_version: 1
+record_type: run
+id: NREV-RUN-EXP-0028-PILOT-01
+experiment_id: NREV-EXP-0028
+program_id: NREV-PRG-0001
+lifecycle: planned
+planned_at: '2026-08-30T03:24:58Z'
+code:
+  repository: https://github.com/Jibby2k1/NeuRev-Workbench
+  commit: e1e64725fb9c1a87edf3380306ef0f1f464485df
+  dirty: true
+  branch: codex/neuron-identifiability-paper-20260822
+  diff_sha256: b2bb97ca4768e6e2b446878e8aa1f18f03416b1b658de95e1b9a576c66b4cd57
+configuration:
+  path: examples/spatiotemporal_jepa_representation_v1.example.json
+  sha256: 5a2a0a8fc174dc770165deb1c634552800223ba91e96f8158fe5a451ff630679
+inputs:
+- id: JEPA-RAW-VIDEO-SOURCES-V1
+  role: data
+  sha256: 42f1dedaee1a1acc2b24c1933ac10859cc06c8e8e6b53d5f3525c99dd21910ba
+  location: research/data-registry/jepa_raw_video_sources_v1.json
+environment:
+  platform: linux/x86_64
+  runtime: CPython 3.12.13
+  dependency_lock:
+    path: pyproject.toml
+    sha256: 87709b08b0d8d7e32beecd563c9ae83762c8a4669bbb4c94d5f111ea6b665737
+randomization:
+  deterministic: true
+  seeds:
+  - 1001
+  - 1002
+  - 1003
+  - 2001
+  - 3101
+  - 3102
+  - 3103
+  - 4101
+  - 5101
+artifacts:
+  output_root: Outputs/NeuronIdentifiability/NREV-EXP-0028/runs/NREV-RUN-EXP-0028-PILOT-01
+validation:
+  preflight: not_run
+  execution: not_run
+  outputs: not_run
+  checks:
+  - id: output_collision
+    status: not_run
+    summary: Confirm the registered output root is absent immediately before execution.
+  - id: scientific_audit
+    status: not_run
+    summary: Validate the applicable scientific audit inventory and media contract.
+  - id: publication_boundary
+    status: not_run
+    summary: Scan public records and release candidates for private or non-portable content.
+visibility: public

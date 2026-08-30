@@ -1,0 +1,49 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0021
+origin:
+  kind: native
+program_id: NREV-PRG-0001
+title: Initial planning hold for Frozen-JEPA Conditional-Background Residual Screen V1
+lifecycle: draft
+action: hold
+rationale: At scaffold time, no NREV-EXP-0029 result had been evaluated and the user's 2026-08-30 selection permitted only
+  run A as a bounded engineering screen. Run A later failed closed before endpoint interpretation; NREV-DEC-0022 now governs
+  the fresh v1.1 run while this record preserves the original planning boundary.
+evidence_summary: This was the initial planning record for the hash-frozen v1 protocol, configuration, parent checkpoint,
+  clip banks, fixture identity, decoder geometry, and implementation contract. Run A is now preserved as a failed nonresumable
+  partial with no residual endpoint result or scientific outcome.
+effective_on: '2026-08-30'
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0029
+claim_ids: []
+evidence_capsule_ids: []
+constraints:
+- This initial record authorized only NREV-RUN-EXP-0029-SCREEN-20260830-A at scaffold time. It does not authorize resuming
+  A; the separately versioned B engineering run is governed by NREV-DEC-0022.
+- One frozen JEPA seed and one 500-step decoder seed cannot formally pass or fail a preregistered scientific benefit gate,
+  even if the descriptive advancement panel crosses or misses its thresholds.
+- NREV-EXP-0025 must provide evidence-backed motion and registration-residual fields before claim-bearing execution or a
+  nuisance-robust conclusion.
+- The decoded movie is a conditional prediction and the signed residual includes prediction error; neither is automatically
+  biological background, noise, or neuron-only signal.
+- A residual gain over raw is not JEPA-specific unless the JEPA residual also exceeds the matched frozen-random-provider residual;
+  the grouped JEPA-minus-random interval is required as stronger descriptive context.
+- This draft does not authorize publication, promotion, a scientific claim, or an evidence capsule.
+- Run into the registered non-colliding output root and preserve exact code, input, configuration, seed, and environment provenance.
+- Record the expected incomplete scientific-audit status for the bounded screen; complete the applicable candidate-surrogate
+  media and comparison package before treating any future computation as audit-complete.
+- Keep raw inputs, reviewer identities, private randomization material, credentials, and large generated artifacts outside
+  Git.
+follow_up:
+- Preserve run A and its partial output unchanged and follow NREV-DEC-0022 for the fresh v1.1 B preflight and execution.
+- Independently recompute the 108-cell and 252-source denominators, all raw/JEPA/random paired recall effects and grouped intervals,
+  retention, absorption, closure, total error, orthogonal distortion, suppression, and recording-wise direction from the
+  emitted tables.
+- If the descriptive panel is coherent, design a new multi-seed claim-bearing experiment rather than promoting this screen
+  in place.
+- Replace this planning hold only with an evidence-backed decision linked to a validated capsule.
+visibility: public
+created_on: '2026-08-30'
+updated_on: '2026-08-30'

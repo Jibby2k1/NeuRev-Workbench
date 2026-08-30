@@ -1,0 +1,375 @@
+{
+  "authorization": {
+    "all_scientific_and_claim_bearing_authorizations_false": true,
+    "engineering_screen_authorization_basis_present": true,
+    "engineering_screen_execution_authorized": true,
+    "forbidden_scientific_or_claim_authorizations": {
+      "claim_bearing_execution": false,
+      "claim_bearing_execution_authorized": false,
+      "execution_authorized": false,
+      "scientific_completion_allowed": false,
+      "scientific_execution_authorized": false
+    },
+    "operator_process_check_acknowledged": true,
+    "operator_process_check_acknowledged_at": "2026-08-30T05:36:35.835769+00:00",
+    "scope": "bounded_engineering_screen_only"
+  },
+  "checked_at": "2026-08-30T05:36:35.835561+00:00",
+  "checkpoint_loaded": false,
+  "checks": {
+    "all_parent_artifacts_verified": true,
+    "all_pinned_parent_files_match": true,
+    "all_scientific_and_claim_bearing_authorizations_false": true,
+    "engineering_screen_authorization_basis_present": true,
+    "engineering_screen_execution_authorized": true,
+    "execution_is_non_scientific": true,
+    "implementation_hashes_match": true,
+    "minimum_available_ram": true,
+    "minimum_free_disk": true,
+    "output_absent": true,
+    "partial_output_absent": true,
+    "promotion_is_forbidden": true,
+    "screen_cuda_bfloat16_available": true,
+    "screen_cuda_device_available": true,
+    "screen_minimum_free_cuda_memory": true,
+    "screen_operator_conflicting_process_check_acknowledged": true,
+    "screen_requests_cuda": true
+  },
+  "config": {
+    "experiment_id": "NREV-EXP-0029",
+    "run_id": "NREV-RUN-EXP-0029-SCREEN-20260830-A",
+    "sha256": "91c88152e55b6c77ebdd785fca386d42820f092efe39be7a3c5db997b602a8fd",
+    "uri": "repo://examples/conditional_background_residual_v1.example.json"
+  },
+  "execution_provenance": {
+    "git": {
+      "branch": "codex/neuron-identifiability-paper-20260822",
+      "commit": "e1e64725fb9c1a87edf3380306ef0f1f464485df",
+      "dirty": true,
+      "dirty_entry_count": 44,
+      "dirty_paths_persisted": false,
+      "dirty_status_sha256": "56b998f9d2187e2bfdd90785d668725d38eaa74d4c7c97bd179a900465e4e420",
+      "status": "captured"
+    },
+    "runtime": {
+      "cuda_available": true,
+      "cuda_device": {
+        "capability": [
+          8,
+          9
+        ],
+        "name": "NVIDIA GeForce RTX 4070 SUPER"
+      },
+      "cuda_runtime_version": "13.0",
+      "cudnn_version": 91900,
+      "executable_basename": "python",
+      "platform": "Linux-7.0.0-28-generic-x86_64-with-glibc2.39",
+      "python_implementation": "CPython",
+      "python_version": "3.12.13",
+      "torch_version": "2.11.0+cu130"
+    }
+  },
+  "failed_checks": [],
+  "implementation_hash_validation": {
+    "all_match": true,
+    "hash_algorithm": "sha256",
+    "sources": [
+      {
+        "expected_sha256": "5a2a0a8fc174dc770165deb1c634552800223ba91e96f8158fe5a451ff630679",
+        "matches": true,
+        "observed_sha256": "5a2a0a8fc174dc770165deb1c634552800223ba91e96f8158fe5a451ff630679",
+        "path": "examples/spatiotemporal_jepa_representation_v1.example.json",
+        "role": "upstream_screen_configuration"
+      },
+      {
+        "expected_sha256": "e2dd15e9e61c5c85cead92d9b4332d7bea813933c9c723c89b2aef2244c21339",
+        "matches": true,
+        "observed_sha256": "e2dd15e9e61c5c85cead92d9b4332d7bea813933c9c723c89b2aef2244c21339",
+        "path": "neurobench/experiments/neuron_identifiability/jepa_data.py",
+        "role": "data_inventory_split_and_clip_contract"
+      },
+      {
+        "expected_sha256": "31ccb129591e4962bf3d9038539a7d86ca6fb17b25d64745c2613c8a64196ff6",
+        "matches": true,
+        "observed_sha256": "31ccb129591e4962bf3d9038539a7d86ca6fb17b25d64745c2613c8a64196ff6",
+        "path": "neurobench/experiments/neuron_identifiability/spatiotemporal_jepa.py",
+        "role": "frozen_jepa_and_random_provider_architectures"
+      },
+      {
+        "expected_sha256": "4117aa88a06ec0aa4ef111b1bc98bbfda003985b47fd965f24edb9a7b7805f47",
+        "matches": true,
+        "observed_sha256": "4117aa88a06ec0aa4ef111b1bc98bbfda003985b47fd965f24edb9a7b7805f47",
+        "path": "neurobench/experiments/neuron_identifiability/jepa_training.py",
+        "role": "checkpoint_loading_and_training_contract"
+      },
+      {
+        "expected_sha256": "54443b4f4e39e8abbba4351b9d9399329b6bb09a54044c0c29f46cc462dd1fa5",
+        "matches": true,
+        "observed_sha256": "54443b4f4e39e8abbba4351b9d9399329b6bb09a54044c0c29f46cc462dd1fa5",
+        "path": "neurobench/experiments/neuron_identifiability/jepa_comparators.py",
+        "role": "raw_and_residual_handcrafted_score_stack"
+      },
+      {
+        "expected_sha256": "3bed26ce6ee766f55951a87f8e675d4389c635164438adc04f9fa50310b587c2",
+        "matches": true,
+        "observed_sha256": "3bed26ce6ee766f55951a87f8e675d4389c635164438adc04f9fa50310b587c2",
+        "path": "neurobench/experiments/neuron_identifiability/jepa_evaluation.py",
+        "role": "fixture_generation_pair_safe_evaluation_and_grouped_bootstrap"
+      },
+      {
+        "expected_sha256": "1b3bb2a8873f235f8e03161ea40cac2cef74101d2ba6b7ffe8d9f6021e2197ed",
+        "matches": true,
+        "observed_sha256": "1b3bb2a8873f235f8e03161ea40cac2cef74101d2ba6b7ffe8d9f6021e2197ed",
+        "path": "neurobench/experiments/neuron_identifiability/jepa_pilot.py",
+        "role": "background_window_and_fixture_grid_reconstruction"
+      },
+      {
+        "expected_sha256": "2bf62a4508405433db96783ea97e9920206f91b3959ce268e405bf0b233af973",
+        "matches": true,
+        "observed_sha256": "2bf62a4508405433db96783ea97e9920206f91b3959ce268e405bf0b233af973",
+        "path": "neurobench/experiments/neuron_identifiability/jepa_background_residual.py",
+        "role": "blind_halo_geometry_decoder_training_tiled_prediction_and_residual_diagnostics"
+      },
+      {
+        "expected_sha256": "846ec07a342effccdf149a129a0fb2381eb3a3cef8bfbfaabfae0db0e65be29d",
+        "matches": true,
+        "observed_sha256": "846ec07a342effccdf149a129a0fb2381eb3a3cef8bfbfaabfae0db0e65be29d",
+        "path": "neurobench/experiments/neuron_identifiability/jepa_residual_pilot.py",
+        "role": "guarded_screen_runner_and_output_contract"
+      }
+    ]
+  },
+  "mode": "screen",
+  "output": {
+    "partial_uri": "repo://Outputs/NeuronIdentifiability/NREV-EXP-0029/runs/NREV-RUN-EXP-0029-SCREEN-20260830-A.partial",
+    "uri": "repo://Outputs/NeuronIdentifiability/NREV-EXP-0029/runs/NREV-RUN-EXP-0029-SCREEN-20260830-A"
+  },
+  "parent_integrity": {
+    "all_parent_artifacts_verified": true,
+    "artifact_count": 25,
+    "artifact_index_sha256": "6e6c7ef9d8c70c2c52fcb809ea1f4a65578987e558302a3a63b576cb9eb448bd",
+    "artifacts": [
+      {
+        "bytes": 274,
+        "matches": true,
+        "path": "1_Expert_Annotations/README.md",
+        "sha256": "2b446db01b515d67078b9a77d168fc60cad96ec3390e7be9a9c883a616af9844"
+      },
+      {
+        "bytes": 281,
+        "matches": true,
+        "path": "2_Model_Annotations/README.md",
+        "sha256": "58314c4cf4cfbf11e9f6061a00ebc7534329d4a58b2abde19f324c938725f1b1"
+      },
+      {
+        "bytes": 182,
+        "matches": true,
+        "path": "3_Comparison/README.md",
+        "sha256": "c4b1533a28feb6407bc22f5f2a8b48324cd29a7f6c51492e7a25b8c5d3a52476"
+      },
+      {
+        "bytes": 1220,
+        "matches": true,
+        "path": "REPORT.md",
+        "sha256": "5041bf6253fb5b4f90a8cf420241503a67ab0542e0ff58b82abbe9f6beb1aa2a"
+      },
+      {
+        "bytes": 8384,
+        "matches": true,
+        "path": "background_window_manifest.json",
+        "sha256": "ea3cd2a77ae34df3c1718b46aeb3b071c13734b15b33fd9e284a92e809350d25"
+      },
+      {
+        "bytes": 268435584,
+        "matches": true,
+        "path": "cache/train_seed_1001_normalized_clips.npy",
+        "sha256": "d49e927e29044a5d7105d62375f678159fed59f93e7887fc856a435c3504c3bc"
+      },
+      {
+        "bytes": 50331776,
+        "matches": true,
+        "path": "cache/validation_seed_2001_normalized_clips.npy",
+        "sha256": "f253a35601034aa57b6c7bd13cc6aa0d1886f9e534db422014bcbc49d3c3dc38"
+      },
+      {
+        "bytes": 53241995,
+        "matches": true,
+        "path": "checkpoints/seed_1001_final_non_scientific.pt",
+        "sha256": "1d9a1c261f5d49fc418e211cfa1f3250079ea08da716c72077feb34065c63a67"
+      },
+      {
+        "bytes": 681322,
+        "matches": true,
+        "path": "clip_bank_manifest.json",
+        "sha256": "ca9386a89cc42683fb5962cb4b4839ea4b3fc0918ed8dbab6d3d3aefcde3ac35"
+      },
+      {
+        "bytes": 249083,
+        "matches": true,
+        "path": "data_manifest.json",
+        "sha256": "732bc2a35dd8eb0d95e9c86cba71763126ee531d3be6d709f8d56ebb22fb0156"
+      },
+      {
+        "bytes": 215,
+        "matches": true,
+        "path": "heartbeat.json",
+        "sha256": "5e868d42226445700285981c50786532dce9bd4138e1448fb8709cf1a78b8669"
+      },
+      {
+        "bytes": 1669,
+        "matches": true,
+        "path": "llm_context.json",
+        "sha256": "214c66090307c6fe8ef935ca51157c859bcf9b058ac961154ff01a65bfc1f9a7"
+      },
+      {
+        "bytes": 14144,
+        "matches": true,
+        "path": "mask_sweep_coverage.json",
+        "sha256": "7301d815b53b16da159962a3a1cc68fa5cbe5c8cb711ed0b3cb02328c1b9f62f"
+      },
+      {
+        "bytes": 6149841,
+        "matches": true,
+        "path": "motion_audit.json",
+        "sha256": "16e49eed22529d6ae09888b0cc5609ebc01c0597875d4b5dd89d53d5c63decb3"
+      },
+      {
+        "bytes": 15651,
+        "matches": true,
+        "path": "nuisance_audit.json",
+        "sha256": "a9b7f494e2946217b6326c2d881b94f5be2709cf9717f0ac07a9f6a3ad45b841"
+      },
+      {
+        "bytes": 282565,
+        "matches": true,
+        "path": "paired_injection_manifest.json",
+        "sha256": "6fcf2aa080d611c084719682605f3e5f4346ae4601d34da1d0c69f747c9f355a"
+      },
+      {
+        "bytes": 3118360,
+        "matches": true,
+        "path": "paired_injection_results.json",
+        "sha256": "950fc024611c945a1b5f3b88f57f6cba1b4631c0bd7503f4004334f308fc5617"
+      },
+      {
+        "bytes": 186580,
+        "matches": true,
+        "path": "paired_injection_results.tsv",
+        "sha256": "74cd6f9f0f9597a279e02aad41d3a6fc139484af9b4629a2d8bac7ba3d20257d"
+      },
+      {
+        "bytes": 6505851,
+        "matches": true,
+        "path": "preflight.json",
+        "sha256": "09e7cf687169ff3e87e66566531302a3ce2881bacb64bcba5e25b349778fa563"
+      },
+      {
+        "bytes": 28281,
+        "matches": true,
+        "path": "resolved_config.json",
+        "sha256": "669dd51f1725fa52cac0e29932cbf9d7203795c223f974e5cc1f88ff81b3d046"
+      },
+      {
+        "bytes": 688,
+        "matches": true,
+        "path": "scientific_audit_status.json",
+        "sha256": "add87cb44aaadabcedd02494df0ad0052b6292917b06413de012f8f5522b9543"
+      },
+      {
+        "bytes": 328,
+        "matches": true,
+        "path": "status.json",
+        "sha256": "10bcdf5392889c20aba0e80e30fb447e0295ef8d53604252a197fbebbf69a243"
+      },
+      {
+        "bytes": 31444,
+        "matches": true,
+        "path": "summary.json",
+        "sha256": "0d89907e2e730cc0af0e5013a7615b5e4d4d0fecc5952830e05e4aa306dec068"
+      },
+      {
+        "bytes": 4890,
+        "matches": true,
+        "path": "training_metrics.json",
+        "sha256": "3b8cf96e4d62ab378802f88265824735b1410339b5a2943c1adb3a25d590407f"
+      },
+      {
+        "bytes": 1993,
+        "matches": true,
+        "path": "validation.json",
+        "sha256": "a8957867f37732cf0fde601a361b541fc4640e8db7c5f55df271cef3b4920c5f"
+      }
+    ],
+    "schema_version": 1,
+    "snapshot_sha256": "9045cb7f70e6ab805e961a36b00255242377c713c12741151129ad00683d0139",
+    "verified_before_checkpoint_load": true
+  },
+  "pinned_parent_files": {
+    "all_pinned_parent_files_match": true,
+    "files": [
+      {
+        "matches": true,
+        "role": "resolved_config",
+        "sha256": "669dd51f1725fa52cac0e29932cbf9d7203795c223f974e5cc1f88ff81b3d046"
+      },
+      {
+        "matches": true,
+        "role": "data_manifest",
+        "sha256": "732bc2a35dd8eb0d95e9c86cba71763126ee531d3be6d709f8d56ebb22fb0156"
+      },
+      {
+        "matches": true,
+        "role": "clip_bank_manifest",
+        "sha256": "ca9386a89cc42683fb5962cb4b4839ea4b3fc0918ed8dbab6d3d3aefcde3ac35"
+      },
+      {
+        "matches": true,
+        "role": "background_window_manifest",
+        "sha256": "ea3cd2a77ae34df3c1718b46aeb3b071c13734b15b33fd9e284a92e809350d25"
+      },
+      {
+        "matches": true,
+        "role": "paired_injection_manifest",
+        "sha256": "6fcf2aa080d611c084719682605f3e5f4346ae4601d34da1d0c69f747c9f355a"
+      },
+      {
+        "matches": true,
+        "role": "paired_injection_results",
+        "sha256": "950fc024611c945a1b5f3b88f57f6cba1b4631c0bd7503f4004334f308fc5617"
+      },
+      {
+        "matches": true,
+        "role": "checkpoint",
+        "sha256": "1d9a1c261f5d49fc418e211cfa1f3250079ea08da716c72077feb34065c63a67"
+      },
+      {
+        "matches": true,
+        "role": "train_cache",
+        "sha256": "d49e927e29044a5d7105d62375f678159fed59f93e7887fc856a435c3504c3bc"
+      },
+      {
+        "matches": true,
+        "role": "validation_cache",
+        "sha256": "f253a35601034aa57b6c7bd13cc6aa0d1886f9e534db422014bcbc49d3c3dc38"
+      }
+    ]
+  },
+  "resource_snapshot": {
+    "available_ram_mib": 43106,
+    "cpu_count": 32,
+    "cuda": {
+      "available": true,
+      "bfloat16_supported": true,
+      "device_name": "NVIDIA GeForce RTX 4070 SUPER",
+      "free_mib": 8735,
+      "total_mib": 11865
+    },
+    "disk_free_mib": 1750024,
+    "requested_device": "cuda"
+  },
+  "schema_version": 1,
+  "scientific_completion": false,
+  "scientific_execution_ready": false,
+  "scientific_promotion_allowed": false,
+  "status": "passed"
+}

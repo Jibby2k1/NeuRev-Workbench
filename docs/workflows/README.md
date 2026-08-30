@@ -12,6 +12,9 @@ interpretation belong under `docs/programs/` and `docs/research/`.
 | Grid latent dynamics | `examples/grid_latent_dynamics_pipeline.example.json` | `neurobench dynamics` | mixed; long runs gated | `Outputs/GridModel` |
 | Fish-control program audit | `examples/fish_control_program.example.json` | `neurobench program fish-control audit` | read-only CPU | committed audit or explicit output |
 | Neuron-identifiability paper program | experiment-specific manifests and frozen inputs | `python -m neurobench.experiments.neuron_identifiability` or focused modules | mixed; output-root gated | `Outputs/NeuronIdentifiability` |
+| Compact spatiotemporal JEPA pilot | `examples/spatiotemporal_jepa_representation_v1.example.json` | `python -m neurobench.experiments.neuron_identifiability jepa-pilot`; claim-bearing execution remains unauthorized | bounded CUDA, explicit run | `Outputs/NeuronIdentifiability/NREV-EXP-0028` |
+| Conditional-background residual screen v1 (failed, immutable) | `examples/conditional_background_residual_v1.example.json` | historical v1 runner only; run A failed closed on raw-HC domain continuity | no new execution | `Outputs/NeuronIdentifiability/NREV-EXP-0029` |
+| Conditional-background residual screen v1.1 (completed, on hold) | `examples/conditional_background_residual_v1_1.example.json` | schema-2 v1.1 runner; Run B completed the bounded screen and remains non-claim-bearing | completed CUDA screen; no unchanged rerun | `Outputs/NeuronIdentifiability/NREV-EXP-0029` |
 | External bounded-field review v2 | frozen Raw and assisted review inputs | portable browser ZIPs; private scoring wrapper | CPU/browser, human-gated | `Outputs/NeuronIdentifiability/external_blinded_bounded_review_v2` |
 
 Detailed guides:
@@ -23,6 +26,11 @@ Detailed guides:
 - [Grid latent dynamics](../GRID_LATENT_DYNAMICS.md)
 - [Fish intent and inverse-control program](../programs/fish_inverse_control/README.md)
 - [Neuron-identifiability paper workflow](spon_ca_burst_neuron_identifiability_paper.md)
+- [Compact spatiotemporal JEPA representation pilot](spatiotemporal_jepa_representation_v1.md)
+- [Compact spatiotemporal JEPA bounded-screen results](../research/SPATIOTEMPORAL_JEPA_SCREEN_V1_RESULTS.md)
+- [Conditional-background residual screen](conditional_background_residual_v1.md)
+- [Conditional-background residual screen v1.1 amendment](conditional_background_residual_v1_1.md)
+- [Conditional-background residual screen v1.1 results](../research/CONDITIONAL_BACKGROUND_RESIDUAL_V1_1_RESULTS.md)
 - [Next uncertainty-aware learning specification](../research/SPON_CA_BURST_UNCERTAINTY_AWARE_LEARNING_PLAN_V1.md)
 - [External blinded bounded review v2](external_blinded_bounded_review_v2.md)
 

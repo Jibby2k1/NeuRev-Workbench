@@ -31,3 +31,5 @@ Generated from the repository research registry. Order is explicit; historical e
 | `NREV-EXP-0025` | Motion Registration Audit | draft | not_evaluated | none | pending |
 | `NREV-EXP-0026` | Frozen Feature Transfer | draft | not_evaluated | none | pending |
 | `NREV-EXP-0027` | Realistic Movie Simulation | draft | not_evaluated | none | pending |
+| `NREV-EXP-0028` | Compact Spatiotemporal JEPA Representation Pilot V1 | draft | not_evaluated | none | hold |
+| `NREV-EXP-0029` | Frozen-JEPA Conditional-Background Residual Screen V1 with v1.1 domain amendment | draft | not_evaluated | none | hold, hold |

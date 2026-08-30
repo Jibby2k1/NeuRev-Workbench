@@ -1,0 +1,57 @@
+{
+  "compared_fields": [
+    "source_on_recovery",
+    "intervention_recovery"
+  ],
+  "current_experiment_id": "NREV-EXP-0029",
+  "current_method": "raw_frozen_handcrafted_stack",
+  "current_run_id": "NREV-RUN-EXP-0029-SCREEN-20260830-A",
+  "exact_recovery_result_and_recall_identity": false,
+  "executed_fixture_ids_sha256": "0cad0f96be84aa096c73cf06cb5e64aba6aea63e2606770c9dacdfa3e0ba8549",
+  "execution_fixture_count": 108,
+  "expected_execution_fixture_count": 108,
+  "matched_fixture_count": 104,
+  "mismatch_count": 4,
+  "mismatched_fixture_ids": [
+    "060126_10_rest__window_2_median_mad__sources_1__seed_3102",
+    "060126_12_left__window_1_low_mad__sources_1__seed_3102",
+    "060126_15_right__window_3_high_mad__sources_1__seed_3102",
+    "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_1__seed_3103"
+  ],
+  "mismatches": [
+    {
+      "current_sha256": "22c981fbef1ac916d4e8e930415a7b49c29026df20864f98fdffc2cc0ac187d9",
+      "field": "intervention_recovery",
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_1__seed_3102",
+      "parent_sha256": "214cd66f86f7d01ccdd3ef58e135456758070c78140ba008f80b540ab6e12426"
+    },
+    {
+      "current_sha256": "22c981fbef1ac916d4e8e930415a7b49c29026df20864f98fdffc2cc0ac187d9",
+      "field": "intervention_recovery",
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_1__seed_3102",
+      "parent_sha256": "29413279e3f450f3f58b6f237dd7ef04d08b8580241f6ec8f4ef47dfa301feba"
+    },
+    {
+      "current_sha256": "3f56881dd6c71a431703cc4c17c3e8380492d3864018ac9b53a6ca326d66050e",
+      "field": "intervention_recovery",
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_1__seed_3102",
+      "parent_sha256": "7dac3d25b5ba250d7a2cb454e043c1529b31427809de4848e385c5f7d916217b"
+    },
+    {
+      "current_sha256": "22c981fbef1ac916d4e8e930415a7b49c29026df20864f98fdffc2cc0ac187d9",
+      "field": "intervention_recovery",
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_1__seed_3103",
+      "parent_sha256": "29413279e3f450f3f58b6f237dd7ef04d08b8580241f6ec8f4ef47dfa301feba"
+    }
+  ],
+  "numeric_tolerance": 0.0,
+  "observed_current_raw_row_count": 108,
+  "parent_experiment_id": "NREV-EXP-0028",
+  "parent_method": "frozen_handcrafted_stack",
+  "parent_paired_results_sha256": "950fc024611c945a1b5f3b88f57f6cba1b4631c0bd7503f4004334f308fc5617",
+  "parent_registered_fixture_count": 108,
+  "parent_run_id": "NREV-RUN-EXP-0028-SCREEN-20260829-B",
+  "recall_compared_as_part_of_each_recovery_result": true,
+  "schema_version": 1,
+  "scientific_claim_consequence": "none_engineering_continuity_check_only"
+}

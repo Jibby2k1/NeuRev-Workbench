@@ -1,0 +1,359 @@
+{
+  "training_seeds": [
+    {
+      "arms": {
+        "compact_jepa": {
+          "categorical_clip_decodability_flag_descriptive_only": false,
+          "embedding_shape": [
+            96,
+            64
+          ],
+          "probes": {
+            "annular_background": {
+              "mean_absolute_error": 0.901453394179256,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.5055054259912293,
+              "r_squared": -0.6550684241822256,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "bleaching_slope": {
+              "mean_absolute_error": 0.0045477919117765655,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.0014108692012682962,
+              "r_squared": -5.14088138320905,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "column_position": {
+              "mean_absolute_error": 0.23393260019881598,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.43922282935826606,
+              "r_squared": -1.0855221458188034,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "dtype_rail_fraction": {
+              "mean_absolute_error": 0.0,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": null,
+              "r_squared": null,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "filename_derived_behavior_stratum": {
+              "accuracy": 0.4166666666666667,
+              "class_counts": {
+                "left": 32,
+                "rest": 32,
+                "right": 32
+              },
+              "evaluation": "clip_level_resubstitution_upper_bound_only",
+              "majority_fraction": 0.3333333333333333,
+              "metric": "nearest_centroid_resubstitution_accuracy",
+              "reason": "held-out recordings remove the corresponding acquisition class; behavior is one-to-one with the three validation recording identities",
+              "recording_held_out": false
+            },
+            "global_intensity": {
+              "mean_absolute_error": 0.9807382910941916,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.44303205777659205,
+              "r_squared": -1.0521315162304181,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "local_temporal_mad": {
+              "mean_absolute_error": 0.04110886114817873,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.6567543796589416,
+              "r_squared": 0.044524889126291156,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "recording_identity": {
+              "accuracy": 0.4166666666666667,
+              "class_counts": {
+                "060126_10_rest": 32,
+                "060126_12_left": 32,
+                "060126_15_right": 32
+              },
+              "evaluation": "clip_level_resubstitution_upper_bound_only",
+              "majority_fraction": 0.3333333333333333,
+              "metric": "nearest_centroid_resubstitution_accuracy",
+              "reason": "held-out recordings remove the corresponding acquisition class; behavior is one-to-one with the three validation recording identities",
+              "recording_held_out": false
+            },
+            "row_position": {
+              "mean_absolute_error": 0.3743163614501959,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.1899801715330369,
+              "r_squared": -1.9816565092239187,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "temporal_position": {
+              "mean_absolute_error": 0.466808585751026,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.056549444975157445,
+              "r_squared": -4.802951098766609,
+              "recording_count": 3,
+              "recording_held_out": true
+            }
+          },
+          "recording_held_out_continuous_nuisance_flag": false
+        },
+        "frozen_random_encoder": {
+          "categorical_clip_decodability_flag_descriptive_only": false,
+          "embedding_shape": [
+            96,
+            64
+          ],
+          "probes": {
+            "annular_background": {
+              "mean_absolute_error": 1.2606592653600057,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.452629449988448,
+              "r_squared": -2.2448871341344576,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "bleaching_slope": {
+              "mean_absolute_error": 0.004502544678793006,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.18622170335904975,
+              "r_squared": -3.331145791576221,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "column_position": {
+              "mean_absolute_error": 0.1963744460327057,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.6710270188654217,
+              "r_squared": 0.10207378382538224,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "dtype_rail_fraction": {
+              "mean_absolute_error": 0.0,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": null,
+              "r_squared": null,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "filename_derived_behavior_stratum": {
+              "accuracy": 0.4166666666666667,
+              "class_counts": {
+                "left": 32,
+                "rest": 32,
+                "right": 32
+              },
+              "evaluation": "clip_level_resubstitution_upper_bound_only",
+              "majority_fraction": 0.3333333333333333,
+              "metric": "nearest_centroid_resubstitution_accuracy",
+              "reason": "held-out recordings remove the corresponding acquisition class; behavior is one-to-one with the three validation recording identities",
+              "recording_held_out": false
+            },
+            "global_intensity": {
+              "mean_absolute_error": 1.350580968093862,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.390591092716774,
+              "r_squared": -2.6725902225455194,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "local_temporal_mad": {
+              "mean_absolute_error": 0.06336586713476701,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.5268726904498424,
+              "r_squared": -1.5040888379584358,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "recording_identity": {
+              "accuracy": 0.4166666666666667,
+              "class_counts": {
+                "060126_10_rest": 32,
+                "060126_12_left": 32,
+                "060126_15_right": 32
+              },
+              "evaluation": "clip_level_resubstitution_upper_bound_only",
+              "majority_fraction": 0.3333333333333333,
+              "metric": "nearest_centroid_resubstitution_accuracy",
+              "reason": "held-out recordings remove the corresponding acquisition class; behavior is one-to-one with the three validation recording identities",
+              "recording_held_out": false
+            },
+            "row_position": {
+              "mean_absolute_error": 0.39583195243742847,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.2722866626150271,
+              "r_squared": -2.085506207587794,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "temporal_position": {
+              "mean_absolute_error": 0.4621895333140049,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.07175054286621237,
+              "r_squared": -4.417418268772202,
+              "recording_count": 3,
+              "recording_held_out": true
+            }
+          },
+          "recording_held_out_continuous_nuisance_flag": false
+        },
+        "masked_pixel_autoencoder": {
+          "categorical_clip_decodability_flag_descriptive_only": false,
+          "embedding_shape": [
+            96,
+            64
+          ],
+          "probes": {
+            "annular_background": {
+              "mean_absolute_error": 0.2464217553604088,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.9252769303537908,
+              "r_squared": 0.8369723571432623,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "bleaching_slope": {
+              "mean_absolute_error": 0.0033717239231324902,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": -0.03212054410444247,
+              "r_squared": -1.708345940858349,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "column_position": {
+              "mean_absolute_error": 0.16289022193926692,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.7340290064062429,
+              "r_squared": 0.2967005037084578,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "dtype_rail_fraction": {
+              "mean_absolute_error": 0.0,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": null,
+              "r_squared": null,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "filename_derived_behavior_stratum": {
+              "accuracy": 0.40625,
+              "class_counts": {
+                "left": 32,
+                "rest": 32,
+                "right": 32
+              },
+              "evaluation": "clip_level_resubstitution_upper_bound_only",
+              "majority_fraction": 0.3333333333333333,
+              "metric": "nearest_centroid_resubstitution_accuracy",
+              "reason": "held-out recordings remove the corresponding acquisition class; behavior is one-to-one with the three validation recording identities",
+              "recording_held_out": false
+            },
+            "global_intensity": {
+              "mean_absolute_error": 0.27005539057333294,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.9139434681536176,
+              "r_squared": 0.8268016276365353,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "local_temporal_mad": {
+              "mean_absolute_error": 0.016258258462946654,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.9042704099688483,
+              "r_squared": 0.8016708953597049,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "recording_identity": {
+              "accuracy": 0.40625,
+              "class_counts": {
+                "060126_10_rest": 32,
+                "060126_12_left": 32,
+                "060126_15_right": 32
+              },
+              "evaluation": "clip_level_resubstitution_upper_bound_only",
+              "majority_fraction": 0.3333333333333333,
+              "metric": "nearest_centroid_resubstitution_accuracy",
+              "reason": "held-out recordings remove the corresponding acquisition class; behavior is one-to-one with the three validation recording identities",
+              "recording_held_out": false
+            },
+            "row_position": {
+              "mean_absolute_error": 0.24269213861856742,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.48040200552412743,
+              "r_squared": -0.6021308954537739,
+              "recording_count": 3,
+              "recording_held_out": true
+            },
+            "temporal_position": {
+              "mean_absolute_error": 0.2987178209406665,
+              "metric": "recording_held_out_ridge_probe",
+              "pearson_correlation": 0.19626897814131122,
+              "r_squared": -0.9123176185317536,
+              "recording_count": 3,
+              "recording_held_out": true
+            }
+          },
+          "recording_held_out_continuous_nuisance_flag": true
+        }
+      },
+      "claim_gate_resolved": false,
+      "counterfactuals": {
+        "recording_blocked_label_permutation": "pending_claim_bearing_run",
+        "source_off_native_clips": "included_in_paired_injection_evaluation",
+        "spatial_block_shuffle": "pending_claim_bearing_run",
+        "temporal_reversal": "pending_claim_bearing_run",
+        "within_clip_phase_randomization": "pending_claim_bearing_run"
+      },
+      "dtype_rail_fraction": {
+        "definition": "fraction_equal_to_uint16_dtype_minimum_or_maximum",
+        "effective_sensor_saturation": "unresolved_sensor_bit_depth_unknown",
+        "interpretation": "Dtype rail occupancy is not an effective sensor-saturation estimate without registered acquisition bit depth.",
+        "status": "descriptive_probe_target"
+      },
+      "interpretation": "Nuisance decodability is descriptive. Recording and behavior categorical probes are clip-level upper bounds because the validation set has one recording per behavior. High decodability blocks promotion but neither proves causal confounding nor neuronal specificity.",
+      "motion_magnitude": {
+        "interpretation": "Heuristic acquisition-confound screen only; no motion correction or causal attribution.",
+        "invented_proxy_used": false,
+        "nuisance_stratified_sensitivity_required": true,
+        "registered_dependency": "NREV-EXP-0025 remains draft and requires the registered motion fields and residual-relation analysis",
+        "registered_motion_dependency_satisfied": false,
+        "review_recording_ids": [
+          "060126_06_left"
+        ],
+        "source": "jepa_motion_audit_v1",
+        "status": "available_heuristic_screen",
+        "training_review_recording_ids": [
+          "060126_06_left"
+        ],
+        "validation_review_recording_ids": []
+      },
+      "observed_review_flags": {
+        "categorical_clip_decodability_descriptive_only": false,
+        "continuous_recording_heldout_nuisance": false,
+        "heuristic_motion_review_recordings": [
+          "060126_06_left"
+        ]
+      },
+      "proposed_arm_blocks_promotion": true,
+      "status": "descriptive_screen_complete",
+      "unrun_claim_gates": [
+        "nuisance_matching_or_residualization",
+        "temporal_reversal_counterfactual",
+        "within_clip_phase_randomization_counterfactual",
+        "spatial_block_shuffle_counterfactual",
+        "recording_blocked_label_permutation",
+        "leave_one_recording_out_primary_sensitivity",
+        "per_recording_collapse_diagnostics",
+        "cross_seed_linear_CKA",
+        "registered_NREV_EXP_0025_motion_residual_relation"
+      ]
+    }
+  ]
+}

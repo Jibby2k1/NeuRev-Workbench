@@ -1,0 +1,594 @@
+{
+  "config": {
+    "arms": [
+      {
+        "id": "raw_hc",
+        "movie": "normalized_observed_video",
+        "role": "primary_frozen_comparator",
+        "score": "frozen_source_off_calibrated_carrier_context_kinetic_sum",
+        "trainable_parameters": 0
+      },
+      {
+        "decoder": "pixel_decoder",
+        "id": "jepa_conditional_residual_hc",
+        "movie": "signed_normalized_observed_video_minus_conditional_prediction",
+        "provider": "frozen_jepa",
+        "role": "primary_proposed",
+        "score": "frozen_source_off_calibrated_carrier_context_kinetic_sum"
+      },
+      {
+        "decoder": "independently_trained_identical_pixel_decoder",
+        "id": "random_conditional_residual_hc",
+        "movie": "signed_normalized_observed_video_minus_conditional_prediction",
+        "provider": "frozen_random_encoder_baseline",
+        "provider_trainable_parameters": 0,
+        "required_for_primary_pair": false,
+        "required_for_specificity_panel": true,
+        "role": "required_architecture_specificity_control",
+        "score": "frozen_source_off_calibrated_carrier_context_kinetic_sum"
+      }
+    ],
+    "blind_tube_geometry": {
+      "central_target_patch_only": true,
+      "context_must_not_contain_target_tube": true,
+      "coverage_expected_per_original_pixel": 1,
+      "decoded_target_tokens_t_y_x": [
+        8,
+        1,
+        1
+      ],
+      "geometry_preflight": {
+        "absolute_tolerance": 1e-12,
+        "adversarial_comparison": "bitwise_equal_float32_prediction_after_changing_only_the_masked_target_tube",
+        "all_target_tiles_required": true,
+        "footprint_leakage_reference_algorithm": "float64_mass_and_energy_fraction_outside_the_peak_token_centered_3_by_3_spatial_halo_across_all_252_registered_sources",
+        "reflected_alias_mask_value_mismatch_count_max": 0,
+        "repeat_after_training_allowed": true,
+        "required_phase": "before_first_optimizer_step",
+        "target_tube_adversarial_prediction_difference_max": 0.0,
+        "target_tube_adversarial_targets_required": 64,
+        "worst_registered_injected_footprint_energy_outside_halo_max": 0.0001163780028541624,
+        "worst_registered_injected_footprint_mass_outside_halo_max": 0.004851305168298853
+      },
+      "input_shape_t_y_x": [
+        32,
+        64,
+        64
+      ],
+      "mask_all_temporal_tokens": true,
+      "mask_halo_pixels_t_y_x": [
+        32,
+        24,
+        24
+      ],
+      "mask_halo_tokens_t_y_x": [
+        8,
+        3,
+        3
+      ],
+      "masking_order": "mask_the_complete_original_space_full_time_halo_before_reflect_padding_then_reapply_the_padded_3_by_3_token_mask",
+      "original_token_grid_t_y_x": [
+        8,
+        8,
+        8
+      ],
+      "padded_input_shape_t_y_x": [
+        32,
+        80,
+        80
+      ],
+      "padded_token_grid_t_y_x": [
+        8,
+        10,
+        10
+      ],
+      "reflect_alias_policy": "every_reflected_alias_of_an_original_halo_voxel_must_equal_the_frozen_mask_value_before_provider_evaluation",
+      "spatial_reflect_pad_tokens": 1,
+      "target_tile_grid_y_x": [
+        8,
+        8
+      ],
+      "tile_count": 64,
+      "unmasked_reflect_alias_allowed": false,
+      "written_target_pixels_t_y_x": [
+        32,
+        8,
+        8
+      ]
+    },
+    "claim_bearing_execution": false,
+    "claim_bearing_execution_authorized": false,
+    "data_inventory": "research/data-registry/jepa_raw_video_sources_v1.json",
+    "data_root_environment_variable": "NEUROBENCH_DATA_ROOT",
+    "dependency_readiness": {
+      "NREV-EXP-0025": {
+        "current_registry_lifecycle": "draft",
+        "current_registry_outcome": "not_evaluated",
+        "required_evidence": "evidence_backed_usable_motion_and_registration_residual_fields",
+        "satisfied": false
+      },
+      "claim_bearing_execution_ready": false,
+      "hard_dependency_experiment_ids": [
+        "NREV-EXP-0025"
+      ],
+      "policy": "The unresolved motion dependency does not block a clearly labeled engineering screen, but it blocks claim-bearing execution, nuisance-robust conclusions, scientific promotion, and a public evidence capsule."
+    },
+    "descriptive_screen_advancement_thresholds": {
+      "formal_claim_consequence": "none",
+      "grouped_bootstrap_lower_bound_min_exclusive": 0.0,
+      "interpretation": "Crossing or missing any threshold informs whether a separately versioned multi-seed experiment is worth designing; it does not formally pass or fail NREV-EXP-0029 or NREV-EXP-0028.",
+      "jepa_residual_minus_random_grouped_interval_lower_bound_preferred_exclusive": 0.0,
+      "jepa_residual_minus_random_observed_mean_min_exclusive": 0.0,
+      "jepa_residual_minus_raw_macro_recall_min": 0.02,
+      "maximum_median_background_rms_ratio": 0.9,
+      "maximum_median_predictor_absorption": 0.1,
+      "minimum_median_aligned_retained_gain": 0.9,
+      "random_specificity_interpretation": "A positive observed JEPA-minus-random effect is required for a specific JEPA mechanism interpretation; a grouped interval lower bound above zero is preferred stronger screen evidence. Both remain descriptive and nonformal.",
+      "required_direction_across_recordings": "nonnegative_each_recording",
+      "status": "engineering_triage_only_not_formal_experiment_gates"
+    },
+    "engineering_integrity_thresholds": {
+      "interpretation": "Both thresholds validate the residual algebra and are engineering integrity requirements, not scientific benefit or advancement gates.",
+      "maximum_projection_closure_absolute_error": 1e-05,
+      "maximum_voxelwise_pair_closure_absolute_error": 1e-05
+    },
+    "engineering_screen_authorization_basis": "The user explicitly requested the bounded residual experiment on 2026-08-30.",
+    "engineering_screen_execution_authorized": true,
+    "execution_authorized": false,
+    "execution_modes": {
+      "preflight": {
+        "device": "cpu",
+        "required_checks_only": true,
+        "write_outputs": false
+      },
+      "screen": {
+        "background_window_count": 12,
+        "decoder_steps": 500,
+        "device": "cuda",
+        "fixture_cells_per_background": 9,
+        "scientific_status": "bounded_non_claim_bearing_engineering_screen",
+        "strict_match_to_frozen_counts": true,
+        "train_clip_count": 512,
+        "validation_clip_count": 96
+      },
+      "smoke": {
+        "background_window_count": 1,
+        "decoder_steps": 1,
+        "device": "cpu",
+        "fixture_cells_per_background": 1,
+        "scientific_status": "implementation_smoke_only",
+        "train_clip_count": 8,
+        "validation_clip_count": 4
+      }
+    },
+    "experiment_id": "NREV-EXP-0029",
+    "frozen_data_contract": {
+      "background_windows": 12,
+      "exact_injected_sources": 252,
+      "fixture_rebuild_policy": "Rebuild the registered exact fixture grid from the frozen window manifest and injection seeds, then require identity with the parent fixture manifest; do not reuse parent score outputs.",
+      "labels_or_roi_access_during_training": false,
+      "native_background_candidates": "unknown_not_negative",
+      "normalization": {
+        "center": 489.0,
+        "refit_allowed": false,
+        "scale": 289.10699999999997,
+        "sha256": "ec48d7f89bb0fbf3bce5305ad1ecebcff2b43ad15ef1af7910405df28ecdb4a4"
+      },
+      "paired_fixture_cells": 108,
+      "recording_inventory_sha256": "66a5dedad97fce9f6be4ceeb87ab216ba4186419263bcb57272680ef1846f124",
+      "recording_split_sha256": "348849edb0e336b6b3e5d93b34b8cf2918ebfa0253c53f6f6516d440c6e2da65",
+      "training_clips": 512,
+      "validation_clips": 96
+    },
+    "frozen_jepa": {
+      "all_parameters_frozen": true,
+      "checkpoint_selection_or_refit_allowed": false,
+      "gradient_allowed": false,
+      "latent_channels": 64,
+      "optimizer_registration_allowed": false,
+      "provider": "frozen_predictor_of_frozen_context_encoder",
+      "source_checkpoint": "upstream_screen.checkpoint",
+      "target_encoder_used_for_pixel_prediction": false,
+      "tubelet_shape_t_y_x": [
+        4,
+        8,
+        8
+      ]
+    },
+    "implementation_hash_contract": {
+      "hash_algorithm": "sha256",
+      "hash_scope": "complete_file_bytes",
+      "mismatch_policy": "fail_preflight_and_require_a_reviewed_versioned_configuration_and_new_run_id",
+      "new_sources": [
+        {
+          "authoritative_symbols": [
+            "FrozenJEPALatentProvider",
+            "FrozenRandomLatentProvider",
+            "FrozenLatentPixelBackgroundModel",
+            "train_pixel_decoder",
+            "predict_full_background",
+            "paired_residual_diagnostics",
+            "target_tube_invariance_preflight",
+            "production_contract_preflight"
+          ],
+          "path": "neurobench/experiments/neuron_identifiability/jepa_background_residual.py",
+          "role": "blind_halo_geometry_decoder_training_tiled_prediction_and_residual_diagnostics",
+          "sha256": "2bf62a4508405433db96783ea97e9920206f91b3959ce268e405bf0b233af973"
+        },
+        {
+          "authoritative_symbols": [
+            "load_jepa_residual_config",
+            "preflight_jepa_residual_pilot",
+            "reconstruct_exact_fixtures",
+            "footprint_halo_leakage_diagnostics",
+            "raw_hc_cross_run_regression",
+            "paired_signal_algebra",
+            "run_jepa_residual_pilot"
+          ],
+          "path": "neurobench/experiments/neuron_identifiability/jepa_residual_pilot.py",
+          "role": "guarded_screen_runner_and_output_contract",
+          "sha256": "846ec07a342effccdf149a129a0fb2381eb3a3cef8bfbfaabfae0db0e65be29d"
+        }
+      ],
+      "upstream_sources": [
+        {
+          "path": "examples/spatiotemporal_jepa_representation_v1.example.json",
+          "role": "upstream_screen_configuration",
+          "sha256": "5a2a0a8fc174dc770165deb1c634552800223ba91e96f8158fe5a451ff630679"
+        },
+        {
+          "path": "neurobench/experiments/neuron_identifiability/jepa_data.py",
+          "role": "data_inventory_split_and_clip_contract",
+          "sha256": "e2dd15e9e61c5c85cead92d9b4332d7bea813933c9c723c89b2aef2244c21339"
+        },
+        {
+          "path": "neurobench/experiments/neuron_identifiability/spatiotemporal_jepa.py",
+          "role": "frozen_jepa_and_random_provider_architectures",
+          "sha256": "31ccb129591e4962bf3d9038539a7d86ca6fb17b25d64745c2613c8a64196ff6"
+        },
+        {
+          "path": "neurobench/experiments/neuron_identifiability/jepa_training.py",
+          "role": "checkpoint_loading_and_training_contract",
+          "sha256": "4117aa88a06ec0aa4ef111b1bc98bbfda003985b47fd965f24edb9a7b7805f47"
+        },
+        {
+          "path": "neurobench/experiments/neuron_identifiability/jepa_comparators.py",
+          "role": "raw_and_residual_handcrafted_score_stack",
+          "sha256": "54443b4f4e39e8abbba4351b9d9399329b6bb09a54044c0c29f46cc462dd1fa5"
+        },
+        {
+          "path": "neurobench/experiments/neuron_identifiability/jepa_evaluation.py",
+          "role": "fixture_generation_pair_safe_evaluation_and_grouped_bootstrap",
+          "sha256": "3bed26ce6ee766f55951a87f8e675d4389c635164438adc04f9fa50310b587c2"
+        },
+        {
+          "path": "neurobench/experiments/neuron_identifiability/jepa_pilot.py",
+          "role": "background_window_and_fixture_grid_reconstruction",
+          "sha256": "1b3bb2a8873f235f8e03161ea40cac2cef74101d2ba6b7ffe8d9f6021e2197ed"
+        }
+      ]
+    },
+    "interpretation_boundary": {
+      "claim_or_capsule_creation_allowed": false,
+      "equation": "r = x - b_hat = s + epsilon + (b - b_hat)",
+      "formal_experiment_gate_resolution": "not_applicable_to_this_bounded_screen",
+      "not_assumed": [
+        "the prediction is the true background",
+        "the residual is pure neural signal plus white noise",
+        "residual suppression establishes denoising",
+        "a one-seed 500-step screen can pass or fail a preregistered scientific benefit gate"
+      ],
+      "residual_identity": "video_minus_conditional_background_prediction",
+      "screen_role": "descriptive engineering triage only"
+    },
+    "lifecycle": "planned",
+    "output_root": "Outputs/NeuronIdentifiability/NREV-EXP-0029/runs/NREV-RUN-EXP-0029-SCREEN-20260830-A",
+    "paired_evaluation": {
+      "background_windows": 12,
+      "bootstrap_draws": 1000,
+      "bootstrap_seed": 6203,
+      "calibration_api": "fit_source_off_source_off_movie_returns_frozen_callable_applied_unchanged_to_source_off_and_source_on",
+      "candidate_border_px": 2,
+      "candidate_fill_to_cap": false,
+      "exact_injected_sources": 252,
+      "fixture_generator": "native_background_calcium_injection_v1",
+      "grouping": "recording_then_background_window_then_injection_seed_with_source_count_nested",
+      "injection_seeds": [
+        3101,
+        3102,
+        3103
+      ],
+      "match_radius_px": 3.0,
+      "minimum_distance_px": 2,
+      "paired_fixture_cells": 108,
+      "placement_center_sensitivity": "placement_centers_yx",
+      "primary_comparison": "jepa_conditional_residual_hc_minus_raw_hc_macro_source_recall",
+      "primary_truth_centers": "footprint_peak_centers_yx",
+      "proposal_cap": 4,
+      "random_control_comparisons": [
+        "random_conditional_residual_hc_minus_raw_hc",
+        "jepa_conditional_residual_hc_minus_random_conditional_residual_hc"
+      ],
+      "random_control_status": "required_descriptive_specificity_panel_not_a_formal_promotion_gate",
+      "raw_hc_anchor_regression": {
+        "current_method_id": "raw_frozen_handcrafted_stack",
+        "fixture_count": 108,
+        "mismatch_policy": "fail_closed_before_interpreting_any_residual_comparison",
+        "numeric_tolerance": 0.0,
+        "parent_method_id": "frozen_handcrafted_stack",
+        "parent_run_id": "NREV-RUN-EXP-0028-SCREEN-20260829-B",
+        "required_identity": "exact_per_fixture_recovery_result_and_recall_identity"
+      },
+      "source_count_conditions": [
+        1,
+        2,
+        4
+      ]
+    },
+    "paired_residual_diagnostics": {
+      "aligned_retained_gain": "dot(residual_delta,injected_signal)/dot(injected_signal,injected_signal)",
+      "background_mad_ratio": "normal_consistent_mad(temporally_centered_residual_source_off)/normal_consistent_mad(temporally_centered_source_off)",
+      "background_rms_ratio": "rms(residual_source_off_centered)/rms(source_off_centered)",
+      "closure": "aligned_retained_gain_plus_predictor_absorption",
+      "closure_target": 1.0,
+      "dynamic_mad_ratio": "normal_consistent_mad(frame_difference(residual_source_off))/normal_consistent_mad(frame_difference(source_off))",
+      "injected_signal": "exact_float32_injection_delta",
+      "orthogonal_distortion_ratio": "norm(residual_delta-aligned_retained_gain*injected_signal)/norm(injected_signal)",
+      "prediction_delta": "prediction_source_on_minus_prediction_source_off",
+      "predictor_absorption": "dot(prediction_delta,injected_signal)/dot(injected_signal,injected_signal)",
+      "report_grain": [
+        "fixture",
+        "recording",
+        "method",
+        "aggregate"
+      ],
+      "residual_delta": "residual_source_on_minus_residual_source_off",
+      "source_delta": "source_on_minus_source_off",
+      "total_signal_error_ratio": "norm(residual_delta-injected_signal)/norm(injected_signal)"
+    },
+    "pixel_decoder": {
+      "architecture": "single_conv_transpose_3d",
+      "autocast": "cuda_bfloat16_if_supported",
+      "batch_size": 4,
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "bias": true,
+      "checkpoint_selection": "final_step_only_no_validation_selection",
+      "early_stopping_allowed": false,
+      "epsilon": 1e-08,
+      "gradient_clip_norm": 1.0,
+      "hard_step_cap": 2000,
+      "inference_target_batch_size": 8,
+      "input_channels": 64,
+      "kernel_size_t_y_x": [
+        4,
+        8,
+        8
+      ],
+      "learning_rate": 0.0003,
+      "log_interval_steps": 25,
+      "loss": "smooth_l1",
+      "loss_and_metrics_dtype": "float32",
+      "loss_support": "central_8_by_8_target_patch_only",
+      "optimizer": "AdamW",
+      "output_channels": 1,
+      "smooth_l1_beta": 1.0,
+      "stride_t_y_x": [
+        4,
+        8,
+        8
+      ],
+      "trainable_parameters": 16385,
+      "training_steps": 500,
+      "weight_decay": 0.0
+    },
+    "purpose": "Bounded engineering screen of signed pixel residuals from a frozen-JEPA conditional background predictor; this is a new experiment and does not mutate NREV-EXP-0028.",
+    "required_outputs": [
+      "resolved_config.json",
+      "preflight.json",
+      "status.json",
+      "heartbeat.json",
+      "decoder_training_metrics.json",
+      "decoder_checkpoints_manifest.json",
+      "clip_reuse_manifest.json",
+      "background_window_manifest.json",
+      "blind_tube_geometry_validation.json",
+      "paired_injection_manifest.json",
+      "paired_injection_results.tsv",
+      "paired_injection_results.json",
+      "raw_hc_cross_run_regression.json",
+      "residual_diagnostics.tsv",
+      "residual_diagnostics.json",
+      "freeze_integrity.json",
+      "upstream_integrity.json",
+      "summary.json",
+      "validation.json",
+      "artifact_index.json",
+      "llm_context.json",
+      "scientific_audit_status.json",
+      "REPORT.md"
+    ],
+    "residual_definition": {
+      "domain": "frozen_training_normalized_float32_pixels",
+      "per_movie_or_per_pair_refit_allowed": false,
+      "prediction": "full_movie_from_64_central_patch_writes",
+      "rectification_before_feature_stack": false,
+      "signed_residual": "observed_minus_prediction",
+      "source_on_self_normalization_allowed": false
+    },
+    "resource_guards": {
+      "atomic_metadata": true,
+      "conflicting_process_check": "operator_observed_external_preflight",
+      "conflicting_process_observation_required": true,
+      "conflicting_process_observation_timing": "before_screen_execution",
+      "cpu_threads": 4,
+      "heartbeat_required": true,
+      "minimum_available_ram_gib": 8,
+      "minimum_free_cuda_mib": 8192,
+      "minimum_free_disk_gib": 20,
+      "overwrite_completed_root": false,
+      "partial_staging_suffix": ".partial",
+      "require_absent_output_root": true,
+      "screen_require_bfloat16": true,
+      "screen_require_cuda": true
+    },
+    "run_id": "NREV-RUN-EXP-0029-SCREEN-20260830-A",
+    "schema_version": 1,
+    "scientific_audit": {
+      "comparison_section": "numeric_tables_required_for_screen; complete_standardized_figures_required_before_audit_completion",
+      "completion_or_promotion_if_incomplete": false,
+      "enabled": true,
+      "expert_section": "not_applicable_unlabeled_injection_screen",
+      "model_section": "candidate_surrogate_media_required_for_audit_completion_but_not_produced_by_this_bounded_screen",
+      "screen_expected_status": "incomplete",
+      "screen_must_write_incomplete_status": true,
+      "standard": "docs/workflows/SCIENTIFIC_AUDIT_OUTPUT_STANDARD.md"
+    },
+    "scientific_completion_allowed": false,
+    "scientific_execution_authorized": false,
+    "seeds": {
+      "decoder_initialization": 6201,
+      "grouped_bootstrap": 6203,
+      "injection": [
+        3101,
+        3102,
+        3103
+      ],
+      "tile_schedule": 6202,
+      "upstream_jepa_training": 1001,
+      "validation_sampling": 2001
+    },
+    "training_plan": {
+      "decoder_initialization_shared_between_provider_arms": true,
+      "decoder_seed": 6201,
+      "decoder_training_order_or_batches_shared_between_provider_arms": true,
+      "one_seed_only": true,
+      "provider_weight_hash_before_after_required": true,
+      "provider_weights_frozen_before_first_step": true,
+      "sampling_schedule_hashed_fields": [
+        "zero_based_step_index",
+        "target_token_flat_index",
+        "ordered_training_clip_indices"
+      ],
+      "sampling_schedule_sha256_equal_between_provider_arms": true,
+      "screen_only": true,
+      "target_tile_sampling": "deterministic_seeded_uniform_over_64_original_tiles",
+      "tile_schedule_seed": 6202,
+      "training_cache": "upstream_screen.train_cache",
+      "validation_cache": "upstream_screen.validation_cache",
+      "validation_use": "hash_verified_reserved_not_used_for_training_or_selection"
+    },
+    "upstream_screen": {
+      "artifact_index_sha256": "6e6c7ef9d8c70c2c52fcb809ea1f4a65578987e558302a3a63b576cb9eb448bd",
+      "background_window_manifest_sha256": "ea3cd2a77ae34df3c1718b46aeb3b071c13734b15b33fd9e284a92e809350d25",
+      "checkpoint": {
+        "completed_steps": 500,
+        "path": "checkpoints/seed_1001_final_non_scientific.pt",
+        "scientific_status": "non_scientific_screen_checkpoint",
+        "sha256": "1d9a1c261f5d49fc418e211cfa1f3250079ea08da716c72077feb34065c63a67",
+        "training_seed": 1001
+      },
+      "clip_bank_manifest_sha256": "ca9386a89cc42683fb5962cb4b4839ea4b3fc0918ed8dbab6d3d3aefcde3ac35",
+      "data_manifest_sha256": "732bc2a35dd8eb0d95e9c86cba71763126ee531d3be6d709f8d56ebb22fb0156",
+      "experiment_id": "NREV-EXP-0028",
+      "output_root": "Outputs/NeuronIdentifiability/NREV-EXP-0028/runs/NREV-RUN-EXP-0028-SCREEN-20260829-B",
+      "paired_injection_manifest_sha256": "6fcf2aa080d611c084719682605f3e5f4346ae4601d34da1d0c69f747c9f355a",
+      "paired_injection_results_sha256": "950fc024611c945a1b5f3b88f57f6cba1b4631c0bd7503f4004334f308fc5617",
+      "resolved_config_sha256": "669dd51f1725fa52cac0e29932cbf9d7203795c223f974e5cc1f88ff81b3d046",
+      "reuse_policy": "Verify every parent artifact hash before reading; never mutate the parent root; copy no raw video; record the resolved absolute parent root only in private runtime metadata, never in public registry records.",
+      "run_id": "NREV-RUN-EXP-0028-SCREEN-20260829-B",
+      "train_cache": {
+        "dtype": "float32",
+        "path": "cache/train_seed_1001_normalized_clips.npy",
+        "sampling_counts": {
+          "high_temporal_mad": 128,
+          "low_temporal_mad": 128,
+          "uniform": 256
+        },
+        "sha256": "d49e927e29044a5d7105d62375f678159fed59f93e7887fc856a435c3504c3bc",
+        "shape_n_t_y_x": [
+          512,
+          32,
+          64,
+          64
+        ]
+      },
+      "validation_cache": {
+        "clips_per_held_recording": 32,
+        "dtype": "float32",
+        "path": "cache/validation_seed_2001_normalized_clips.npy",
+        "sha256": "f253a35601034aa57b6c7bd13cc6aa0d1886f9e534db422014bcbc49d3c3dc38",
+        "shape_n_t_y_x": [
+          96,
+          32,
+          64,
+          64
+        ]
+      }
+    }
+  },
+  "config_sha256": "91c88152e55b6c77ebdd785fca386d42820f092efe39be7a3c5db997b602a8fd",
+  "execution": {
+    "authorization": {
+      "all_scientific_and_claim_bearing_authorizations_false": true,
+      "engineering_screen_authorization_basis_present": true,
+      "engineering_screen_execution_authorized": true,
+      "forbidden_scientific_or_claim_authorizations": {
+        "claim_bearing_execution": false,
+        "claim_bearing_execution_authorized": false,
+        "execution_authorized": false,
+        "scientific_completion_allowed": false,
+        "scientific_execution_authorized": false
+      },
+      "operator_process_check_acknowledged": true,
+      "operator_process_check_acknowledged_at": "2026-08-30T05:36:35.835769+00:00",
+      "scope": "bounded_engineering_screen_only"
+    },
+    "device": "cuda",
+    "mode": "screen",
+    "mode_budget": {
+      "background_window_count": 12,
+      "decoder_steps": 500,
+      "device": "cuda",
+      "fixture_cells_per_background": 9,
+      "scientific_status": "bounded_non_claim_bearing_engineering_screen",
+      "strict_match_to_frozen_counts": true,
+      "train_clip_count": 512,
+      "validation_clip_count": 96
+    },
+    "provenance": {
+      "git": {
+        "branch": "codex/neuron-identifiability-paper-20260822",
+        "commit": "e1e64725fb9c1a87edf3380306ef0f1f464485df",
+        "dirty": true,
+        "dirty_entry_count": 44,
+        "dirty_paths_persisted": false,
+        "dirty_status_sha256": "56b998f9d2187e2bfdd90785d668725d38eaa74d4c7c97bd179a900465e4e420",
+        "status": "captured"
+      },
+      "runtime": {
+        "cuda_available": true,
+        "cuda_device": {
+          "capability": [
+            8,
+            9
+          ],
+          "name": "NVIDIA GeForce RTX 4070 SUPER"
+        },
+        "cuda_runtime_version": "13.0",
+        "cudnn_version": 91900,
+        "executable_basename": "python",
+        "platform": "Linux-7.0.0-28-generic-x86_64-with-glibc2.39",
+        "python_implementation": "CPython",
+        "python_version": "3.12.13",
+        "torch_version": "2.11.0+cu130"
+      }
+    },
+    "scientific_completion": false,
+    "scientific_execution": false,
+    "scientific_promotion_allowed": false
+  },
+  "schema_version": 1
+}

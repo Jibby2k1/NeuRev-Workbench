@@ -1,0 +1,180 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0028
+origin:
+  kind: native
+program_id: NREV-PRG-0001
+title: Compact Spatiotemporal JEPA Representation Pilot V1
+question: Does compact raw-video masked latent prediction improve exact injected-source recovery on held-out empirical backgrounds
+  under an identical frozen latent-temporal-change primary head beyond matched and interpretable comparators without collapse
+  or nuisance-only gains?
+objective: Test a bounded raw-only JEPA representation against capacity-matched MAE and random encoders under one common frozen
+  primary head and against a pair-safe source-off-calibrated handcrafted comparator, while keeping objective-native error
+  heads secondary.
+rationale: Known-center localization is near ceiling, while exact-truth empirical-background recovery and acquisition-confound
+  robustness remain unresolved; a small self-supervised pilot can test learned representation value without promoting provisional
+  labels.
+lifecycle: draft
+outcome: not_evaluated
+evidence_tier: none
+review_state: not_requested
+falsifiers:
+- JEPA fails to exceed the strongest comparator by 0.02 absolute macro source recall with a strictly positive hierarchical
+  interval that reselects the comparator within every draw.
+- The apparent gain disappears under leave-recording-out or nuisance-matched analysis.
+- Any JEPA seed crosses the frozen finite-variance, effective-rank, or principal-component collapse threshold.
+- The primary effect changes sign across seeds or a source-free or randomized control reproduces it.
+- Improvement appears only in the secondary near-ceiling Spon known-center diagnostic.
+- A learned arm uses a different primary score head, any calibration uses source-on, objective-native errors enter the primary
+  comparison, or seed-specific maps are collapsed or selected.
+design:
+  summary: Train compact matched JEPA and MAE encoders for exactly 5000 updates on eight of eleven raw 060126 recordings using
+    512 unique label-free clips per training seed in a fixed 256/128/128 uniform/high/low split and one shared seed-2001 validation
+    bank of 96 uniform clips; retain three validation recordings and Spon as post-training empirical backgrounds, evaluate
+    108 paired-injection cells under an up-to-four separated-local-maximum proposal cap, and apply common-head, source-off
+    calibration, implementation-hash, collapse, dependency, nuisance, and counterfactual gates.
+  protocol_path: docs/workflows/spatiotemporal_jepa_representation_v1.md
+  unit_of_analysis: background recording by disjoint 32-frame 64-by-64 window by injection seed; source count is nested and
+    training seed is a repeated model factor rather than an independent biological replicate
+  comparison: compact JEPA versus capacity-matched MAE and same-architecture random encoders under identical frozen latent_temporal_change_norm,
+    plus one legacy-equivalent handcrafted carrier/context/kinetic comparator calibrated component-wise from source-off; objective-native
+    error heads are secondary only
+  data_scope: eleven hash-frozen 060126 raw recordings split eight training and three validation; Spon is excluded from self-supervision
+    and selected post-training only through registered burst-interval exclusion without ROI identity labels
+  grouping_or_blocking: block all fitting and uncertainty by complete recording, background window, and injection seed; source
+    count is nested, neighboring patches are never split as independent replicates, and seed-specific score maps are never
+    collapsed or selected across seeds
+  sample_plan: for each of three training seeds draw 512 unique label-free clips as 256 uniform, 128 high-temporal-MAD, and
+    128 low-temporal-MAD; hold one shared 96-clip uniform validation bank with 32 per held recording; evaluate 108 paired
+    cells containing 252 exact sources and at most 4320 primary proposals across ten primary arm instances, reporting actual
+    candidate cardinality
+  randomization: use training and training-plan seeds 1001, 1002, and 1003, validation sampling seed 2001, injection seeds
+    3101, 3102, and 3103, grouped-bootstrap seed 4101, and label-permutation seed 5101; share per-seed training clips, masks,
+    initial encoder weights, and exact optimizer budgets across trainable arms
+  blinding: forbid labels, ROIs, bursts, processed stages, and Spon data during self-supervision; use burst intervals but
+    no ROI identities only for Spon background exclusion; freeze source-off calibration callables, score heads, checkpoints,
+    fixtures, and primary analysis before exact-truth or secondary Spon diagnostics
+  analysis_plan: match primary local maxima to footprint_peak_centers_yx at an up-to-four cap with actual counts and no fillers;
+    report placement_centers_yx morphology sensitivity separately; reselect the strongest comparator within every recording-window-injection-seed
+    hierarchical bootstrap draw; require collapse, seed-stability, leave-recording-out, nuisance-residualized, and counterfactual
+    gates before feature export
+gates:
+- id: output_collision
+  criterion: The registered output root is absent immediately before execution.
+  stage: preflight
+  required: true
+- id: scientific_audit
+  criterion: The applicable scientific audit inventory and media validation pass before audit completion.
+  stage: review
+  required: true
+- id: publication_boundary
+  criterion: The public evidence capsule and release candidates pass the publication-boundary audit.
+  stage: publication
+  required: true
+- id: raw_inventory
+  criterion: All eleven 060126 TIFF hashes, shapes, dtype, total frame count, and portable URIs match the committed sanitized
+    descriptor.
+  stage: preflight
+  required: true
+- id: raw_only_boundary
+  criterion: The self-supervised data API exposes only the eight registered raw training recordings and cannot expose Spon,
+    labels, ROIs, bursts, processed stages, or detector scores.
+  stage: preflight
+  required: true
+- id: recording_split
+  criterion: The exact eight-training and three-validation recording split is disjoint, and normalization fits only the eight
+    training recordings.
+  stage: preflight
+  required: true
+- id: spon_holdout
+  criterion: Spon is absent from self-supervision, normalization, selection, and gate tuning; background windows use registered
+    burst-interval exclusion without ROI identity labels.
+  stage: preflight
+  required: true
+- id: motion_dependency
+  criterion: NREV-EXP-0025 must provide an evidence-backed usable motion and registration-residual contract; while it is draft
+    and not_evaluated, this experiment is not ready for claim-bearing execution.
+  stage: preflight
+  required: true
+- id: empirical_fixture
+  criterion: Exactly 108 paired empirical-background cells close within 0.51 float32 ULP, corresponding to one correctly rounded
+    addition; absolute residual remains reported but is not a pass threshold; cells use frozen generator constants and both
+    named center fields, and a degenerate unfloored source-off frame-difference MAD aborts without automatic replacement.
+  stage: preflight
+  required: true
+- id: clip_bank_contract
+  criterion: Each training seed has exactly 512 unique label-free clips in a 256/128/128 uniform/high/low split sampled with
+    that registered training seed, and one shared seed-2001 validation bank has 96 unique uniform clips with 32 per held recording.
+  stage: preflight
+  required: true
+- id: score_head_contract
+  criterion: JEPA, MAE, and random use identical frozen latent_temporal_change_norm primary heads; objective-native errors
+    remain separate secondary lanes; every calibration uses fit_source_off returning a frozen callable applied unchanged to
+    source-off and source-on.
+  stage: preflight
+  required: true
+- id: fixture_implementation_hash
+  criterion: The native_background_calcium_injection_v1 generator complete-file SHA-256 and essential constants match the
+    maintained configuration and resolved manifest.
+  stage: preflight
+  required: true
+- id: comparator_implementation_hash
+  criterion: The jepa_primary_comparator_suite_v1 source versions and complete-file SHA-256 values, including pair-safe handcrafted
+    and legacy equivalence reference, match the maintained configuration.
+  stage: preflight
+  required: true
+- id: capacity_match
+  criterion: JEPA and MAE share clips, masks, encoder initialization, predictor capacity, and exactly 5000 updates under AdamW
+    LR 1e-4 constant, betas 0.9 and 0.999, epsilon 1e-8, weight decay 0.05, batch size 8, and gradient clip norm 1.0; trainable
+    parameter counts differ by at most one percent, and any increase requires a new configuration and run ID.
+  stage: execution
+  required: true
+- id: mask_contract
+  criterion: Four non-overlapping target cuboids of exactly 2 by 4 by 8 tokens cover 50 percent of the token grid and masking
+    occurs before context encoding.
+  stage: execution
+  required: true
+- id: numerical_precision
+  criterion: CUDA uses bfloat16 autocast with float32 loss and metrics, all losses and gradients remain finite, and float16
+    fallback is disabled.
+  stage: execution
+  required: true
+- id: proposal_cap_contract
+  criterion: Every method returns only separated local maxima up to cap four, reports actual candidate count, never fills
+    to four, and retains all learned seed instances without cross-seed collapse or selection.
+  stage: analysis
+  required: true
+- id: collapse
+  criterion: All three JEPA seeds pass finite, feature-variance, effective-rank, and principal-component dominance thresholds.
+  stage: analysis
+  required: true
+- id: primary_gain
+  criterion: JEPA exceeds the strongest comparator by at least 0.02 macro recall, the hierarchical 95 percent lower bound
+    with within-draw comparator reselection exceeds zero, and no background recording loses more than 0.02.
+  stage: analysis
+  required: true
+- id: seed_stability
+  criterion: The primary effect is positive for all three training seeds and its recall range is at most 0.05.
+  stage: analysis
+  required: true
+- id: nuisance_residualized_gain
+  criterion: The JEPA primary advantage retains a strictly positive grouped interval after registered nuisance matching or
+    residualization; dtype_rail_fraction is not interpreted as sensor saturation.
+  stage: analysis
+  required: true
+- id: counterfactuals
+  criterion: Source-free, temporally reversed, phase-randomized, spatially shuffled, and recording-blocked permutation controls
+    do not reproduce the claimed effect.
+  stage: analysis
+  required: true
+claim_ids: []
+decision_ids:
+- NREV-DEC-0020
+run_ids:
+- NREV-RUN-EXP-0028-PILOT-01
+- NREV-RUN-EXP-0028-SCREEN-20260829-B
+depends_on_experiment_ids:
+- NREV-EXP-0025
+visibility: public
+created_on: '2026-08-30'
+updated_on: '2026-08-30'

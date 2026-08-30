@@ -381,6 +381,74 @@ def _legacy_story(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _paper_story(payload: dict[str, Any]) -> dict[str, Any]:
+    """Extend the frozen migration view with bounded native run history.
+
+    `_legacy_story` remains an exact reconstruction of the retained v1
+    snapshot. The Overleaf compatibility view may additionally expose native
+    engineering executions, provided their draft/evidence boundaries remain
+    explicit and no evidence capsule is manufactured.
+    """
+    story = _legacy_story(payload)
+    decisions = {row["id"]: row for row in payload["decisions"]}
+    runs = {row["id"]: row for row in payload["runs"]}
+    for row in _ordered_experiments(payload):
+        if row["origin"]["kind"] != "native":
+            continue
+        executed_runs = [
+            runs[run_id]
+            for run_id in row.get("run_ids", [])
+            if runs[run_id]["lifecycle"] in {"succeeded", "failed"}
+        ]
+        if not executed_runs or row.get("evidence_capsule_id"):
+            continue
+        decision_rows = [decisions[item] for item in row.get("decision_ids", [])]
+        latest_decision = decision_rows[-1] if decision_rows else None
+        run_states = "_then_".join(run["lifecycle"] for run in executed_runs)
+        artifact_paths = [row["design"]["protocol_path"]]
+        for run in executed_runs:
+            artifact_paths.extend(
+                [
+                    f"research/registry/runs/{run['id']}.yaml",
+                    run["configuration"]["path"],
+                    run["artifacts"]["manifest_path"],
+                ]
+            )
+        if latest_decision:
+            artifact_paths.append(
+                f"research/registry/decisions/{latest_decision['id']}.yaml"
+            )
+        story["experiments"].append(
+            {
+                "id": row["id"],
+                "question": row["question"],
+                "design": row["design"]["summary"],
+                "status": (
+                    f"{row['lifecycle']}_{row['outcome']}_engineering_run_history_"
+                    f"{run_states}; evidence_tier_{row['evidence_tier']}"
+                ),
+                "finding": (
+                    latest_decision["evidence_summary"]
+                    if latest_decision
+                    else "A bounded engineering run is registered; no scientific outcome was evaluated."
+                ),
+                "limitation": (
+                    "This is non-claim-bearing engineering history: scientific audit and promotion "
+                    "remain unresolved, evidence tier is none, and no evidence capsule exists."
+                ),
+                "artifacts": list(
+                    dict.fromkeys(_paper_relative(item) for item in artifact_paths)
+                ),
+                "next_decision": (
+                    latest_decision["rationale"]
+                    if latest_decision
+                    else "Retain the registered draft state pending an explicit decision."
+                ),
+            }
+        )
+    return story
+
+
 def _ordered_experiments(payload: dict[str, Any]) -> list[dict[str, Any]]:
     return sorted(payload["experiments"], key=lambda row: int(row["id"].rsplit("-", 1)[1]))
 
@@ -812,8 +880,8 @@ def _guide_boundary(payload: dict[str, Any]) -> str:
 
 
 def generated_outputs(payload: dict[str, Any]) -> dict[Path, str]:
-    legacy = "# Generated from research/registry; do not edit by hand.\n" + yaml.safe_dump(
-        _legacy_story(payload), sort_keys=False, allow_unicode=True, width=120
+    paper_story = "# Generated from research/registry; do not edit by hand.\n" + yaml.safe_dump(
+        _paper_story(payload), sort_keys=False, allow_unicode=True, width=120
     )
     readme = ROOT / "README.md"
     guide = ROOT / "docs" / "REPOSITORY_GUIDE.md"
@@ -837,7 +905,7 @@ def generated_outputs(payload: dict[str, Any]) -> dict[Path, str]:
         GENERATED / "llm_context.json": json.dumps(_llm_context(payload), indent=2, sort_keys=True) + "\n",
         ROOT / "docs" / "navigation.json": json.dumps(_navigation(payload), indent=2, sort_keys=False) + "\n",
         ROOT / "llms.txt": _llms_text(payload),
-        PAPER_STORY: legacy,
+        PAPER_STORY: paper_story,
     }
 
 

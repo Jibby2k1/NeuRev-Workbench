@@ -1,0 +1,908 @@
+{
+  "claim_boundary": {
+    "not_established": [
+      "biological neuron identity",
+      "full-field precision or specificity",
+      "independent-animal generalization",
+      "denoising",
+      "causality",
+      "action-conditioned dynamics",
+      "world-model semantics",
+      "reinforcement learning"
+    ],
+    "supported_result_may_state": "Under the identical frozen latent temporal-change head and the registered up-to-four local-maximum proposal cap, a compact raw-video JEPA improved frozen exact-injection source recovery on held-out empirical backgrounds relative to the strongest comparator reselected inside each hierarchical bootstrap draw."
+  },
+  "data": {
+    "canonical_clip_bank_sizes_for_evaluated_seeds": true,
+    "clip_cache": {
+      "manifest": "clip_bank_manifest.json",
+      "training_seed_count": 1,
+      "training_seed_counts": {
+        "1001": 512
+      },
+      "validation_clip_count": 96,
+      "validation_sampling_seed": 2001
+    },
+    "normalization": {
+      "center": 489.0,
+      "estimator": "global_training_median_and_normal_consistent_mad",
+      "fit_recording_ids": [
+        "060126_01_rest",
+        "060126_02_left",
+        "060126_03_right",
+        "060126_04_rest",
+        "060126_05_right",
+        "060126_06_left",
+        "060126_07_rest",
+        "060126_08_left"
+      ],
+      "fit_scope": "training_recordings_only",
+      "normalization_sha256": "ec48d7f89bb0fbf3bce5305ad1ecebcff2b43ad15ef1af7910405df28ecdb4a4",
+      "scale": 289.10699999999997,
+      "scale_was_floored": false,
+      "spatial_stride": 8,
+      "uniform_frame_indices": {
+        "060126_01_rest": [
+          0,
+          49,
+          98,
+          148,
+          197,
+          246,
+          296,
+          345,
+          394,
+          444,
+          493,
+          542,
+          592,
+          641,
+          690,
+          740,
+          789,
+          839,
+          888,
+          937,
+          987,
+          1036,
+          1085,
+          1135,
+          1184,
+          1233,
+          1283,
+          1332,
+          1381,
+          1431,
+          1480,
+          1530
+        ],
+        "060126_02_left": [
+          0,
+          50,
+          101,
+          151,
+          202,
+          252,
+          303,
+          353,
+          404,
+          454,
+          505,
+          556,
+          606,
+          657,
+          707,
+          758,
+          808,
+          859,
+          909,
+          960,
+          1010,
+          1061,
+          1112,
+          1162,
+          1213,
+          1263,
+          1314,
+          1364,
+          1415,
+          1465,
+          1516,
+          1567
+        ],
+        "060126_03_right": [
+          0,
+          51,
+          102,
+          153,
+          204,
+          255,
+          306,
+          357,
+          408,
+          459,
+          510,
+          561,
+          612,
+          663,
+          714,
+          765,
+          817,
+          868,
+          919,
+          970,
+          1021,
+          1072,
+          1123,
+          1174,
+          1225,
+          1276,
+          1327,
+          1378,
+          1429,
+          1480,
+          1531,
+          1583
+        ],
+        "060126_04_rest": [
+          0,
+          49,
+          98,
+          147,
+          196,
+          245,
+          294,
+          344,
+          393,
+          442,
+          491,
+          540,
+          589,
+          639,
+          688,
+          737,
+          786,
+          835,
+          884,
+          934,
+          983,
+          1032,
+          1081,
+          1130,
+          1179,
+          1229,
+          1278,
+          1327,
+          1376,
+          1425,
+          1474,
+          1524
+        ],
+        "060126_05_right": [
+          0,
+          51,
+          102,
+          153,
+          204,
+          255,
+          306,
+          357,
+          408,
+          459,
+          510,
+          562,
+          613,
+          664,
+          715,
+          766,
+          817,
+          868,
+          919,
+          970,
+          1021,
+          1073,
+          1124,
+          1175,
+          1226,
+          1277,
+          1328,
+          1379,
+          1430,
+          1481,
+          1532,
+          1584
+        ],
+        "060126_06_left": [
+          0,
+          51,
+          103,
+          155,
+          207,
+          259,
+          311,
+          362,
+          414,
+          466,
+          518,
+          570,
+          622,
+          673,
+          725,
+          777,
+          829,
+          881,
+          933,
+          984,
+          1036,
+          1088,
+          1140,
+          1192,
+          1244,
+          1295,
+          1347,
+          1399,
+          1451,
+          1503,
+          1555,
+          1607
+        ],
+        "060126_07_rest": [
+          0,
+          54,
+          109,
+          163,
+          218,
+          272,
+          327,
+          381,
+          436,
+          490,
+          545,
+          599,
+          654,
+          708,
+          763,
+          817,
+          872,
+          926,
+          981,
+          1035,
+          1090,
+          1144,
+          1199,
+          1253,
+          1308,
+          1362,
+          1417,
+          1471,
+          1526,
+          1580,
+          1635,
+          1690
+        ],
+        "060126_08_left": [
+          0,
+          51,
+          102,
+          153,
+          205,
+          256,
+          307,
+          359,
+          410,
+          461,
+          513,
+          564,
+          615,
+          667,
+          718,
+          769,
+          821,
+          872,
+          923,
+          975,
+          1026,
+          1077,
+          1129,
+          1180,
+          1231,
+          1283,
+          1334,
+          1385,
+          1437,
+          1488,
+          1539,
+          1591
+        ]
+      },
+      "unscaled_mad": 195.0
+    },
+    "pretraining_input": "raw_grayscale_only_then_frozen_training_normalization",
+    "spon_used_for_post_training_paired_injection_only": true,
+    "spon_used_for_pretraining": false
+  },
+  "execution": {
+    "cpu_thread_cap": 4,
+    "device": "cuda",
+    "evaluated_training_seeds": [
+      1001
+    ],
+    "finished_at": "2026-08-30T03:26:40.032776+00:00",
+    "mode": "screen",
+    "optimizer_steps_per_arm_seed": 500,
+    "registered_optimizer_steps_per_arm_seed": 5000,
+    "registered_training_seeds": [
+      1001,
+      1002,
+      1003
+    ],
+    "scientific_execution": false,
+    "started_at": "2026-08-30T03:26:19.538299+00:00"
+  },
+  "experiment_id": "NREV-EXP-0028",
+  "nuisance_audit": {
+    "any_proposed_arm_promotion_block": true,
+    "motion_review_recording_ids": [
+      "060126_06_left"
+    ],
+    "seed_count": 1
+  },
+  "paired_injection": {
+    "background_recording_ids": [
+      "060126_10_rest",
+      "060126_12_left",
+      "060126_15_right",
+      "spon_ca_burst_3_hindbrain_to_tail_488_20ms"
+    ],
+    "coverage_fraction": 1.0,
+    "crowding_policy": "mixed",
+    "full_registered_grid": true,
+    "injection_seeds": [
+      3101,
+      3102,
+      3103
+    ],
+    "observed_fixture_count": 108,
+    "planned_fixture_count": 108,
+    "source_counts": [
+      1,
+      2,
+      4
+    ]
+  },
+  "primary_evaluation": {
+    "claim_gate_status": "unresolved",
+    "claim_promotion_allowed": false,
+    "comparator_policy": "strongest_of_masked_pixel_autoencoder_frozen_random_encoder_and_frozen_handcrafted_stack",
+    "interpretation": "Source counts were averaged inside recording/window/injection-seed clusters before the recording-window-seed hierarchical bootstrap. This is exact injected-source sensitivity on empirical backgrounds, not biological precision.",
+    "primary_method": "compact_jepa_latent_temporal_change",
+    "screen_observed_checks": {
+      "all_registered_training_seeds_evaluated": false,
+      "full_registered_injection_grid": true,
+      "hierarchical_interval_lower_bound_strictly_positive_every_seed": false,
+      "no_recording_level_loss_beyond_limit": false,
+      "primary_effect_positive_every_seed": false,
+      "primary_mean_margin_at_least_registered_delta": false,
+      "seed_range_within_limit": true
+    },
+    "training_seed_results": {
+      "1001": {
+        "method_macro_recall": {
+          "compact_jepa_latent_temporal_change": 0.018518518518518517,
+          "frozen_handcrafted_stack": 0.1875,
+          "frozen_random_encoder_latent_temporal_change": 0.03009259259259259,
+          "masked_pixel_autoencoder_latent_temporal_change": 0.013888888888888888
+        },
+        "paired_jepa_minus_strongest": {
+          "bootstrap_seed": 5102,
+          "bootstrap_strongest_selection_fraction": {
+            "frozen_handcrafted_stack": 0.997,
+            "frozen_random_encoder_latent_temporal_change": 0.0,
+            "masked_pixel_autoencoder_latent_temporal_change": 0.003
+          },
+          "cluster_count": 36,
+          "confidence_interval_95": [
+            -0.3171296296296296,
+            -0.03697916666666673
+          ],
+          "draws": 1000,
+          "hierarchy": [
+            "background_recording_id",
+            "background_window_id",
+            "injection_seed"
+          ],
+          "nested_not_resampled_as_independent": [
+            "source_count"
+          ],
+          "observed_mean": -0.16898148148148148,
+          "observed_method_macro_recall": {
+            "compact_jepa_latent_temporal_change": 0.018518518518518517,
+            "frozen_handcrafted_stack": 0.1875,
+            "frozen_random_encoder_latent_temporal_change": 0.03009259259259259,
+            "masked_pixel_autoencoder_latent_temporal_change": 0.013888888888888888
+          },
+          "observed_strongest_comparator": "frozen_handcrafted_stack",
+          "recording_count": 4,
+          "strongest_comparator_reselected_inside_each_draw": true
+        },
+        "recording_level_effects": {
+          "060126_10_rest": -0.32407407407407407,
+          "060126_12_left": -0.23148148148148148,
+          "060126_15_right": -0.10185185185185185,
+          "spon_ca_burst_3_hindbrain_to_tail_488_20ms": -0.018518518518518517
+        },
+        "source_count_aggregated_cluster_rows": [
+          {
+            "background_recording_id": "060126_10_rest",
+            "background_window_id": "060126_10_rest__window_1_low_mad",
+            "injection_seed": 3101,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.08333333333333333,
+              "frozen_handcrafted_stack": 0.6666666666666666,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_10_rest",
+            "background_window_id": "060126_10_rest__window_1_low_mad",
+            "injection_seed": 3102,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.5833333333333334,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.08333333333333333
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_10_rest",
+            "background_window_id": "060126_10_rest__window_1_low_mad",
+            "injection_seed": 3103,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.25,
+              "frozen_random_encoder_latent_temporal_change": 0.25,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_10_rest",
+            "background_window_id": "060126_10_rest__window_2_median_mad",
+            "injection_seed": 3101,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.08333333333333333,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.08333333333333333
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_10_rest",
+            "background_window_id": "060126_10_rest__window_2_median_mad",
+            "injection_seed": 3102,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.25,
+              "frozen_random_encoder_latent_temporal_change": 0.25,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_10_rest",
+            "background_window_id": "060126_10_rest__window_2_median_mad",
+            "injection_seed": 3103,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.0,
+              "frozen_random_encoder_latent_temporal_change": 0.16666666666666666,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_10_rest",
+            "background_window_id": "060126_10_rest__window_3_high_mad",
+            "injection_seed": 3101,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.08333333333333333,
+              "frozen_handcrafted_stack": 0.16666666666666666,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_10_rest",
+            "background_window_id": "060126_10_rest__window_3_high_mad",
+            "injection_seed": 3102,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.5833333333333334,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_10_rest",
+            "background_window_id": "060126_10_rest__window_3_high_mad",
+            "injection_seed": 3103,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.5,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_12_left",
+            "background_window_id": "060126_12_left__window_1_low_mad",
+            "injection_seed": 3101,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.16666666666666666,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_12_left",
+            "background_window_id": "060126_12_left__window_1_low_mad",
+            "injection_seed": 3102,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.16666666666666666,
+              "frozen_random_encoder_latent_temporal_change": 0.16666666666666666,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_12_left",
+            "background_window_id": "060126_12_left__window_1_low_mad",
+            "injection_seed": 3103,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.3333333333333333,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_12_left",
+            "background_window_id": "060126_12_left__window_2_median_mad",
+            "injection_seed": 3101,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.6666666666666666,
+              "frozen_random_encoder_latent_temporal_change": 0.08333333333333333,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_12_left",
+            "background_window_id": "060126_12_left__window_2_median_mad",
+            "injection_seed": 3102,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.16666666666666666,
+              "frozen_handcrafted_stack": 0.08333333333333333,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_12_left",
+            "background_window_id": "060126_12_left__window_2_median_mad",
+            "injection_seed": 3103,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.6666666666666666,
+              "frozen_random_encoder_latent_temporal_change": 0.08333333333333333,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_12_left",
+            "background_window_id": "060126_12_left__window_3_high_mad",
+            "injection_seed": 3101,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.16666666666666666,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_12_left",
+            "background_window_id": "060126_12_left__window_3_high_mad",
+            "injection_seed": 3102,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.0,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_12_left",
+            "background_window_id": "060126_12_left__window_3_high_mad",
+            "injection_seed": 3103,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.0,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_15_right",
+            "background_window_id": "060126_15_right__window_1_low_mad",
+            "injection_seed": 3101,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.08333333333333333,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.08333333333333333
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_15_right",
+            "background_window_id": "060126_15_right__window_1_low_mad",
+            "injection_seed": 3102,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.3333333333333333,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_15_right",
+            "background_window_id": "060126_15_right__window_1_low_mad",
+            "injection_seed": 3103,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.5,
+              "frozen_random_encoder_latent_temporal_change": 0.08333333333333333,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_15_right",
+            "background_window_id": "060126_15_right__window_2_median_mad",
+            "injection_seed": 3101,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.0,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_15_right",
+            "background_window_id": "060126_15_right__window_2_median_mad",
+            "injection_seed": 3102,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.0,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_15_right",
+            "background_window_id": "060126_15_right__window_2_median_mad",
+            "injection_seed": 3103,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.0,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_15_right",
+            "background_window_id": "060126_15_right__window_3_high_mad",
+            "injection_seed": 3101,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.0,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_15_right",
+            "background_window_id": "060126_15_right__window_3_high_mad",
+            "injection_seed": 3102,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.0,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "060126_15_right",
+            "background_window_id": "060126_15_right__window_3_high_mad",
+            "injection_seed": 3103,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.0,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+            "background_window_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad",
+            "injection_seed": 3101,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.08333333333333333,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.08333333333333333
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+            "background_window_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad",
+            "injection_seed": 3102,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.16666666666666666,
+              "frozen_handcrafted_stack": 0.08333333333333333,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+            "background_window_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad",
+            "injection_seed": 3103,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.0,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+            "background_window_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad",
+            "injection_seed": 3101,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.0,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+            "background_window_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad",
+            "injection_seed": 3102,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.08333333333333333,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+            "background_window_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad",
+            "injection_seed": 3103,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.0,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.16666666666666666
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+            "background_window_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad",
+            "injection_seed": 3101,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.0,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+            "background_window_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad",
+            "injection_seed": 3102,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.0,
+              "frozen_handcrafted_stack": 0.0,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          },
+          {
+            "background_recording_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+            "background_window_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad",
+            "injection_seed": 3103,
+            "method_values": {
+              "compact_jepa_latent_temporal_change": 0.16666666666666666,
+              "frozen_handcrafted_stack": 0.25,
+              "frozen_random_encoder_latent_temporal_change": 0.0,
+              "masked_pixel_autoencoder_latent_temporal_change": 0.0
+            },
+            "source_counts_aggregated": 3
+          }
+        ],
+        "strongest_registered_comparator": "frozen_handcrafted_stack"
+      }
+    },
+    "unrun_registered_claim_gates": [
+      "nuisance_matching_or_residualization",
+      "all_required_counterfactuals",
+      "leave_one_recording_out_sensitivity",
+      "per_recording_collapse_diagnostics",
+      "cross_seed_linear_centered_kernel_alignment",
+      "registered_1000_step_checkpoint_cadence",
+      "same_manifest_resume_validation",
+      "full_registered_seed_and_injection_grid",
+      "complete_scientific_audit_media_and_inventory"
+    ]
+  },
+  "run_id": "NREV-RUN-EXP-0028-PILOT-01__SCREEN_NONSCIENTIFIC",
+  "schema_version": 1,
+  "scientific_audit": {
+    "enabled": true,
+    "expert_annotations": "not_applicable_for_label_free_validation",
+    "inventory_validation_passed": false,
+    "missing_required_families": [
+      "truth_only_full_field_videos",
+      "truth_closeups_and_full_duration_traces",
+      "arm_pure_model_full_field_videos",
+      "model_closeups_and_full_duration_traces",
+      "figure_table_only_matched_comparison",
+      "media_decode_and_annotation_pixel_validation"
+    ],
+    "mode": "screen",
+    "numeric_fixture_count": 108,
+    "paired_injection_truth_role": "exact_generated_sources_not_human_expert",
+    "promotion_blocked": true,
+    "required_media_complete": false,
+    "schema_version": 1,
+    "scientific_audit_complete": false
+  },
+  "scientific_completion": false,
+  "scientific_promotion_allowed": false,
+  "status": "screen_complete_claim_gates_unresolved"
+}

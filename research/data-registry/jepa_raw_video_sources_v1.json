@@ -1,0 +1,227 @@
+{
+  "schema_version": 1,
+  "dataset_id": "060126",
+  "descriptor_id": "NREV-DATA-JEPA-RAW-VIDEO-SOURCES-V1",
+  "classification": "sanitized_descriptor_for_local_restricted_raw_data",
+  "raw_payload_committed": false,
+  "runtime_authority": "NEUROBENCH_DATA_ROOT",
+  "independence": "untouched_by_current_spontaneous_burst_feature_selection",
+  "scope": {
+    "recording_count": 11,
+    "total_frames": 17664,
+    "common_frame_shape_yx": [
+      764,
+      1046
+    ],
+    "common_dtype": "uint16",
+    "behavior_counts_from_filenames": {
+      "rest": 4,
+      "left": 4,
+      "right": 3
+    }
+  },
+  "physical_metadata": {
+    "pixel_size_um": null,
+    "frame_interval_s": null,
+    "status": "unresolved",
+    "policy": "Do not infer physical scale or cadence from filenames or from another recording. Operate only in native pixels and frames until source metadata is registered."
+  },
+  "fixed_split": {
+    "protocol_id": "060126_behavior_stratified_last_trial_v1",
+    "unit": "recording",
+    "training_recording_ids": [
+      "060126_01_rest",
+      "060126_02_left",
+      "060126_03_right",
+      "060126_04_rest",
+      "060126_05_right",
+      "060126_06_left",
+      "060126_07_rest",
+      "060126_08_left"
+    ],
+    "validation_recording_ids": [
+      "060126_10_rest",
+      "060126_12_left",
+      "060126_15_right"
+    ],
+    "selection_rule": "The highest-numbered recording for each filename-derived behavior is held out before representation learning.",
+    "boundary": "The split tests recording-level extrapolation within the available collection; it is not evidence of independent-animal generalization."
+  },
+  "recordings": [
+    {
+      "recording_id": "060126_01_rest",
+      "recording_number": 1,
+      "behavior": "rest",
+      "portable_path": "data://Inputs/060126/1 resting.tif",
+      "sha256": "3f7ae3f78216d4026ad66a801728b39312623d78af6acbe70cdbe58dc7dfca8f",
+      "shape_tyx": [
+        1531,
+        764,
+        1046
+      ],
+      "dtype": "uint16"
+    },
+    {
+      "recording_id": "060126_02_left",
+      "recording_number": 2,
+      "behavior": "left",
+      "portable_path": "data://Inputs/060126/2 left.tif",
+      "sha256": "be2bc9f8b7cf6029ec87cc6b0214fdc12d4f181472d6d4d3c9ff23ac0509a152",
+      "shape_tyx": [
+        1568,
+        764,
+        1046
+      ],
+      "dtype": "uint16"
+    },
+    {
+      "recording_id": "060126_03_right",
+      "recording_number": 3,
+      "behavior": "right",
+      "portable_path": "data://Inputs/060126/3 right.tif",
+      "sha256": "f0472c426e0f85b3d949888ad71a962732de758255e0a8c9574a1654d7638973",
+      "shape_tyx": [
+        1584,
+        764,
+        1046
+      ],
+      "dtype": "uint16"
+    },
+    {
+      "recording_id": "060126_04_rest",
+      "recording_number": 4,
+      "behavior": "rest",
+      "portable_path": "data://Inputs/060126/4 resting.tif",
+      "sha256": "f28ed5cecd6b3f8fc5f517dffafa598efcf3269267e738cc7f10415470b7660b",
+      "shape_tyx": [
+        1525,
+        764,
+        1046
+      ],
+      "dtype": "uint16"
+    },
+    {
+      "recording_id": "060126_05_right",
+      "recording_number": 5,
+      "behavior": "right",
+      "portable_path": "data://Inputs/060126/5 right.tif",
+      "sha256": "6be99ee543c694a00994733adf0a9a910a8776789392025c6f5e81eeca02a525",
+      "shape_tyx": [
+        1585,
+        764,
+        1046
+      ],
+      "dtype": "uint16"
+    },
+    {
+      "recording_id": "060126_06_left",
+      "recording_number": 6,
+      "behavior": "left",
+      "portable_path": "data://Inputs/060126/6 left.tif",
+      "sha256": "fa7f5ad772c183ebe729c8a90690007471e3e2c9d833f373c50380d14a2b1b73",
+      "shape_tyx": [
+        1608,
+        764,
+        1046
+      ],
+      "dtype": "uint16"
+    },
+    {
+      "recording_id": "060126_07_rest",
+      "recording_number": 7,
+      "behavior": "rest",
+      "portable_path": "data://Inputs/060126/7 rest.tif",
+      "sha256": "ac590d12e3737f81dda748f5e5d3c0a5847e7be3cb53b8ef5aef2fb1642b2cac",
+      "shape_tyx": [
+        1691,
+        764,
+        1046
+      ],
+      "dtype": "uint16"
+    },
+    {
+      "recording_id": "060126_08_left",
+      "recording_number": 8,
+      "behavior": "left",
+      "portable_path": "data://Inputs/060126/8 left.tif",
+      "sha256": "bb921391897b5f4e0e48c18cd3b383ab259e6905d5247f6e36567fcb3bf2dd58",
+      "shape_tyx": [
+        1592,
+        764,
+        1046
+      ],
+      "dtype": "uint16"
+    },
+    {
+      "recording_id": "060126_10_rest",
+      "recording_number": 10,
+      "behavior": "rest",
+      "portable_path": "data://Inputs/060126/10 rest.tif",
+      "sha256": "1ab241d88fa9c54e7525209b8f0f750932626b3dddf6fe9461598bd4b3a69158",
+      "shape_tyx": [
+        1739,
+        764,
+        1046
+      ],
+      "dtype": "uint16"
+    },
+    {
+      "recording_id": "060126_12_left",
+      "recording_number": 12,
+      "behavior": "left",
+      "portable_path": "data://Inputs/060126/12 left.tif",
+      "sha256": "46a13bfb1870560ac1cbefeaf076e8aaa29cec40adc7939639d9b32cb4265b7a",
+      "shape_tyx": [
+        1633,
+        764,
+        1046
+      ],
+      "dtype": "uint16"
+    },
+    {
+      "recording_id": "060126_15_right",
+      "recording_number": 15,
+      "behavior": "right",
+      "portable_path": "data://Inputs/060126/15 right.tif",
+      "sha256": "85cc7bf92a4624f3dc26ff03664acc21626f09fbaa5246bed6787bce2e34575c",
+      "shape_tyx": [
+        1608,
+        764,
+        1046
+      ],
+      "dtype": "uint16"
+    }
+  ],
+  "external_evaluation_holdout": {
+    "recording_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+    "dataset_id": "spon_ca_burst",
+    "portable_path": "data://Inputs/Spon Ca Burst/3 hindbrain to tail 488 20ms.tif",
+    "sha256": "30881efe5bc4f57bbdd27ee08c246e40523f2a73923dffe665b358271f602eeb",
+    "shape_tyx": [
+      2359,
+      340,
+      573
+    ],
+    "dtype": "uint16",
+    "allowed_use": "post-training empirical-background paired injection and frozen secondary diagnostics only",
+    "forbidden_use": [
+      "representation pretraining",
+      "normalization fitting",
+      "checkpoint selection",
+      "hyperparameter selection",
+      "mask-policy selection",
+      "primary-gate tuning"
+    ]
+  },
+  "truth_boundary": {
+    "060126": "Behavior words in filenames are acquisition strata, not neuron or event truth; compatible exhaustive spontaneous-burst identity labels are unavailable.",
+    "spon_ca_burst": "Canonical labels may be accessed only after the representation, checkpoint, score definition, and primary injection gate are frozen; they are secondary known-positive diagnostics and do not supply verified negatives.",
+    "injection": "Only the added synthetic sources have exact identity truth. Native background candidates remain unknown."
+  },
+  "limitations": [
+    "The 11 recordings may share animal, preparation, date, and acquisition conditions; they are not 11 independent animals.",
+    "Physical pixel scale and temporal cadence are not registered in the TIFF metadata contract.",
+    "The fixed last-trial validation split can expose acquisition-order drift and must be interpreted as recording-level extrapolation.",
+    "This descriptor publishes hashes and portable locators only; raw TIFF payloads remain outside Git."
+  ]
+}

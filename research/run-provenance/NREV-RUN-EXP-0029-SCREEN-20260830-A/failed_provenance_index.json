@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "run_id": "NREV-RUN-EXP-0029-SCREEN-20260830-A",
+  "run_lifecycle": "failed",
+  "partial_status": "failed_nonresumable_partial",
+  "source_artifact_policy": "sanitized_byte_exact_small_provenance_only",
+  "source_partial_root_committed": false,
+  "scientific_evidence_capsule_created": false,
+  "artifacts": [
+    {
+      "path": "blind_tube_geometry_validation.json",
+      "bytes": 281997,
+      "sha256": "55ad25a383ff4ef219e2e2ad39c4335b8ec8c72519e4a5e2825ad5ddc9a30f43"
+    },
+    {
+      "path": "decoder_training_metrics.json",
+      "bytes": 13136,
+      "sha256": "97fddc25f77bd0eabe11d314a2f91cb558ab7bcda958d2f99df3f900616860db"
+    },
+    {
+      "path": "preflight.json",
+      "bytes": 13813,
+      "sha256": "f66755c6751ff390f744aa48c23c6ac4112008fc49451444920ce4ae056cf595"
+    },
+    {
+      "path": "raw_hc_cross_run_regression.json",
+      "bytes": 2668,
+      "sha256": "770dfac8739007d7be47d9f330868713a3be7de038666f4101804f62aab2abda"
+    },
+    {
+      "path": "resolved_config.json",
+      "bytes": 24882,
+      "sha256": "938a35f6f857ab895b0512f12a298bece20540ced5f27e744bcceddff02d582e"
+    },
+    {
+      "path": "status.json",
+      "bytes": 326,
+      "sha256": "a1c8c03fb790007bdd1038f77fd2e91fa6753e15448d63950ac054fcc638cff4"
+    }
+  ],
+  "omitted_from_git": [
+    "checkpoints",
+    "large_or_redundant_partial_manifests",
+    "raw_video",
+    "caches",
+    "workstation_paths"
+  ],
+  "interpretation": "These files preserve the failed engineering run and its fail-closed comparator diagnosis. They are not a completed output package, scientific result, or evidence capsule."
+}

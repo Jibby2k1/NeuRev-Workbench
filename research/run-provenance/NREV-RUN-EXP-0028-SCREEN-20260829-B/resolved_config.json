@@ -1,0 +1,681 @@
+{
+  "execution": {
+    "mode": "screen",
+    "overrides": {
+      "cpu_thread_cap": 4,
+      "device": "cuda",
+      "injection_cells_per_background": null,
+      "max_training_seeds": 1,
+      "steps": 500,
+      "train_clip_count": null,
+      "validation_clip_count": null,
+      "verify_hashes": true
+    },
+    "registered_execution_authorized": false,
+    "run_id": "NREV-RUN-EXP-0028-PILOT-01__SCREEN_NONSCIENTIFIC",
+    "scientific_execution": false
+  },
+  "registered_config": {
+    "arms": [
+      {
+        "ema_decay": 0.996,
+        "encoder": "tubelet_encoder",
+        "id": "compact_jepa",
+        "objective": "masked_target_latent_prediction",
+        "objective_native_secondary_score": "masked_prediction_error",
+        "predictor": "matched_latent_predictor",
+        "primary_score_head": "latent_temporal_change_norm",
+        "role": "proposed",
+        "target_encoder": "stop_gradient_exponential_moving_average"
+      },
+      {
+        "encoder": "tubelet_encoder",
+        "id": "masked_pixel_autoencoder",
+        "maximum_trainable_parameter_difference_fraction": 0.01,
+        "objective": "masked_pixel_mean_squared_error",
+        "objective_native_secondary_score": "masked_reconstruction_error",
+        "predictor": "matched_latent_predictor_plus_minimal_pixel_head",
+        "primary_score_head": "latent_temporal_change_norm",
+        "role": "matched_self_supervised_comparator"
+      },
+      {
+        "encoder": "same_seeded_tubelet_encoder",
+        "id": "frozen_random_encoder",
+        "objective": "none",
+        "primary_score_head": "latent_temporal_change_norm",
+        "role": "architecture_negative_control",
+        "training_updates": 0
+      },
+      {
+        "definition": "registered_carrier_spatial_context_kinetic_stack",
+        "id": "frozen_handcrafted_stack",
+        "label_refit_allowed": false,
+        "objective": "none",
+        "primary_score_head": "frozen_source_off_robust_z_carrier_context_kinetic_sum",
+        "role": "established_interpretable_comparator",
+        "training_updates": 0
+      }
+    ],
+    "claim_boundary": {
+      "not_established": [
+        "biological neuron identity",
+        "full-field precision or specificity",
+        "independent-animal generalization",
+        "denoising",
+        "causality",
+        "action-conditioned dynamics",
+        "world-model semantics",
+        "reinforcement learning"
+      ],
+      "supported_result_may_state": "Under the identical frozen latent temporal-change head and the registered up-to-four local-maximum proposal cap, a compact raw-video JEPA improved frozen exact-injection source recovery on held-out empirical backgrounds relative to the strongest comparator reselected inside each hierarchical bootstrap draw."
+    },
+    "clip": {
+      "frame_step": 1,
+      "sampling_labels_allowed": false,
+      "sampling_mix": {
+        "high_temporal_mad_fraction": 0.25,
+        "low_temporal_mad_fraction": 0.25,
+        "uniform_fraction": 0.5
+      },
+      "sampling_roi_access_allowed": false,
+      "shape_tyx": [
+        32,
+        64,
+        64
+      ],
+      "temporal_guard_frames": 16,
+      "training_clip_bank": {
+        "clips_per_training_seed": 512,
+        "high_temporal_mad_clips": 128,
+        "low_temporal_mad_clips": 128,
+        "sampling_seed_policy": "training_plan_seed_equals_registered_training_seed",
+        "shared_between_trainable_arms_within_seed": true,
+        "uniform_clips": 256,
+        "unique_within_seed": true
+      },
+      "validation_clip_bank": {
+        "clips_per_held_recording": 32,
+        "recording_ids": [
+          "060126_10_rest",
+          "060126_12_left",
+          "060126_15_right"
+        ],
+        "sampling_seed": 2001,
+        "sampling_stratum": "uniform",
+        "shared_across_training_seeds": true,
+        "total_clips": 96,
+        "unique": true
+      }
+    },
+    "data_inventory": "research/data-registry/jepa_raw_video_sources_v1.json",
+    "data_root_environment_variable": "NEUROBENCH_DATA_ROOT",
+    "dependency_readiness": {
+      "NREV-EXP-0025": {
+        "current_registry_lifecycle": "draft",
+        "current_registry_outcome": "not_evaluated",
+        "required_evidence": "evidence_backed_usable_motion_and_registration_residual_fields",
+        "satisfied": false
+      },
+      "claim_bearing_execution_ready": false,
+      "hard_dependency_experiment_ids": [
+        "NREV-EXP-0025"
+      ],
+      "readiness_policy": "an_unsatisfied_hard_dependency_blocks_execution_authorization_and_nuisance_robust_claims",
+      "related_not_hard_dependency_experiment_ids": [
+        "NREV-EXP-0027"
+      ]
+    },
+    "empirical_background_injection": {
+      "absolute_pair_closure_threshold_used_for_gate": false,
+      "actual_candidate_count_required": true,
+      "amplitude": {
+        "amplitude_floor": "none",
+        "degenerate_reference_policy": "abort_run_without_automatic_replacement",
+        "fit_scope": "each_source_off_background_crop",
+        "future_nonzero_floor_policy": "requires_a_new_configuration_and_run_id_plus_per_fixture_floor_activation_reporting",
+        "implicit_one_raw_unit_floor_allowed": false,
+        "label_access": false,
+        "multiplier": 1.0,
+        "reference": "native_frame_difference_mad",
+        "reference_estimator": "1.4826_times_median_absolute_deviation_of_frame_differences_after_per_pixel_temporal_median_centering",
+        "retry_after_degenerate_reference": "freeze_and_version_a_new_background_window_manifest_and_use_a_new_run_id"
+      },
+      "background_recording_ids": [
+        "060126_10_rest",
+        "060126_12_left",
+        "060126_15_right",
+        "spon_ca_burst_3_hindbrain_to_tail_488_20ms"
+      ],
+      "background_selection_provenance": {
+        "exact_truth_or_recovery_access_allowed": false,
+        "spon": "registered_burst_interval_exclusion_only",
+        "spon_roi_identity_labels_allowed": false,
+        "validation_recordings": "label_free_temporal_mad_strata_only"
+      },
+      "candidate_border_px": 2,
+      "candidate_minimum_distance_px": 2,
+      "candidate_proposal_cap_per_clip": 4,
+      "candidate_selection": "top_up_to_cap_separated_local_maxima_only",
+      "expected_paired_cells": 108,
+      "footprints": {
+        "assignment": "ellipse_when_source_index_plus_fixture_pattern_seed_is_even_else_crescent",
+        "crescent_cut": {
+          "center_offset_rotated_column_px": 1.15,
+          "center_offset_rotated_row_px": -0.15,
+          "clip_minimum": 0.0,
+          "gaussian_sigma_rotated_column_px": 1.85,
+          "gaussian_sigma_rotated_row_px": 1.35,
+          "subtraction_coefficient": 0.72
+        },
+        "each_footprint_peak_normalized": true,
+        "ellipse": {
+          "gaussian_sigma_rotated_column_px": 2.5,
+          "gaussian_sigma_rotated_row_px": 1.65
+        },
+        "families": [
+          "ellipse",
+          "crescent"
+        ],
+        "noncircular_cases_required": true,
+        "overlap_and_near_neighbor_cases": true,
+        "rotation_radians": "uniform_half_open_0_to_pi"
+      },
+      "injection_seeds": [
+        3101,
+        3102,
+        3103
+      ],
+      "kinetics": {
+        "decay_frames": 8,
+        "family": "fixed_calcium_like_double_exponential",
+        "first_impulse_amplitude_distribution": "continuous_uniform_half_open",
+        "first_impulse_amplitude_maximum_exclusive": 1.15,
+        "first_impulse_amplitude_minimum_inclusive": 0.85,
+        "kernel_peak_normalized": true,
+        "onset_distribution": "discrete_uniform",
+        "onset_frame_zero_inclusive_maximum_for_32_frame_clip": 21,
+        "onset_frame_zero_inclusive_minimum_for_32_frame_clip": 2,
+        "parameters_may_not_be_tuned_on_evaluation": true,
+        "rise_frames": 2,
+        "second_impulse_amplitude_distribution": "continuous_uniform_half_open",
+        "second_impulse_amplitude_maximum_exclusive": 0.7,
+        "second_impulse_amplitude_minimum_inclusive": 0.35,
+        "second_impulse_enabled_for_minimum_clip_frames": 24,
+        "second_impulse_lag_frames_inclusive": [
+          7,
+          12
+        ],
+        "second_impulse_latest_frame_zero": 30,
+        "second_impulse_probability": 0.5,
+        "trace_peak_normalized_after_convolution": true
+      },
+      "localization_truth": {
+        "ambiguous_centers_yx_field_allowed": false,
+        "morphology_sensitive_secondary_required": true,
+        "primary_matching_target": "integer_argmax_of_each_injected_footprint",
+        "primary_metadata_field": "footprint_peak_centers_yx",
+        "secondary_matching_target": "continuous_generative_placement_center",
+        "secondary_metadata_field": "placement_centers_yx"
+      },
+      "low_score_filler_proposals_allowed": false,
+      "maximum_pair_closure_float32_ulp": 0.51,
+      "one_to_one_match_radius_px": 3.0,
+      "pair_closure_interpretation": "at_most_one_correctly_rounded_float32_addition",
+      "pair_contract": "source_on_equals_untouched_source_off_plus_exact_injected_signal",
+      "placement": {
+        "border_px": 8,
+        "continuous_center_metadata_field": "placement_centers_yx",
+        "coordinate_distribution": "continuous_uniform_half_open_within_border",
+        "crowding_assignment": "single_for_source_count_1_else_overlap_near_neighbor_separated_indexed_by_injection_seed_modulo_3",
+        "maximum_attempts_for_registered_source_counts": 2000,
+        "minimum_separation_for_unforced_centers_px": 10.0,
+        "near_neighbor_forced_pair_distance_px": 6.0,
+        "overlap_forced_pair_distance_px": 3.75
+      },
+      "primary_match_center_field": "footprint_peak_centers_yx",
+      "random_generator": {
+        "family": "numpy_default_rng",
+        "fixture_pattern_seed": "sha256_fixture_id_pipe_injection_seed_first_u64_modulo_2_to_the_63",
+        "morphology_and_kinetics_seed_offset": 1000003
+      },
+      "report_maximum_pair_closure_absolute": true,
+      "source_counts": [
+        1,
+        2,
+        4
+      ],
+      "spon_window_policy": "quiet_frames_outside_registered_burst_intervals_using_interval_exclusion_only_without_roi_identity_labels",
+      "status": "primary_exact_truth_endpoint",
+      "unmatched_native_candidates": "unknown_not_false_positive",
+      "window_shape_tyx": [
+        32,
+        64,
+        64
+      ],
+      "window_strata": [
+        "low_temporal_mad",
+        "median_temporal_mad",
+        "high_temporal_mad"
+      ],
+      "windows_must_be_spatiotemporally_disjoint_within_recording": true,
+      "windows_per_recording": 3
+    },
+    "evaluation": {
+      "cross_seed_score_map_collapse_or_selection_allowed": false,
+      "grouped_bootstrap_draws": 5000,
+      "leave_one_recording_out_sensitivity": true,
+      "maximum_allowed_recording_level_loss": 0.02,
+      "model_selection_from_primary_labels_allowed": false,
+      "observed_winner_fixed_interval_allowed": false,
+      "paired_mechanistic_secondary": "intervention_score_map_source_on_minus_source_off",
+      "primary_comparator": "strongest_of_masked_pixel_autoencoder_frozen_random_encoder_and_frozen_handcrafted_stack",
+      "primary_grouping": [
+        "background_recording_id",
+        "background_window_id",
+        "injection_seed"
+      ],
+      "primary_metric": "macro_source_on_one_to_one_injected_source_recall_at_separated_local_maximum_proposal_cap_4",
+      "required_primary_interval": "95_percent_lower_bound_strictly_above_zero",
+      "secondary_metrics": [
+        "intervention one-to-one recall",
+        "injected-center score delta in source-off background MAD units",
+        "localization error",
+        "morphology-sensitive recovery and localization error to continuous placement_centers_yx",
+        "duplicate and weak-neighbor recovery",
+        "source-pixel AUC against baseline-matched displaced pixels",
+        "effect direction by recording, morphology, source count, and temporal-MAD stratum"
+      ],
+      "source_count_role": "nested_condition_not_independent_replication",
+      "strongest_comparator_bootstrap_policy": "reselect_maximum_comparator_inside_every_hierarchical_bootstrap_draw",
+      "success_margin_absolute_recall": 0.02
+    },
+    "execution_authorized": false,
+    "experiment_id": "NREV-EXP-0028",
+    "fixed_recording_split": {
+      "protocol_id": "060126_behavior_stratified_last_trial_v1",
+      "split_refit_allowed": false,
+      "spon_evaluation_holdout_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+      "spon_pretraining_policy": "completely_excluded",
+      "training_ids": [
+        "060126_01_rest",
+        "060126_02_left",
+        "060126_03_right",
+        "060126_04_rest",
+        "060126_05_right",
+        "060126_06_left",
+        "060126_07_rest",
+        "060126_08_left"
+      ],
+      "unit": "recording",
+      "validation_ids": [
+        "060126_10_rest",
+        "060126_12_left",
+        "060126_15_right"
+      ],
+      "validation_use": "diagnostics_and_frozen_post_training_evaluation_only"
+    },
+    "implementation_hash_contract": {
+      "comparator_and_evaluator_suite": {
+        "sources": [
+          {
+            "path": "neurobench/experiments/neuron_identifiability/jepa_training.py",
+            "role": "matched_trainer_and_latent_temporal_change_norm",
+            "sha256": "4117aa88a06ec0aa4ef111b1bc98bbfda003985b47fd965f24edb9a7b7805f47"
+          },
+          {
+            "path": "neurobench/experiments/neuron_identifiability/jepa_evaluation.py",
+            "role": "pair_evaluator_source_off_calibration_matching_and_hierarchical_bootstrap",
+            "sha256": "3bed26ce6ee766f55951a87f8e675d4389c635164438adc04f9fa50310b587c2"
+          },
+          {
+            "path": "neurobench/experiments/neuron_identifiability/jepa_comparators.py",
+            "role": "pair_safe_handcrafted_comparator_version_carrier_context_kinetic_source_off_component_calibration_v1",
+            "sha256": "54443b4f4e39e8abbba4351b9d9399329b6bb09a54044c0c29f46cc462dd1fa5"
+          },
+          {
+            "path": "neurobench/experiments/neuron_identifiability/jepa_pilot.py",
+            "role": "score_wiring_manifests_and_orchestration",
+            "sha256": "1b3bb2a8873f235f8e03161ea40cac2cef74101d2ba6b7ffe8d9f6021e2197ed"
+          },
+          {
+            "path": "neurobench/experiments/neuron_identifiability/major_next_steps.py",
+            "role": "legacy_combined_score_equivalence_reference",
+            "sha256": "ac265170e625727a4a9ff8dd5f2e4a437f5cb14a83bb2eeea10f68e9ff2cc7d2"
+          }
+        ],
+        "version": "jepa_primary_comparator_suite_v1"
+      },
+      "fixture_generator": {
+        "authoritative_symbol": "make_native_background_injection",
+        "source_path": "neurobench/experiments/neuron_identifiability/jepa_evaluation.py",
+        "source_sha256": "3bed26ce6ee766f55951a87f8e675d4389c635164438adc04f9fa50310b587c2",
+        "version": "native_background_calcium_injection_v1"
+      },
+      "hash_algorithm": "sha256",
+      "hash_scope": "complete_file_bytes",
+      "mismatch_policy": "fail_preflight_and_require_reviewed_versioned_configuration_and_new_run_id"
+    },
+    "input_contract": {
+      "copy_raw_video": false,
+      "forbidden_during_pretraining": [
+        "ROI coordinates",
+        "burst intervals",
+        "expert labels",
+        "candidate-review labels",
+        "ICA arrays",
+        "local-standardized arrays",
+        "detector scores",
+        "processed pipeline stages"
+      ],
+      "handcrafted_comparator_policy": "The frozen handcrafted arm may compute its previously registered carrier/context/kinetic scores from raw video, but no handcrafted or processed feature is an input or target for any learned encoder.",
+      "learned_representation_input": "raw_uint16_grayscale_video_only",
+      "reader": "tifffile.memmap"
+    },
+    "lifecycle": "planned",
+    "matched_training_budget": {
+      "adamw_betas": [
+        0.9,
+        0.999
+      ],
+      "adamw_epsilon": 1e-08,
+      "batch_size": 8,
+      "checkpoint_selection": "final_complete_step_only",
+      "early_stopping": false,
+      "escalation_policy": "The planned run is fixed at 5000 steps. Any later increase, including one below the 10000-step code safety cap, requires a new configuration, run ID, and output root.",
+      "gradient_clip_norm": 1.0,
+      "hard_step_cap_per_arm_seed": 10000,
+      "hyperparameter_sweep": false,
+      "incomplete_budget_policy": "invalidate_the_arm_seed_pair_rather_than_compare_unequal_updates",
+      "learning_rate": 0.0001,
+      "learning_rate_schedule": "constant",
+      "maximum_gpu_hours_per_arm_seed": 4.0,
+      "mixed_precision": {
+        "cpu_dtype": "float32",
+        "dtype": "bfloat16",
+        "enabled_on_cuda": true,
+        "float16_allowed": false,
+        "loss_accumulation_dtype": "float32",
+        "metric_dtype": "float32"
+      },
+      "optimizer": "adamw",
+      "optimizer_steps_per_arm_seed": 5000,
+      "same_training_clips_masks_and_initial_encoder_weights": true,
+      "trainable_arms": [
+        "compact_jepa",
+        "masked_pixel_autoencoder"
+      ],
+      "weight_decay": 0.05
+    },
+    "normalization": {
+      "apply_frozen_to_validation_and_spon": true,
+      "estimator": "global_training_median_and_normal_consistent_mad",
+      "fit_recording_ids": "training_ids_only",
+      "frames_per_training_recording": 32,
+      "minimum_scale": 1.0,
+      "per_clip_refit": false,
+      "per_recording_refit": false,
+      "spatial_stride_px": 8
+    },
+    "nuisance_audit": {
+      "claim_gate": "The JEPA primary gain must retain a strictly positive grouped interval after nuisance matching or residualization; nuisance predictability alone is not a failure and is never interpreted as neuronal specificity.",
+      "dtype_rail_fraction": {
+        "definition": "fraction_of_raw_samples_exactly_equal_to_the_declared_integer_dtype_maximum",
+        "sensor_saturation_interpretation": "unresolved_because_effective_sensor_bit_depth_is_unknown"
+      },
+      "probe": "frozen_encoder_linear_probe_with_recording_grouping",
+      "report_all_probe_performance": true,
+      "required_counterfactuals": [
+        "temporal reversal",
+        "within-clip phase randomization",
+        "spatial block shuffle",
+        "source-off native clips",
+        "recording-blocked label permutation"
+      ],
+      "required_targets": [
+        "recording identity",
+        "filename-derived behavior stratum",
+        "global intensity",
+        "temporal position",
+        "row and column position",
+        "bleaching slope",
+        "annular background",
+        "dtype_rail_fraction",
+        "motion magnitude when NREV-EXP-0025 supplies it"
+      ]
+    },
+    "output_root": "Outputs/NeuronIdentifiability/NREV-EXP-0028/runs/NREV-RUN-EXP-0028-PILOT-01",
+    "representation_gates": {
+      "finite_fraction_required": 1.0,
+      "maximum_first_principal_component_variance_fraction": 0.5,
+      "maximum_primary_recall_range_across_seeds": 0.05,
+      "minimum_effective_rank_fraction": 0.1,
+      "minimum_mean_feature_standard_deviation": 0.0001,
+      "primary_effect_must_be_positive_for_all_training_seeds": true,
+      "seed_stability_diagnostics": [
+        "linear_centered_kernel_alignment",
+        "effective_rank",
+        "primary_metric_range"
+      ]
+    },
+    "resources": {
+      "atomic_metadata_writes": true,
+      "checkpoint_every_optimizer_steps": 1000,
+      "cpu_threads": 4,
+      "device": "cuda",
+      "maximum_gpu_memory_mib": 16384,
+      "maximum_output_mib": 8192,
+      "maximum_ram_mib": 24576,
+      "maximum_total_gpu_hours": 24,
+      "minimum_free_disk_mib": 32768,
+      "never_overwrite_completed_output": true,
+      "resume_only_same_manifest_hash": true
+    },
+    "run_id": "NREV-RUN-EXP-0028-PILOT-01",
+    "schema_version": 1,
+    "scientific_audit": {
+      "comparison_section": {
+        "figures_and_tables_only": true,
+        "one_to_one_identity_and_nearest_candidate_kept_separate": true,
+        "paired_source_on_and_source_off_stage_sequence_required": true
+      },
+      "enabled": true,
+      "exact_truth_section": {
+        "closeup_and_full_duration_trace_per_truth_occurrence": true,
+        "expected_exact_truth_occurrences": 252,
+        "expected_paired_cells": 108,
+        "expert_directory_role": "exact_injection_truth_reference_not_human_expert",
+        "truth_only_full_field_video": true
+      },
+      "inventory_validation_required": true,
+      "label_free_validation_section": {
+        "candidate_surrogate_panel_per_recording_per_arm": 12,
+        "expert_annotations": "not_applicable",
+        "selection_frozen_before_media_render": true
+      },
+      "llm_context_required": true,
+      "media_decode_validation_required": true,
+      "model_section": {
+        "actual_primary_proposal_count_required": true,
+        "arm_pure_full_field_videos": true,
+        "arms": [
+          "compact_jepa",
+          "masked_pixel_autoencoder",
+          "frozen_random_encoder",
+          "frozen_handcrafted_stack"
+        ],
+        "closeup_and_full_duration_trace_per_model_proposal": true,
+        "cross_seed_collapse_or_selection_allowed": false,
+        "expected_proposal_count_scope": "ten_primary_head_arm_instances_only",
+        "maximum_primary_proposals": 4320,
+        "maximum_primary_proposals_formula": "108_paired_cells_times_10_primary_arm_instances_times_up_to_4_local_maxima",
+        "objective_native_secondary_lanes_must_be_separate": true,
+        "primary_arm_instances": {
+          "compact_jepa_seed_specific": 3,
+          "frozen_handcrafted_stack_shared": 1,
+          "frozen_random_encoder_seed_specific": 3,
+          "masked_pixel_autoencoder_seed_specific": 3,
+          "total": 10
+        },
+        "unmatched_proposal_interpretation": "unknown"
+      },
+      "opt_out_reason": null,
+      "standard": "docs/workflows/SCIENTIFIC_AUDIT_OUTPUT_STANDARD.md"
+    },
+    "score_heads": {
+      "direct_cross_objective_error_head_comparison_allowed": false,
+      "objective_native_secondary_lanes": [
+        {
+          "arm_id": "compact_jepa",
+          "lane": "within_objective_secondary_only",
+          "method_id": "compact_jepa_masked_prediction_error_secondary",
+          "score": "deterministic_full_coverage_mask_averaged_latent_prediction_error"
+        },
+        {
+          "arm_id": "masked_pixel_autoencoder",
+          "lane": "within_objective_secondary_only",
+          "method_id": "masked_pixel_autoencoder_reconstruction_error_secondary",
+          "score": "deterministic_full_coverage_mask_averaged_pixel_reconstruction_error"
+        }
+      ],
+      "objective_native_secondary_scores_enter_primary_comparator_selection": false,
+      "objective_native_secondary_scores_enter_primary_metric": false,
+      "paired_score_calibration": {
+        "api": "fit_source_off_source_off_score_map_returns_frozen_callable",
+        "apply_same_center_and_scale_to": [
+          "source_off",
+          "source_on"
+        ],
+        "center": "source_off_spatial_median",
+        "fit_map": "source_off_combined_score_map_only",
+        "frozen_callable_applied_to": [
+          "source_off",
+          "source_on"
+        ],
+        "generic_score_pair_api_allowed": false,
+        "minimum_scale": 1e-08,
+        "scale": "source_off_normal_consistent_spatial_mad_with_source_off_standard_deviation_fallback_if_degenerate",
+        "source_on_self_normalization_allowed": false,
+        "stage": "final_combined_map_reporting_and_ranking_calibration_for_every_arm"
+      },
+      "primary_handcrafted_head": {
+        "arm_id": "frozen_handcrafted_stack",
+        "combination": "equal_coefficient_sum_of_the_three_source_off_calibrated_robust_z_component_maps",
+        "component_calibration": {
+          "api": "fit_source_off_source_off_movie_returns_frozen_callable",
+          "apply_same_three_centers_and_scales_to_source_on": true,
+          "center": "source_off_component_spatial_median",
+          "fit_maps": "each_source_off_component_map_separately",
+          "frozen_callable_applied_to": [
+            "source_off",
+            "source_on"
+          ],
+          "generic_score_pair_api_allowed": false,
+          "minimum_scale": 1e-06,
+          "scale": "source_off_component_normal_consistent_spatial_mad",
+          "source_on_self_normalization_allowed": false
+        },
+        "component_definition_or_weight_refit": false,
+        "component_definitions": {
+          "carrier": "population_standard_deviation_over_time_at_each_pixel",
+          "kinetic": "maximum_sliding_dot_product_after_pixelwise_temporal_median_centering_with_l2_normalized_exp_minus_t_over_5_times_one_minus_exp_minus_t_over_1.5_kernel_of_length_min_18_or_clip_frames",
+          "spatial_context": "gaussian_filter_carrier_sigma_1.2_minus_gaussian_filter_carrier_sigma_4.0_with_scipy_defaults"
+        },
+        "components": [
+          "carrier",
+          "spatial_context",
+          "kinetic"
+        ],
+        "id": "frozen_source_off_robust_z_carrier_context_kinetic_sum",
+        "implementation_version": "carrier_context_kinetic_source_off_component_calibration_v1",
+        "input": "raw_movie_pair_cast_to_float32_with_calibration_fit_to_source_off_only",
+        "label_or_exact_truth_fit": false,
+        "legacy_equivalence_target": "neurobench.experiments.neuron_identifiability.major_next_steps._score_maps_combined_on_source_off"
+      },
+      "primary_learned_arm_head": {
+        "arm_ids": [
+          "compact_jepa",
+          "masked_pixel_autoencoder",
+          "frozen_random_encoder"
+        ],
+        "definition": "mean_over_time_of_l2_channel_norm_of_first_latent_temporal_difference_then_bilinear_upsample_to_input_yx",
+        "frozen_before_exact_truth_evaluation": true,
+        "id": "latent_temporal_change_norm",
+        "identical_implementation_across_listed_arms": true,
+        "input": "complete_unmasked_clip_after_frozen_training_only_robust_normalization",
+        "label_or_exact_truth_fit": false,
+        "primary_method_ids": {
+          "compact_jepa": "compact_jepa_latent_temporal_change",
+          "frozen_random_encoder": "frozen_random_encoder_latent_temporal_change",
+          "masked_pixel_autoencoder": "masked_pixel_autoencoder_latent_temporal_change"
+        },
+        "trainable_parameters": 0
+      }
+    },
+    "secondary_spon_diagnostics": {
+      "candidate_review_labels_used": false,
+      "enabled_only_after_primary_freeze": true,
+      "fixed_candidate_budgets": [
+        20,
+        58
+      ],
+      "interpretation": "Known-center sensitivity diagnostics only; near-ceiling localization and sparse positives cannot estimate precision.",
+      "known_positive_occurrences": 106,
+      "uses_for_checkpoint_or_feature_selection": false
+    },
+    "seeds": {
+      "grouped_bootstrap": 4101,
+      "injection": [
+        3101,
+        3102,
+        3103
+      ],
+      "label_permutation": 5101,
+      "training": [
+        1001,
+        1002,
+        1003
+      ],
+      "validation_sampling": 2001
+    },
+    "target_mask": {
+      "context_is_exact_complement": true,
+      "cuboid_shape_tokens_tyx": [
+        2,
+        4,
+        8
+      ],
+      "cuboids_per_clip": 4,
+      "mask_applied_before_context_encoder": true,
+      "mask_value_after_normalization": 0.0,
+      "masked_token_fraction_maximum": 0.55,
+      "masked_token_fraction_minimum": 0.4,
+      "minimum_temporal_tubelets_per_cuboid": 2,
+      "nonoverlap_required": true,
+      "policy": "four_nonoverlapping_contiguous_3d_cuboids"
+    },
+    "tubelet_encoder": {
+      "action_conditioning": false,
+      "architecture_family": "compact_matched_conv3d_tubelet_encoder_predictor",
+      "embedding_channels": 96,
+      "input_channels": 1,
+      "latent_channels": 64,
+      "normalization": "group_norm",
+      "residual_depth": 3,
+      "token_grid_tyx": [
+        8,
+        8,
+        8
+      ],
+      "trainable_parameter_maximum": 2000000,
+      "trainable_parameter_minimum": 1000000,
+      "tubelet_shape_tyx": [
+        4,
+        8,
+        8
+      ],
+      "world_model_semantics": false
+    }
+  },
+  "registered_config_sha256": "5a2a0a8fc174dc770165deb1c634552800223ba91e96f8158fe5a451ff630679",
+  "schema_version": 1
+}

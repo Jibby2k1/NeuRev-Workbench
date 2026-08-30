@@ -2,6 +2,8 @@
 
 Generated from the repository research registry through `story/research_story.yaml`; do not edit by hand.
 
+Entries include validated evidence-bearing experiments and explicitly bounded engineering-run history. Status and boundary fields must not be collapsed.
+
 ## 1. Canonical V7 Trace Atlas
 
 - **Question:** What do Raw, temporal-ICA, and local-standardized signals look like at every confirmed occurrence?
@@ -191,6 +193,26 @@ Generated from the repository research registry through `story/research_story.ya
 - **Boundary:** Center-level audit does not establish floor inactivity across the full field.
 - **Next decision:** Extend floor-use mapping full-field only when suitable GPU compute is available.
 - **Artifacts:** `figures/final/fig07_ls_denominator_diagnostics.png`, `figures/final/fig07_ls_denominator_diagnostics.json`
+
+## 20. Nrev-Exp-0028
+
+- **Question:** Does compact raw-video masked latent prediction improve exact injected-source recovery on held-out empirical backgrounds under an identical frozen latent-temporal-change primary head beyond matched and interpretable comparators without collapse or nuisance-only gains?
+- **Design:** Train compact matched JEPA and MAE encoders for exactly 5000 updates on eight of eleven raw 060126 recordings using 512 unique label-free clips per training seed in a fixed 256/128/128 uniform/high/low split and one shared seed-2001 validation bank of 96 uniform clips; retain three validation recordings and Spon as post-training empirical backgrounds, evaluate 108 paired-injection cells under an up-to-four separated-local-maximum proposal cap, and apply common-head, source-off calibration, implementation-hash, collapse, dependency, nuisance, and counterfactual gates.
+- **Status:** `draft_not_evaluated_engineering_run_history_succeeded; evidence_tier_none`
+- **Finding:** Screen B evaluated one of three seeds for 500 of 5000 steps on the full 108-fixture grid. JEPA macro recall was 0.01852 versus 0.18750 for the handcrafted comparator, with JEPA-minus-strongest hierarchical 95 percent interval [-0.31713, -0.03698]; JEPA also crossed both collapse thresholds at the screen budget. The screen is not a completed scientific experiment and does not formally resolve the registered gates.
+- **Boundary:** This is non-claim-bearing engineering history: scientific audit and promotion remain unresolved, evidence tier is none, and no evidence capsule exists.
+- **Next decision:** A bounded non-scientific screen completed successfully as an engineering run and produced an unfavorable primary-gain estimate plus screen-level representation-collapse threshold violations. Keep the full experiment on a conservative post-screen hold; the incomplete experiment-level gates remain unresolved and claim-bearing execution remains unauthorized.
+- **Artifacts:** `../../docs/workflows/spatiotemporal_jepa_representation_v1.md`, `../../research/registry/runs/NREV-RUN-EXP-0028-SCREEN-20260829-B.yaml`, `../../research/run-provenance/NREV-RUN-EXP-0028-SCREEN-20260829-B/resolved_config.json`, `../../research/run-provenance/NREV-RUN-EXP-0028-SCREEN-20260829-B/artifact_index.json`, `../../research/registry/decisions/NREV-DEC-0020.yaml`
+
+## 21. Nrev-Exp-0029
+
+- **Question:** Can a full-time spatially blind pixel decoder on the frozen Screen-B JEPA suppress predictable background while retaining exact injected calcium sources and improving paired recovery over the identical HC endpoint on raw video?
+- **Design:** Under the schema-2 v1.1 amendment, hash-verify and freeze the non-scientific seed-1001 500-step JEPA and 512/96 normalized clip banks from Screen B; first reproduce all 216 native-unit parent raw-HC RecoveryResults exactly, then train one 16385-parameter ConvTranspose3d pixel decoder per frozen JEPA/random provider for 500 matched steps on full-time 3-by-3-token spatially blind targets after mask-before-reflect processing; tile 64 central 8-by-8 patches exactly once; evaluate both normalized signed-residual HC endpoints versus the native raw-HC anchor and each other on the frozen 12-window, 108-cell, 252-source paired injection grid; report prediction coverage, retention, absorption, closure, total error, orthogonal distortion, background suppression, and descriptive grouped uncertainty without treating screen thresholds as formal experiment gates.
+- **Status:** `draft_not_evaluated_engineering_run_history_failed_then_succeeded; evidence_tier_none`
+- **Finding:** Run A's safe failure was traced to normalized input being supplied to a native-unit raw-HC endpoint; native-unit reconstruction reproduced all 216 parent RecoveryResults exactly. Run B passed the 108-fixture and 216-object raw anchor, all 240 prediction-coverage rows, both algebraic closures, and the 27-artifact index. Across 252 sources, macro recall was 0.1875 raw, 0.09027777777777778 JEPA residual, and 0.06712962962962964 random residual. JEPA minus raw was -0.09722222222222222 with grouped 95 percent interval [-0.24305555555555552, 0.027835648148148106]; JEPA minus random was 0.023148148148148154 with interval [-0.043981481481481476, 0.09722222222222227]. Median JEPA aligned retention was 0.9990785812365571, but background RMS ratio was 1.7102741349511534, dynamic-MAD ratio 1.1093322124630185, and seam-to-interior jump ratio 2.5786383127702. The scientific audit, motion dependency, multi-seed stability, independent-recording generalization, and biological identity evidence remain unresolved.
+- **Boundary:** This is non-claim-bearing engineering history: scientific audit and promotion remain unresolved, evidence tier is none, and no evidence capsule exists.
+- **Next decision:** Run A correctly stopped on an exact parent-anchor mismatch before any conditional-residual endpoint was interpreted, and the schema-2 v1.1 correction restored exact native-unit continuity without relaxing that guard. Run B then completed the bounded engineering screen, but native raw HC had the strongest recall point estimate while the JEPA residual amplified registered background and seam diagnostics. Keep this exact tiled one-layer conditional-residual design on hold; the screen is not a formal scientific gate and does not resolve the broader conditional-background-learning hypothesis.
+- **Artifacts:** `../../docs/workflows/conditional_background_residual_v1_1.md`, `../../research/registry/runs/NREV-RUN-EXP-0029-SCREEN-20260830-A.yaml`, `../../research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-A/resolved_config.json`, `../../research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-A/failed_provenance_index.json`, `../../research/registry/runs/NREV-RUN-EXP-0029-SCREEN-20260830-B.yaml`, `../../research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/resolved_config.json`, `../../research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/artifact_index.json`, `../../research/registry/decisions/NREV-DEC-0022.yaml`
 
 ## Prioritized next experiments
 

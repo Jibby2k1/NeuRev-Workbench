@@ -57,6 +57,24 @@ def test_story_registry_has_unique_scoped_claims_and_portable_evidence() -> None
             assert (PAPER / row["plan"]).is_file()
 
 
+def test_native_engineering_runs_are_visible_without_scientific_promotion() -> None:
+    payload = yaml.safe_load((PAPER / "story" / "research_story.yaml").read_text())
+    experiments = {row["id"]: row for row in payload["experiments"]}
+
+    jepa = experiments["NREV-EXP-0028"]
+    residual = experiments["NREV-EXP-0029"]
+    for row in (jepa, residual):
+        assert row["status"].startswith("draft_not_evaluated_engineering_run_history_")
+        assert "evidence_tier_none" in row["status"]
+        assert "evidence_capsule" not in row
+        assert "non-claim-bearing engineering history" in row["limitation"]
+        assert all("Outputs" not in path for path in row["artifacts"])
+
+    assert "failed_then_succeeded" in residual["status"]
+    assert "0.1875 raw" in residual["finding"]
+    assert "Keep this exact tiled one-layer" in residual["next_decision"]
+
+
 def test_clean_clone_story_check_uses_capsule_for_ignored_output(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

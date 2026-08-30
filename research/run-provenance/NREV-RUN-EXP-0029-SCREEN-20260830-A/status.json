@@ -1,0 +1,10 @@
+{
+  "error": "raw-HC cross-run anchor drifted from EXP-0028 Screen B",
+  "error_type": "JEPAResidualPilotError",
+  "failed_at": "2026-08-30T05:37:26.362932+00:00",
+  "mode": "screen",
+  "schema_version": 1,
+  "scientific_completion": false,
+  "scientific_promotion_allowed": false,
+  "status": "failed_nonresumable_partial"
+}

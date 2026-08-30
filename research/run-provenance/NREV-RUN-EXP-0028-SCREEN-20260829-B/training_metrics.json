@@ -1,0 +1,155 @@
+{
+  "1001": {
+    "amp_dtype": "bfloat16",
+    "amp_used": true,
+    "capacity": {
+      "jepa_trainable_parameters": 1697600,
+      "mae_trainable_parameters": 1713985,
+      "matched_within_one_percent": true,
+      "random_trainable_parameters": 0,
+      "relative_jepa_mae_difference": 0.009651861451460885
+    },
+    "clip_shape_tyx": [
+      32,
+      64,
+      64
+    ],
+    "device": "cuda",
+    "float16_used": false,
+    "loss_accumulation_dtype": "float32",
+    "metric_dtype": "float32",
+    "observed_training_loss_dtypes": {
+      "jepa": [
+        "float32"
+      ],
+      "mae": [
+        "float32"
+      ]
+    },
+    "schedule": {
+      "adamw_betas": [
+        0.9,
+        0.999
+      ],
+      "adamw_epsilon": 1e-08,
+      "amp": true,
+      "batch_size": 8,
+      "deterministic_algorithms": true,
+      "ema_decay": 0.996,
+      "gradient_clip_norm": 1.0,
+      "hard_step_cap": 10000,
+      "learning_rate": 0.0001,
+      "learning_rate_schedule": "constant",
+      "log_interval": 100,
+      "optimizer": "AdamW",
+      "steps": 500,
+      "weight_decay": 0.05
+    },
+    "seed": 1001,
+    "train_clip_count": 512,
+    "training_curve": [
+      {
+        "jepa_gradient_norm": 10.451092720031738,
+        "jepa_masked_latent_loss": 1.7460558414459229,
+        "mae_gradient_norm": 0.5942764282226562,
+        "mae_masked_pixel_loss": 2.890319347381592,
+        "step": 1
+      },
+      {
+        "jepa_gradient_norm": 0.30020400881767273,
+        "jepa_masked_latent_loss": 0.04517814517021179,
+        "mae_gradient_norm": 37.20881271362305,
+        "mae_masked_pixel_loss": 7.61923885345459,
+        "step": 100
+      },
+      {
+        "jepa_gradient_norm": 0.31914010643959045,
+        "jepa_masked_latent_loss": 0.012213954702019691,
+        "mae_gradient_norm": 32.948997497558594,
+        "mae_masked_pixel_loss": 2.902467727661133,
+        "step": 200
+      },
+      {
+        "jepa_gradient_norm": 0.1592997908592224,
+        "jepa_masked_latent_loss": 0.032788749784231186,
+        "mae_gradient_norm": 140.0095977783203,
+        "mae_masked_pixel_loss": 0.9787499904632568,
+        "step": 300
+      },
+      {
+        "jepa_gradient_norm": 0.09915819764137268,
+        "jepa_masked_latent_loss": 0.01115688681602478,
+        "mae_gradient_norm": 65.93123626708984,
+        "mae_masked_pixel_loss": 0.7462491989135742,
+        "step": 400
+      },
+      {
+        "jepa_gradient_norm": 0.12193263322114944,
+        "jepa_masked_latent_loss": 0.009464111179113388,
+        "mae_gradient_norm": 723.9342651367188,
+        "mae_masked_pixel_loss": 3.151881217956543,
+        "step": 500
+      }
+    ],
+    "validation": {
+      "jepa_masked_latent_loss": 0.014599820521349708,
+      "mae_masked_pixel_loss": 0.6028858218342066,
+      "observed_loss_dtypes": {
+        "jepa": [
+          "float32"
+        ],
+        "mae": [
+          "float32"
+        ]
+      },
+      "representation_diagnostics": {
+        "jepa": {
+          "collapsed": true,
+          "effective_rank": 3.2940603995804807,
+          "effective_rank_fraction": 0.05146969374344501,
+          "feature_dimension": 64,
+          "finite_fraction": 1.0,
+          "first_principal_component_variance_fraction": 0.7370477685356953,
+          "global_std": 0.6298371239529555,
+          "maximum_first_principal_component_variance_fraction": 0.5,
+          "mean_feature_std": 0.44263315021078664,
+          "minimum_effective_rank_fraction": 0.1,
+          "minimum_mean_feature_std": 0.0001,
+          "numerical_rank": 64,
+          "sample_count": 49152
+        },
+        "mae": {
+          "collapsed": true,
+          "effective_rank": 1.687048654652487,
+          "effective_rank_fraction": 0.02636013522894511,
+          "feature_dimension": 64,
+          "finite_fraction": 1.0,
+          "first_principal_component_variance_fraction": 0.9038773814583052,
+          "global_std": 0.6770511545157079,
+          "maximum_first_principal_component_variance_fraction": 0.5,
+          "mean_feature_std": 0.610019032938057,
+          "minimum_effective_rank_fraction": 0.1,
+          "minimum_mean_feature_std": 0.0001,
+          "numerical_rank": 64,
+          "sample_count": 49152
+        },
+        "random": {
+          "collapsed": true,
+          "effective_rank": 6.4172749120669765,
+          "effective_rank_fraction": 0.10026992050104651,
+          "feature_dimension": 64,
+          "finite_fraction": 1.0,
+          "first_principal_component_variance_fraction": 0.5969316307823184,
+          "global_std": 0.47849793359470744,
+          "maximum_first_principal_component_variance_fraction": 0.5,
+          "mean_feature_std": 0.3615092366297937,
+          "minimum_effective_rank_fraction": 0.1,
+          "minimum_mean_feature_std": 0.0001,
+          "numerical_rank": 64,
+          "sample_count": 49152
+        }
+      }
+    },
+    "validation_clip_count": 96
+  }
+}

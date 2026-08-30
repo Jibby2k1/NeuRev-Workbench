@@ -1,0 +1,48 @@
+{
+  "checks": {
+    "all_four_background_recordings_represented": true,
+    "all_mask_sweep_tokens_observed": true,
+    "all_training_losses_finite": true,
+    "canonical_clip_bank_sizes_for_evaluated_seeds": true,
+    "cpu_thread_cap_applied": true,
+    "float16_never_used": true,
+    "handcrafted_component_calibration_fit_on_source_off_only": true,
+    "handcrafted_scorer_receives_raw_units": true,
+    "learned_scorers_apply_frozen_training_normalization": true,
+    "matched_capacity_within_one_percent": true,
+    "native_background_candidates_unknown_not_negative": true,
+    "paired_injection_closure": true,
+    "reported_loss_metrics_cast_to_float32": true,
+    "scientific_audit_complete": false,
+    "source_counts_not_independent_bootstrap_replicates": true
+  },
+  "failed_engineering_checks": [],
+  "promotion_blockers": [
+    "non_scientific_execution_mode",
+    "scientific_audit_media_and_inventory_pending",
+    "registered_1000_step_checkpoint_and_same_manifest_resume_unimplemented",
+    "registered_training_seed_set_incomplete",
+    "registered_optimizer_budget_incomplete",
+    "nuisance_dominance_or_motion_review_requires_sensitivity"
+  ],
+  "required_engineering_checks": [
+    "all_training_losses_finite",
+    "matched_capacity_within_one_percent",
+    "float16_never_used",
+    "reported_loss_metrics_cast_to_float32",
+    "cpu_thread_cap_applied",
+    "paired_injection_closure",
+    "all_mask_sweep_tokens_observed",
+    "all_four_background_recordings_represented",
+    "learned_scorers_apply_frozen_training_normalization",
+    "handcrafted_scorer_receives_raw_units",
+    "handcrafted_component_calibration_fit_on_source_off_only",
+    "source_counts_not_independent_bootstrap_replicates",
+    "native_background_candidates_unknown_not_negative",
+    "canonical_clip_bank_sizes_for_evaluated_seeds"
+  ],
+  "schema_version": 1,
+  "scientific_completion": false,
+  "scientific_promotion_allowed": false,
+  "status": "screen_complete_claim_gates_unresolved"
+}

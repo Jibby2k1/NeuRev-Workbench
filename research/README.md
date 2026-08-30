@@ -22,6 +22,7 @@ research/
 │   ├── runs/<run-id>.yaml
 │   └── migration/                 # frozen semantic snapshot and compatibility map
 ├── evidence/<experiment-id>.json
+├── run-provenance/<run-id>/       # small exact manifests for registered runs
 ├── schemas/
 └── generated/                    # compiled views; never hand edited
 ```

@@ -1,0 +1,97 @@
+schema_version: 1
+record_type: run
+id: NREV-RUN-EXP-0029-SCREEN-20260830-A
+experiment_id: NREV-EXP-0029
+program_id: NREV-PRG-0001
+lifecycle: failed
+planned_at: '2026-08-30T04:56:17Z'
+started_at: '2026-08-30T05:36:35.835561Z'
+ended_at: '2026-08-30T05:37:26.362932Z'
+code:
+  repository: https://github.com/Jibby2k1/NeuRev-Workbench
+  commit: e1e64725fb9c1a87edf3380306ef0f1f464485df
+  dirty: true
+  branch: codex/neuron-identifiability-paper-20260822
+  diff_sha256: 3c88e2a5894849287da81ec5ed91b2f2c61fff99315f3689e8f1286655701afd
+configuration:
+  path: research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-A/resolved_config.json
+  sha256: 938a35f6f857ab895b0512f12a298bece20540ced5f27e744bcceddff02d582e
+inputs:
+- id: JEPA-RAW-VIDEO-SOURCES-V1
+  role: data
+  sha256: 42f1dedaee1a1acc2b24c1933ac10859cc06c8e8e6b53d5f3525c99dd21910ba
+  location: research/data-registry/jepa_raw_video_sources_v1.json
+- id: NREV-RUN-EXP-0028-SCREEN-B
+  role: reference
+  sha256: 9ccfdf120c39261bff8d6100f7555e38b1929db11adadbb7ad05af7c6560997a
+  location: research/registry/runs/NREV-RUN-EXP-0028-SCREEN-20260829-B.yaml
+environment:
+  platform: linux/x86_64
+  runtime: CPython 3.12.13 with PyTorch 2.11.0+cu130 and CUDA 13.0
+  dependency_lock:
+    path: pyproject.toml
+    sha256: 87709b08b0d8d7e32beecd563c9ae83762c8a4669bbb4c94d5f111ea6b665737
+  hardware: NVIDIA GeForce RTX 4070 SUPER, CUDA capability 8.9, bfloat16 supported
+randomization:
+  deterministic: true
+  seeds:
+  - 1001
+  - 2001
+  - 3101
+  - 3102
+  - 3103
+  - 6201
+  - 6202
+  - 6203
+  notes: The upstream JEPA, fixture, decoder, tile-schedule, and grouped-bootstrap seeds were frozen. The run stopped before
+    residual endpoint interpretation.
+artifacts:
+  output_root: Outputs/NeuronIdentifiability/NREV-EXP-0029/runs/NREV-RUN-EXP-0029-SCREEN-20260830-A
+  manifest_path: research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-A/failed_provenance_index.json
+  manifest_sha256: da4cb7681bb19c43f77211a2f2620e2540256a7768d1789cf140eb5b8802fce9
+validation:
+  preflight: passed
+  execution: failed
+  outputs: partial
+  checks:
+  - id: preflight_integrity
+    status: passed
+    summary: Parent artifacts, pinned v1 implementation files, CUDA/BF16 resources, RAM/disk, authorization boundaries,
+      and output-collision checks passed before execution.
+  - id: blind_tube_geometry
+    status: passed
+    summary: The registered mask-before-reflect geometry, 64-tile coverage, reflected-alias masking, adversarial invariance,
+      and exact 252-source footprint-leakage checks passed.
+  - id: bounded_decoder_training
+    status: passed
+    summary: The matched one-seed JEPA/random pixel decoders completed the frozen 500-step engineering schedule; this is
+      implementation provenance, not endpoint evidence.
+  - id: raw_hc_cross_run_anchor
+    status: failed
+    summary: The v1 raw-HC arm used normalized pixels while the immutable EXP-0028 Screen-B parent used native raw float32
+      units. Complete serialized recovery identity matched 104 of 108 fixtures, so the zero-tolerance guard stopped the run.
+  - id: mismatch_localization_audit
+    status: passed
+    summary: Independent reconstruction found all 108 source-on RecoveryResults exact and all 108 intervention recall, recovered-source,
+      matched-index, and localization-error fields unchanged; candidate coordinates differed in 53 fixtures and cardinality
+      differed in four.
+  - id: native_domain_diagnosis
+    status: passed
+    summary: Reconstructing raw HC in native float32 units reproduced all 216 parent source-on/intervention RecoveryResult
+      objects exactly, identifying the v1 input domain as the cause without relaxing the guard.
+  - id: residual_endpoint_evidence
+    status: not_run
+    summary: The fail-closed stop occurred before JEPA or random conditional-residual comparisons were accepted; run A
+      supplies no residual-method endpoint conclusion.
+  - id: scientific_audit
+    status: partial
+    summary: The failed partial run has no complete candidate-surrogate media and comparison inventory and is not audit-complete.
+  - id: publication_boundary
+    status: passed
+    summary: No scientific claim or evidence capsule was created; only small sanitized failure provenance is committed.
+failure:
+  category: validation
+  summary: The raw-HC exact parent anchor failed because v1 scored normalized pixels instead of the parent's native raw
+    float32 domain. The partial run is immutable and nonresumable; a separate schema-2 v1.1 run is required.
+  recoverable: false
+visibility: public

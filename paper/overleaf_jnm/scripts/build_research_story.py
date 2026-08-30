@@ -113,7 +113,7 @@ def status_tex(payload: dict) -> str:
 
 def experiment_tex(payload: dict) -> str:
     rows = [r"\section{Experiment story}",
-            "This document is generated from the canonical research-story registry. Each entry separates the question, design, result, limitation, and next decision."]
+            "This document is generated from the canonical research-story registry. Each entry separates the question, design, result or bounded engineering history, limitation, and next decision; status lines distinguish validated evidence from non-claim-bearing screens."]
     for index, item in enumerate(payload["experiments"], 1):
         rows += [f"\\subsection{{{index}. {escape_tex(item['id'].replace('_', ' ').title())}}}",
                  f"\\textbf{{Question.}} {escape_tex(item['question'])}",
@@ -131,7 +131,7 @@ def experiment_tex(payload: dict) -> str:
 
 
 def experiment_md(payload: dict) -> str:
-    rows = ["# Experiment story", "", "Generated from the repository research registry through `story/research_story.yaml`; do not edit by hand.", ""]
+    rows = ["# Experiment story", "", "Generated from the repository research registry through `story/research_story.yaml`; do not edit by hand.", "", "Entries include validated evidence-bearing experiments and explicitly bounded engineering-run history. Status and boundary fields must not be collapsed.", ""]
     for index, item in enumerate(payload["experiments"], 1):
         rows += [f"## {index}. {item['id'].replace('_', ' ').title()}", "",
                  f"- **Question:** {item['question']}", f"- **Design:** {item['design']}",

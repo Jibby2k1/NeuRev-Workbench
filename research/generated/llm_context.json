@@ -226,8 +226,8 @@
     "claims": 20,
     "completed_experiments": 19,
     "evidence_capsules": 19,
-    "planned_experiments": 8,
-    "runs": 0
+    "planned_experiments": 10,
+    "runs": 4
   },
   "generated_policy": "do_not_edit",
   "identity": {
@@ -283,6 +283,20 @@
       "lifecycle": "draft",
       "objective": "Preserve the current spatial-context and robust-stopping baseline; defer additional deblender complexity until bounded biological identity truth or a genuinely independent labelled recording is available.",
       "priority": 8
+    },
+    {
+      "id": "NREV-EXP-0028",
+      "lifecycle": "draft",
+      "objective": "Test a bounded raw-only JEPA representation against capacity-matched MAE and random encoders under one common frozen primary head and against a pair-safe source-off-calibrated handcrafted comparator, while keeping objective-native error heads secondary.",
+      "priority": null,
+      "queue_basis": "registered_draft_without_assigned_priority"
+    },
+    {
+      "id": "NREV-EXP-0029",
+      "lifecycle": "draft",
+      "objective": "Run a bounded one-seed engineering screen of normalized signed video-minus-conditional-prediction residuals with exact target isolation, source-off-only calibration, paired signal-retention accounting, and no scientific promotion.",
+      "priority": null,
+      "queue_basis": "registered_draft_without_assigned_priority"
     }
   ],
   "programs": [
