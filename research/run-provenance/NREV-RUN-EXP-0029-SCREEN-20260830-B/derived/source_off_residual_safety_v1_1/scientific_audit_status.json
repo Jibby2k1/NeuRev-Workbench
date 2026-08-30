@@ -1,0 +1,8 @@
+{
+  "comparison_section": "tables_only",
+  "expert_section": "not_applicable_no_new_expert_labels",
+  "model_section": "not_produced_no_new_candidates",
+  "scientific_completion": false,
+  "status": "incomplete_derived_metrics_only",
+  "upstream_run": "NREV-RUN-EXP-0029-SCREEN-20260830-B"
+}

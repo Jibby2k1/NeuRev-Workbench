@@ -1,0 +1,22 @@
+{
+  "checks": {
+    "aggregate_rows_exact": true,
+    "all_methods_present": true,
+    "all_predictions_finite_and_covered": true,
+    "audit_applicable_outputs_complete": true,
+    "execution_provenance_complete": true,
+    "frozen_upstreams_unchanged": true,
+    "held_validation_coverage_exact": true,
+    "no_source_truth_or_labels_used": true,
+    "per_clip_metric_rows_exact": true,
+    "per_recording_rows_exact": true,
+    "portable_command_provenance_passes_publication_boundary": true,
+    "registered_source_off_coverage_exact": true,
+    "scientific_completion_false": true,
+    "validation_not_used_for_fit_or_selection": true
+  },
+  "schema_version": 1,
+  "scientific_completion": false,
+  "scientific_promotion_allowed": false,
+  "status": "passed"
+}

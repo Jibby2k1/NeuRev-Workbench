@@ -1,0 +1,37 @@
+{
+  "EXP0028": {
+    "after": {
+      "all_indexed_artifacts_verified": true,
+      "artifact_count": 25,
+      "artifact_index_sha256": "6e6c7ef9d8c70c2c52fcb809ea1f4a65578987e558302a3a63b576cb9eb448bd",
+      "root_role": "NREV-RUN-EXP-0028-SCREEN-20260829-B",
+      "snapshot_sha256": "2483d7c10bf06201ed1876442e48275e099af08f30b4b284025f6e0fac818482"
+    },
+    "before": {
+      "all_indexed_artifacts_verified": true,
+      "artifact_count": 25,
+      "artifact_index_sha256": "6e6c7ef9d8c70c2c52fcb809ea1f4a65578987e558302a3a63b576cb9eb448bd",
+      "root_role": "NREV-RUN-EXP-0028-SCREEN-20260829-B",
+      "snapshot_sha256": "2483d7c10bf06201ed1876442e48275e099af08f30b4b284025f6e0fac818482"
+    },
+    "unchanged": true
+  },
+  "EXP0029_Run_B": {
+    "after": {
+      "all_indexed_artifacts_verified": true,
+      "artifact_count": 27,
+      "artifact_index_sha256": "34bd983ffdf55cb0941bbd1443adf939f4cb86ac4ffe51a736b2d6d9383cfc1c",
+      "root_role": "NREV-RUN-EXP-0029-SCREEN-20260830-B",
+      "snapshot_sha256": "a7b57fb94e88cb1c81756f9ae7560d4adf866b041f1f8e944ac85379cdb3226b"
+    },
+    "before": {
+      "all_indexed_artifacts_verified": true,
+      "artifact_count": 27,
+      "artifact_index_sha256": "34bd983ffdf55cb0941bbd1443adf939f4cb86ac4ffe51a736b2d6d9383cfc1c",
+      "root_role": "NREV-RUN-EXP-0029-SCREEN-20260830-B",
+      "snapshot_sha256": "a7b57fb94e88cb1c81756f9ae7560d4adf866b041f1f8e944ac85379cdb3226b"
+    },
+    "unchanged": true
+  },
+  "schema_version": 1
+}

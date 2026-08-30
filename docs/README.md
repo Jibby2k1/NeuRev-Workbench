@@ -28,6 +28,7 @@ The machine-readable companions are [`navigation.json`](navigation.json),
 | [Experiment timeline](../research/generated/EXPERIMENT_TIMELINE.md) | Question-to-decision chronology, including negative and planned work |
 | [Research registry guide](../research/README.md) | Canonical records, IDs, lifecycle fields, capsules, and generation workflow |
 | [Neuron-identifiability result index](research/README.md) | Detailed result reports and interpretation notes |
+| [Analytical report artifact index](reports/README.md) | Source-backed analytical artifacts and generated-reader status |
 | [Uncertainty-aware learning plan](research/SPON_CA_BURST_UNCERTAINTY_AWARE_LEARNING_PLAN_V1.md) | Prespecified learning, leakage, robustness, and label-sensitivity work |
 | [External bounded-review package](research/SPON_CA_BURST_EXTERNAL_BOUNDED_REVIEW_V2_PACKAGE.md) | What is ready for independent review and what remains human-gated |
 | [New candidate review](research/SPON_CA_BURST_NEW_CANDIDATE_REVIEW_V1_RESULTS.md) | Provisional single-reviewer labels and ascertainment boundary |

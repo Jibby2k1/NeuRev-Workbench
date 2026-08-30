@@ -1,0 +1,383 @@
+{
+  "claim_promotion_allowed": false,
+  "command_uses_environment_placeholder_not_workstation_path": true,
+  "diagnostic_id": "NREV-DIAG-EXP-0029-RANK-DISPLACEMENT-20260830-F",
+  "duration_seconds": 42.225716,
+  "ended_at": "2026-08-30T14:49:23.491905+00:00",
+  "execution_provenance_sha256": "920ccba3904d880d236135176d400f3c8e8bea4c79f1b3c38e9c51063233d5c9",
+  "git": {
+    "absolute_paths_persisted": false,
+    "branch": "codex/neuron-identifiability-paper-20260822",
+    "commit": "e8efa10700c17116bab516d7acafbbd5e11a66aa",
+    "content_aware_dirty_state_scope": "sha256_of_status_sha256_plus_tracked_git_diff_binary_sha256_plus_repo_relative_untracked_path_size_content_sha256_manifest",
+    "content_aware_dirty_state_sha256": "c70a694ec1ba069db42833cae730c9ed7db52cbb20ecd59cf7bbde1bc1fce4a4",
+    "dirty": true,
+    "dirty_entry_count": 32,
+    "dirty_status_sha256": "d6607c4aeb83fe3b30141ae8bec753e20089b52587dc0043c8fa54b510e7e673",
+    "tracked_binary_diff_sha256": "20e96746d7ec7488f9faadbdea61b3a16eb12d081713351e44093f9c4c8ea22a",
+    "untracked_content_manifest_sha256": "fa8e25c81e8ece539a3922cb00e7a052dfb74e4d5d84f1c80d75226a923c9104",
+    "untracked_files": [
+      {
+        "bytes": 25050,
+        "path": "docs/reports/neuron_identifiability_automated_diagnostics_20260830/artifact.json",
+        "sha256": "2e55b153bdfaff9137ead017ad1bc4572fa78ed71f61c2fbaa7faf3ce1b150a1"
+      },
+      {
+        "bytes": 11158,
+        "path": "docs/research/CONDITIONAL_BACKGROUND_RESIDUAL_DERIVED_DIAGNOSTICS_V1_RESULTS.md",
+        "sha256": "a64cbca191743de3276ec89ad0ea721552a55362067be7b4b2b4b10b7ed47c0b"
+      },
+      {
+        "bytes": 6837,
+        "path": "docs/research/MOTION_REGISTRATION_CONFOUND_V2_RESULTS.md",
+        "sha256": "f80d9ea8fcda25013eb7b7606ae38920040a277b5967a76efec8ad2246823853"
+      },
+      {
+        "bytes": 7758,
+        "path": "docs/research/SOURCE_OFF_PREDICTOR_FEASIBILITY_V1_RESULTS.md",
+        "sha256": "a3d29df0b9102a83070eebc4be9b7261e47d65b4bc9d332de934671ee82e8b47"
+      },
+      {
+        "bytes": 6003,
+        "path": "docs/workflows/motion_registration_confound_audit_v2.md",
+        "sha256": "707b5e5f1abc5abc78333eaf23c7b7dc1d4021ee0bb6e751063ec4f0b1f0df8e"
+      },
+      {
+        "bytes": 6422,
+        "path": "docs/workflows/source_off_predictor_feasibility_v1.md",
+        "sha256": "34b87b6a3b78d805bfc897311f482283575273bbf6ae138e288bed810af71d0c"
+      },
+      {
+        "bytes": 3084,
+        "path": "examples/source_off_predictor_feasibility_v1.example.json",
+        "sha256": "1d914bf39e6f6b0b14e782ac8d1df482cc9f5e1730d33b33292e8a6d4dbd9214"
+      },
+      {
+        "bytes": 51062,
+        "path": "neurobench/experiments/neuron_identifiability/jepa_rank_displacement.py",
+        "sha256": "8407eb2926b55304ec4d1e409e9b5049e3db08b720ba3dc046c9461ece62ddac"
+      },
+      {
+        "bytes": 128962,
+        "path": "neurobench/experiments/neuron_identifiability/motion_registration_confound_audit.py",
+        "sha256": "bfb7d0439a4f51c8e4b1caab91a820d2ba1c06c26789a8fd1190ea31ab11ae1a"
+      },
+      {
+        "bytes": 12864,
+        "path": "neurobench/experiments/neuron_identifiability/residual_safety.py",
+        "sha256": "047d988b6158d67f89ac195a5fd2f7433a44ca17d43b13862fa870464c0559d0"
+      },
+      {
+        "bytes": 12267,
+        "path": "neurobench/experiments/neuron_identifiability/residual_safety_audit.py",
+        "sha256": "135144627dccb567e654211699105c23691a988dbef7df9ea784170306906274"
+      },
+      {
+        "bytes": 108364,
+        "path": "neurobench/experiments/neuron_identifiability/source_off_predictor_feasibility.py",
+        "sha256": "9192d3bf30b0806027035bfe30bc6609aefa5d3149219a3eaca5b3f364efa4f8"
+      },
+      {
+        "bytes": 7704,
+        "path": "research/registry/experiments/NREV-EXP-0030.yaml",
+        "sha256": "8eb56bf5e549f940fa083b323fdec42f57cb1a3772da15280d418c97b11b891f"
+      },
+      {
+        "bytes": 6277,
+        "path": "research/registry/runs/NREV-RUN-EXP-0030-SCREEN-20260830-B.yaml",
+        "sha256": "0c68f0cb618f5c46ddd0353b74768a1fae41f9cdaab7e517cd907f6f7e0c2364"
+      },
+      {
+        "bytes": 3330,
+        "path": "research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/REPORT.md",
+        "sha256": "426ce482c154b427e62701a635fabfbb1580bdc81f25247eea401fd87d60668a"
+      },
+      {
+        "bytes": 2144,
+        "path": "research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/artifact_index.json",
+        "sha256": "bf7337aec92996ca0ed9179f8063397b0a0673f34d7493b78a1a2d170f94d8e2"
+      },
+      {
+        "bytes": 3703,
+        "path": "research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/association_tests.tsv",
+        "sha256": "dd3d7363096801852be827991b272f5be7cf08a9c216a147dd73d5031b3d6598"
+      },
+      {
+        "bytes": 740,
+        "path": "research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/llm_context.json",
+        "sha256": "ed23ceec73d0a24196b36d804423040cdf2e61c592687c2ac172c6d1702f4329"
+      },
+      {
+        "bytes": 2203,
+        "path": "research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/recording_summary.tsv",
+        "sha256": "5fd9cb38b5f9b7439a3d3d5d2dd99cdd890d9ab74efbf9dd66ca5968bc9f8cfd"
+      },
+      {
+        "bytes": 12119,
+        "path": "research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/resolved_config.json",
+        "sha256": "23636ab6fc632f45cb92b4e33fada2b543133160a9dae0fdd56a4dd4c5111403"
+      },
+      {
+        "bytes": 13105,
+        "path": "research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/run_provenance.json",
+        "sha256": "fe000ca6d4a54d8415c406decf06df5193949a36642a17a0a883b0e288cbd28f"
+      },
+      {
+        "bytes": 643,
+        "path": "research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/scientific_audit_status.json",
+        "sha256": "3631d1c8cbbf52acc24c4f612914f424c72e32b0ed30c5163dc438a76d002e50"
+      },
+      {
+        "bytes": 3539,
+        "path": "research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/status.json",
+        "sha256": "9c97d4d90db489f3851776b0aee2b16a771005b5c766a75b4ebbc9508b582be9"
+      },
+      {
+        "bytes": 17739,
+        "path": "research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/summary.json",
+        "sha256": "d49fb8f4ad4cd8c5989f2e7594e0f170b7df3b2c420c45035e3598540818ac35"
+      },
+      {
+        "bytes": 2222,
+        "path": "research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/validation.json",
+        "sha256": "1e976ee5616ef8a91fd572b850c13222a10da03140fdfae1d1d617f8f8efb13d"
+      },
+      {
+        "bytes": 15981,
+        "path": "research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/window_metrics.tsv",
+        "sha256": "d3a7e5ebed0e4b3e0708553f8161f036991e0fcc16a624f2bd375e0f4470f5cf"
+      },
+      {
+        "bytes": 1792,
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/rank_displacement_v1/artifact_index.json",
+        "sha256": "d570c555c3a4fd30d1b2f4bc00f5857d4d6e8b54e20d7ba5807d1235af1e50cd"
+      },
+      {
+        "bytes": 11797,
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/rank_displacement_v1/execution_provenance.json",
+        "sha256": "68f2e88e16efde63dde22aeca879fa3c42951edb1a9165af40d962c41df5e293"
+      },
+      {
+        "bytes": 5968,
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/rank_displacement_v1/input_provenance.json",
+        "sha256": "756acac416692f031a31b23256bcc2bba36cb044c5a2e29872a8cb024d05c90a"
+      },
+      {
+        "bytes": 31918,
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/rank_displacement_v1/rank_displacement_summary.json",
+        "sha256": "d3e741e1e9c8e3e11cc064e7b3a26c2e8da851db274eee6d8d2a35d8d903276d"
+      },
+      {
+        "bytes": 69666,
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/rank_displacement_v1/recovery_reproduction.json",
+        "sha256": "83e2fd95f8fbfc587253cd9198620ca9af1a39e921675506534f2dd90633677e"
+      },
+      {
+        "bytes": 343,
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/rank_displacement_v1/scientific_audit_status.json",
+        "sha256": "f80df67a0602843825895f74b7a0e5017dbd60e3c13c1e3e045acdfd1880556e"
+      },
+      {
+        "bytes": 165,
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/rank_displacement_v1/status.json",
+        "sha256": "39cad9c7c3bbf0cd80bdcf1090b02ceaa94b7afc0c78eef7b95809e43c0f340e"
+      },
+      {
+        "bytes": 561,
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/rank_displacement_v1/validation.json",
+        "sha256": "4f854f4249c0d434e417518a1298ad141647bc29841508b86f24b0a193babe53"
+      },
+      {
+        "bytes": 1823,
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/source_off_residual_safety_v1_1/artifact_index.json",
+        "sha256": "a7d3045c34e53d571c0cb277a5f8edd43b75345c94393b7efe675538fec4fe74"
+      },
+      {
+        "bytes": 292,
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/source_off_residual_safety_v1_1/scientific_audit_status.json",
+        "sha256": "9260dc08a95eae188472098a6dce9e0d87449c74f2890191333959229d684417"
+      },
+      {
+        "bytes": 495,
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/source_off_residual_safety_v1_1/source_integrity.json",
+        "sha256": "47b20295d5a8758061c8daada1500a9db8fef5a5682f99089dd41484f7aa72ee"
+      },
+      {
+        "bytes": 18717,
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/source_off_residual_safety_v1_1/source_off_safety.json",
+        "sha256": "188b2e62c96b03f66f15cf9fb12c6e794066b7dbbcb09c05bee9c71fc1e6d84b"
+      },
+      {
+        "bytes": 2555,
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/source_off_residual_safety_v1_1/summary.json",
+        "sha256": "1d5132a99851d59606488c48c9d15d0e40a12fe08c5df8113fb74f9841520134"
+      },
+      {
+        "bytes": 391,
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/source_off_residual_safety_v1_1/validation.json",
+        "sha256": "5b7b760cd03eedf6499507a2c22091d07c6dcec43c871c4b47722f293e2f87b1"
+      },
+      {
+        "bytes": 4209,
+        "path": "research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/REPORT.md",
+        "sha256": "321701cff85fb585fd2f047ce36baff79158fc64dbd50e38b3d0fbab31795c57"
+      },
+      {
+        "bytes": 46534,
+        "path": "research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/aggregate_metrics.json",
+        "sha256": "1793d5df92062f614a9ded703193582f4e29d7385272675670ecbb3765c55ef3"
+      },
+      {
+        "bytes": 14746,
+        "path": "research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/aggregate_metrics.tsv",
+        "sha256": "ce7015cdbbd531a89fbcd6b30db3449cfb41b9172d88fe3a0e323476cc7c737b"
+      },
+      {
+        "bytes": 16611,
+        "path": "research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/artifact_index.json",
+        "sha256": "fafb1067f36f75b498a383cc244117b54cea7b8f504aa41f562a05e4a56f615b"
+      },
+      {
+        "bytes": 11781,
+        "path": "research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/execution_provenance.json",
+        "sha256": "0e64449c5654f8ad129bc77c64d17b7eb86529db0d9c643889dc4ba584de3e8a"
+      },
+      {
+        "bytes": 7110,
+        "path": "research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/feasibility_gate.json",
+        "sha256": "f3fb2ee5033faa95d9a2a5f46c8d52d70a3f3e9bc9a3388d054b03362c756f10"
+      },
+      {
+        "bytes": 2451,
+        "path": "research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/resolved_config.json",
+        "sha256": "46089c2ea7ce92eae1060743065fd05de1ceefb93ce51396055be3fcbbeed5a2"
+      },
+      {
+        "bytes": 8660,
+        "path": "research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/scientific_audit_status.json",
+        "sha256": "843ae9f24985b22095c4cc7448583948896f07c6a7f7085d6c3ca6c064155ef3"
+      },
+      {
+        "bytes": 452,
+        "path": "research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/status.json",
+        "sha256": "dc6c6dba615efd76c1d0d76bcb855799a47db54cfb3eb642e8ff9e433af71f1b"
+      },
+      {
+        "bytes": 47741,
+        "path": "research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/summary.json",
+        "sha256": "66bd0db12e546f76c9f10d88776f0b1866858f67fb5e7092e9d107971d605dbf"
+      },
+      {
+        "bytes": 1498,
+        "path": "research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/upstream_integrity.json",
+        "sha256": "1c6b6c3b0d29fd633d20b60a553264ea1414f9ddd3984df8eb309d44ca1679ff"
+      },
+      {
+        "bytes": 766,
+        "path": "research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/validation.json",
+        "sha256": "be91d200b99c4aab090d42b82a6b102147a0a5a60f6fdaa7c08d29044dbd2579"
+      },
+      {
+        "bytes": 7973,
+        "path": "tests/test_jepa_rank_displacement.py",
+        "sha256": "bd065f4f546d3906ab14c64083bd50837990bc9703875e5b9d8c16ec0c9ec725"
+      },
+      {
+        "bytes": 22313,
+        "path": "tests/test_motion_registration_confound_audit.py",
+        "sha256": "57dfecef313391a8145df293272362c45b161a2420b6716ab38f7eecb0a3cee2"
+      },
+      {
+        "bytes": 5416,
+        "path": "tests/test_residual_safety.py",
+        "sha256": "a4de013974745eaa6b74db624d67b05b09ffbec33a8605e9985aa525e382fe1f"
+      },
+      {
+        "bytes": 5675,
+        "path": "tests/test_residual_safety_audit.py",
+        "sha256": "01451b91998a2e19c7992c06dd150d2edfcc10127bd0b35d416b0319b529f427"
+      },
+      {
+        "bytes": 8614,
+        "path": "tests/test_source_off_predictor_feasibility.py",
+        "sha256": "efcad1489ce4180687b344912798b162d3a2179a975183b2eed24868440178ee"
+      }
+    ]
+  },
+  "phase_contract": {
+    "execution": {
+      "duration_field": "duration_seconds",
+      "ended_at_field": "ended_at",
+      "started_at_field": "started_at"
+    },
+    "planned": {
+      "definition": "diagnostic invocation accepted before preflight",
+      "timestamp_field": "planned_at"
+    },
+    "preflight": {
+      "duration_field": "preflight_duration_seconds",
+      "ended_at_field": "started_at",
+      "started_at_field": "preflight_started_at"
+    },
+    "total": {
+      "duration_field": "planned_to_ended_duration_seconds",
+      "ended_at_field": "ended_at",
+      "started_at_field": "planned_at"
+    }
+  },
+  "planned_at": "2026-08-30T14:48:41.246295+00:00",
+  "planned_to_ended_duration_seconds": 42.24561,
+  "portable_reproduction_command": ".venv-neurobench/bin/python -m neurobench.experiments.neuron_identifiability.jepa_rank_displacement --repository-root . --data-root-env NEUROBENCH_DATA_ROOT --device cuda --grouped-bootstrap-draws 1000",
+  "preflight_duration_seconds": 0.019886,
+  "preflight_started_at": "2026-08-30T14:48:41.246303+00:00",
+  "primary_duration_contract": "duration_seconds equals ended_at minus started_at using timezone-aware UTC timestamp arithmetic",
+  "primary_duration_field": "duration_seconds",
+  "runtime": {
+    "device": {
+      "cuda": {
+        "bfloat16_supported": true,
+        "capability": [
+          8,
+          9
+        ],
+        "index": 0,
+        "name": "NVIDIA GeForce RTX 4070 SUPER",
+        "total_memory_bytes": 12441485312
+      },
+      "requested": "cuda",
+      "resolved": "cuda"
+    },
+    "dtypes": {
+      "cuda_prediction_autocast": "bfloat16",
+      "normalized_movie": "float32",
+      "provider_and_decoder_parameters": "float32",
+      "raw_fixture": "float32",
+      "score_maps_and_ranks": "float64"
+    },
+    "numpy_version": "2.4.4",
+    "platform": "Linux-7.0.0-28-generic-x86_64-with-glibc2.39",
+    "python": {
+      "executable_basename": "python",
+      "implementation": "CPython",
+      "version": "3.12.13"
+    },
+    "scipy_version": "1.17.1",
+    "threads": {
+      "cpu_count": 32,
+      "torch_before": 24,
+      "torch_configured_during_run": 4,
+      "torch_interop": 24,
+      "torch_observed_during_run": 4
+    },
+    "torch": {
+      "cuda_available": true,
+      "cuda_runtime_version": "13.0",
+      "cudnn_version": 91900,
+      "version": "2.11.0+cu130"
+    }
+  },
+  "schema_version": 2,
+  "scientific_completion": false,
+  "scientific_execution": false,
+  "started_at": "2026-08-30T14:48:41.266189+00:00"
+}

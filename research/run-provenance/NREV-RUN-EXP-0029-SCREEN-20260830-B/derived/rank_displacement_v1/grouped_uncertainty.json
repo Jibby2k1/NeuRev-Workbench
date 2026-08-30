@@ -1,0 +1,315 @@
+{
+  "grouped_uncertainty": {
+    "attenuation_among_source_on_misses": {
+      "jepa_conditional_pixel_residual_frozen_handcrafted_stack": {
+        "bootstrap_seed": 6604,
+        "cluster_count": 36,
+        "confidence_interval_95": [
+          0.3021825396825397,
+          0.6839285714285714
+        ],
+        "draws": 1000,
+        "hierarchy": [
+          "background_recording_id",
+          "background_window_id",
+          "injection_seed"
+        ],
+        "nested_not_resampled_as_independent": [
+          "source_count"
+        ],
+        "observed_mean": 0.48941798941798936,
+        "recording_count": 4,
+        "status": "descriptive_grouped_uncertainty_only"
+      },
+      "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack": {
+        "bootstrap_seed": 6605,
+        "cluster_count": 36,
+        "confidence_interval_95": [
+          0.056841931216931214,
+          0.32863095238095225
+        ],
+        "draws": 1000,
+        "hierarchy": [
+          "background_recording_id",
+          "background_window_id",
+          "injection_seed"
+        ],
+        "nested_not_resampled_as_independent": [
+          "source_count"
+        ],
+        "observed_mean": 0.16230158730158728,
+        "recording_count": 4,
+        "status": "descriptive_grouped_uncertainty_only"
+      },
+      "raw_frozen_handcrafted_stack": {
+        "bootstrap_seed": 6603,
+        "cluster_count": 36,
+        "confidence_interval_95": [
+          0.06433035714285713,
+          0.35769179894179887
+        ],
+        "draws": 1000,
+        "hierarchy": [
+          "background_recording_id",
+          "background_window_id",
+          "injection_seed"
+        ],
+        "nested_not_resampled_as_independent": [
+          "source_count"
+        ],
+        "observed_mean": 0.17817460317460318,
+        "recording_count": 4,
+        "status": "descriptive_grouped_uncertainty_only"
+      }
+    },
+    "competition_among_source_on_misses": {
+      "jepa_conditional_pixel_residual_frozen_handcrafted_stack": {
+        "bootstrap_seed": 6504,
+        "cluster_count": 36,
+        "confidence_interval_95": [
+          0.3134920634920635,
+          0.6707705026455026
+        ],
+        "draws": 1000,
+        "hierarchy": [
+          "background_recording_id",
+          "background_window_id",
+          "injection_seed"
+        ],
+        "nested_not_resampled_as_independent": [
+          "source_count"
+        ],
+        "observed_mean": 0.5105820105820106,
+        "recording_count": 4,
+        "status": "descriptive_grouped_uncertainty_only"
+      },
+      "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack": {
+        "bootstrap_seed": 6505,
+        "cluster_count": 36,
+        "confidence_interval_95": [
+          0.6893121693121694,
+          0.9426058201058201
+        ],
+        "draws": 1000,
+        "hierarchy": [
+          "background_recording_id",
+          "background_window_id",
+          "injection_seed"
+        ],
+        "nested_not_resampled_as_independent": [
+          "source_count"
+        ],
+        "observed_mean": 0.8376984126984126,
+        "recording_count": 4,
+        "status": "descriptive_grouped_uncertainty_only"
+      },
+      "raw_frozen_handcrafted_stack": {
+        "bootstrap_seed": 6503,
+        "cluster_count": 36,
+        "confidence_interval_95": [
+          0.6760218253968253,
+          0.9405704365079364
+        ],
+        "draws": 1000,
+        "hierarchy": [
+          "background_recording_id",
+          "background_window_id",
+          "injection_seed"
+        ],
+        "nested_not_resampled_as_independent": [
+          "source_count"
+        ],
+        "observed_mean": 0.8218253968253967,
+        "recording_count": 4,
+        "status": "descriptive_grouped_uncertainty_only"
+      }
+    },
+    "intervention_recovered": {
+      "jepa_conditional_pixel_residual_frozen_handcrafted_stack": {
+        "bootstrap_seed": 6304,
+        "cluster_count": 36,
+        "confidence_interval_95": [
+          0.3134920634920635,
+          0.7024801587301588
+        ],
+        "draws": 1000,
+        "hierarchy": [
+          "background_recording_id",
+          "background_window_id",
+          "injection_seed"
+        ],
+        "nested_not_resampled_as_independent": [
+          "source_count"
+        ],
+        "observed_mean": 0.5238095238095237,
+        "recording_count": 4,
+        "status": "descriptive_grouped_uncertainty_only"
+      },
+      "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack": {
+        "bootstrap_seed": 6305,
+        "cluster_count": 36,
+        "confidence_interval_95": [
+          0.6706349206349206,
+          0.9485119047619047
+        ],
+        "draws": 1000,
+        "hierarchy": [
+          "background_recording_id",
+          "background_window_id",
+          "injection_seed"
+        ],
+        "nested_not_resampled_as_independent": [
+          "source_count"
+        ],
+        "observed_mean": 0.8412698412698412,
+        "recording_count": 4,
+        "status": "descriptive_grouped_uncertainty_only"
+      },
+      "raw_frozen_handcrafted_stack": {
+        "bootstrap_seed": 6303,
+        "cluster_count": 36,
+        "confidence_interval_95": [
+          0.6745039682539682,
+          0.9445436507936507
+        ],
+        "draws": 1000,
+        "hierarchy": [
+          "background_recording_id",
+          "background_window_id",
+          "injection_seed"
+        ],
+        "nested_not_resampled_as_independent": [
+          "source_count"
+        ],
+        "observed_mean": 0.8333333333333334,
+        "recording_count": 4,
+        "status": "descriptive_grouped_uncertainty_only"
+      }
+    },
+    "source_on_recovered": {
+      "jepa_conditional_pixel_residual_frozen_handcrafted_stack": {
+        "bootstrap_seed": 6204,
+        "cluster_count": 36,
+        "confidence_interval_95": [
+          0.01984126984126984,
+          0.14285714285714285
+        ],
+        "draws": 1000,
+        "hierarchy": [
+          "background_recording_id",
+          "background_window_id",
+          "injection_seed"
+        ],
+        "nested_not_resampled_as_independent": [
+          "source_count"
+        ],
+        "observed_mean": 0.07539682539682539,
+        "recording_count": 4,
+        "status": "descriptive_grouped_uncertainty_only"
+      },
+      "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack": {
+        "bootstrap_seed": 6205,
+        "cluster_count": 36,
+        "confidence_interval_95": [
+          0.023809523809523805,
+          0.1349206349206349
+        ],
+        "draws": 1000,
+        "hierarchy": [
+          "background_recording_id",
+          "background_window_id",
+          "injection_seed"
+        ],
+        "nested_not_resampled_as_independent": [
+          "source_count"
+        ],
+        "observed_mean": 0.07142857142857142,
+        "recording_count": 4,
+        "status": "descriptive_grouped_uncertainty_only"
+      },
+      "raw_frozen_handcrafted_stack": {
+        "bootstrap_seed": 6203,
+        "cluster_count": 36,
+        "confidence_interval_95": [
+          0.06349206349206349,
+          0.30962301587301577
+        ],
+        "draws": 1000,
+        "hierarchy": [
+          "background_recording_id",
+          "background_window_id",
+          "injection_seed"
+        ],
+        "nested_not_resampled_as_independent": [
+          "source_count"
+        ],
+        "observed_mean": 0.17857142857142855,
+        "recording_count": 4,
+        "status": "descriptive_grouped_uncertainty_only"
+      }
+    },
+    "source_on_top4_displaced": {
+      "jepa_conditional_pixel_residual_frozen_handcrafted_stack": {
+        "bootstrap_seed": 6404,
+        "cluster_count": 36,
+        "confidence_interval_95": [
+          0.8492063492063493,
+          0.9801587301587303
+        ],
+        "draws": 1000,
+        "hierarchy": [
+          "background_recording_id",
+          "background_window_id",
+          "injection_seed"
+        ],
+        "nested_not_resampled_as_independent": [
+          "source_count"
+        ],
+        "observed_mean": 0.9246031746031745,
+        "recording_count": 4,
+        "status": "descriptive_grouped_uncertainty_only"
+      },
+      "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack": {
+        "bootstrap_seed": 6405,
+        "cluster_count": 36,
+        "confidence_interval_95": [
+          0.8492063492063493,
+          0.976190476190476
+        ],
+        "draws": 1000,
+        "hierarchy": [
+          "background_recording_id",
+          "background_window_id",
+          "injection_seed"
+        ],
+        "nested_not_resampled_as_independent": [
+          "source_count"
+        ],
+        "observed_mean": 0.9206349206349207,
+        "recording_count": 4,
+        "status": "descriptive_grouped_uncertainty_only"
+      },
+      "raw_frozen_handcrafted_stack": {
+        "bootstrap_seed": 6403,
+        "cluster_count": 36,
+        "confidence_interval_95": [
+          0.6705357142857142,
+          0.924702380952381
+        ],
+        "draws": 1000,
+        "hierarchy": [
+          "background_recording_id",
+          "background_window_id",
+          "injection_seed"
+        ],
+        "nested_not_resampled_as_independent": [
+          "source_count"
+        ],
+        "observed_mean": 0.8095238095238096,
+        "recording_count": 4,
+        "status": "descriptive_grouped_uncertainty_only"
+      }
+    }
+  },
+  "schema_version": 1
+}

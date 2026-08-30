@@ -1642,21 +1642,24 @@
         "The raw-HC anchor remains complete serialized equality across all 108 fixtures and 216 source-on/intervention RecoveryResult objects at numeric tolerance zero; coordinate, cardinality, or unmatched-count exceptions remain forbidden.",
         "Keep native raw HC, normalized JEPA residual, and normalized random-provider residual as distinct endpoint domains; never compare their score magnitudes or describe the decoded prediction as identified biological background.",
         "Native unmatched candidates remain biologically unknown and cannot be counted as verified false positives or specificity.",
+        "Rank-displacement categories are exact operational score-map recovery patterns only; `native_background_competition` does not establish a native-background mechanism or make competing candidates verified negatives, artifacts, or biological sources.",
+        "The source-off safety thresholds were defined after Run B and are a guardrail audit, not a preregistered benefit gate; all-window fallback to raw establishes abstention identity rather than residual improvement.",
         "The fixture grid, truth centers, proposal cap, calibration API, decoder, checkpoint, caches, seeds, budgets, geometry, diagnostics, grouping, and descriptive advancement panel are frozen historical facts of this screen, not permission to rerun or widen it in place.",
-        "NREV-EXP-0025 motion evidence, multi-seed confirmation, independent-recording generalization, biological identity evidence, and the complete scientific audit remain unresolved."
+        "The EXP-0025 numeric screen is complete, but its usable-motion-field dependency remains unsatisfied because all 12 local fields required reliability review; multi-seed confirmation, independent-recording generalization, biological identity evidence, and the complete scientific audit also remain unresolved."
       ],
       "created_on": "2026-08-30",
       "effective_on": "2026-08-30",
       "evidence_capsule_ids": [],
-      "evidence_summary": "Run A's safe failure was traced to normalized input being supplied to a native-unit raw-HC endpoint; native-unit reconstruction reproduced all 216 parent RecoveryResults exactly. Run B passed the 108-fixture and 216-object raw anchor, all 240 prediction-coverage rows, both algebraic closures, and the 27-artifact index. Across 252 sources, macro recall was 0.1875 raw, 0.09027777777777778 JEPA residual, and 0.06712962962962964 random residual. JEPA minus raw was -0.09722222222222222 with grouped 95 percent interval [-0.24305555555555552, 0.027835648148148106]; JEPA minus random was 0.023148148148148154 with interval [-0.043981481481481476, 0.09722222222222227]. Median JEPA aligned retention was 0.9990785812365571, but background RMS ratio was 1.7102741349511534, dynamic-MAD ratio 1.1093322124630185, and seam-to-interior jump ratio 2.5786383127702. The scientific audit, motion dependency, multi-seed stability, independent-recording generalization, and biological identity evidence remain unresolved.",
+      "evidence_summary": "Run A's safe failure was traced to normalized input being supplied to a native-unit raw-HC endpoint; native-unit reconstruction reproduced all 216 parent RecoveryResults exactly. Run B passed the 108-fixture and 216-object raw anchor, all 240 prediction-coverage rows, both algebraic closures, and the 27-artifact index. Across 252 sources, macro recall was 0.1875 raw, 0.09027777777777778 JEPA residual, and 0.06712962962962964 random residual. JEPA minus raw was -0.09722222222222222 with grouped 95 percent interval [-0.24305555555555552, 0.027835648148148106]; JEPA minus random was 0.023148148148148154 with interval [-0.043981481481481476, 0.09722222222222227]. Median JEPA aligned retention was 0.9990785812365571, but background RMS ratio was 1.7102741349511534, dynamic-MAD ratio 1.1093322124630185, and seam-to-interior jump ratio 2.5786383127702. A frozen rank artifact, integrity-checked against its Run-B parents, exactly reproduced all 324 recovery objects and classified JEPA's 233 source-on misses as 114 competition-consistent intervention-recovered/source-on-missed cases and 119 both-maps-missed cases; grouped fractions were 0.5105820105820106 and 0.48941798941798936, versus competition-consistent fractions 0.8218253968253967 raw and 0.8376984126984126 random. These operational classes do not identify the competitor or prove attenuation. A separate fixed source-off-only safety policy artifact admitted 0 of 12 JEPA and 0 of 12 random-residual windows, then fell back to raw for all 108 fixtures and reproduced macro recall 0.1875. Rank F carries complete derived-execution provenance, including explicit phase durations and the SciPy runtime version, but neither artifact is a registered scientific execution. The scientific audit, motion dependency, multi-seed stability, independent-recording generalization, and biological identity evidence remain unresolved.",
       "experiment_ids": [
         "NREV-EXP-0029"
       ],
       "follow_up": [
         "Keep native raw HC as the current reference endpoint for this bounded fixture grid and retain NREV-EXP-0029 as draft, not evaluated, evidence tier none, and without a capsule.",
         "Do not escalate the same nonoverlapping tiled one-layer decoder merely by adding steps; the observed background amplification, orthogonal distortion, seams, and lower recall require an architectural change and a new versioned protocol.",
-        "If conditional-background learning is revisited, freeze a separate design that directly falsifies patch-boundary and prediction-error failure through full-field or overlap-add decoding, matched random controls, and multiple upstream and decoder seeds.",
-        "Resolve the motion dependency and complete the required full-field, close-up, trace, matched-figure, decode-validation, and independent-recording audit before any claim-bearing experiment is considered."
+        "Treat Motion Run E and predictor-feasibility Run B as completed negative engineering sentinels: the local translation-like fields are unusable and zero of seven subtractors was eligible. Any revisit requires a new reliable motion/acquisition contract and a separately frozen predictor design; do not interpret the current JEPA misses as a proven native-background or attenuation mechanism.",
+        "If conditional-background learning is revisited after those sentinels, freeze a separate design that directly falsifies patch-boundary and prediction-error failure through full-field or overlap-add decoding, matched random controls, and multiple upstream and decoder seeds.",
+        "Satisfy the still-open usable-motion-field dependency through a new estimator or acquisition contract, and complete the required full-field, close-up, trace, matched-figure, decode-validation, multi-seed, and independent-recording audit before any claim-bearing experiment is considered."
       ],
       "id": "NREV-DEC-0022",
       "lifecycle": "draft",
@@ -1664,11 +1667,54 @@
         "kind": "native"
       },
       "program_id": "NREV-PRG-0001",
-      "rationale": "Run A correctly stopped on an exact parent-anchor mismatch before any conditional-residual endpoint was interpreted, and the schema-2 v1.1 correction restored exact native-unit continuity without relaxing that guard. Run B then completed the bounded engineering screen, but native raw HC had the strongest recall point estimate while the JEPA residual amplified registered background and seam diagnostics. Keep this exact tiled one-layer conditional-residual design on hold; the screen is not a formal scientific gate and does not resolve the broader conditional-background-learning hypothesis.",
+      "rationale": "Run A correctly stopped on an exact parent-anchor mismatch before any conditional-residual endpoint was interpreted, and the schema-2 v1.1 correction restored exact native-unit continuity without relaxing that guard. Run B then completed the bounded engineering screen, but native raw HC had the strongest recall point estimate while the JEPA residual amplified registered background and seam diagnostics. Keep this exact tiled one-layer conditional-residual design on hold; the screen is not a formal scientific gate and does not resolve the broader conditional-background-learning hypothesis. Derived rank-displacement and source-off safety audits further show that JEPA source-on misses are not confined to the competition-consistent intervention-recovered/source-on-missed category and that no tested residual window satisfies the retrospective post-screen no-amplification guardrail.",
       "record_type": "decision",
       "review_state": "not_requested",
       "schema_version": 1,
       "title": "Post-screen hold for the Frozen-JEPA conditional-background residual v1.1 design",
+      "updated_on": "2026-08-30",
+      "visibility": "public"
+    },
+    {
+      "action": "hold",
+      "claim_ids": [],
+      "constraints": [
+        "Register only canonical Motion Run E and predictor-feasibility Run B; motion A through D, predictor A, and superseded rank diagnostics remain provisional unregistered engineering history.",
+        "Do not use the Run-E crop-global/local-window translation-like estimates as motion fields, regressors, measured biological motion, or evidence that motion is absent; all 12 failed reliability review.",
+        "Do not treat source-off windows as neuron-free, signal-free, pure background, or noise-only; native candidates and biological activity remain unknown rather than negative.",
+        "Rank-F categories are operational paired top-four recovery patterns only and do not identify a competitor, attenuation, causal response failure, false positive, artifact, or biological source.",
+        "The source-off residual guardrail is retrospective and its all-raw output establishes exact fallback identity only, not prospective safety, denoising, or residual benefit.",
+        "EXP-0030 evaluation panels applied the predeclared eligibility gate but did not fit, tune, or pre-gate-select the candidate panel, hyperparameters, checkpoints, thresholds, or a favorable reported subset; zero of seven subtractors was eligible.",
+        "Do not launch another residual-detector screen from these seven subtractors or expand the current tiled decoder in place with more seeds, steps, depth, thresholds, or favorable subgroups.",
+        "Scientific-audit media, reliable motion/acquisition support, multi-seed evidence, independent-recording support, and biological identity remain incomplete; no claim, evidence capsule, precision, denoising, causality, or generalization statement is authorized."
+      ],
+      "created_on": "2026-08-30",
+      "effective_on": "2026-08-30",
+      "evidence_capsule_ids": [],
+      "evidence_summary": "EXP-0025 Run E completed 372 adjacent-pair calculations with exact matched support, but all 12 windows required review, median registered/raw difference-MAD ratio was 0.9520895725611223, and 0 of 14 association rows passed BH. EXP-0029 Run B reproduced all 216 raw-HC parent RecoveryResults and had macro source-on recall 0.1875 raw, 0.09027777777777778 JEPA residual, and 0.06712962962962964 matched random residual. Provenance-complete Rank F reproduced all 324 method-fixture recovery objects and described JEPA source-on misses as 114 intervention-recovered/source-on-not-one-to-one-recovered and 119 both-maps-missed occurrences; those are operational patterns with unknown candidate identity. The post-screen safety policy admitted 0 of 12 windows per residual arm and deterministically fell back to raw for all 108 fixtures. EXP-0030 Run B completed seven subtractors plus an identity reference; zero subtractors passed all 11 fixed checks and low-rank AR(1), the closest subtractor, passed 5 of 11. Every experiment remains draft, not evaluated, evidence tier none, and without a claim or capsule.",
+      "experiment_ids": [
+        "NREV-EXP-0025",
+        "NREV-EXP-0029",
+        "NREV-EXP-0030"
+      ],
+      "follow_up": [
+        "Preserve native raw HC as the automatic reference and deterministic fallback for the exact bounded fixture grid.",
+        "If motion adjustment is revisited, create a new estimator or acquisition-metadata contract with disjoint reliability validation before joining any nuisance field to endpoint outcomes.",
+        "If conditional prediction is revisited, define a new predictor objective and seam-safe full-field or overlap-add interface, freeze it on disjoint source-off development data, and require source preservation before any detector endpoint.",
+        "Prioritize automated packages with a better-defined decision target: full-field acquisition normalization, grouped positive-unlabeled learning with provisional-label sensitivity, an unlabeled proposal census with surrogate-null controls, and evidence-sufficiency simulation that preserves site and neighborhood clustering.",
+        "Complete the missing full-field, close-up, full-duration trace, matched-figure, decode-validation, multi-seed, and independent-recording audit before considering a claim-bearing experiment."
+      ],
+      "id": "NREV-DEC-0023",
+      "lifecycle": "draft",
+      "origin": {
+        "kind": "native"
+      },
+      "program_id": "NREV-PRG-0001",
+      "rationale": "The current automated chain has now exercised three bounded engineering questions without producing an eligible motion nuisance field, residual endpoint, or source-off subtractor. Motion Run E repaired matched-support accounting but every local window required reliability review and no grouped association survived multiplicity correction. EXP-0029 Run B had lower JEPA-residual recovery than raw scoring while registered background, dynamic, seam, and orthogonal diagnostics were larger; its exact Rank-F recovery patterns and retrospective source-off guardrail do not establish a cause or prospective safety. EXP-0030 Run B admitted zero of seven subtractors through its fixed 11-check eligibility gate. Hold this implementation path rather than widening it with more seeds, steps, depth, or another detector. This action is design triage, not rejection of motion modeling, conditional prediction, JEPA, or background subtraction as general research directions.",
+      "record_type": "decision",
+      "review_state": "not_requested",
+      "schema_version": 1,
+      "title": "Hold the current motion-conditioned residual path after bounded automated sentinels",
       "updated_on": "2026-08-30",
       "visibility": "public"
     }
@@ -4511,40 +4557,106 @@
     {
       "claim_ids": [],
       "created_on": "2026-08-29",
-      "decision_ids": [],
+      "decision_ids": [
+        "NREV-DEC-0023"
+      ],
+      "depends_on_experiment_ids": [
+        "NREV-EXP-0028",
+        "NREV-EXP-0029"
+      ],
       "design": {
-        "summary": "Export motion fields and registration residuals and relate them to shared waveform strength."
+        "analysis_plan": "require exact matched spatial support for raw and registered MAD/RMS; report shift validity, boundary concentration, independent two-step closure, tile-versus-crop-global disagreement, local/full-field context, retained support, and difference-scale reduction; report all 14 grouped exact tests with BH correction and withhold nuisance-field use if any local window requires review",
+        "blinding": "the screen is label-free and accesses no biological ROI labels; endpoint association pairs and engineering triggers are fixed before interpretation, and native activity in source-off windows remains unknown",
+        "comparison": "matched-support registered versus raw adjacent-frame difference scale, local reliability diagnostics versus frozen engineering triggers, and fixed motion/reliability/change summaries versus frozen EXP-0029 raw-HC and residual outcomes",
+        "data_scope": "exact 12 EXP-0029 source-off windows from four recording groups, 372 adjacent pairs, differently sampled full-field context from 11 EXP-0028 060126 recordings, and only support-compatible frozen EXP-0029 summaries; source-off does not mean neuron-free or signal-free",
+        "grouping_or_blocking": "preserve recording group, window, temporal-MAD stratum, and adjacent-pair nesting; enumerate all 6^4 within-recording window permutations and never pool the differently sampled full-field context with the local panel",
+        "protocol_path": "docs/workflows/motion_registration_confound_audit_v2.md",
+        "randomization": "no sampled randomization; frozen windows and parents are deterministic and the grouped test exhaustively enumerates all 1296 within-recording permutations",
+        "sample_plan": "one fixed 12-window screen, 372 adjacent pairs, 12 window summaries, four recording summaries, and 14 predeclared grouped association rows; no favorable subset, imputation, estimator search, or expansion is authorized in place",
+        "summary": "Hash-verify the exact four raw recordings and frozen EXP-0028 and EXP-0029 parents; estimate bounded translation-like phase-correlation shifts on the 372 adjacent pairs from 12 source-off windows; compute raw and registered differences on exactly matched shift-valid interiors; apply frozen reliability triggers; reconcile only compatible full-field acquisition context; and enumerate all 1296 within-recording permutations for each of 14 fixed descriptive associations.",
+        "unit_of_analysis": "adjacent-frame pair nested within one 32-frame 64-by-64 window, temporal-MAD stratum, and recording group; grouped association inference uses the four recording groups rather than pair or pixel rows as independent replicates"
       },
       "evidence_tier": "none",
-      "falsifiers": [],
-      "gates": [],
+      "falsifiers": [
+        "Any raw recording, EXP-0028 acquisition artifact, EXP-0029 Run-B endpoint, run record, configuration, implementation, or artifact-index hash differs from its frozen value.",
+        "Raw and registered adjacent-frame difference MAD or RMS use different pixels, a full-frame raw statistic enters a matched-support ratio, or any invalid shift retains matched-support fields.",
+        "A reciprocal forward/reverse phase estimate is treated as independent reliability evidence, or a crop-global/local-window translation-like estimate is described as a usable motion field or biological motion.",
+        "Recording, window, or adjacent-frame rows are treated as independent biological replicates, the four recording groups are asserted to be independent animals, or endpoint values are imputed onto the eight unmatched acquisition-screen recordings.",
+        "Carrier, coherence, recurrence, or waveform-strength features are joined despite incompatible recording or temporal support.",
+        "Stored uint16-code occupancy is interpreted as detector or ADC saturation evidence without analog rail, gain, black-level, or bit-depth metadata.",
+        "An uncorrected association is promoted outside the complete 14-test multiplicity family, or the run is described as resolving absence, magnitude, or causal relevance of motion.",
+        "Scientific completion, promotion, a claim, or an evidence capsule is asserted while required audit media and independent-recording support remain absent."
+      ],
+      "gates": [
+        {
+          "criterion": "Every raw recording, parent artifact, run record, descriptor, implementation, configuration, and artifact index matches its frozen SHA-256 before computation.",
+          "id": "frozen_input_identity",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "For every valid shift, raw and registered adjacent-frame differences use the identical conservative shift-valid interior; invalid shifts have empty matched-support fields and full-frame raw scale is excluded from reduction ratios.",
+          "id": "matched_support",
+          "required": true,
+          "stage": "analysis"
+        },
+        {
+          "criterion": "The package contains exactly 372 adjacent-pair rows, 12 window rows, four recording rows, 14 association rows, and 1296 exact within-recording permutations per supported association.",
+          "id": "exact_coverage",
+          "required": true,
+          "stage": "analysis"
+        },
+        {
+          "criterion": "Translation-like local fields can inform a future nuisance model only if every frozen valid-fraction, search-boundary, tile-versus-crop-global, matched-support reduction, and contextual reliability trigger passes.",
+          "id": "local_field_reliability",
+          "required": true,
+          "stage": "analysis"
+        },
+        {
+          "criterion": "Any descriptive association must remain inside the complete 14-test BH family and cannot become a motion or causality claim with only four recording groups.",
+          "id": "grouped_association",
+          "required": true,
+          "stage": "analysis"
+        },
+        {
+          "criterion": "Waveform features are joined only on compatible recording and temporal support; an incompatible lane is recorded as a non-join rather than imputed or forced into the analysis.",
+          "id": "estimand_preserving_join",
+          "required": true,
+          "stage": "analysis"
+        },
+        {
+          "criterion": "Stored-code occupancy is reported without inferring analog detector or ADC saturation in the absence of acquisition metadata.",
+          "id": "sensor_boundary",
+          "required": true,
+          "stage": "analysis"
+        },
+        {
+          "criterion": "Required audit media, independent-recording support, scientific completion, and promotion remain false; no scientific claim or evidence capsule is created.",
+          "id": "scientific_boundary",
+          "required": true,
+          "stage": "publication"
+        }
+      ],
       "id": "NREV-EXP-0025",
       "legacy_id": "motion_registration_audit",
       "legacy_status": "next_experiment",
       "lifecycle": "draft",
       "objective": "Export motion fields and registration residuals and relate them to shared waveform strength.",
       "origin": {
-        "kind": "migrated_legacy",
-        "missing_fields": [
-          "historical execution date",
-          "run-level code, configuration, input, environment, and randomization provenance",
-          "preregistered gates",
-          "experiment-specific falsifiers",
-          "normalized unit of analysis, comparison, and data scope"
-        ],
-        "recorded_on": "2026-08-29",
-        "source_path": "research/registry/migration/research_story_v1.yaml",
-        "source_sha256": "024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af"
+        "kind": "native"
       },
       "outcome": "not_evaluated",
       "program_id": "NREV-PRG-0001",
-      "question": "Export motion fields and registration residuals and relate them to shared waveform strength.",
-      "rationale": "Priority 6 item in the migrated v1 next-experiment queue.",
+      "question": "Are translation-like frame changes and registration residuals reliable enough to use as nuisance fields, and are their grouped summaries associated with the frozen EXP-0029 recovery and residual diagnostics?",
+      "rationale": "This native amendment exercises the migrated motion-audit objective without treating local phase correlation as biological motion. Run E repaired an earlier support mismatch and exactly compared raw and registered adjacent-frame differences on the same shift-valid interiors. All 12 local windows required reliability review, no association survived correction across the fixed 14-test family, and carrier, coherence, and recurrence features could not be joined without changing temporal or recording support. The screen is therefore useful design triage but does not supply usable motion fields, a motion adjustment, or evidence about shared waveform strength. The experiment remains draft, not evaluated, evidence tier none, and non-claim-bearing.",
       "record_type": "experiment",
       "review_state": "not_requested",
+      "run_ids": [
+        "NREV-RUN-EXP-0025-SCREEN-20260830-E"
+      ],
       "schema_version": 1,
-      "title": "Motion Registration Audit",
-      "updated_on": "2026-08-29",
+      "title": "Motion and registration-confound audit v2",
+      "updated_on": "2026-08-30",
       "visibility": "public"
     },
     {
@@ -4815,7 +4927,8 @@
       "created_on": "2026-08-30",
       "decision_ids": [
         "NREV-DEC-0021",
-        "NREV-DEC-0022"
+        "NREV-DEC-0022",
+        "NREV-DEC-0023"
       ],
       "depends_on_experiment_ids": [
         "NREV-EXP-0025"
@@ -4915,7 +5028,7 @@
       "outcome": "not_evaluated",
       "program_id": "NREV-PRG-0001",
       "question": "Can a full-time spatially blind pixel decoder on the frozen Screen-B JEPA suppress predictable background while retaining exact injected calcium sources and improving paired recovery over the identical HC endpoint on raw video?",
-      "rationale": "The direct JEPA latent-temporal-change head was weak, but that endpoint does not test whether the frozen representation can predict structured background; a pixel-space residual screen can test this narrower mechanism while measuring signal absorption explicitly. Run A failed closed before residual interpretation because v1 applied normalization to a parent raw-HC endpoint defined in native units; v1.1 corrected only that domain mismatch in a fresh run without relaxing the anchor. Run B completed the bounded engineering screen and retained injected amplitude, but its JEPA-residual recall point estimate was below native raw HC while background RMS, dynamic-MAD, and tiling-seam ratios exceeded one. This technically valid screen is recorded for design triage only; it does not resolve a formal scientific benefit gate or change the experiment's draft, not-evaluated, evidence-tier-none state.",
+      "rationale": "The direct JEPA latent-temporal-change head was weak, but that endpoint does not test whether the frozen representation can predict structured background; a pixel-space residual screen can test this narrower mechanism while measuring signal absorption explicitly. Run A failed closed before residual interpretation because v1 applied normalization to a parent raw-HC endpoint defined in native units; v1.1 corrected only that domain mismatch in a fresh run without relaxing the anchor. Run B completed the bounded engineering screen and retained injected amplitude, but its JEPA-residual recall point estimate was below native raw HC while background RMS, dynamic-MAD, and tiling-seam ratios exceeded one. This technically valid screen is recorded for design triage only; it does not resolve a formal scientific benefit gate or change the experiment's draft, not-evaluated, evidence-tier-none state. Frozen integrity-checked post-screen diagnostic artifacts subsequently showed that JEPA source-on misses divide almost evenly between a competition-consistent intervention-recovered/source-on-missed pattern and a both-maps-missed category, unlike the predominantly competition-consistent raw and random-residual misses, and that a source-off-only no-amplification guardrail audit admits none of the 24 method-by-window residual decisions. These operational categories do not identify competitor biology or prove attenuation. Rank F records complete frozen-input, numerical-dependency, and execution provenance, including explicit start-to-end and phase durations plus the SciPy runtime version; safety v1.1 remains a derived policy artifact rather than a registered run. These audits strengthen the hold on this implementation without becoming preregistered gates or scientific evidence.",
       "record_type": "experiment",
       "review_state": "not_requested",
       "run_ids": [
@@ -4924,6 +5037,95 @@
       ],
       "schema_version": 1,
       "title": "Frozen-JEPA Conditional-Background Residual Screen V1 with v1.1 domain amendment",
+      "updated_on": "2026-08-30",
+      "visibility": "public"
+    },
+    {
+      "claim_ids": [],
+      "created_on": "2026-08-30",
+      "decision_ids": [
+        "NREV-DEC-0023"
+      ],
+      "depends_on_experiment_ids": [
+        "NREV-EXP-0028",
+        "NREV-EXP-0029"
+      ],
+      "design": {
+        "analysis_plan": "require median centered RMS at most 0.90, median dynamic-MAD at most 1.00, median residual seam ratio at most 1.25, spectral flatness and absolute lag-1 autocorrelation no worse than no subtraction on both evaluation panels, plus centered RMS at most 1.00 across every recording row; all 11 checks are conjunctive and failure authorizes no detector",
+        "blinding": "fitting and gate evaluation use no injected-source truth, biological ROI labels, detector scores, or recovery outcomes; validation clips and source-off windows never tune or pre-gate-select a candidate method, parameter, checkpoint, threshold, or favorable reported subset, but they necessarily determine the predeclared eligibility result",
+        "comparison": "seven fixed background-subtraction methods versus the no-subtraction identity reference on centered RMS, dynamic MAD, decoder-lattice seam ratio, temporal spectral flatness, absolute lag-1 autocorrelation, and recording-level RMS consistency",
+        "data_scope": "512 frozen training clips, all 96 recording-held validation clips, and the exact 12 registered quiet/source-off windows from four recording groups; exact samples are disjoint, but nine registered windows share three 060126 recording identities with held validation; no injected truth, labels, ROI identities, detector results, or recovery outcomes",
+        "grouping_or_blocking": "retain evaluation panel and recording; the single recording-consistency check spans the three held-validation and four registered-window recording rows, and source-off windows do not establish absence of native activity",
+        "protocol_path": "docs/workflows/source_off_predictor_feasibility_v1.md",
+        "randomization": "fix randomized low-rank fitting seed 7301; all other hyperparameters are constants and frozen decoder and sampling identities are upstream hash-bound inputs rather than resampled factors",
+        "sample_plan": "one fixed eight-method screen producing 864 per-clip rows, 16 aggregate rows, and 56 per-recording rows; no favorable-method subset, seed expansion, checkpoint search, or detector run is authorized",
+        "summary": "Hash-verify and freeze the EXP-0028 512/96 normalized clip banks, the exact 12 EXP-0029 source-off windows, and the final-step EXP-0029 JEPA/random decoders; fit only the per-pixel and rank-eight low-rank AR(1) methods on the 512 training clips; evaluate seven fixed subtractors and a no-subtraction reference on common frames 8 through 31 of all 96 recording-held clips and 12 source-off windows; require every eligible method to pass 11 fixed scale, dynamic, seam, whiteness, and recording-consistency checks; create no residual-detector result, claim, or capsule.",
+        "unit_of_analysis": "normalized 32-frame 64-by-64 clip nested within evaluation panel and recording; metrics use the common 24-frame zero-based interval `[8, 32)` and recordings, clips, or pixels are not treated as independent biological replicates"
+      },
+      "evidence_tier": "none",
+      "falsifiers": [
+        "Any EXP-0028 or EXP-0029 Run-B input, clip-bank, checkpoint, decoder, normalization, descriptor, implementation, or artifact-index hash differs from its frozen value.",
+        "Any validation clip, registered source-off window, ROI label, injected-source truth, detector score, or recovery result enters fitting, hyperparameter selection, checkpoint selection, or gate-threshold selection.",
+        "The common zero-based frame support differs from `[8, 32)`, any prediction is nonfinite or incompletely covered, or the exact 864 per-clip, 16 aggregate, and 56 per-recording rows are not present.",
+        "A method is called eligible without passing all 11 fixed checks, including the one recording-consistency check spanning all three held-validation and four registered-window recording rows.",
+        "Source-off is described as neuron-free, signal-free, pure background, or noise-only; native biological activity in unlabeled clips is unknown.",
+        "A source-off feasibility result is presented as source preservation, denoising, improved detection, biological identity, specificity, causality, generalization, or permission to create a claim or evidence capsule."
+      ],
+      "gates": [
+        {
+          "criterion": "The Run-B output root and partial sibling are absent immediately before execution.",
+          "id": "output_collision",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "Every descriptor, clip bank, checkpoint, decoder, normalization, implementation, and upstream artifact index matches its registered SHA-256 before any fit or evaluation.",
+          "id": "frozen_input_identity",
+          "required": true,
+          "stage": "preflight"
+        },
+        {
+          "criterion": "Only the 512 training clips fit eligible models; validation and source-off panels never tune or pre-gate-select the candidate panel, hyperparameters, checkpoints, thresholds, or a favorable reported subset, and no label, injected truth, or detector outcome is accessed; the panels are used only for the predeclared eligibility gate.",
+          "id": "selection_separation",
+          "required": true,
+          "stage": "execution"
+        },
+        {
+          "criterion": "All eight methods have finite, shape-exact prediction support and exactly 864 per-clip, 16 aggregate, and 56 per-recording rows on common frames `[8, 32)`.",
+          "id": "exact_metric_coverage",
+          "required": true,
+          "stage": "analysis"
+        },
+        {
+          "criterion": "A subtractor is eligible for a separately versioned residual-detector screen only if it passes all 11 fixed checks; otherwise the consequence is `do_not_launch_a_new_residual_detector_experiment_from_these_predictors`.",
+          "id": "predictor_feasibility",
+          "required": true,
+          "stage": "analysis"
+        },
+        {
+          "criterion": "Source preservation, biological identity, precision, specificity, causality, denoising, and independent-recording generalization remain unevaluated; scientific completion and promotion remain false and no claim or evidence capsule is created.",
+          "id": "scientific_boundary",
+          "required": true,
+          "stage": "publication"
+        }
+      ],
+      "id": "NREV-EXP-0030",
+      "lifecycle": "draft",
+      "objective": "Run a bounded label-free source-off feasibility benchmark before authorizing any new conditional-background residual detector experiment.",
+      "origin": {
+        "kind": "native"
+      },
+      "outcome": "not_evaluated",
+      "program_id": "NREV-PRG-0001",
+      "question": "Can any fixed causal, autoregressive, low-rank, frozen-JEPA, or matched random-provider predictor reduce source-off variation without worsening dynamics, seams, temporal whiteness, or recording-level consistency enough to justify a separately versioned residual-detector screen?",
+      "rationale": "EXP-0029 showed that its one-layer tiled JEPA residual preserved aligned injected amplitude but amplified registered background diagnostics, introduced seam and orthogonal error, and reduced frozen-detector recovery. This independent benchmark therefore tests seven subtractors plus a no-subtraction reference without injected truth, ROI labels, detector outcomes, or validation-based selection. Run B completed all 512 training clips, 96 recording-held validation clips, 12 registered source-off windows, eight methods, and 864 per-clip rows. None of the eight methods passed all 11 fixed checks; zero of seven subtractors were eligible. The rank-eight low-rank AR(1) method was closest at 5 of 11 checks, while the frozen JEPA decoder passed 0 of 11. This is engineering feasibility triage only; source preservation was not evaluated, native activity in unlabeled clips remains unknown, and no scientific outcome, claim, or evidence capsule is assigned.",
+      "record_type": "experiment",
+      "review_state": "not_requested",
+      "run_ids": [
+        "NREV-RUN-EXP-0030-SCREEN-20260830-B"
+      ],
+      "schema_version": 1,
+      "title": "Source-off conditional-background predictor feasibility v1",
       "updated_on": "2026-08-30",
       "visibility": "public"
     }
@@ -4994,7 +5196,8 @@
       "NREV-DEC-0019",
       "NREV-DEC-0020",
       "NREV-DEC-0021",
-      "NREV-DEC-0022"
+      "NREV-DEC-0022",
+      "NREV-DEC-0023"
     ],
     "evidence_capsules": [
       "NREV-EVC-EXP-0001",
@@ -5046,7 +5249,8 @@
       "NREV-EXP-0026",
       "NREV-EXP-0027",
       "NREV-EXP-0028",
-      "NREV-EXP-0029"
+      "NREV-EXP-0029",
+      "NREV-EXP-0030"
     ],
     "flagship_program_id": "NREV-PRG-0001",
     "migration": {
@@ -5135,7 +5339,8 @@
       "NREV-EXP-0026",
       "NREV-EXP-0027",
       "NREV-EXP-0028",
-      "NREV-EXP-0029"
+      "NREV-EXP-0029",
+      "NREV-EXP-0030"
     ],
     "programs": [
       "NREV-PRG-0001",
@@ -5144,10 +5349,12 @@
       "NREV-PRG-0004"
     ],
     "runs": [
+      "NREV-RUN-EXP-0025-SCREEN-20260830-E",
       "NREV-RUN-EXP-0028-PILOT-01",
       "NREV-RUN-EXP-0028-SCREEN-20260829-B",
       "NREV-RUN-EXP-0029-SCREEN-20260830-A",
-      "NREV-RUN-EXP-0029-SCREEN-20260830-B"
+      "NREV-RUN-EXP-0029-SCREEN-20260830-B",
+      "NREV-RUN-EXP-0030-SCREEN-20260830-B"
     ],
     "schema_version": 1
   },
@@ -5288,6 +5495,135 @@
     }
   ],
   "runs": [
+    {
+      "artifacts": {
+        "manifest_path": "research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/artifact_index.json",
+        "manifest_sha256": "bf7337aec92996ca0ed9179f8063397b0a0673f34d7493b78a1a2d170f94d8e2",
+        "output_root": "Outputs/NeuronIdentifiability/NREV-EXP-0025/runs/NREV-RUN-EXP-0025-SCREEN-20260830-E"
+      },
+      "code": {
+        "branch": "codex/neuron-identifiability-paper-20260822",
+        "commit": "e8efa10700c17116bab516d7acafbbd5e11a66aa",
+        "diff_sha256": "0ce57730ee8cb63da41178b6f43ee83cee2bad52a5b41c0a78a47e2026e901f3",
+        "dirty": true,
+        "repository": "https://github.com/Jibby2k1/NeuRev-Workbench"
+      },
+      "configuration": {
+        "path": "research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/resolved_config.json",
+        "sha256": "23636ab6fc632f45cb92b4e33fada2b543133160a9dae0fdd56a4dd4c5111403"
+      },
+      "ended_at": "2026-08-30T14:30:51.308353Z",
+      "environment": {
+        "dependency_lock": {
+          "path": "pyproject.toml",
+          "sha256": "87709b08b0d8d7e32beecd563c9ae83762c8a4669bbb4c94d5f111ea6b665737"
+        },
+        "hardware": "CPU execution; 32 logical CPUs visible and no GPU computation used",
+        "platform": "Linux 7.0.0-28-generic x86_64 with glibc 2.39",
+        "runtime": "CPython 3.12.13, NumPy 2.4.4, SciPy 1.17.1, tifffile 2026.5.15, PyYAML 6.0.3, jsonschema 4.26.0"
+      },
+      "experiment_id": "NREV-EXP-0025",
+      "id": "NREV-RUN-EXP-0025-SCREEN-20260830-E",
+      "inputs": [
+        {
+          "id": "JEPA-RAW-VIDEO-SOURCES-V1",
+          "location": "research/data-registry/jepa_raw_video_sources_v1.json",
+          "role": "data",
+          "sha256": "42f1dedaee1a1acc2b24c1933ac10859cc06c8e8e6b53d5f3525c99dd21910ba"
+        },
+        {
+          "id": "NREV-RUN-EXP-0028-SCREEN-B",
+          "location": "research/registry/runs/NREV-RUN-EXP-0028-SCREEN-20260829-B.yaml",
+          "role": "reference",
+          "sha256": "9ccfdf120c39261bff8d6100f7555e38b1929db11adadbb7ad05af7c6560997a"
+        },
+        {
+          "id": "NREV-RUN-EXP-0029-SCREEN-B",
+          "location": "research/registry/runs/NREV-RUN-EXP-0029-SCREEN-20260830-B.yaml",
+          "role": "reference",
+          "sha256": "f7d8c2725835802c1a0706034ddb9ad4dfbfa8047c99d16002b0ce8cfd40fe2e"
+        }
+      ],
+      "lifecycle": "succeeded",
+      "planned_at": "2026-08-30T14:30:42.965054Z",
+      "program_id": "NREV-PRG-0001",
+      "randomization": {
+        "deterministic": true,
+        "notes": "Frozen windows and parent artifacts were deterministic. Each supported grouped test enumerated all 1296 within-recording permutations instead of sampling them.",
+        "seeds": []
+      },
+      "record_type": "run",
+      "schema_version": 1,
+      "started_at": "2026-08-30T14:30:42.965253Z",
+      "validation": {
+        "checks": [
+          {
+            "id": "engineering_completion",
+            "status": "passed",
+            "summary": "Run E completed the exact 12-window, four-recording-group, 372-adjacent-pair screen and emitted 12 window summaries, four recording summaries, and all 14 fixed association rows."
+          },
+          {
+            "id": "version_and_provenance_binding",
+            "status": "passed",
+            "summary": "The run used configuration SHA-256 109bb115afca16ed477e01463bab0200b7c2e620e20c6d025b75656af0b75290, resolved-config SHA-256 23636ab6fc632f45cb92b4e33fada2b543133160a9dae0fdd56a4dd4c5111403, runner SHA-256 bfb7d0439a4f51c8e4b1caab91a820d2ba1c06c26789a8fd1190ea31ab11ae1a, and content-aware dirty-state digest 0ce57730ee8cb63da41178b6f43ee83cee2bad52a5b41c0a78a47e2026e901f3 with portable command and runtime provenance."
+          },
+          {
+            "id": "frozen_input_integrity",
+            "status": "passed",
+            "summary": "All 23 recorded inputs, including four raw TIFFs and the EXP-0028 and EXP-0029 parent records and indexes, matched exact recorded sizes and SHA-256 values; input-set SHA-256 was 948dc1ce68425cfcdb7858fb8865b3adf02801c437df57cc7483931d56757451."
+          },
+          {
+            "id": "matched_support_correction",
+            "status": "passed",
+            "summary": "For all 308 valid shifts, raw and registered MAD/RMS, support bounds, pixel counts, fractions, ratios, and reductions used the identical shift-dependent interior and independently reproduced at maximum absolute error 0.0; all 64 invalid shifts had empty matched-support fields."
+          },
+          {
+            "id": "local_field_reliability",
+            "status": "partial",
+            "summary": "All 12 local windows required reliability review. Large tile-versus-crop-global disagreement affected 12, less than 10 percent matched-support reduction affected 11, low valid-pair fraction affected four, and boundary concentration affected four. Median registered/raw MAD ratio was 0.9520895725611223 with median retained support 0.673095703125."
+          },
+          {
+            "id": "grouped_association_family",
+            "status": "partial",
+            "summary": "All 14 fixed associations and their exact within-recording permutation tests reproduced; none passed BH at 0.05. The smallest raw p-value was 0.013888888888888888 and its adjusted q-value was 0.19444444444444442, so no association is multiplicity-supported."
+          },
+          {
+            "id": "estimand_preserving_nonjoin",
+            "status": "passed",
+            "summary": "Carrier, coherence, recurrence, and waveform-strength lanes were not joined because the recordings or temporal windows lacked compatible support; no endpoint was imputed onto unmatched recordings."
+          },
+          {
+            "id": "sensor_boundary",
+            "status": "passed",
+            "summary": "Stored uint16 high-code occupancy was zero, but two windows reached code 4095 and detector or ADC metadata were unavailable; analog saturation remains unresolved."
+          },
+          {
+            "id": "artifact_index",
+            "status": "passed",
+            "summary": "The exact index covers 13 artifacts and 343545 bytes with no missing, extra, size-drift, hash-drift, or path errors. The explicit ended_at event marks numeric and report assembly about 2.2 ms before final index serialization and is not represented as atomic package-promotion time."
+          },
+          {
+            "id": "scientific_audit_inventory",
+            "status": "partial",
+            "summary": "Required full-field videos, candidate-surrogate close-ups and traces, matched figures, and decode/pixel validation are absent; the numeric engineering package is therefore not a complete scientific audit."
+          },
+          {
+            "id": "scientific_promotion",
+            "status": "passed",
+            "summary": "Scientific completion and promotion remain false; the crop-global/local-window translation-like estimates are not usable motion fields, and no biological-motion, nuisance-adjustment, causality, precision, or generalization claim or evidence capsule was created."
+          },
+          {
+            "id": "publication_boundary",
+            "status": "passed",
+            "summary": "Only the compact exact provenance and primary summary tables were copied into Git; raw recordings and the large pair-level table remain output-only and the committed subset contains no workstation paths."
+          }
+        ],
+        "execution": "passed",
+        "outputs": "partial",
+        "preflight": "passed"
+      },
+      "visibility": "public"
+    },
     {
       "artifacts": {
         "output_root": "Outputs/NeuronIdentifiability/NREV-EXP-0028/runs/NREV-RUN-EXP-0028-PILOT-01"
@@ -5760,6 +6096,137 @@
         ],
         "execution": "passed",
         "outputs": "partial",
+        "preflight": "passed"
+      },
+      "visibility": "public"
+    },
+    {
+      "artifacts": {
+        "manifest_path": "research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/artifact_index.json",
+        "manifest_sha256": "fafb1067f36f75b498a383cc244117b54cea7b8f504aa41f562a05e4a56f615b",
+        "output_root": "Outputs/NeuronIdentifiability/NREV-EXP-0030/runs/NREV-RUN-EXP-0030-SCREEN-20260830-B"
+      },
+      "code": {
+        "branch": "codex/neuron-identifiability-paper-20260822",
+        "commit": "e8efa10700c17116bab516d7acafbbd5e11a66aa",
+        "diff_sha256": "280243c4224546e406798dc928658e2975da8b33dfad425eed1372de13f3415e",
+        "dirty": true,
+        "repository": "https://github.com/Jibby2k1/NeuRev-Workbench"
+      },
+      "configuration": {
+        "path": "research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/resolved_config.json",
+        "sha256": "46089c2ea7ce92eae1060743065fd05de1ceefb93ce51396055be3fcbbeed5a2"
+      },
+      "ended_at": "2026-08-30T14:15:27.882898Z",
+      "environment": {
+        "dependency_lock": {
+          "path": "pyproject.toml",
+          "sha256": "87709b08b0d8d7e32beecd563c9ae83762c8a4669bbb4c94d5f111ea6b665737"
+        },
+        "hardware": "CPU execution with 4 PyTorch threads; CUDA unavailable",
+        "platform": "Linux 7.0.0-28-generic x86_64 with glibc 2.39",
+        "runtime": "CPython 3.12.13, NumPy 2.4.4, scikit-learn 1.9.0, PyTorch 2.11.0+cu130"
+      },
+      "experiment_id": "NREV-EXP-0030",
+      "id": "NREV-RUN-EXP-0030-SCREEN-20260830-B",
+      "inputs": [
+        {
+          "id": "JEPA-RAW-VIDEO-SOURCES-V1",
+          "location": "research/data-registry/jepa_raw_video_sources_v1.json",
+          "role": "data",
+          "sha256": "42f1dedaee1a1acc2b24c1933ac10859cc06c8e8e6b53d5f3525c99dd21910ba"
+        },
+        {
+          "id": "NREV-RUN-EXP-0028-SCREEN-B",
+          "location": "research/registry/runs/NREV-RUN-EXP-0028-SCREEN-20260829-B.yaml",
+          "role": "reference",
+          "sha256": "9ccfdf120c39261bff8d6100f7555e38b1929db11adadbb7ad05af7c6560997a"
+        },
+        {
+          "id": "NREV-RUN-EXP-0029-SCREEN-B",
+          "location": "research/registry/runs/NREV-RUN-EXP-0029-SCREEN-20260830-B.yaml",
+          "role": "reference",
+          "sha256": "f7d8c2725835802c1a0706034ddb9ad4dfbfa8047c99d16002b0ce8cfd40fe2e"
+        }
+      ],
+      "lifecycle": "succeeded",
+      "planned_at": "2026-08-30T14:08:04Z",
+      "program_id": "NREV-PRG-0001",
+      "randomization": {
+        "deterministic": true,
+        "notes": "Seed 7301 fixes randomized low-rank fitting. Frozen upstream JEPA, decoder, cache, and sampling identities are hash-bound inputs rather than newly randomized factors. Validation and source-off panels perform no fitting, tuning, or pre-gate selection of candidates, hyperparameters, checkpoints, thresholds, or a favorable reported subset; they only determine the predeclared eligibility gate, which selected zero subtractors.",
+        "seeds": [
+          7301
+        ]
+      },
+      "record_type": "run",
+      "schema_version": 1,
+      "started_at": "2026-08-30T14:12:32.426827Z",
+      "validation": {
+        "checks": [
+          {
+            "id": "engineering_completion",
+            "status": "passed",
+            "summary": "Run B completed seven fixed subtractors plus the no-subtraction reference on 512 training clips, all 96 recording-held validation clips, and the exact 12 registered source-off windows; all 864 per-clip, 16 aggregate, and 56 per-recording rows were finite and complete."
+          },
+          {
+            "id": "version_and_provenance_binding",
+            "status": "passed",
+            "summary": "The frozen execution used descriptor SHA-256 1d914bf39e6f6b0b14e782ac8d1df482cc9f5e1730d33b33292e8a6d4dbd9214, runner SHA-256 9192d3bf30b0806027035bfe30bc6609aefa5d3149219a3eaca5b3f364efa4f8, focused-test SHA-256 efcad1489ce4180687b344912798b162d3a2179a975183b2eed24868440178ee, and a portable command; content-aware dirty-state digest 280243c4224546e406798dc928658e2975da8b33dfad425eed1372de13f3415e satisfies the run schema."
+          },
+          {
+            "id": "frozen_upstream_integrity",
+            "status": "passed",
+            "summary": "EXP-0028's 25-artifact snapshot and EXP-0029 Run-B's 27-artifact snapshot were exact and unchanged before and after the benchmark; clip banks, checkpoint, decoders, source-off manifest, and normalization hashes all matched."
+          },
+          {
+            "id": "selection_and_truth_boundary",
+            "status": "passed",
+            "summary": "Simple models fit only the frozen 512 training clips; held validation and source-off panels did not tune or pre-gate-select the candidate panel, parameters, checkpoints, thresholds, or a favorable reported subset, and no ROI label, injected truth, detector outcome, or recovery result was accessed. The panels were used only for the predeclared eligibility gate, which selected zero subtractors. Exact samples are disjoint, but nine of 12 source-off windows share three 060126 recording identities with held validation; the panels are not represented as independent recordings."
+          },
+          {
+            "id": "exact_prediction_and_metric_coverage",
+            "status": "passed",
+            "summary": "All methods used common zero-based frames 8 through 31; every prediction was finite and completely covered, and exact method, clip, aggregate, and recording coverage reconciled."
+          },
+          {
+            "id": "predictor_feasibility",
+            "status": "partial",
+            "summary": "None of the eight methods passed all 11 fixed checks, so zero of seven subtractors were eligible. Low-rank AR(1) passed 5 of 11, no subtraction passed 9 of 11 as the identity reference, and the frozen JEPA decoder passed 0 of 11; the fixed consequence is not to launch a new residual-detector experiment from these predictors."
+          },
+          {
+            "id": "source_off_interpretation_boundary",
+            "status": "passed",
+            "summary": "Source-off denotes absence of synthetic injection, not absence of native neural or biological activity; unlabeled candidates and activity remain unknown rather than negative."
+          },
+          {
+            "id": "applicable_audit_inventory",
+            "status": "passed",
+            "summary": "All applicable model-surrogate full-field videos, close-ups, traces, instant figures, and comparisons were present; all 24 videos fully decoded with exactly 32 frames. These audit aids are not expert labels or signal-preservation evidence, and their hash/decode validation is distinct from exact renderer replay."
+          },
+          {
+            "id": "replay_environment_provenance",
+            "status": "partial",
+            "summary": "SciPy was not serialized despite low-rank randomized SVD, Matplotlib and Pillow versions were not serialized for figures and frames, and the ffmpeg/ffprobe build was not serialized for MP4 generation and validation. Frozen numeric and media bytes, hashes, shapes, decodes, and conclusions remain integrity-checked, but exact low-rank numerical and media renderer replay environments are incomplete."
+          },
+          {
+            "id": "artifact_index",
+            "status": "passed",
+            "summary": "The exact artifact index covers 89 artifacts and 65361962 bytes with no missing, extra, size-drift, or hash-drift files. The explicit ended_at event marks the end of numeric, media, and upstream-integrity work; report, provenance, status, index, and package assembly followed, with final index serialization about 38 ms later. It is not represented as report-completion or atomic-package-promotion time."
+          },
+          {
+            "id": "scientific_promotion",
+            "status": "passed",
+            "summary": "Scientific completion and promotion remain false; source preservation, denoising, detection, identity, specificity, causality, and generalization were not evaluated, and no claim or evidence capsule was created."
+          },
+          {
+            "id": "publication_boundary",
+            "status": "passed",
+            "summary": "The committed provenance subset is small, exact, and free of workstation paths; videos, predictor state, raw data, per-clip tables, local input manifest, and other large outputs remain outside Git."
+          }
+        ],
+        "execution": "passed",
+        "outputs": "passed",
         "preflight": "passed"
       },
       "visibility": "public"

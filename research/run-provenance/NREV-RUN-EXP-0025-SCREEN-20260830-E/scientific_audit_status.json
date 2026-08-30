@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "expert_section": "not_applicable_label_free_background_window_screen",
+  "inventory_validation_passed": false,
+  "missing_required_families": [
+    "model_or_candidate_surrogate_full_field_videos",
+    "candidate_surrogate_closeups_and_full_duration_traces",
+    "figure_table_only_matched_comparison",
+    "media_decode_and_annotation_pixel_validation"
+  ],
+  "numeric_window_and_association_tables_complete": true,
+  "promotion_blocked": true,
+  "required_media_complete": false,
+  "schema_version": 1,
+  "scientific_audit_complete": false,
+  "scientific_completion": false,
+  "scientific_promotion_allowed": false
+}

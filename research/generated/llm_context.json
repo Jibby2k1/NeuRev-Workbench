@@ -226,8 +226,8 @@
     "claims": 20,
     "completed_experiments": 19,
     "evidence_capsules": 19,
-    "planned_experiments": 10,
-    "runs": 4
+    "planned_experiments": 11,
+    "runs": 6
   },
   "generated_policy": "do_not_edit",
   "identity": {
@@ -295,6 +295,13 @@
       "id": "NREV-EXP-0029",
       "lifecycle": "draft",
       "objective": "Run a bounded one-seed engineering screen of normalized signed video-minus-conditional-prediction residuals with exact target isolation, source-off-only calibration, paired signal-retention accounting, and no scientific promotion.",
+      "priority": null,
+      "queue_basis": "registered_draft_without_assigned_priority"
+    },
+    {
+      "id": "NREV-EXP-0030",
+      "lifecycle": "draft",
+      "objective": "Run a bounded label-free source-off feasibility benchmark before authorizing any new conditional-background residual detector experiment.",
       "priority": null,
       "queue_basis": "registered_draft_without_assigned_priority"
     }

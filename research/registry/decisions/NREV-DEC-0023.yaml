@@ -1,0 +1,67 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0023
+origin:
+  kind: native
+program_id: NREV-PRG-0001
+title: Hold the current motion-conditioned residual path after bounded automated sentinels
+lifecycle: draft
+action: hold
+rationale: The current automated chain has now exercised three bounded engineering questions without producing an eligible
+  motion nuisance field, residual endpoint, or source-off subtractor. Motion Run E repaired matched-support accounting but
+  every local window required reliability review and no grouped association survived multiplicity correction. EXP-0029
+  Run B had lower JEPA-residual recovery than raw scoring while registered background, dynamic, seam, and orthogonal diagnostics
+  were larger; its exact Rank-F recovery patterns and retrospective source-off guardrail do not establish a cause or prospective
+  safety. EXP-0030 Run B admitted zero of seven subtractors through its fixed 11-check eligibility gate. Hold this implementation
+  path rather than widening it with more seeds, steps, depth, or another detector. This action is design triage, not rejection
+  of motion modeling, conditional prediction, JEPA, or background subtraction as general research directions.
+evidence_summary: EXP-0025 Run E completed 372 adjacent-pair calculations with exact matched support, but all 12 windows required
+  review, median registered/raw difference-MAD ratio was 0.9520895725611223, and 0 of 14 association rows passed BH. EXP-0029
+  Run B reproduced all 216 raw-HC parent RecoveryResults and had macro source-on recall 0.1875 raw, 0.09027777777777778 JEPA
+  residual, and 0.06712962962962964 matched random residual. Provenance-complete Rank F reproduced all 324 method-fixture
+  recovery objects and described JEPA source-on misses as 114 intervention-recovered/source-on-not-one-to-one-recovered and
+  119 both-maps-missed occurrences; those are operational patterns with unknown candidate identity. The post-screen safety
+  policy admitted 0 of 12 windows per residual arm and deterministically fell back to raw for all 108 fixtures. EXP-0030 Run
+  B completed seven subtractors plus an identity reference; zero subtractors passed all 11 fixed checks and low-rank AR(1),
+  the closest subtractor, passed 5 of 11. Every experiment remains draft, not evaluated, evidence tier none, and without a claim
+  or capsule.
+effective_on: '2026-08-30'
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0025
+- NREV-EXP-0029
+- NREV-EXP-0030
+claim_ids: []
+evidence_capsule_ids: []
+constraints:
+- Register only canonical Motion Run E and predictor-feasibility Run B; motion A through D, predictor A, and superseded rank
+  diagnostics remain provisional unregistered engineering history.
+- Do not use the Run-E crop-global/local-window translation-like estimates as motion fields, regressors, measured biological
+  motion, or evidence that motion is absent; all 12 failed reliability review.
+- Do not treat source-off windows as neuron-free, signal-free, pure background, or noise-only; native candidates and biological
+  activity remain unknown rather than negative.
+- Rank-F categories are operational paired top-four recovery patterns only and do not identify a competitor, attenuation,
+  causal response failure, false positive, artifact, or biological source.
+- The source-off residual guardrail is retrospective and its all-raw output establishes exact fallback identity only, not
+  prospective safety, denoising, or residual benefit.
+- EXP-0030 evaluation panels applied the predeclared eligibility gate but did not fit, tune, or pre-gate-select the candidate
+  panel, hyperparameters, checkpoints, thresholds, or a favorable reported subset; zero of seven subtractors was eligible.
+- Do not launch another residual-detector screen from these seven subtractors or expand the current tiled decoder in place
+  with more seeds, steps, depth, thresholds, or favorable subgroups.
+- Scientific-audit media, reliable motion/acquisition support, multi-seed evidence, independent-recording support, and biological
+  identity remain incomplete; no claim, evidence capsule, precision, denoising, causality, or generalization statement is authorized.
+follow_up:
+- Preserve native raw HC as the automatic reference and deterministic fallback for the exact bounded fixture grid.
+- If motion adjustment is revisited, create a new estimator or acquisition-metadata contract with disjoint reliability validation
+  before joining any nuisance field to endpoint outcomes.
+- If conditional prediction is revisited, define a new predictor objective and seam-safe full-field or overlap-add interface,
+  freeze it on disjoint source-off development data, and require source preservation before any detector endpoint.
+- >-
+  Prioritize automated packages with a better-defined decision target: full-field acquisition normalization, grouped
+  positive-unlabeled learning with provisional-label sensitivity, an unlabeled proposal census with surrogate-null controls,
+  and evidence-sufficiency simulation that preserves site and neighborhood clustering.
+- Complete the missing full-field, close-up, full-duration trace, matched-figure, decode-validation, multi-seed, and independent-recording
+  audit before considering a claim-bearing experiment.
+visibility: public
+created_on: '2026-08-30'
+updated_on: '2026-08-30'

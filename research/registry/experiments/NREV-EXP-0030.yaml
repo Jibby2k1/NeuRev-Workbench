@@ -1,0 +1,105 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0030
+origin:
+  kind: native
+program_id: NREV-PRG-0001
+title: Source-off conditional-background predictor feasibility v1
+question: Can any fixed causal, autoregressive, low-rank, frozen-JEPA, or matched random-provider predictor reduce source-off
+  variation without worsening dynamics, seams, temporal whiteness, or recording-level consistency enough to justify a separately
+  versioned residual-detector screen?
+objective: Run a bounded label-free source-off feasibility benchmark before authorizing any new conditional-background residual
+  detector experiment.
+rationale: EXP-0029 showed that its one-layer tiled JEPA residual preserved aligned injected amplitude but amplified registered
+  background diagnostics, introduced seam and orthogonal error, and reduced frozen-detector recovery. This independent benchmark
+  therefore tests seven subtractors plus a no-subtraction reference without injected truth, ROI labels, detector outcomes,
+  or validation-based selection. Run B completed all 512 training clips, 96 recording-held validation clips, 12 registered
+  source-off windows, eight methods, and 864 per-clip rows. None of the eight methods passed all 11 fixed checks; zero of
+  seven subtractors were eligible. The rank-eight low-rank AR(1) method was closest at 5 of 11 checks, while the frozen JEPA
+  decoder passed 0 of 11. This is engineering feasibility triage only; source preservation was not evaluated, native activity
+  in unlabeled clips remains unknown, and no scientific outcome, claim, or evidence capsule is assigned.
+lifecycle: draft
+outcome: not_evaluated
+evidence_tier: none
+review_state: not_requested
+falsifiers:
+- Any EXP-0028 or EXP-0029 Run-B input, clip-bank, checkpoint, decoder, normalization, descriptor, implementation, or artifact-index
+  hash differs from its frozen value.
+- Any validation clip, registered source-off window, ROI label, injected-source truth, detector score, or recovery result enters
+  fitting, hyperparameter selection, checkpoint selection, or gate-threshold selection.
+- The common zero-based frame support differs from `[8, 32)`, any prediction is nonfinite or incompletely covered, or the exact
+  864 per-clip, 16 aggregate, and 56 per-recording rows are not present.
+- A method is called eligible without passing all 11 fixed checks, including the one recording-consistency check spanning all
+  three held-validation and four registered-window recording rows.
+- Source-off is described as neuron-free, signal-free, pure background, or noise-only; native biological activity in unlabeled
+  clips is unknown.
+- A source-off feasibility result is presented as source preservation, denoising, improved detection, biological identity,
+  specificity, causality, generalization, or permission to create a claim or evidence capsule.
+design:
+  summary: Hash-verify and freeze the EXP-0028 512/96 normalized clip banks, the exact 12 EXP-0029 source-off windows, and the
+    final-step EXP-0029 JEPA/random decoders; fit only the per-pixel and rank-eight low-rank AR(1) methods on the 512 training
+    clips; evaluate seven fixed subtractors and a no-subtraction reference on common frames 8 through 31 of all 96 recording-held
+    clips and 12 source-off windows; require every eligible method to pass 11 fixed scale, dynamic, seam, whiteness, and recording-consistency
+    checks; create no residual-detector result, claim, or capsule.
+  protocol_path: docs/workflows/source_off_predictor_feasibility_v1.md
+  unit_of_analysis: normalized 32-frame 64-by-64 clip nested within evaluation panel and recording; metrics use the common
+    24-frame zero-based interval `[8, 32)` and recordings, clips, or pixels are not treated as independent biological replicates
+  comparison: seven fixed background-subtraction methods versus the no-subtraction identity reference on centered RMS, dynamic
+    MAD, decoder-lattice seam ratio, temporal spectral flatness, absolute lag-1 autocorrelation, and recording-level RMS consistency
+  data_scope: 512 frozen training clips, all 96 recording-held validation clips, and the exact 12 registered quiet/source-off
+    windows from four recording groups; exact samples are disjoint, but nine registered windows share three 060126 recording
+    identities with held validation; no injected truth, labels, ROI identities, detector results, or recovery outcomes
+  grouping_or_blocking: retain evaluation panel and recording; the single recording-consistency check spans the three held-validation
+    and four registered-window recording rows, and source-off windows do not establish absence of native activity
+  sample_plan: one fixed eight-method screen producing 864 per-clip rows, 16 aggregate rows, and 56 per-recording rows; no
+    favorable-method subset, seed expansion, checkpoint search, or detector run is authorized
+  randomization: fix randomized low-rank fitting seed 7301; all other hyperparameters are constants and frozen decoder and
+    sampling identities are upstream hash-bound inputs rather than resampled factors
+  blinding: fitting and gate evaluation use no injected-source truth, biological ROI labels, detector scores, or recovery outcomes;
+    validation clips and source-off windows never tune or pre-gate-select a candidate method, parameter, checkpoint, threshold,
+    or favorable reported subset, but they necessarily determine the predeclared eligibility result
+  analysis_plan: require median centered RMS at most 0.90, median dynamic-MAD at most 1.00, median residual seam ratio at most
+    1.25, spectral flatness and absolute lag-1 autocorrelation no worse than no subtraction on both evaluation panels, plus
+    centered RMS at most 1.00 across every recording row; all 11 checks are conjunctive and failure authorizes no detector
+gates:
+- id: output_collision
+  criterion: The Run-B output root and partial sibling are absent immediately before execution.
+  stage: preflight
+  required: true
+- id: frozen_input_identity
+  criterion: Every descriptor, clip bank, checkpoint, decoder, normalization, implementation, and upstream artifact index
+    matches its registered SHA-256 before any fit or evaluation.
+  stage: preflight
+  required: true
+- id: selection_separation
+  criterion: Only the 512 training clips fit eligible models; validation and source-off panels never tune or pre-gate-select
+    the candidate panel, hyperparameters, checkpoints, thresholds, or a favorable reported subset, and no label, injected
+    truth, or detector outcome is accessed; the panels are used only for the predeclared eligibility gate.
+  stage: execution
+  required: true
+- id: exact_metric_coverage
+  criterion: All eight methods have finite, shape-exact prediction support and exactly 864 per-clip, 16 aggregate, and 56
+    per-recording rows on common frames `[8, 32)`.
+  stage: analysis
+  required: true
+- id: predictor_feasibility
+  criterion: A subtractor is eligible for a separately versioned residual-detector screen only if it passes all 11 fixed checks;
+    otherwise the consequence is `do_not_launch_a_new_residual_detector_experiment_from_these_predictors`.
+  stage: analysis
+  required: true
+- id: scientific_boundary
+  criterion: Source preservation, biological identity, precision, specificity, causality, denoising, and independent-recording
+    generalization remain unevaluated; scientific completion and promotion remain false and no claim or evidence capsule is created.
+  stage: publication
+  required: true
+claim_ids: []
+decision_ids:
+- NREV-DEC-0023
+run_ids:
+- NREV-RUN-EXP-0030-SCREEN-20260830-B
+depends_on_experiment_ids:
+- NREV-EXP-0028
+- NREV-EXP-0029
+visibility: public
+created_on: '2026-08-30'
+updated_on: '2026-08-30'

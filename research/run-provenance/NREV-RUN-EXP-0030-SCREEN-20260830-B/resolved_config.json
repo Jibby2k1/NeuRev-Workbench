@@ -1,0 +1,63 @@
+{
+  "claim_or_capsule_creation_allowed": false,
+  "common_evaluation_frame_count": 24,
+  "common_evaluation_start_frame_zero": 8,
+  "display_names": {
+    "causal_ema_alpha_0p25": "Causal EMA (a=0.25)",
+    "causal_temporal_median_w7": "Causal median (w=7)",
+    "causal_zero_order_hold": "Last frame / ZOH",
+    "frozen_jepa_decoder_run_b": "Frozen JEPA decoder",
+    "frozen_random_decoder_run_b": "Frozen random decoder",
+    "low_rank_ar1_rank8_train512": "Low-rank AR(1), r=8",
+    "no_subtraction_identity": "No subtraction",
+    "per_pixel_ar1_train512": "Per-pixel AR(1)"
+  },
+  "experiment_id": "NREV-EXP-0030",
+  "fit_selection_boundary": "train512_only_no_labels_no_source_truth_no_validation_selection",
+  "fixed_hyperparameters": {
+    "EMA_alpha": 0.25,
+    "causal_median_window": 7,
+    "decoder_target_batch_size": 64,
+    "low_rank_random_seed": 7301,
+    "low_rank_rank": 8,
+    "low_rank_sample_frames": 4096
+  },
+  "gate_thresholds": {
+    "absolute_lag1_autocorrelation_change_vs_no_subtraction_max": 0.0,
+    "every_recording_centered_rms_ratio_max": 1.0,
+    "median_centered_rms_ratio_max": 0.9,
+    "median_dynamic_mad_ratio_max": 1.0,
+    "median_residual_seam_ratio_max": 1.25,
+    "spectral_flatness_change_vs_no_subtraction_min": 0.0
+  },
+  "held_validation_clip_count": 96,
+  "methods": [
+    "no_subtraction_identity",
+    "causal_zero_order_hold",
+    "causal_ema_alpha_0p25",
+    "causal_temporal_median_w7",
+    "per_pixel_ar1_train512",
+    "low_rank_ar1_rank8_train512",
+    "frozen_jepa_decoder_run_b",
+    "frozen_random_decoder_run_b"
+  ],
+  "normalization": {
+    "center": 489.0,
+    "scale": 289.10699999999997,
+    "sha256": "ec48d7f89bb0fbf3bce5305ad1ecebcff2b43ad15ef1af7910405df28ecdb4a4"
+  },
+  "output_root": "Outputs/NeuronIdentifiability/NREV-EXP-0030/runs/NREV-RUN-EXP-0030-SCREEN-20260830-B",
+  "registered_source_off_window_count": 12,
+  "run_id": "NREV-RUN-EXP-0030-SCREEN-20260830-B",
+  "runner_sha256": "9192d3bf30b0806027035bfe30bc6609aefa5d3149219a3eaca5b3f364efa4f8",
+  "schema_version": 1,
+  "scientific_audit": {
+    "comparison_media": "figures_and_tables_only",
+    "enabled": true,
+    "expert_section": "not_applicable_unlabeled_benchmark",
+    "model_candidate_surrogate": "one_method_blind_raw_dynamic_MAD_argmax_pixel_per_source_off_window"
+  },
+  "scientific_completion_allowed": false,
+  "status": "bounded_non_claim_bearing_engineering_benchmark",
+  "training_clip_count": 512
+}

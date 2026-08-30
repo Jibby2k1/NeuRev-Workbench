@@ -1,0 +1,20 @@
+{
+  "coordinate_contract": "x_is_column_y_is_row_zero_based_half_open",
+  "entry_point": "summary.json",
+  "experiment_id": "NREV-EXP-0025",
+  "pair_diagnostics": "pair_metrics.tsv",
+  "parent_run": "NREV-RUN-EXP-0029-SCREEN-20260830-B",
+  "primary_tables": [
+    "window_metrics.tsv",
+    "association_tests.tsv",
+    "recording_summary.tsv"
+  ],
+  "run_id": "NREV-RUN-EXP-0025-SCREEN-20260830-E",
+  "run_provenance": "run_provenance.json",
+  "schema_version": 1,
+  "scientific_audit_complete": false,
+  "scientific_promotion_allowed": false,
+  "sensor_contract": "stored_uint16_rails_exact_analog_sensor_rails_unresolved",
+  "status_record": "status.json",
+  "temporal_contract": "frames_zero_based_half_open_native_cadence_unresolved"
+}

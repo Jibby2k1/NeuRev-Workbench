@@ -1,0 +1,19 @@
+{
+  "all_324_recovery_objects_exactly_reproduced": true,
+  "all_numerical_dependencies_hashed": true,
+  "all_values_finite": true,
+  "claim_promotion_allowed": false,
+  "dependencies_and_inputs_unchanged_pre_post": true,
+  "exp_0028_artifact_integrity": true,
+  "explicit_planned_preflight_execution_end_phase_contract": true,
+  "fixture_coverage_exact_108_252": true,
+  "full_tree_index_validation_is_atomic_promotion_gate": true,
+  "primary_duration_exactly_started_at_to_ended_at": true,
+  "run_b_artifact_integrity": true,
+  "schema_version": 1,
+  "scientific_audit_complete": false,
+  "scipy_runtime_version_persisted": true,
+  "source_method_rows_exact_756": true,
+  "status": "passed",
+  "workstation_paths_absent": true
+}

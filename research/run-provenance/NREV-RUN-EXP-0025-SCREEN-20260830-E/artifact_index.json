@@ -1,0 +1,72 @@
+{
+  "artifact_count": 13,
+  "artifact_set_sha256": "a7983ee8666293f485940cdfc77198ccb4c5680102ff7633799ffd2432840082",
+  "artifacts": [
+    {
+      "bytes": 3330,
+      "path": "REPORT.md",
+      "sha256": "426ce482c154b427e62701a635fabfbb1580bdc81f25247eea401fd87d60668a"
+    },
+    {
+      "bytes": 3703,
+      "path": "association_tests.tsv",
+      "sha256": "dd3d7363096801852be827991b272f5be7cf08a9c216a147dd73d5031b3d6598"
+    },
+    {
+      "bytes": 740,
+      "path": "llm_context.json",
+      "sha256": "ed23ceec73d0a24196b36d804423040cdf2e61c592687c2ac172c6d1702f4329"
+    },
+    {
+      "bytes": 257149,
+      "path": "pair_metrics.tsv",
+      "sha256": "df7da7e7e709a1c03e599699e79bd5bf55198a7980678e075b450d093eb69317"
+    },
+    {
+      "bytes": 11072,
+      "path": "preflight.json",
+      "sha256": "ec5bff94a9b089c385c2bda160fbf15e9b728c6d393cb460046b3992180307d3"
+    },
+    {
+      "bytes": 2203,
+      "path": "recording_summary.tsv",
+      "sha256": "5fd9cb38b5f9b7439a3d3d5d2dd99cdd890d9ab74efbf9dd66ca5968bc9f8cfd"
+    },
+    {
+      "bytes": 12119,
+      "path": "resolved_config.json",
+      "sha256": "23636ab6fc632f45cb92b4e33fada2b543133160a9dae0fdd56a4dd4c5111403"
+    },
+    {
+      "bytes": 13105,
+      "path": "run_provenance.json",
+      "sha256": "fe000ca6d4a54d8415c406decf06df5193949a36642a17a0a883b0e288cbd28f"
+    },
+    {
+      "bytes": 643,
+      "path": "scientific_audit_status.json",
+      "sha256": "3631d1c8cbbf52acc24c4f612914f424c72e32b0ed30c5163dc438a76d002e50"
+    },
+    {
+      "bytes": 3539,
+      "path": "status.json",
+      "sha256": "9c97d4d90db489f3851776b0aee2b16a771005b5c766a75b4ebbc9508b582be9"
+    },
+    {
+      "bytes": 17739,
+      "path": "summary.json",
+      "sha256": "d49fb8f4ad4cd8c5989f2e7594e0f170b7df3b2c420c45035e3598540818ac35"
+    },
+    {
+      "bytes": 2222,
+      "path": "validation.json",
+      "sha256": "1e976ee5616ef8a91fd572b850c13222a10da03140fdfae1d1d617f8f8efb13d"
+    },
+    {
+      "bytes": 15981,
+      "path": "window_metrics.tsv",
+      "sha256": "d3a7e5ebed0e4b3e0708553f8161f036991e0fcc16a624f2bd375e0f4470f5cf"
+    }
+  ],
+  "schema_version": 1
+}

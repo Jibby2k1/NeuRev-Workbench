@@ -276,3 +276,23 @@ This amendment and screen create no claim and no evidence capsule. The
 experiment stays `draft`, `not_evaluated`, and evidence tier `none`;
 `scientific_completion=false` and `scientific_promotion_allowed=false` remain
 mandatory.
+
+## Post-screen derived diagnostics
+
+Two integrity-checked frozen derived artifacts were added after Run B without
+changing the frozen protocol or retroactively creating a gate. The rank
+diagnostic exactly reconstructed all 324 Run-B recovery objects and separated
+the operational intervention-recovered/source-on-missed pattern from sources
+missed by both top-four maps. A source-off-only safety audit then applied
+post-screen no-amplification thresholds and rejected all 12 JEPA and all 12
+random-residual windows, falling back to raw for every fixture.
+
+See the sanitized
+[derived-diagnostic results](../research/CONDITIONAL_BACKGROUND_RESIDUAL_DERIVED_DIAGNOSTICS_V1_RESULTS.md)
+for exact counts, grouped uncertainty, portable hashes, and the limitations of
+the emitted category names. Rank F records complete frozen-input,
+numerical-dependency, Git/runtime/command/timestamp provenance; safety v1.1 is
+a fixed policy artifact rather than a run. These audits strengthen the
+implementation hold, but neither is a registered scientific execution, and
+they do not identify competitor biology, prove attenuation, complete the
+scientific audit, or establish residual benefit.

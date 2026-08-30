@@ -1,0 +1,12 @@
+{
+  "all_engineering_checks_passed": true,
+  "checks": {
+    "expected_parent_fixture_count": true,
+    "fallback_is_exact_raw_endpoint": true,
+    "one_decision_per_method_window": true,
+    "parent_inputs_hash_verified": true,
+    "scientific_completion_false": true,
+    "source_off_decision_only": true
+  },
+  "status": "passed_derived_engineering_audit_scientific_outputs_incomplete"
+}

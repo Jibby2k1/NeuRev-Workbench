@@ -182,3 +182,126 @@ def test_registry_index_links_amendment_decision_and_b_run() -> None:
     assert "NREV-DEC-0022" in index["decisions"]
     assert FAILED_RUN_ID in index["runs"]
     assert B_RUN_ID in index["runs"]
+
+
+def test_stable_source_off_safety_diagnostic_is_portable_and_non_claim_bearing() -> None:
+    derived = B_PROVENANCE / "derived"
+    safety = derived / "source_off_residual_safety_v1_1"
+    summary = json.loads((safety / "summary.json").read_text(encoding="utf-8"))
+    decisions = json.loads(
+        (safety / "source_off_safety.json").read_text(encoding="utf-8")
+    )
+
+    assert not (derived / "source_off_residual_safety_v1").exists()
+    assert _sha(safety / "artifact_index.json") == (
+        "a7d3045c34e53d571c0cb277a5f8edd43b75345c94393b7efe675538fec4fe74"
+    )
+    assert _sha(safety / "summary.json") == (
+        "1d5132a99851d59606488c48c9d15d0e40a12fe08c5df8113fb74f9841520134"
+    )
+    assert summary["result_sha256"] == (
+        "fcc739667ba6e80056402ae88e31e4a7c766dc8a94db8a226c8d053a8c1a9a80"
+    )
+    assert summary["implementation_sha256"] == (
+        "135144627dccb567e654211699105c23691a988dbef7df9ea784170306906274"
+    )
+    assert summary["safety_policy_implementation_sha256"] == (
+        "047d988b6158d67f89ac195a5fd2f7433a44ca17d43b13862fa870464c0559d0"
+    )
+    assert summary["scientific_completion"] is False
+    assert summary["scientific_promotion_allowed"] is False
+
+    for row in summary["methods"].values():
+        assert row["safe_window_count"] == 0
+        assert row["window_count"] == 12
+    for row in summary["policy_results"].values():
+        assert row["fixture_count"] == 108
+        assert row["residual_admitted_fixture_count"] == 0
+        assert row["macro_source_on_recall"] == 0.1875
+        assert row["micro_recovered_sources"] == 45
+        assert row["micro_injected_sources"] == 252
+
+    rows = decisions["decisions"]
+    assert len(rows) == 24
+    assert sum(row["checks"]["background_rms_not_amplified"] for row in rows) == 2
+    assert sum(row["checks"]["dynamic_mad_not_amplified"] for row in rows) == 0
+    assert sum(row["checks"]["spatial_seam_within_tolerance"] for row in rows) == 18
+    assert {row["selected_endpoint"] for row in rows} == {
+        "raw_frozen_handcrafted_stack"
+    }
+
+
+def test_stable_rank_displacement_diagnostic_is_exact_and_portable() -> None:
+    rank = B_PROVENANCE / "derived" / "rank_displacement_v1"
+    index = json.loads((rank / "artifact_index.json").read_text(encoding="utf-8"))
+    summary = json.loads(
+        (rank / "rank_displacement_summary.json").read_text(encoding="utf-8")
+    )
+    execution = json.loads(
+        (rank / "execution_provenance.json").read_text(encoding="utf-8")
+    )
+    status = json.loads((rank / "status.json").read_text(encoding="utf-8"))
+
+    assert _sha(rank / "artifact_index.json") == (
+        "ca1933513b224b735882de1196a234f2d1246649211855ac81c6d4cb3c1fdaf5"
+    )
+    assert _sha(rank / "rank_displacement_summary.json") == (
+        "d8e1201a5c2657060ec93ee998b09dc619b68c80d8b8985779c9308915e6402b"
+    )
+    assert summary["diagnostic_id"] == (
+        "NREV-DIAG-EXP-0029-RANK-DISPLACEMENT-20260830-F"
+    )
+    assert summary["result_sha256"] == (
+        "4cc984641e17ab9f3eb5fd0a653b0051d16fe3f449ba45666366f5372444db2d"
+    )
+    assert summary["inputs"]["implementation_sha256"] == (
+        "8407eb2926b55304ec4d1e409e9b5049e3db08b720ba3dc046c9461ece62ddac"
+    )
+    assert index["artifact_count"] == 11
+    assert sum(row["bytes"] for row in index["artifacts"]) == 491_492
+    for row in index["artifacts"]:
+        artifact = rank / row["path"]
+        assert artifact.stat().st_size == row["bytes"]
+        assert _sha(artifact) == row["sha256"]
+
+    assert execution["runtime"]["scipy_version"] == "1.17.1"
+    assert execution["duration_seconds"] == 42.225716
+    assert execution["primary_duration_contract"] == (
+        "duration_seconds equals ended_at minus started_at using timezone-aware UTC "
+        "timestamp arithmetic"
+    )
+    assert summary["coverage"] == {
+        "all_324_recovery_objects_exactly_reproduced": True,
+        "fixture_count": 108,
+        "method_count": 3,
+        "source_count": 252,
+        "source_method_rows": 756,
+    }
+
+    methods = (
+        "raw_frozen_handcrafted_stack",
+        "jepa_conditional_pixel_residual_frozen_handcrafted_stack",
+        "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack",
+    )
+    assert [
+        summary["recovery_totals"][method]["total_source_on_recovered"]
+        for method in methods
+    ] == [45, 19, 18]
+    assert [
+        summary["classification_counts"][method]["recovered_source_on"]
+        for method in methods
+    ] == [43, 18, 16]
+    assert [
+        summary["classification_counts"][method]["source_on_only_inconsistent"]
+        for method in methods
+    ] == [2, 1, 2]
+    assert {
+        (row["method_short"], row["source_count"], row["source_row_count"])
+        for row in summary["strata"]["source_count"]
+    } == {
+        (method, source_count, rows)
+        for method in ("raw", "jepa_residual", "random_residual")
+        for source_count, rows in (("1", 36), ("2", 72), ("4", 144))
+    }
+    assert status["scientific_completion"] is False
+    assert status["claim_promotion_allowed"] is False

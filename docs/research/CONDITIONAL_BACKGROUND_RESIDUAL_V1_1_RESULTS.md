@@ -193,9 +193,11 @@ The run status is `screen_complete_claim_gates_unresolved`. Numeric execution
 completed, but outputs remain scientifically partial because the required
 candidate-surrogate full-field videos, close-ups, full-duration traces,
 matched comparison figures, and media validation were not produced. The
-motion/registration dependency `NREV-EXP-0025`, multiple training and decoder
-seeds, independent-recording generalization, and biological identity evidence
-also remain unresolved.
+numeric motion/registration screen `NREV-EXP-0025` is complete, but its usable
+motion-field dependency remains unsatisfied because all 12 local fields
+required reliability review. Multiple training and decoder seeds,
+independent-recording generalization, and biological identity evidence also
+remain unresolved.
 
 Accordingly:
 
@@ -209,17 +211,34 @@ Accordingly:
 
 ## Decision
 
-Keep the current tiled conditional-residual design on hold. The mechanism is
-still conceptually plausible, but this implementation preserved injected
-amplitude without suppressing the empirical background and degraded source
-recovery at the frozen HC endpoint.
+Keep the current tiled conditional-residual design on hold. Conditional
+prediction remains conceptually plausible, but this implementation's
+near-unity aligned amplitude retention co-occurred with no empirical-background
+suppression and lower source recovery than raw at the frozen HC endpoint.
 
 Any later learned-background program should be a separately versioned design,
 not an in-place widening of this screen. The most important architectural
 falsifiers to address would be patch seams, full-field or overlap-add decoding,
 prediction-error amplification, and multi-seed stability, followed by the
-motion dependency and complete scientific audit. Re-running the same one-layer
-tile decoder at a larger budget is not justified by this screen alone.
+still-open requirement for a reliable motion estimator or acquisition contract
+and the complete scientific audit. Re-running the same one-layer tile decoder
+at a larger budget is not justified by this screen alone.
+
+The subsequent frozen, integrity-checked
+[rank-displacement and source-off safety diagnostics](CONDITIONAL_BACKGROUND_RESIDUAL_DERIVED_DIAGNOSTICS_V1_RESULTS.md)
+show that the JEPA miss pattern is not confined to the
+intervention-recovered/source-on-missed category and that a retrospective
+source-off no-amplification guardrail admits no residual window. Those
+post-screen artifacts strengthen the implementation hold without becoming
+registered scientific executions or formal EXP-0029 gates.
+
+The two numeric sentinels requested after Run B are also complete for their
+current implementations. [Motion Run E](MOTION_REGISTRATION_CONFOUND_V2_RESULTS.md)
+produced no usable local field and zero of 14 multiplicity-supported
+associations; [predictor Run B](SOURCE_OFF_PREDICTOR_FEASIBILITY_V1_RESULTS.md)
+admitted zero of seven subtractors. Any revisit therefore requires a new
+motion/acquisition contract and a separately frozen predictor design rather
+than completion of these already executed screens.
 
 ## Portable provenance
 
@@ -230,10 +249,11 @@ Outputs/NeuronIdentifiability/NREV-EXP-0029/runs/
   NREV-RUN-EXP-0029-SCREEN-20260830-B
 ```
 
-The exact sanitized `resolved_config.json` and `artifact_index.json` are
+The exact sanitized `resolved_config.json`, `artifact_index.json`, and
+`summary.json` are
 retained under
 `research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/`. Their SHA-256
 values are respectively
 `1ff575fd0110e4d65e275ce4ced705a3aa47b0d9a83b01d10a2270bbc865218c`
-and
-`34bd983ffdf55cb0941bbd1443adf939f4cb86ac4ffe51a736b2d6d9383cfc1c`.
+, `34bd983ffdf55cb0941bbd1443adf939f4cb86ac4ffe51a736b2d6d9383cfc1c`,
+and `4da57e17f7fc76cfdf0b8bb841c564113fc6987ddaf11d05256e9a77e3e801ba`.

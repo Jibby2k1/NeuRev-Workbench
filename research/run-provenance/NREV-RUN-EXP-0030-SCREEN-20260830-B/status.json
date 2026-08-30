@@ -1,0 +1,14 @@
+{
+  "claim_bearing": false,
+  "duration_seconds": 175.45605970197357,
+  "ended_at_utc": "2026-08-30T14:15:27.882898Z",
+  "engineering_execution": "complete",
+  "experiment_id": "NREV-EXP-0030",
+  "lifecycle": "succeeded",
+  "planned_at_utc": "2026-08-30T14:08:04Z",
+  "run_id": "NREV-RUN-EXP-0030-SCREEN-20260830-B",
+  "schema_version": 1,
+  "scientific_completion": false,
+  "started_at_utc": "2026-08-30T14:12:32.426827Z",
+  "validation": "passed"
+}

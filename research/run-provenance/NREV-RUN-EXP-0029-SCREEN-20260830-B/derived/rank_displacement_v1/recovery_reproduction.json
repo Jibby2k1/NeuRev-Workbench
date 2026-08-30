@@ -1,0 +1,1628 @@
+{
+  "all_exact": true,
+  "expected_fixture_method_rows": 324,
+  "observed_fixture_method_rows": 324,
+  "rows": [
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_1_low_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_2_median_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_10_rest__window_3_high_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_1_low_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_2_median_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_12_left__window_3_high_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_1_low_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_2_median_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "060126_15_right__window_3_high_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_1__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_1__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_1__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_2__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_2__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_2__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_4__seed_3101",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_4__seed_3102",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack"
+    },
+    {
+      "fixture_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad__sources_4__seed_3103",
+      "matches_run_b_recovery_objects": true,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack"
+    }
+  ],
+  "schema_version": 1
+}

@@ -72,7 +72,8 @@ def test_native_engineering_runs_are_visible_without_scientific_promotion() -> N
 
     assert "failed_then_succeeded" in residual["status"]
     assert "0.1875 raw" in residual["finding"]
-    assert "Keep this exact tiled one-layer" in residual["next_decision"]
+    assert "Hold this implementation path" in residual["next_decision"]
+    assert "design triage" in residual["next_decision"]
 
 
 def test_clean_clone_story_check_uses_capsule_for_ignored_output(

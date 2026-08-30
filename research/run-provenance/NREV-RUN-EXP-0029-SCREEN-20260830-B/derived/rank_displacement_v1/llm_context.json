@@ -1,0 +1,29 @@
+{
+  "classification_boundary": {
+    "attenuation_or_response_failure": "neither paired intervention nor source-on top-four recovered the exact source",
+    "native_background_competition": "intervention recovered but source-on top-four did not recover the exact source",
+    "native_candidates": "unknown_not_negative",
+    "recovered_source_on": "exact source recovered on both source-on and paired intervention maps",
+    "source_on_only_inconsistent": "exact source recovered on source-on but not the paired intervention map; retained separately rather than forced into a mechanism category"
+  },
+  "coordinate_contract": "y=row,x=column",
+  "entrypoint": "rank_displacement_summary.json",
+  "native_candidate_semantics": "unknown_not_negative",
+  "primary_tables": [
+    "rank_displacement_sources.tsv"
+  ],
+  "provenance": [
+    "input_provenance.json",
+    "execution_provenance.json"
+  ],
+  "schema_version": 1,
+  "scientific_audit": {
+    "derived_from": "NREV-RUN-EXP-0029-SCREEN-20260830-B",
+    "enabled": true,
+    "reason": "Derived score-map mechanism diagnostic; source Run-B audit remains incomplete and no new media were generated.",
+    "required_media_complete": false,
+    "schema_version": 1,
+    "scientific_audit_complete": false,
+    "scientific_promotion_allowed": false
+  }
+}

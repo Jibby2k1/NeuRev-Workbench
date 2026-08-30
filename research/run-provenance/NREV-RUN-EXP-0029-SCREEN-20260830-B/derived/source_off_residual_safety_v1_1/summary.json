@@ -1,0 +1,63 @@
+{
+  "claim_boundary": {
+    "not_supported": [
+      "denoising",
+      "neuron identity",
+      "precision or specificity",
+      "independent biological generalization",
+      "motion robustness"
+    ],
+    "supported": "deterministic source-off guardrail behavior on frozen Run-B artifacts"
+  },
+  "decision_grain": "residual_method_by_background_window",
+  "decision_uses_source_truth_or_labels": false,
+  "implementation_sha256": "135144627dccb567e654211699105c23691a988dbef7df9ea784170306906274",
+  "methods": {
+    "jepa_conditional_pixel_residual_frozen_handcrafted_stack": {
+      "all_windows_safe": false,
+      "safe_window_count": 0,
+      "safe_window_fraction": 0.0,
+      "window_count": 12
+    },
+    "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack": {
+      "all_windows_safe": false,
+      "safe_window_count": 0,
+      "safe_window_fraction": 0.0,
+      "window_count": 12
+    }
+  },
+  "outcome": "No EXP-0029 residual window satisfied the post-screen source-off safety certificate; both fixed policies therefore selected raw for every fixture.",
+  "parent_artifact_index_sha256": "34bd983ffdf55cb0941bbd1443adf939f4cb86ac4ffe51a736b2d6d9383cfc1c",
+  "parent_run_id": "NREV-RUN-EXP-0029-SCREEN-20260830-B",
+  "policy_results": {
+    "jepa_conditional_pixel_residual_frozen_handcrafted_stack": {
+      "fixture_count": 108,
+      "macro_source_on_recall": 0.1875,
+      "micro_injected_sources": 252,
+      "micro_recovered_sources": 45,
+      "residual_admitted_fixture_count": 0
+    },
+    "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack": {
+      "fixture_count": 108,
+      "macro_source_on_recall": 0.1875,
+      "micro_injected_sources": 252,
+      "micro_recovered_sources": 45,
+      "residual_admitted_fixture_count": 0
+    }
+  },
+  "result_sha256": "fcc739667ba6e80056402ae88e31e4a7c766dc8a94db8a226c8d053a8c1a9a80",
+  "safety_policy_implementation_sha256": "047d988b6158d67f89ac195a5fd2f7433a44ca17d43b13862fa870464c0559d0",
+  "schema_version": "neurobench.residual_safety_audit.v1",
+  "scientific_completion": false,
+  "scientific_promotion_allowed": false,
+  "thresholds": {
+    "decision_inputs": "source_off_diagnostics_only",
+    "historical_note": "defined_after_EXP_0029_Run_B_for_future_guardrail_use",
+    "maximum_background_rms_ratio": 1.0,
+    "maximum_dynamic_mad_ratio": 1.0,
+    "maximum_seam_to_interior_jump_ratio": 1.25,
+    "repeated_metric_absolute_tolerance": 1e-12,
+    "scientific_claim_consequence": "none",
+    "unsafe_action": "use_frozen_raw_endpoint"
+  }
+}

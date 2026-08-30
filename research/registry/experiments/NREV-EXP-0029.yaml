@@ -16,7 +16,14 @@ rationale: The direct JEPA latent-temporal-change head was weak, but that endpoi
   Run B completed the bounded engineering screen and retained injected amplitude, but its JEPA-residual recall point estimate
   was below native raw HC while background RMS, dynamic-MAD, and tiling-seam ratios exceeded one. This technically valid
   screen is recorded for design triage only; it does not resolve a formal scientific benefit gate or change the experiment's
-  draft, not-evaluated, evidence-tier-none state.
+  draft, not-evaluated, evidence-tier-none state. Frozen integrity-checked post-screen diagnostic artifacts subsequently showed that JEPA source-on
+  misses divide almost evenly between a competition-consistent intervention-recovered/source-on-missed pattern and a both-maps-missed category, unlike
+  the predominantly competition-consistent raw and random-residual misses, and that a source-off-only no-amplification
+  guardrail audit admits none of the 24 method-by-window residual decisions. These operational categories do not identify
+  competitor biology or prove attenuation. Rank F records complete frozen-input, numerical-dependency, and execution provenance,
+  including explicit start-to-end and phase durations plus the SciPy runtime version;
+  safety v1.1 remains a derived policy artifact rather than a registered run. These audits strengthen the hold on this implementation
+  without becoming preregistered gates or scientific evidence.
 lifecycle: draft
 outcome: not_evaluated
 evidence_tier: none
@@ -125,6 +132,7 @@ claim_ids: []
 decision_ids:
 - NREV-DEC-0021
 - NREV-DEC-0022
+- NREV-DEC-0023
 run_ids:
 - NREV-RUN-EXP-0029-SCREEN-20260830-A
 - NREV-RUN-EXP-0029-SCREEN-20260830-B

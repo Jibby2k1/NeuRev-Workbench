@@ -1,0 +1,16 @@
+{
+  "all_required_inputs_verified": true,
+  "artifact_index_sha256": "34bd983ffdf55cb0941bbd1443adf939f4cb86ac4ffe51a736b2d6d9383cfc1c",
+  "verified_inputs": [
+    {
+      "bytes": 1204509,
+      "path": "residual_diagnostics.json",
+      "sha256": "d8d47a572cc4ba2c3fe78c0798a9a7b016bbf4f4da8e03584405fd6cf080dfa6"
+    },
+    {
+      "bytes": 1616933,
+      "path": "paired_injection_results.json",
+      "sha256": "f5814bb304952b993553ad7aa843b01954ed5c0d1c36e53a404dd2ed536afcbd"
+    }
+  ]
+}

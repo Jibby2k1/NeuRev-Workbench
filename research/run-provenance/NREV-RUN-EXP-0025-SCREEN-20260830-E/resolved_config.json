@@ -1,0 +1,274 @@
+{
+  "config": {
+    "expected_recording_count": 4,
+    "expected_window_count": 12,
+    "expected_window_frames": 32,
+    "expected_window_shape_yx": [
+      64,
+      64
+    ],
+    "expected_windows_per_recording": 3,
+    "maximum_translation_search_px": 8.0,
+    "minimum_forward_backward_valid_fraction": 0.5,
+    "minimum_peak_to_median_ratio": 3.0,
+    "minimum_registration_difference_reduction_fraction": 0.1,
+    "minimum_registration_extent": 12,
+    "minimum_robust_scale": 1e-06,
+    "registration_clip_z": 8.0,
+    "registration_residual_interpolation_order": 1,
+    "scientific_audit_enabled": true,
+    "scientific_completion_allowed": false,
+    "search_boundary_component_fraction_review": 0.1,
+    "temporal_mad_absolute_tolerance": 0.0001,
+    "temporal_mad_spatial_stride": 4,
+    "temporal_mad_time_stride": 2,
+    "threshold_policy": "engineering_review_triggers_not_validated_biological_cut_points",
+    "tile_global_disagreement_review_px": 2.0,
+    "tile_grid_yx": [
+      2,
+      2
+    ],
+    "verify_raw_hashes": true
+  },
+  "config_sha256": "109bb115afca16ed477e01463bab0200b7c2e620e20c6d025b75656af0b75290",
+  "execution": {
+    "command": [
+      ".venv-neurobench/bin/python",
+      "-m",
+      "neurobench.experiments.neuron_identifiability.motion_registration_confound_audit",
+      "--repository-root",
+      ".",
+      "--data-root",
+      "$NEUROBENCH_DATA_ROOT",
+      "--parent-root",
+      "Outputs/NeuronIdentifiability/NREV-EXP-0029/runs/NREV-RUN-EXP-0029-SCREEN-20260830-B",
+      "--output-root",
+      "Outputs/NeuronIdentifiability/NREV-EXP-0025/runs/NREV-RUN-EXP-0025-SCREEN-20260830-E",
+      "--run-id",
+      "NREV-RUN-EXP-0025-SCREEN-20260830-E",
+      "--parent-run-record",
+      "research/registry/runs/NREV-RUN-EXP-0029-SCREEN-20260830-B.yaml",
+      "--parent-provenance-index",
+      "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/artifact_index.json",
+      "--acquisition-coverage-root",
+      "Outputs/NeuronIdentifiability/NREV-EXP-0028/runs/NREV-RUN-EXP-0028-SCREEN-20260829-B",
+      "--acquisition-run-record",
+      "research/registry/runs/NREV-RUN-EXP-0028-SCREEN-20260829-B.yaml",
+      "--acquisition-provenance-index",
+      "research/run-provenance/NREV-RUN-EXP-0028-SCREEN-20260829-B/artifact_index.json",
+      "--data-descriptor",
+      "research/data-registry/jepa_raw_video_sources_v1.json",
+      "--feature-panel-root",
+      "Outputs/NeuronIdentifiability/spon_ca_burst_full_trace_feature_panel_v2",
+      "--trace-atlas-root",
+      "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v6/03_trace_atlas"
+    ],
+    "data_root_argument": "$NEUROBENCH_DATA_ROOT",
+    "duration_seconds": 8.3431,
+    "ended_at": "2026-08-30T14:30:51.308353Z",
+    "git": {
+      "branch": "codex/neuron-identifiability-paper-20260822",
+      "commit": "e8efa10700c17116bab516d7acafbbd5e11a66aa",
+      "diff_algorithm": "NEUREV-DIRTY-STATE-V1",
+      "diff_sha256": "0ce57730ee8cb63da41178b6f43ee83cee2bad52a5b41c0a78a47e2026e901f3",
+      "dirty": true,
+      "dirty_entry_count": 46,
+      "dirty_paths_persisted": false,
+      "dirty_status_sha256": "22b508aa52315090f980aef5d2366e9476582daf0371d0770d60c2ae3402d570",
+      "repository": "https://github.com/Jibby2k1/NeuRev-Workbench"
+    },
+    "mode": "bounded_non_claim_bearing_engineering_screen",
+    "planned_at": "2026-08-30T14:30:42.965054Z",
+    "runtime": {
+      "cpu_count": 32,
+      "jsonschema_version": "4.26.0",
+      "numpy_version": "2.4.4",
+      "platform": "Linux-7.0.0-28-generic-x86_64-with-glibc2.39",
+      "process_id_persisted": false,
+      "python_implementation": "CPython",
+      "python_version": "3.12.13",
+      "pyyaml_version": "6.0.3",
+      "scipy_version": "1.17.1",
+      "tifffile_version": "2026.5.15"
+    },
+    "started_at": "2026-08-30T14:30:42.965253Z",
+    "timestamp_semantics": "started_before_preflight_ended_after_numeric_and_report_assembly"
+  },
+  "experiment_id": "NREV-EXP-0025",
+  "inputs": {
+    "input_set_sha256": "948dc1ce68425cfcdb7858fb8865b3adf02801c437df57cc7483931d56757451",
+    "records": [
+      {
+        "bytes": 4068,
+        "id": "acquisition_artifact_index_committed",
+        "role": "frozen_provenance_index",
+        "sha256": "6e6c7ef9d8c70c2c52fcb809ea1f4a65578987e558302a3a63b576cb9eb448bd",
+        "uri": "repo://research/run-provenance/NREV-RUN-EXP-0028-SCREEN-20260829-B/artifact_index.json"
+      },
+      {
+        "bytes": 4068,
+        "id": "acquisition_artifact_index_live",
+        "role": "frozen_live_artifact_index",
+        "sha256": "6e6c7ef9d8c70c2c52fcb809ea1f4a65578987e558302a3a63b576cb9eb448bd",
+        "uri": "repo://Outputs/NeuronIdentifiability/NREV-EXP-0028/runs/NREV-RUN-EXP-0028-SCREEN-20260829-B/artifact_index.json"
+      },
+      {
+        "bytes": 6149841,
+        "id": "acquisition_motion_audit",
+        "role": "full_11_recording_acquisition_coverage",
+        "sha256": "16e49eed22529d6ae09888b0cc5609ebc01c0597875d4b5dd89d53d5c63decb3",
+        "uri": "repo://Outputs/NeuronIdentifiability/NREV-EXP-0028/runs/NREV-RUN-EXP-0028-SCREEN-20260829-B/motion_audit.json"
+      },
+      {
+        "bytes": 5198,
+        "id": "acquisition_run_record",
+        "role": "frozen_registry_run_record",
+        "sha256": "9ccfdf120c39261bff8d6100f7555e38b1929db11adadbb7ad05af7c6560997a",
+        "uri": "repo://research/registry/runs/NREV-RUN-EXP-0028-SCREEN-20260829-B.yaml"
+      },
+      {
+        "bytes": 7240,
+        "id": "data_descriptor",
+        "role": "raw_recording_descriptor",
+        "sha256": "42f1dedaee1a1acc2b24c1933ac10859cc06c8e8e6b53d5f3525c99dd21910ba",
+        "uri": "repo://research/data-registry/jepa_raw_video_sources_v1.json"
+      },
+      {
+        "bytes": 12462,
+        "id": "feature_portability_artifact_00",
+        "role": "feature_support_compatibility_check",
+        "sha256": "53f2f4dbf4518f0e0c4e5ca47489a17ffdb2ae2ee36215b1ef85ce66b615f919",
+        "uri": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_full_trace_feature_panel_v2/summary.json"
+      },
+      {
+        "bytes": 182837,
+        "id": "feature_portability_artifact_01",
+        "role": "feature_support_compatibility_check",
+        "sha256": "d4eb7862d3bc5ea0f6b914039e02b30542c8eae766f61a5e8e92819d8bac31d3",
+        "uri": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_full_trace_feature_panel_v2/tables/occurrence_feature_metrics.tsv"
+      },
+      {
+        "bytes": 1841160,
+        "id": "feature_portability_artifact_02",
+        "role": "feature_support_compatibility_check",
+        "sha256": "eb8cf42f196cba8ad3c64845e547fe012741b062b76429ac1409b6ce31e3f11d",
+        "uri": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v6/03_trace_atlas/traces.npz"
+      },
+      {
+        "bytes": 376,
+        "id": "feature_portability_artifact_03",
+        "role": "feature_support_compatibility_check",
+        "sha256": "42d3def5659ee337431edc9998ff9f84472ed99dd14e4c2701e64733e26d9c1f",
+        "uri": "repo://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v6/03_trace_atlas/llm_context.json"
+      },
+      {
+        "bytes": 8127,
+        "id": "parent_artifact_00",
+        "role": "frozen_exp_0029_endpoint_or_manifest",
+        "sha256": "405eda71bc5d75587084221f6a898e284f47055b3d2912dcc580cb2dd5954cf0",
+        "uri": "repo://Outputs/NeuronIdentifiability/NREV-EXP-0029/runs/NREV-RUN-EXP-0029-SCREEN-20260830-B/background_window_manifest.json"
+      },
+      {
+        "bytes": 88623,
+        "id": "parent_artifact_01",
+        "role": "frozen_exp_0029_endpoint_or_manifest",
+        "sha256": "45301b7725e8a6bc1eb4c90406a5d3e8995c50b17b26affee26bd1c398e85231",
+        "uri": "repo://Outputs/NeuronIdentifiability/NREV-EXP-0029/runs/NREV-RUN-EXP-0029-SCREEN-20260830-B/paired_injection_results.tsv"
+      },
+      {
+        "bytes": 111585,
+        "id": "parent_artifact_02",
+        "role": "frozen_exp_0029_endpoint_or_manifest",
+        "sha256": "47b84c753a572db5ae8fa025482ada11a439a4d5b9e3cd2897e708dd722f83b5",
+        "uri": "repo://Outputs/NeuronIdentifiability/NREV-EXP-0029/runs/NREV-RUN-EXP-0029-SCREEN-20260830-B/residual_diagnostics.tsv"
+      },
+      {
+        "bytes": 1204509,
+        "id": "parent_artifact_03",
+        "role": "frozen_exp_0029_endpoint_or_manifest",
+        "sha256": "d8d47a572cc4ba2c3fe78c0798a9a7b016bbf4f4da8e03584405fd6cf080dfa6",
+        "uri": "repo://Outputs/NeuronIdentifiability/NREV-EXP-0029/runs/NREV-RUN-EXP-0029-SCREEN-20260830-B/residual_diagnostics.json"
+      },
+      {
+        "bytes": 42912,
+        "id": "parent_artifact_04",
+        "role": "frozen_exp_0029_endpoint_or_manifest",
+        "sha256": "4da57e17f7fc76cfdf0b8bb841c564113fc6987ddaf11d05256e9a77e3e801ba",
+        "uri": "repo://Outputs/NeuronIdentifiability/NREV-EXP-0029/runs/NREV-RUN-EXP-0029-SCREEN-20260830-B/summary.json"
+      },
+      {
+        "bytes": 4644,
+        "id": "parent_artifact_05",
+        "role": "frozen_exp_0029_endpoint_or_manifest",
+        "sha256": "7280fb71f543c3b366e0dc19f5ed3edb90fcebc03752ba3f5e6400fe4a07e6cc",
+        "uri": "repo://Outputs/NeuronIdentifiability/NREV-EXP-0029/runs/NREV-RUN-EXP-0029-SCREEN-20260830-B/validation.json"
+      },
+      {
+        "bytes": 4391,
+        "id": "parent_artifact_index_committed",
+        "role": "frozen_provenance_index",
+        "sha256": "34bd983ffdf55cb0941bbd1443adf939f4cb86ac4ffe51a736b2d6d9383cfc1c",
+        "uri": "repo://research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/artifact_index.json"
+      },
+      {
+        "bytes": 4391,
+        "id": "parent_artifact_index_live",
+        "role": "frozen_live_artifact_index",
+        "sha256": "34bd983ffdf55cb0941bbd1443adf939f4cb86ac4ffe51a736b2d6d9383cfc1c",
+        "uri": "repo://Outputs/NeuronIdentifiability/NREV-EXP-0029/runs/NREV-RUN-EXP-0029-SCREEN-20260830-B/artifact_index.json"
+      },
+      {
+        "bytes": 7011,
+        "id": "parent_run_record",
+        "role": "frozen_registry_run_record",
+        "sha256": "f7d8c2725835802c1a0706034ddb9ad4dfbfa8047c99d16002b0ce8cfd40fe2e",
+        "uri": "repo://research/registry/runs/NREV-RUN-EXP-0029-SCREEN-20260830-B.yaml"
+      },
+      {
+        "bytes": 2779724022,
+        "id": "raw_recording_060126_10_rest",
+        "role": "raw_frozen_window_source",
+        "sha256": "1ab241d88fa9c54e7525209b8f0f750932626b3dddf6fe9461598bd4b3a69158",
+        "uri": "data://Inputs/060126/10 rest.tif"
+      },
+      {
+        "bytes": 2610286838,
+        "id": "raw_recording_060126_12_left",
+        "role": "raw_frozen_window_source",
+        "sha256": "46a13bfb1870560ac1cbefeaf076e8aaa29cec40adc7939639d9b32cb4265b7a",
+        "uri": "data://Inputs/060126/12 left.tif"
+      },
+      {
+        "bytes": 2570325238,
+        "id": "raw_recording_060126_15_right",
+        "role": "raw_frozen_window_source",
+        "sha256": "85cc7bf92a4624f3dc26ff03664acc21626f09fbaa5246bed6787bce2e34575c",
+        "uri": "data://Inputs/060126/15 right.tif"
+      },
+      {
+        "bytes": 919566626,
+        "id": "raw_recording_spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+        "role": "raw_frozen_window_source",
+        "sha256": "30881efe5bc4f57bbdd27ee08c246e40523f2a73923dffe665b358271f602eeb",
+        "uri": "data://Inputs/Spon Ca Burst/3 hindbrain to tail 488 20ms.tif"
+      },
+      {
+        "bytes": 7433,
+        "id": "registry_run_schema",
+        "role": "registry_schema",
+        "sha256": "22309809d29ba28f400d3ec0572b8a0d4cbac9f9826c3ab27f00a3bff5dcddf7",
+        "uri": "repo://research/schemas/run.schema.json"
+      }
+    ]
+  },
+  "run_id": "NREV-RUN-EXP-0025-SCREEN-20260830-E",
+  "runner_module": "neurobench.experiments.neuron_identifiability.motion_registration_confound_audit",
+  "runner_schema_version": "neurobench.motion_registration_confound_audit.v2",
+  "runner_sha256": "bfb7d0439a4f51c8e4b1caab91a820d2ba1c06c26789a8fd1190ea31ab11ae1a",
+  "schema_version": 2,
+  "scientific_audit": {
+    "completion_or_promotion_if_incomplete": false,
+    "enabled": true,
+    "expected_status": "incomplete_numeric_screen_only"
+  }
+}

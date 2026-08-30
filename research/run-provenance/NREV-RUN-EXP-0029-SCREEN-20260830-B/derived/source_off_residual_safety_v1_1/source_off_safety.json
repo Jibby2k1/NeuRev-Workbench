@@ -1,0 +1,441 @@
+{
+  "decision_grain": "residual_method_by_background_window",
+  "decision_uses_source_truth_or_labels": false,
+  "decisions": [
+    {
+      "background_recording_id": "060126_10_rest",
+      "background_rms_ratio": 3.7224407392974763,
+      "background_window_id": "060126_10_rest__window_1_low_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": false
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.3625840065684773,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.2551952699003612,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "060126_10_rest",
+      "background_rms_ratio": 1.8607345231888737,
+      "background_window_id": "060126_10_rest__window_2_median_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": false
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.125018651813622,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.493587145068901,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "060126_10_rest",
+      "background_rms_ratio": 1.3010690578242456,
+      "background_window_id": "060126_10_rest__window_3_high_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.042481294936873,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.0572839461566956,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "060126_12_left",
+      "background_rms_ratio": 3.645512528919928,
+      "background_window_id": "060126_12_left__window_1_low_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": false
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.377800979189685,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.2671411207728693,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "060126_12_left",
+      "background_rms_ratio": 1.802635735554742,
+      "background_window_id": "060126_12_left__window_2_median_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": false
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.1469820652317395,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.5696980184063365,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "060126_12_left",
+      "background_rms_ratio": 1.2900000765224866,
+      "background_window_id": "060126_12_left__window_3_high_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.0385007368797654,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.034497010229909,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "060126_15_right",
+      "background_rms_ratio": 3.6224551220587715,
+      "background_window_id": "060126_15_right__window_1_low_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": false
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.3793011869887382,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.271091107994493,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "060126_15_right",
+      "background_rms_ratio": 1.1476648305882429,
+      "background_window_id": "060126_15_right__window_2_median_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": false
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.085957937406348,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.3989289395478015,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "060126_15_right",
+      "background_rms_ratio": 0.8408440970764168,
+      "background_window_id": "060126_15_right__window_3_high_mad",
+      "checks": {
+        "background_rms_not_amplified": true,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.053238868049106,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.247054077041541,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+      "background_rms_ratio": 2.507176361700765,
+      "background_window_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.1982545239488576,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.1605664849788333,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+      "background_rms_ratio": 1.6179125343475647,
+      "background_window_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.0936457731124152,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.2090273712675077,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+      "background_rms_ratio": 1.2492743697930837,
+      "background_window_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.0654677944293822,
+      "method": "jepa_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.1578160413551808,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "060126_10_rest",
+      "background_rms_ratio": 1.6598395290169563,
+      "background_window_id": "060126_10_rest__window_1_low_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.1744376754888346,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.1388659723818475,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "060126_10_rest",
+      "background_rms_ratio": 1.09677564197155,
+      "background_window_id": "060126_10_rest__window_2_median_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.0315450633691696,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.0950486290013224,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "060126_10_rest",
+      "background_rms_ratio": 1.030455922009009,
+      "background_window_id": "060126_10_rest__window_3_high_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.0084035337347599,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 0.9920148496239368,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "060126_12_left",
+      "background_rms_ratio": 1.5855961512344419,
+      "background_window_id": "060126_12_left__window_1_low_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.1875046881493718,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.1384248618337371,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "060126_12_left",
+      "background_rms_ratio": 1.1345881889138485,
+      "background_window_id": "060126_12_left__window_2_median_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.051609584724744,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.1079508029951057,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "060126_12_left",
+      "background_rms_ratio": 1.0426170290111008,
+      "background_window_id": "060126_12_left__window_3_high_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.0034923833875462,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.0179721810948281,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "060126_15_right",
+      "background_rms_ratio": 1.634087253161246,
+      "background_window_id": "060126_15_right__window_1_low_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.18257528914478,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.1381039960190187,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "060126_15_right",
+      "background_rms_ratio": 1.0093639720470742,
+      "background_window_id": "060126_15_right__window_2_median_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.0379171281960833,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.0792289596361826,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "060126_15_right",
+      "background_rms_ratio": 0.8828431969181783,
+      "background_window_id": "060126_15_right__window_3_high_mad",
+      "checks": {
+        "background_rms_not_amplified": true,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.0158493199055803,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.0643636528413951,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+      "background_rms_ratio": 1.2717686076209724,
+      "background_window_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_1_low_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.0724969137270388,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.1039434221732876,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+      "background_rms_ratio": 1.0703870337995842,
+      "background_window_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_2_median_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.0182515207348046,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.0258697863956419,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    },
+    {
+      "background_recording_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+      "background_rms_ratio": 1.0459381711383635,
+      "background_window_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms__window_3_high_mad",
+      "checks": {
+        "background_rms_not_amplified": false,
+        "dynamic_mad_not_amplified": false,
+        "spatial_seam_within_tolerance": true
+      },
+      "decision_uses_source_truth_or_labels": false,
+      "dynamic_mad_ratio": 1.023533322411337,
+      "method": "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack",
+      "repeated_fixture_rows": 9,
+      "safe_for_residual_use": false,
+      "seam_to_interior_jump_ratio": 1.0217809872918602,
+      "selected_endpoint": "raw_frozen_handcrafted_stack"
+    }
+  ],
+  "interpretation": "Engineering admissibility only; unsafe windows use the frozen raw endpoint. Native candidates remain biologically unknown.",
+  "methods": {
+    "jepa_conditional_pixel_residual_frozen_handcrafted_stack": {
+      "all_windows_safe": false,
+      "safe_window_count": 0,
+      "safe_window_fraction": 0.0,
+      "window_count": 12
+    },
+    "random_encoder_conditional_pixel_residual_frozen_handcrafted_stack": {
+      "all_windows_safe": false,
+      "safe_window_count": 0,
+      "safe_window_fraction": 0.0,
+      "window_count": 12
+    }
+  },
+  "result_sha256": "e2742f80772111a1fca8a579e559aaa66fe19201dd7e46b7bb92c26d6642fd22",
+  "schema_version": "neurobench.residual_safety.v1",
+  "thresholds": {
+    "decision_inputs": "source_off_diagnostics_only",
+    "historical_note": "defined_after_EXP_0029_Run_B_for_future_guardrail_use",
+    "maximum_background_rms_ratio": 1.0,
+    "maximum_dynamic_mad_ratio": 1.0,
+    "maximum_seam_to_interior_jump_ratio": 1.25,
+    "repeated_metric_absolute_tolerance": 1e-12,
+    "scientific_claim_consequence": "none",
+    "unsafe_action": "use_frozen_raw_endpoint"
+  }
+}

@@ -2,33 +2,112 @@ schema_version: 1
 record_type: experiment
 id: NREV-EXP-0025
 origin:
-  kind: migrated_legacy
-  source_path: research/registry/migration/research_story_v1.yaml
-  source_sha256: 024f9f9a7dd5d7dc68f0dc7635ea185cf109df4879b20663ee61b6706152f5af
-  recorded_on: '2026-08-29'
-  missing_fields:
-  - historical execution date
-  - run-level code, configuration, input, environment, and randomization provenance
-  - preregistered gates
-  - experiment-specific falsifiers
-  - normalized unit of analysis, comparison, and data scope
+  kind: native
 program_id: NREV-PRG-0001
-title: Motion Registration Audit
-question: Export motion fields and registration residuals and relate them to shared waveform strength.
+title: Motion and registration-confound audit v2
+question: Are translation-like frame changes and registration residuals reliable enough to use as nuisance fields, and are
+  their grouped summaries associated with the frozen EXP-0029 recovery and residual diagnostics?
 objective: Export motion fields and registration residuals and relate them to shared waveform strength.
-rationale: Priority 6 item in the migrated v1 next-experiment queue.
+rationale: This native amendment exercises the migrated motion-audit objective without treating local phase correlation as
+  biological motion. Run E repaired an earlier support mismatch and exactly compared raw and registered adjacent-frame differences
+  on the same shift-valid interiors. All 12 local windows required reliability review, no association survived correction across
+  the fixed 14-test family, and carrier, coherence, and recurrence features could not be joined without changing temporal or
+  recording support. The screen is therefore useful design triage but does not supply usable motion fields, a motion adjustment,
+  or evidence about shared waveform strength. The experiment remains draft, not evaluated, evidence tier none, and non-claim-bearing.
 lifecycle: draft
 outcome: not_evaluated
 evidence_tier: none
 review_state: not_requested
-falsifiers: []
+falsifiers:
+- Any raw recording, EXP-0028 acquisition artifact, EXP-0029 Run-B endpoint, run record, configuration, implementation, or
+  artifact-index hash differs from its frozen value.
+- Raw and registered adjacent-frame difference MAD or RMS use different pixels, a full-frame raw statistic enters a matched-support
+  ratio, or any invalid shift retains matched-support fields.
+- A reciprocal forward/reverse phase estimate is treated as independent reliability evidence, or a crop-global/local-window
+  translation-like estimate is described as a usable motion field or biological motion.
+- Recording, window, or adjacent-frame rows are treated as independent biological replicates, the four recording groups are
+  asserted to be independent animals, or endpoint values are imputed onto the eight unmatched acquisition-screen recordings.
+- Carrier, coherence, recurrence, or waveform-strength features are joined despite incompatible recording or temporal support.
+- Stored uint16-code occupancy is interpreted as detector or ADC saturation evidence without analog rail, gain, black-level,
+  or bit-depth metadata.
+- An uncorrected association is promoted outside the complete 14-test multiplicity family, or the run is described as resolving
+  absence, magnitude, or causal relevance of motion.
+- Scientific completion, promotion, a claim, or an evidence capsule is asserted while required audit media and independent-recording
+  support remain absent.
 design:
-  summary: Export motion fields and registration residuals and relate them to shared waveform strength.
-gates: []
+  summary: Hash-verify the exact four raw recordings and frozen EXP-0028 and EXP-0029 parents; estimate bounded translation-like
+    phase-correlation shifts on the 372 adjacent pairs from 12 source-off windows; compute raw and registered differences on
+    exactly matched shift-valid interiors; apply frozen reliability triggers; reconcile only compatible full-field acquisition
+    context; and enumerate all 1296 within-recording permutations for each of 14 fixed descriptive associations.
+  protocol_path: docs/workflows/motion_registration_confound_audit_v2.md
+  unit_of_analysis: adjacent-frame pair nested within one 32-frame 64-by-64 window, temporal-MAD stratum, and recording group;
+    grouped association inference uses the four recording groups rather than pair or pixel rows as independent replicates
+  comparison: matched-support registered versus raw adjacent-frame difference scale, local reliability diagnostics versus
+    frozen engineering triggers, and fixed motion/reliability/change summaries versus frozen EXP-0029 raw-HC and residual outcomes
+  data_scope: exact 12 EXP-0029 source-off windows from four recording groups, 372 adjacent pairs, differently sampled full-field
+    context from 11 EXP-0028 060126 recordings, and only support-compatible frozen EXP-0029 summaries; source-off does not mean
+    neuron-free or signal-free
+  grouping_or_blocking: preserve recording group, window, temporal-MAD stratum, and adjacent-pair nesting; enumerate all 6^4
+    within-recording window permutations and never pool the differently sampled full-field context with the local panel
+  sample_plan: one fixed 12-window screen, 372 adjacent pairs, 12 window summaries, four recording summaries, and 14 predeclared
+    grouped association rows; no favorable subset, imputation, estimator search, or expansion is authorized in place
+  randomization: no sampled randomization; frozen windows and parents are deterministic and the grouped test exhaustively enumerates
+    all 1296 within-recording permutations
+  blinding: the screen is label-free and accesses no biological ROI labels; endpoint association pairs and engineering triggers
+    are fixed before interpretation, and native activity in source-off windows remains unknown
+  analysis_plan: require exact matched spatial support for raw and registered MAD/RMS; report shift validity, boundary concentration,
+    independent two-step closure, tile-versus-crop-global disagreement, local/full-field context, retained support, and difference-scale
+    reduction; report all 14 grouped exact tests with BH correction and withhold nuisance-field use if any local window requires review
+gates:
+- id: frozen_input_identity
+  criterion: Every raw recording, parent artifact, run record, descriptor, implementation, configuration, and artifact index
+    matches its frozen SHA-256 before computation.
+  stage: preflight
+  required: true
+- id: matched_support
+  criterion: For every valid shift, raw and registered adjacent-frame differences use the identical conservative shift-valid
+    interior; invalid shifts have empty matched-support fields and full-frame raw scale is excluded from reduction ratios.
+  stage: analysis
+  required: true
+- id: exact_coverage
+  criterion: The package contains exactly 372 adjacent-pair rows, 12 window rows, four recording rows, 14 association rows,
+    and 1296 exact within-recording permutations per supported association.
+  stage: analysis
+  required: true
+- id: local_field_reliability
+  criterion: Translation-like local fields can inform a future nuisance model only if every frozen valid-fraction, search-boundary,
+    tile-versus-crop-global, matched-support reduction, and contextual reliability trigger passes.
+  stage: analysis
+  required: true
+- id: grouped_association
+  criterion: Any descriptive association must remain inside the complete 14-test BH family and cannot become a motion or causality
+    claim with only four recording groups.
+  stage: analysis
+  required: true
+- id: estimand_preserving_join
+  criterion: Waveform features are joined only on compatible recording and temporal support; an incompatible lane is recorded
+    as a non-join rather than imputed or forced into the analysis.
+  stage: analysis
+  required: true
+- id: sensor_boundary
+  criterion: Stored-code occupancy is reported without inferring analog detector or ADC saturation in the absence of acquisition metadata.
+  stage: analysis
+  required: true
+- id: scientific_boundary
+  criterion: Required audit media, independent-recording support, scientific completion, and promotion remain false; no scientific
+    claim or evidence capsule is created.
+  stage: publication
+  required: true
 claim_ids: []
-decision_ids: []
+decision_ids:
+- NREV-DEC-0023
+run_ids:
+- NREV-RUN-EXP-0025-SCREEN-20260830-E
+depends_on_experiment_ids:
+- NREV-EXP-0028
+- NREV-EXP-0029
 visibility: public
 legacy_id: motion_registration_audit
 legacy_status: next_experiment
 created_on: '2026-08-29'
-updated_on: '2026-08-29'
+updated_on: '2026-08-30'

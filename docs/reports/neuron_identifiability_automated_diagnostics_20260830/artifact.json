@@ -1,0 +1,506 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Automated Residual Diagnostics for Neuron Identifiability",
+    "description": "Technical synthesis of the frozen JEPA residual screen, rank-displacement diagnostic, retrospective source-off guardrail policy, matched-support motion audit, and predictor-feasibility benchmark.",
+    "generatedAt": "2026-08-30T15:07:25Z",
+    "cards": [],
+    "charts": [
+      {
+        "id": "source_on_recall",
+        "title": "Macro source-on recovery on frozen paired injections",
+        "subtitle": "Residual subtraction did not improve the frozen handcrafted detector; all values are exact-injection screen estimates, not biological precision.",
+        "type": "bar",
+        "dataset": "source_on_recall",
+        "sourceId": "exp0029_run_b",
+        "encodings": {
+          "x": {
+            "field": "method",
+            "type": "nominal",
+            "label": "Score lane"
+          },
+          "y": {
+            "field": "macro_recall",
+            "type": "quantitative",
+            "label": "Macro source-on recall",
+            "format": "percent"
+          },
+          "tooltip": [
+            {
+              "field": "method",
+              "type": "nominal",
+              "label": "Method"
+            },
+            {
+              "field": "macro_recall",
+              "type": "quantitative",
+              "label": "Macro recall",
+              "format": "percent"
+            }
+          ]
+        },
+        "valueFormat": "percent",
+        "layout": "full"
+      },
+      {
+        "id": "predictor_gate_checks",
+        "title": "Source-off feasibility checks passed by method",
+        "subtitle": "No subtractor passed all 11 checks; no-subtraction is shown only as the reference and was not eligible to advance.",
+        "type": "bar",
+        "dataset": "predictor_gate_checks",
+        "sourceId": "exp0030_run_b",
+        "encodings": {
+          "x": {
+            "field": "method",
+            "type": "nominal",
+            "label": "Frozen method"
+          },
+          "y": {
+            "field": "checks_passed",
+            "type": "quantitative",
+            "label": "Checks passed (of 11)"
+          },
+          "color": {
+            "field": "role",
+            "type": "nominal",
+            "label": "Role"
+          },
+          "tooltip": [
+            {
+              "field": "method",
+              "type": "nominal",
+              "label": "Method"
+            },
+            {
+              "field": "checks_passed",
+              "type": "quantitative",
+              "label": "Checks passed"
+            },
+            {
+              "field": "eligible",
+              "type": "nominal",
+              "label": "Eligible"
+            }
+          ]
+        },
+        "layout": "full"
+      }
+    ],
+    "tables": [
+      {
+        "id": "rank_recovery_patterns",
+        "title": "Exact-source paired recovery patterns",
+        "subtitle": "Operational counts span 252 injected-source occurrences per method; candidate identity and the reason for a miss remain unknown.",
+        "dataset": "rank_recovery_patterns",
+        "sourceId": "rank_f",
+        "defaultSort": {
+          "field": "source_on_recovered_total",
+          "direction": "desc"
+        },
+        "columns": [
+          {
+            "field": "method",
+            "label": "Method",
+            "type": "text"
+          },
+          {
+            "field": "source_on_recovered_total",
+            "label": "Source-on recovered",
+            "format": "number"
+          },
+          {
+            "field": "competition",
+            "label": "Intervention recovered; source-on not recovered",
+            "format": "number"
+          },
+          {
+            "field": "attenuation_or_response_failure",
+            "label": "Not recovered in either map",
+            "format": "number"
+          },
+          {
+            "field": "source_on_only_inconsistent",
+            "label": "Source-on only",
+            "format": "number"
+          }
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "motion_diagnostics",
+        "title": "Matched-support motion and registration diagnostics",
+        "subtitle": "Run E compares raw and registered differences on identical shift-valid interiors; values remain engineering diagnostics because every local window needs reliability review.",
+        "dataset": "motion_diagnostics",
+        "sourceId": "motion_e",
+        "defaultSort": {
+          "field": "metric",
+          "direction": "asc"
+        },
+        "columns": [
+          {
+            "field": "metric",
+            "label": "Metric",
+            "type": "text"
+          },
+          {
+            "field": "value",
+            "label": "Value",
+            "type": "text"
+          },
+          {
+            "field": "interpretation",
+            "label": "Interpretation",
+            "type": "text"
+          }
+        ],
+        "layout": "full"
+      }
+    ],
+    "sources": [
+      {
+        "id": "exp0029_run_b",
+        "label": "EXP-0029 residual Screen B",
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/summary.json"
+      },
+      {
+        "id": "rank_f",
+        "label": "Provenance-complete rank-displacement diagnostic F",
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/rank_displacement_v1/rank_displacement_summary.json"
+      },
+      {
+        "id": "safety_v11",
+        "label": "Source-off residual safety policy v1.1",
+        "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/source_off_residual_safety_v1_1/summary.json"
+      },
+      {
+        "id": "motion_e",
+        "label": "EXP-0025 matched-support motion Screen E",
+        "path": "research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/summary.json"
+      },
+      {
+        "id": "exp0030_run_b",
+        "label": "EXP-0030 source-off predictor feasibility Screen B",
+        "path": "research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/feasibility_gate.json"
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# Automated Residual Diagnostics for Neuron Identifiability"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "body": "## Technical summary\n\nThe automated package now gives a coherent negative engineering result: **the tested conditional-background subtraction path should not advance**. On the frozen 108-fixture/252-source injection screen, raw handcrafted scoring remained strongest. Near-unity aligned amplitude retention in the JEPA lane co-occurred with larger orthogonal error, temporal coloring, tile seams, and lower recovery than raw scoring. The rank diagnostic shows that JEPA source-on misses divide almost evenly between an intervention-recovered/source-on-not-one-to-one-recovered pattern and a both-maps-missed pattern. These categories describe paired top-four recovery outcomes; they do not identify a competitor or establish why a response was missed.\n\nThis is an engineering result, not a biological-neuron, precision, denoising, or generalization claim. The local translation-like estimates are unreliable, the scientific media audit is incomplete, and the independent-recording structure is limited. The defensible action is to keep raw scoring as the automatic fallback and move the automated program toward acquisition normalization, positive-unlabeled learning, and label-free proposal-census tests rather than more pixel-residual variants."
+      },
+      {
+        "id": "headline_findings",
+        "type": "markdown",
+        "body": "## Headline findings\n\n- Raw macro source-on recall was **18.75%**, versus **9.03%** for the JEPA residual and **6.71%** for the matched random residual.\n- The rank diagnostic reproduced all 324 fixture-method recovery objects. Among JEPA source-on misses, the grouped cluster-mean estimates were **51.1%** intervention-recovered/source-on-not-one-to-one-recovered and **48.9%** missed in both maps; these are operational recovery patterns, not inferred causal explanations.\n- The retrospective source-off guardrail policy admitted **0/12** windows for either learned residual arm and therefore selected raw for all 108 fixtures, exactly reproducing the 18.75% raw macro recall.\n- The matched-support motion audit retained a median **95.21%** of raw difference MAD; all 12 windows required reliability review and **0/14** associations survived BH correction.\n- The source-off benchmark tested seven subtractors plus one no-subtraction reference. **0/7 subtractors** passed all 11 checks; low-rank AR(1) passed 5/11 but its small RMS reduction was accompanied by slightly worse dynamic MAD and failed recording consistency."
+      },
+      {
+        "id": "recall_chart_block",
+        "type": "chart",
+        "chartId": "source_on_recall",
+        "layout": "full"
+      },
+      {
+        "id": "recovery_pattern_section",
+        "type": "markdown",
+        "body": "## Paired recovery patterns behind source-on misses\n\nThe rank-displacement analysis separates two operational score-map recovery patterns without labeling native candidates as false positives. The first means the paired intervention map one-to-one recovered the exact injected source while the source-on top-four map did not one-to-one recover it; this can reflect proposal-rank displacement, one-to-one assignment, other injected sources, or unknown native candidates. The second means neither top-four map one-to-one recovered the exact source. It does not prove attenuation or response failure.\n\nJEPA differs descriptively from raw and random residuals because its misses are split between these two patterns. The median-MAD stratum has zero JEPA source-on recoveries out of 84 injected-source occurrences. That is a useful failure-localization signal for redesign, not evidence of a particular biological or algorithmic cause."
+      },
+      {
+        "id": "rank_table_block",
+        "type": "table",
+        "tableId": "rank_recovery_patterns",
+        "layout": "full"
+      },
+      {
+        "id": "safety_section",
+        "type": "markdown",
+        "body": "## Retrospective automatic fallback audit\n\nThe fixed post-screen guardrail uses source-off statistics only. A residual window must avoid RMS amplification, avoid dynamic-MAD amplification, and keep the explicit source-off seam ratio at or below 1.25. Neither JEPA nor random residual was admitted on any of the 12 registered windows. The deterministic policy therefore selects the frozen raw lane for all fixtures.\n\nThis exactly reproduces the raw result on this screen under the fixed fallback implementation. It is not prospective safety evidence, does not validate the thresholds as biological cut points, and does not establish safety on new recordings."
+      },
+      {
+        "id": "motion_section",
+        "type": "markdown",
+        "body": "## Motion and acquisition confounding\n\nThe final motion package corrected an earlier support mismatch by comparing raw and registered differences on identical shift-valid interiors. The correction changed one review reason and four association statistics, but not the decision. Local translation-like phase estimates remain unreliable: two-step closure and tile-versus-crop-global disagreement are large, all 12 windows require review, and registered-difference MAD was only about 4.8% lower than raw-difference MAD at the median.\n\nThe strongest descriptive association—tile-versus-crop-global disagreement versus JEPA background RMS—had exact p=0.0139 but BH q=0.1944. Nothing survives the 14-test family correction. This does not show that motion is absent; it shows only that this rigid local estimator did not yield a usable nuisance field or a multiplicity-supported association."
+      },
+      {
+        "id": "motion_table_block",
+        "type": "table",
+        "tableId": "motion_diagnostics",
+        "layout": "full"
+      },
+      {
+        "id": "predictor_section",
+        "type": "markdown",
+        "body": "## Source-off predictor feasibility\n\nThe benchmark froze the candidate panel, hyperparameters, checkpoints, thresholds, and reported rows before evaluation. The 96 held clips and 12 registered source-off windows were used only for the predeclared eligibility gate; they were not used for fitting or tuning. Exact samples are disjoint, but nine of the 12 registered windows share recording identities with the held-validation panel, so the panels are not independent recording replications.\n\nLow-rank AR(1) is the best diagnostic challenger, not an eligible subtractor: median centered RMS improved by about 0.8% on held clips and 1.8% on registered windows, while dynamic MAD worsened slightly and one recording exceeded unity. The frozen JEPA decoder was substantially worse, including 65.4% held RMS amplification and a median residual seam ratio above 1.25."
+      },
+      {
+        "id": "predictor_chart_block",
+        "type": "chart",
+        "chartId": "predictor_gate_checks",
+        "layout": "full"
+      },
+      {
+        "id": "decision",
+        "type": "markdown",
+        "body": "## Decision\n\nDo not add seeds, decoder depth, or another residual detector to this branch. Preserve the JEPA encoder only as a bounded frozen representation candidate, and preserve raw handcrafted scoring as the automatic fallback. Treat superseded provisional runs and diagnostics as unregistered engineering history; only the final accepted artifacts enter the research registry or portable provenance tree."
+      },
+      {
+        "id": "next_steps",
+        "type": "markdown",
+        "body": "## Recommended automated next steps\n\n1. **Full-field normalization and acquisition audit:** map LS-floor activation, noise, striping, effective rails, and quiet-window stationarity across the full field rather than only known centers.\n2. **Uncertainty-aware positive-unlabeled learning:** run grouped site/spatial folds, provisional-label sensitivity, recovery controls, and label permutation using the existing interpretable feature stack plus at most one frozen JEPA scalar family.\n3. **Unlabeled proposal census:** extend event-window proposals into guarded quiet windows with recurrence, lane agreement, split-half stability, and surrogate-null controls; report an unknown candidate universe, never precision.\n4. **Evidence-sufficiency simulation:** preserve site/neighborhood clustering to estimate what effect sizes and sample counts could support a stable conclusion before requesting more annotation.\n\nDo not prioritize reinforcement learning, broader same-recording feature grids, deeper residual decoders, or new deblenders until one of these packages establishes a better-defined automated decision target."
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "body": "## Limitations\n\nAll recovery endpoints use exact injected sources on four recording/panel groups, not exhaustive native-neuron labels. Native candidates remain unknown. The 060126 recordings may share preparation and acquisition conditions, physical cadence and pixel scale remain unresolved there, and the registered source-off windows may contain native activity. The JEPA and random decoders are single-seed, non-scientific checkpoints. Local translation-like estimates are unreliable and the scientific-audit media remain incomplete. Predictor bytes, hashes, and decodes are verified, but exact low-rank numerical and media-renderer replay environments are incomplete because SciPy, Matplotlib, Pillow, and the ffmpeg/ffprobe build were not persisted. No result here establishes precision, neuron identity, denoising, independent-animal generalization, causality, or a world model."
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-30T15:07:25Z",
+    "status": "ready",
+    "datasets": {
+      "source_on_recall": [
+        {
+          "method": "Raw handcrafted",
+          "macro_recall": 0.1875,
+          "scope": "108 fixtures / 4 recording-panel groups"
+        },
+        {
+          "method": "JEPA residual",
+          "macro_recall": 0.09027777777777778,
+          "scope": "108 fixtures / 4 recording-panel groups"
+        },
+        {
+          "method": "Random residual",
+          "macro_recall": 0.06712962962962964,
+          "scope": "108 fixtures / 4 recording-panel groups"
+        }
+      ],
+      "rank_recovery_patterns": [
+        {
+          "method": "Raw handcrafted",
+          "recovered_on_both_maps": 43,
+          "source_on_only_inconsistent": 2,
+          "source_on_recovered_total": 45,
+          "competition": 167,
+          "attenuation_or_response_failure": 40,
+          "source_count": 252
+        },
+        {
+          "method": "JEPA residual",
+          "recovered_on_both_maps": 18,
+          "source_on_only_inconsistent": 1,
+          "source_on_recovered_total": 19,
+          "competition": 114,
+          "attenuation_or_response_failure": 119,
+          "source_count": 252
+        },
+        {
+          "method": "Random residual",
+          "recovered_on_both_maps": 16,
+          "source_on_only_inconsistent": 2,
+          "source_on_recovered_total": 18,
+          "competition": 196,
+          "attenuation_or_response_failure": 38,
+          "source_count": 252
+        }
+      ],
+      "predictor_gate_checks": [
+        {
+          "method": "No subtraction",
+          "checks_passed": 9,
+          "checks_required": 11,
+          "role": "reference",
+          "eligible": "not eligible"
+        },
+        {
+          "method": "Low-rank AR(1)",
+          "checks_passed": 5,
+          "checks_required": 11,
+          "role": "subtractor",
+          "eligible": "no"
+        },
+        {
+          "method": "Temporal median",
+          "checks_passed": 4,
+          "checks_required": 11,
+          "role": "subtractor",
+          "eligible": "no"
+        },
+        {
+          "method": "EMA",
+          "checks_passed": 2,
+          "checks_required": 11,
+          "role": "subtractor",
+          "eligible": "no"
+        },
+        {
+          "method": "Zero-order hold",
+          "checks_passed": 2,
+          "checks_required": 11,
+          "role": "subtractor",
+          "eligible": "no"
+        },
+        {
+          "method": "Per-pixel AR(1)",
+          "checks_passed": 2,
+          "checks_required": 11,
+          "role": "subtractor",
+          "eligible": "no"
+        },
+        {
+          "method": "Random decoder",
+          "checks_passed": 2,
+          "checks_required": 11,
+          "role": "subtractor",
+          "eligible": "no"
+        },
+        {
+          "method": "JEPA decoder",
+          "checks_passed": 0,
+          "checks_required": 11,
+          "role": "subtractor",
+          "eligible": "no"
+        }
+      ],
+      "motion_diagnostics": [
+        {
+          "order": 1,
+          "metric": "Matched-support registered/raw MAD ratio",
+          "value": "0.9521",
+          "interpretation": "Registered-difference MAD was approximately 4.8% lower than raw on the matched support"
+        },
+        {
+          "order": 2,
+          "metric": "Matched-support pixel fraction",
+          "value": "0.6731",
+          "interpretation": "Median fraction of each 64x64 pair used by the exact support match"
+        },
+        {
+          "order": 3,
+          "metric": "Local windows requiring review",
+          "value": "12 / 12",
+          "interpretation": "No local translation field is accepted as reliable"
+        },
+        {
+          "order": 4,
+          "metric": "Median two-step cycle closure",
+          "value": "11.481 px",
+          "interpretation": "Large inconsistency in the local shift estimates"
+        },
+        {
+          "order": 5,
+          "metric": "Median local/full-field p95 ratio",
+          "value": "19.419",
+          "interpretation": "Local estimates are poorly reconciled with the full-field context"
+        },
+        {
+          "order": 6,
+          "metric": "BH-significant associations",
+          "value": "0 / 14",
+          "interpretation": "Minimum exact p=0.0139, but minimum q=0.1944"
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "exp0029_run_b",
+      "label": "EXP-0029 residual Screen B",
+      "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "description": "Frozen Screen-B macro source-on recall for raw, JEPA-residual, and random-residual score lanes. Exact occurrence counts are intentionally reported separately in the Rank-F table because they define a different micro estimand.",
+        "executed_at": "2026-08-30T15:07:25Z",
+        "sql": "WITH s AS (SELECT primary_evaluation.method_macro_recall AS r FROM read_json_auto('research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/summary.json')) SELECT 'Raw handcrafted' AS method, r.raw_frozen_handcrafted_stack AS macro_recall FROM s UNION ALL SELECT 'JEPA residual', r.jepa_conditional_pixel_residual_frozen_handcrafted_stack FROM s UNION ALL SELECT 'Random residual', r.random_encoder_conditional_pixel_residual_frozen_handcrafted_stack FROM s",
+        "tables_used": [
+          "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/summary.json"
+        ],
+        "metric_definitions": [
+          "Macro source-on recall averages equally across the frozen recording/window/injection-seed cluster structure; it is not the recovered-occurrence count divided by 252. Injected-source occurrences remain nested by source count."
+        ]
+      }
+    },
+    {
+      "id": "rank_f",
+      "label": "Provenance-complete rank-displacement diagnostic F",
+      "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/rank_displacement_v1/rank_displacement_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "description": "Exact injected-source operational paired-recovery counts reproduced from all 108 frozen fixtures and three score lanes.",
+        "executed_at": "2026-08-30T15:07:25Z",
+        "sql": "SELECT * FROM read_json_auto('research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/rank_displacement_v1/rank_displacement_summary.json')",
+        "tables_used": [
+          "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/rank_displacement_v1/rank_displacement_summary.json"
+        ],
+        "metric_definitions": [
+          "The intervention-recovered/source-on-missed category means one-to-one recovery occurred only on the intervention top-four map; the both-maps-missed category means neither top-four map one-to-one recovered the injected source. Neither category identifies a cause, and native candidates remain unknown."
+        ]
+      }
+    },
+    {
+      "id": "safety_v11",
+      "label": "Source-off residual safety policy v1.1",
+      "path": "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/source_off_residual_safety_v1_1/summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "description": "Deterministic source-off-only safety decisions and frozen raw fallback result for all 12 registered windows.",
+        "executed_at": "2026-08-30T15:07:25Z",
+        "sql": "SELECT * FROM read_json_auto('research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/source_off_residual_safety_v1_1/summary.json')",
+        "tables_used": [
+          "research/run-provenance/NREV-RUN-EXP-0029-SCREEN-20260830-B/derived/source_off_residual_safety_v1_1/summary.json"
+        ],
+        "metric_definitions": [
+          "A residual window passes only when centered RMS and dynamic MAD do not amplify and the explicit source-off seam ratio is at most 1.25."
+        ]
+      }
+    },
+    {
+      "id": "motion_e",
+      "label": "EXP-0025 matched-support motion Screen E",
+      "path": "research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "description": "Matched-support registration diagnostics over 372 adjacent pairs from 12 frozen windows, reconciled with the prior 11-recording acquisition screen.",
+        "executed_at": "2026-08-30T15:07:25Z",
+        "sql": "SELECT * FROM read_json_auto('research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/summary.json')",
+        "tables_used": [
+          "research/run-provenance/NREV-RUN-EXP-0025-SCREEN-20260830-E/summary.json"
+        ],
+        "metric_definitions": [
+          "Registered/raw difference-MAD ratios use identical per-pair shift-valid interiors; full-frame raw MAD remains a separate feature. Grouped associations use exact within-recording permutations and BH correction over 14 tests."
+        ]
+      }
+    },
+    {
+      "id": "exp0030_run_b",
+      "label": "EXP-0030 source-off predictor feasibility Screen B",
+      "path": "research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/feasibility_gate.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "description": "Predeclared 11-check feasibility results for seven subtractors plus the no-subtraction reference across 96 held clips and 12 registered source-off windows.",
+        "executed_at": "2026-08-30T15:07:25Z",
+        "sql": "SELECT * FROM read_json_auto('research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/feasibility_gate.json')",
+        "tables_used": [
+          "research/run-provenance/NREV-RUN-EXP-0030-SCREEN-20260830-B/feasibility_gate.json"
+        ],
+        "metric_definitions": [
+          "Eligibility requires every frozen check. The panels do not tune the candidate set, hyperparameters, checkpoints, thresholds, or reporting; they only apply the predeclared gate."
+        ]
+      }
+    }
+  ]
+}

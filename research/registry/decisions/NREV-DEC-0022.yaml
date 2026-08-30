@@ -11,7 +11,10 @@ rationale: Run A correctly stopped on an exact parent-anchor mismatch before any
   and the schema-2 v1.1 correction restored exact native-unit continuity without relaxing that guard. Run B then completed
   the bounded engineering screen, but native raw HC had the strongest recall point estimate while the JEPA residual amplified
   registered background and seam diagnostics. Keep this exact tiled one-layer conditional-residual design on hold; the screen
-  is not a formal scientific gate and does not resolve the broader conditional-background-learning hypothesis.
+  is not a formal scientific gate and does not resolve the broader conditional-background-learning hypothesis. Derived
+  rank-displacement and source-off safety audits further show that JEPA source-on misses are not confined to the competition-consistent
+  intervention-recovered/source-on-missed category and that no tested residual window satisfies the retrospective post-screen
+  no-amplification guardrail.
 evidence_summary: Run A's safe failure was traced to normalized input being supplied to a native-unit raw-HC endpoint; native-unit
   reconstruction reproduced all 216 parent RecoveryResults exactly. Run B passed the 108-fixture and 216-object raw anchor,
   all 240 prediction-coverage rows, both algebraic closures, and the 27-artifact index. Across 252 sources, macro recall was
@@ -19,8 +22,15 @@ evidence_summary: Run A's safe failure was traced to normalized input being supp
   with grouped 95 percent interval [-0.24305555555555552, 0.027835648148148106]; JEPA minus random was 0.023148148148148154
   with interval [-0.043981481481481476, 0.09722222222222227]. Median JEPA aligned retention was 0.9990785812365571, but
   background RMS ratio was 1.7102741349511534, dynamic-MAD ratio 1.1093322124630185, and seam-to-interior jump ratio 2.5786383127702.
-  The scientific audit, motion dependency, multi-seed stability, independent-recording generalization, and biological identity
-  evidence remain unresolved.
+  A frozen rank artifact, integrity-checked against its Run-B parents, exactly reproduced all 324 recovery objects and classified JEPA's 233 source-on misses
+  as 114 competition-consistent intervention-recovered/source-on-missed cases and 119 both-maps-missed cases; grouped fractions were 0.5105820105820106
+  and 0.48941798941798936, versus competition-consistent fractions 0.8218253968253967 raw and 0.8376984126984126 random.
+  These operational classes do not identify the competitor or prove attenuation. A separate fixed source-off-only safety
+  policy artifact admitted 0 of 12 JEPA and 0 of 12 random-residual windows, then fell back to raw for all 108 fixtures and
+  reproduced macro recall 0.1875. Rank F carries complete derived-execution provenance, including explicit phase durations
+  and the SciPy runtime version, but neither artifact is a registered
+  scientific execution. The scientific audit, motion dependency, multi-seed stability, independent-recording generalization,
+  and biological identity evidence remain unresolved.
 effective_on: '2026-08-30'
 review_state: not_requested
 experiment_ids:
@@ -37,20 +47,32 @@ constraints:
 - Keep native raw HC, normalized JEPA residual, and normalized random-provider residual as distinct endpoint domains; never
   compare their score magnitudes or describe the decoded prediction as identified biological background.
 - Native unmatched candidates remain biologically unknown and cannot be counted as verified false positives or specificity.
+- Rank-displacement categories are exact operational score-map recovery patterns only; `native_background_competition` does not establish a native-background
+  mechanism or make competing candidates verified negatives, artifacts, or biological sources.
+- The source-off safety thresholds were defined after Run B and are a guardrail audit, not a preregistered benefit gate;
+  all-window fallback to raw establishes abstention identity rather than residual improvement.
 - The fixture grid, truth centers, proposal cap, calibration API, decoder, checkpoint, caches, seeds, budgets, geometry,
   diagnostics, grouping, and descriptive advancement panel are frozen historical facts of this screen, not permission to
   rerun or widen it in place.
-- NREV-EXP-0025 motion evidence, multi-seed confirmation, independent-recording generalization, biological identity evidence,
-  and the complete scientific audit remain unresolved.
+- The EXP-0025 numeric screen is complete, but its usable-motion-field dependency remains unsatisfied because all 12 local
+  fields required reliability review; multi-seed confirmation, independent-recording generalization, biological identity
+  evidence, and the complete scientific audit also remain unresolved.
 follow_up:
 - Keep native raw HC as the current reference endpoint for this bounded fixture grid and retain NREV-EXP-0029 as draft,
   not evaluated, evidence tier none, and without a capsule.
 - Do not escalate the same nonoverlapping tiled one-layer decoder merely by adding steps; the observed background amplification,
   orthogonal distortion, seams, and lower recall require an architectural change and a new versioned protocol.
-- If conditional-background learning is revisited, freeze a separate design that directly falsifies patch-boundary and prediction-error
-  failure through full-field or overlap-add decoding, matched random controls, and multiple upstream and decoder seeds.
-- Resolve the motion dependency and complete the required full-field, close-up, trace, matched-figure, decode-validation,
-  and independent-recording audit before any claim-bearing experiment is considered.
+- >-
+  Treat Motion Run E and predictor-feasibility Run B as completed negative engineering sentinels: the local translation-like
+  fields are unusable and zero of seven subtractors was eligible. Any revisit requires a new reliable motion/acquisition
+  contract and a separately frozen predictor design; do not interpret the current JEPA misses as a proven native-background
+  or attenuation mechanism.
+- If conditional-background learning is revisited after those sentinels, freeze a separate design that directly falsifies
+  patch-boundary and prediction-error failure through full-field or overlap-add decoding, matched random controls, and multiple
+  upstream and decoder seeds.
+- Satisfy the still-open usable-motion-field dependency through a new estimator or acquisition contract, and complete the
+  required full-field, close-up, trace, matched-figure, decode-validation, multi-seed, and independent-recording audit before
+  any claim-bearing experiment is considered.
 visibility: public
 created_on: '2026-08-30'
 updated_on: '2026-08-30'

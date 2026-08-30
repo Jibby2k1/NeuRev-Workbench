@@ -1,0 +1,164 @@
+{
+  "any_predictor_passed": false,
+  "consequence": "do_not_launch_a_new_residual_detector_experiment_from_these_predictors",
+  "eligible_predictor_methods": [],
+  "gate_id": "source_off_background_prediction_feasibility_v1",
+  "methods": {
+    "causal_ema_alpha_0p25": {
+      "checks": {
+        "every_recording_centered_rms_nonamplifying": false,
+        "held_absolute_lag1_nonworse_than_no_subtraction": false,
+        "held_median_centered_rms_ratio": false,
+        "held_median_dynamic_mad_ratio": false,
+        "held_median_residual_seam_ratio": true,
+        "held_spectral_flatness_noninferior_to_no_subtraction": false,
+        "window_absolute_lag1_nonworse_than_no_subtraction": false,
+        "window_median_centered_rms_ratio": false,
+        "window_median_dynamic_mad_ratio": false,
+        "window_median_residual_seam_ratio": true,
+        "window_spectral_flatness_noninferior_to_no_subtraction": false
+      },
+      "passed": false,
+      "passed_check_count": 2,
+      "required_check_count": 11
+    },
+    "causal_temporal_median_w7": {
+      "checks": {
+        "every_recording_centered_rms_nonamplifying": false,
+        "held_absolute_lag1_nonworse_than_no_subtraction": true,
+        "held_median_centered_rms_ratio": false,
+        "held_median_dynamic_mad_ratio": false,
+        "held_median_residual_seam_ratio": true,
+        "held_spectral_flatness_noninferior_to_no_subtraction": false,
+        "window_absolute_lag1_nonworse_than_no_subtraction": true,
+        "window_median_centered_rms_ratio": false,
+        "window_median_dynamic_mad_ratio": false,
+        "window_median_residual_seam_ratio": true,
+        "window_spectral_flatness_noninferior_to_no_subtraction": false
+      },
+      "passed": false,
+      "passed_check_count": 4,
+      "required_check_count": 11
+    },
+    "causal_zero_order_hold": {
+      "checks": {
+        "every_recording_centered_rms_nonamplifying": false,
+        "held_absolute_lag1_nonworse_than_no_subtraction": false,
+        "held_median_centered_rms_ratio": false,
+        "held_median_dynamic_mad_ratio": false,
+        "held_median_residual_seam_ratio": true,
+        "held_spectral_flatness_noninferior_to_no_subtraction": false,
+        "window_absolute_lag1_nonworse_than_no_subtraction": false,
+        "window_median_centered_rms_ratio": false,
+        "window_median_dynamic_mad_ratio": false,
+        "window_median_residual_seam_ratio": true,
+        "window_spectral_flatness_noninferior_to_no_subtraction": false
+      },
+      "passed": false,
+      "passed_check_count": 2,
+      "required_check_count": 11
+    },
+    "frozen_jepa_decoder_run_b": {
+      "checks": {
+        "every_recording_centered_rms_nonamplifying": false,
+        "held_absolute_lag1_nonworse_than_no_subtraction": false,
+        "held_median_centered_rms_ratio": false,
+        "held_median_dynamic_mad_ratio": false,
+        "held_median_residual_seam_ratio": false,
+        "held_spectral_flatness_noninferior_to_no_subtraction": false,
+        "window_absolute_lag1_nonworse_than_no_subtraction": false,
+        "window_median_centered_rms_ratio": false,
+        "window_median_dynamic_mad_ratio": false,
+        "window_median_residual_seam_ratio": false,
+        "window_spectral_flatness_noninferior_to_no_subtraction": false
+      },
+      "passed": false,
+      "passed_check_count": 0,
+      "required_check_count": 11
+    },
+    "frozen_random_decoder_run_b": {
+      "checks": {
+        "every_recording_centered_rms_nonamplifying": false,
+        "held_absolute_lag1_nonworse_than_no_subtraction": false,
+        "held_median_centered_rms_ratio": false,
+        "held_median_dynamic_mad_ratio": false,
+        "held_median_residual_seam_ratio": true,
+        "held_spectral_flatness_noninferior_to_no_subtraction": false,
+        "window_absolute_lag1_nonworse_than_no_subtraction": false,
+        "window_median_centered_rms_ratio": false,
+        "window_median_dynamic_mad_ratio": false,
+        "window_median_residual_seam_ratio": true,
+        "window_spectral_flatness_noninferior_to_no_subtraction": false
+      },
+      "passed": false,
+      "passed_check_count": 2,
+      "required_check_count": 11
+    },
+    "low_rank_ar1_rank8_train512": {
+      "checks": {
+        "every_recording_centered_rms_nonamplifying": false,
+        "held_absolute_lag1_nonworse_than_no_subtraction": false,
+        "held_median_centered_rms_ratio": false,
+        "held_median_dynamic_mad_ratio": false,
+        "held_median_residual_seam_ratio": true,
+        "held_spectral_flatness_noninferior_to_no_subtraction": true,
+        "window_absolute_lag1_nonworse_than_no_subtraction": true,
+        "window_median_centered_rms_ratio": false,
+        "window_median_dynamic_mad_ratio": false,
+        "window_median_residual_seam_ratio": true,
+        "window_spectral_flatness_noninferior_to_no_subtraction": true
+      },
+      "passed": false,
+      "passed_check_count": 5,
+      "required_check_count": 11
+    },
+    "no_subtraction_identity": {
+      "checks": {
+        "every_recording_centered_rms_nonamplifying": true,
+        "held_absolute_lag1_nonworse_than_no_subtraction": true,
+        "held_median_centered_rms_ratio": false,
+        "held_median_dynamic_mad_ratio": true,
+        "held_median_residual_seam_ratio": true,
+        "held_spectral_flatness_noninferior_to_no_subtraction": true,
+        "window_absolute_lag1_nonworse_than_no_subtraction": true,
+        "window_median_centered_rms_ratio": false,
+        "window_median_dynamic_mad_ratio": true,
+        "window_median_residual_seam_ratio": true,
+        "window_spectral_flatness_noninferior_to_no_subtraction": true
+      },
+      "passed": false,
+      "passed_check_count": 9,
+      "required_check_count": 11
+    },
+    "per_pixel_ar1_train512": {
+      "checks": {
+        "every_recording_centered_rms_nonamplifying": false,
+        "held_absolute_lag1_nonworse_than_no_subtraction": false,
+        "held_median_centered_rms_ratio": false,
+        "held_median_dynamic_mad_ratio": false,
+        "held_median_residual_seam_ratio": true,
+        "held_spectral_flatness_noninferior_to_no_subtraction": false,
+        "window_absolute_lag1_nonworse_than_no_subtraction": false,
+        "window_median_centered_rms_ratio": false,
+        "window_median_dynamic_mad_ratio": false,
+        "window_median_residual_seam_ratio": true,
+        "window_spectral_flatness_noninferior_to_no_subtraction": false
+      },
+      "passed": false,
+      "passed_check_count": 2,
+      "required_check_count": 11
+    }
+  },
+  "schema_version": 1,
+  "scientific_claim_consequence": "none",
+  "selection_data": "none_gate_thresholds_are_constants_in_the_versioned_runner",
+  "thresholds": {
+    "absolute_lag1_autocorrelation_change_vs_no_subtraction_max": 0.0,
+    "every_recording_centered_rms_ratio_max": 1.0,
+    "median_centered_rms_ratio_max": 0.9,
+    "median_dynamic_mad_ratio_max": 1.0,
+    "median_residual_seam_ratio_max": 1.25,
+    "spectral_flatness_change_vs_no_subtraction_min": 0.0
+  },
+  "truth_access": "none_no_injections_no_ROIs_no_detector_outcomes"
+}
