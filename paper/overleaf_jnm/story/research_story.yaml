@@ -574,6 +574,50 @@ experiments:
   - figures/final/fig07_ls_denominator_diagnostics.json
   evidence_capsule: ../../research/evidence/NREV-EXP-0019.json
   next_decision: Extend floor-use mapping full-field only when suitable GPU compute is available.
+- id: NREV-EXP-0021
+  question: Can a tiny nonlinear model combine the already-developed activity features more usefully than frozen CFAR-score,
+    expert equal-weight, and matched linear positive-unlabeled comparators when every model is evaluated on held spatial groups
+    that it did not train on?
+  design: Reconstruct the exact 1,999-event and 2,938-quiet Innovation-Ranker-v5 proposal census before joining current labels;
+    match canonical-v7 confirmed occurrences, reserve the later 18-site review neighborhoods, fit eight frozen scalar, expert,
+    linear, bagged-PU, reference, and four-unit tanh methods on 12 compact features, and score every eligible event candidate
+    out of fold under five frozen spatial blocks and a whole-leakage-component guard.
+  status: draft_not_evaluated_engineering_run_history_failed_then_succeeded; evidence_tier_none
+  finding: Run B completed 1,619 OOF candidate scores across 78 positives and 1,541 unknown U candidates. Macro-fold SPU-AUC
+    was 0.9740218518 for tiny MLP, 0.9740959140 for linear, 0.9756013670 for elastic, 0.9754961258 for bagged PU, 0.9501444137
+    for equal-weight expert fusion, 0.9335176617 for carrier, and 0.7646602748 for same-union CFAR reranking. MLP-minus-linear
+    was -0.0000740622 with interval [-0.0046074197, 0.0059124340]; MLP-minus-CFAR was +0.2093615770 with interval [0.1207303370,
+    0.3036814877]. MLP and bagged PU each recovered 34 of 78 at budget 58, versus 33 linear, 30 expert, 29 carrier, and 14
+    CFAR. Seed stability and component association passed, but nonlinear advance and the required burst/review-policy sensitivity
+    panel did not. Scientific audit and promotion remain incomplete.
+  limitation: 'This is non-claim-bearing engineering history: scientific audit and promotion remain unresolved, evidence tier
+    is none, and no evidence capsule exists. Preserve NREV-RUN-EXP-0021-SCREEN-20260830-A and its `.partial` tree as failed,
+    immutable, and nonresumable; do not relabel it succeeded or use its unserialized model evaluation as result evidence.
+    Preserve completed Run B, its frozen runner/config/protocol, and its exact output index; engineering PASS is separate
+    from the failed nonlinear advance signal, incomplete scientific audit, and false claim-promotion state. Do not tune MLP
+    width, depth, optimizer, seed selection, feature set, folds, review reserve, or favorable subgroups on Run-B outcomes
+    and call the result confirmation. Keep U candidates unknown rather than negative, quiet candidates source-off controls
+    rather than negatives, and later review labels locked and descriptive. Treat cfar_score only as same-union scalar reranking
+    and one fusion input; do not describe the favorable MLP-CFAR contrast as end-to-end CFAR replacement or nonlinear causal
+    benefit. Do not report ordinary precision, specificity, false-positive rate, calibrated neuron probability, causal feature
+    importance, independent-recording generalization, biological identity, or scientific completion from this screen. Whole-component
+    intervals are descriptive because positive-containing component support is only 9, 3, 3, 2, and 4 across folds; stable
+    MLP seeds do not replace independent biological replication.'
+  artifacts:
+  - ../../docs/workflows/uncertainty_aware_feature_learning_v1_1.md
+  - ../../docs/research/UNCERTAINTY_AWARE_FEATURE_LEARNING_V1_1_RESULTS.md
+  - ../../research/registry/runs/NREV-RUN-EXP-0021-SCREEN-20260830-A.yaml
+  - ../../research/run-provenance/NREV-RUN-EXP-0021-SCREEN-20260830-A/resolved_config.json
+  - ../../research/run-provenance/NREV-RUN-EXP-0021-SCREEN-20260830-A/failed_provenance_index.json
+  - ../../research/registry/runs/NREV-RUN-EXP-0021-SCREEN-20260830-B.yaml
+  - ../../research/run-provenance/NREV-RUN-EXP-0021-SCREEN-20260830-B/resolved_config.json
+  - ../../research/run-provenance/NREV-RUN-EXP-0021-SCREEN-20260830-B/artifact_index.json
+  - ../../research/registry/decisions/NREV-DEC-0024.yaml
+  next_decision: The tiny MLP substantially exceeded scalar carrier and same-union CFAR reranking, but it did not improve
+    the primary estimand over the matched linear SPU model and its whole-component interval crossed zero. Elastic and bagged-PU
+    linear models also matched or slightly exceeded the MLP primary point estimate. This pattern supports the richer feature/P-U
+    objective as worth testing while providing no evidence that nonlinear interactions justify replacing the simpler fusion
+    layer.
 - id: NREV-EXP-0025
   question: Are translation-like frame changes and registration residuals reliable enough to use as nuisance fields, and are
     their grouped summaries associated with the frozen EXP-0029 recovery and residual diagnostics?
@@ -593,7 +637,20 @@ experiments:
     AR(1), the closest subtractor, passed 5 of 11. Every experiment remains draft, not evaluated, evidence tier none, and
     without a claim or capsule.
   limitation: 'This is non-claim-bearing engineering history: scientific audit and promotion remain unresolved, evidence tier
-    is none, and no evidence capsule exists.'
+    is none, and no evidence capsule exists. Register only canonical Motion Run E and predictor-feasibility Run B; motion
+    A through D, predictor A, and superseded rank diagnostics remain provisional unregistered engineering history. Do not
+    use the Run-E crop-global/local-window translation-like estimates as motion fields, regressors, measured biological motion,
+    or evidence that motion is absent; all 12 failed reliability review. Do not treat source-off windows as neuron-free, signal-free,
+    pure background, or noise-only; native candidates and biological activity remain unknown rather than negative. Rank-F
+    categories are operational paired top-four recovery patterns only and do not identify a competitor, attenuation, causal
+    response failure, false positive, artifact, or biological source. The source-off residual guardrail is retrospective and
+    its all-raw output establishes exact fallback identity only, not prospective safety, denoising, or residual benefit. EXP-0030
+    evaluation panels applied the predeclared eligibility gate but did not fit, tune, or pre-gate-select the candidate panel,
+    hyperparameters, checkpoints, thresholds, or a favorable reported subset; zero of seven subtractors was eligible. Do not
+    launch another residual-detector screen from these seven subtractors or expand the current tiled decoder in place with
+    more seeds, steps, depth, thresholds, or favorable subgroups. Scientific-audit media, reliable motion/acquisition support,
+    multi-seed evidence, independent-recording support, and biological identity remain incomplete; no claim, evidence capsule,
+    precision, denoising, causality, or generalization statement is authorized.'
   artifacts:
   - ../../docs/workflows/motion_registration_confound_audit_v2.md
   - ../../research/registry/runs/NREV-RUN-EXP-0025-SCREEN-20260830-E.yaml
@@ -623,7 +680,14 @@ experiments:
     -0.03698]; JEPA also crossed both collapse thresholds at the screen budget. The screen is not a completed scientific experiment
     and does not formally resolve the registered gates.
   limitation: 'This is non-claim-bearing engineering history: scientific audit and promotion remain unresolved, evidence tier
-    is none, and no evidence capsule exists.'
+    is none, and no evidence capsule exists. This draft does not authorize claim-bearing execution, promotion, or a scientific
+    claim. The successful engineering run does not change NREV-EXP-0028 from draft, not_evaluated, and evidence tier none.
+    One seed at 500 steps cannot substitute for the registered three seeds at 5000 steps. The unfavorable estimate and screen-level
+    threshold violations justify a conservative post-hoc engineering hold, not a formal experiment-level gate failure or a
+    prespecified futility stop. Run into the registered non-colliding output root and preserve exact code, input, configuration,
+    seed, and environment provenance. Complete the applicable scientific audit package before treating computation as audit-complete.
+    Keep raw inputs, reviewer identities, private randomization material, credentials, and large generated artifacts outside
+    Git.'
   artifacts:
   - ../../docs/workflows/spatiotemporal_jepa_representation_v1.md
   - ../../research/registry/runs/NREV-RUN-EXP-0028-SCREEN-20260829-B.yaml
@@ -656,7 +720,20 @@ experiments:
     AR(1), the closest subtractor, passed 5 of 11. Every experiment remains draft, not evaluated, evidence tier none, and
     without a claim or capsule.
   limitation: 'This is non-claim-bearing engineering history: scientific audit and promotion remain unresolved, evidence tier
-    is none, and no evidence capsule exists.'
+    is none, and no evidence capsule exists. Register only canonical Motion Run E and predictor-feasibility Run B; motion
+    A through D, predictor A, and superseded rank diagnostics remain provisional unregistered engineering history. Do not
+    use the Run-E crop-global/local-window translation-like estimates as motion fields, regressors, measured biological motion,
+    or evidence that motion is absent; all 12 failed reliability review. Do not treat source-off windows as neuron-free, signal-free,
+    pure background, or noise-only; native candidates and biological activity remain unknown rather than negative. Rank-F
+    categories are operational paired top-four recovery patterns only and do not identify a competitor, attenuation, causal
+    response failure, false positive, artifact, or biological source. The source-off residual guardrail is retrospective and
+    its all-raw output establishes exact fallback identity only, not prospective safety, denoising, or residual benefit. EXP-0030
+    evaluation panels applied the predeclared eligibility gate but did not fit, tune, or pre-gate-select the candidate panel,
+    hyperparameters, checkpoints, thresholds, or a favorable reported subset; zero of seven subtractors was eligible. Do not
+    launch another residual-detector screen from these seven subtractors or expand the current tiled decoder in place with
+    more seeds, steps, depth, thresholds, or favorable subgroups. Scientific-audit media, reliable motion/acquisition support,
+    multi-seed evidence, independent-recording support, and biological identity remain incomplete; no claim, evidence capsule,
+    precision, denoising, causality, or generalization statement is authorized.'
   artifacts:
   - ../../docs/workflows/conditional_background_residual_v1_1.md
   - ../../research/registry/runs/NREV-RUN-EXP-0029-SCREEN-20260830-A.yaml
@@ -695,7 +772,20 @@ experiments:
     AR(1), the closest subtractor, passed 5 of 11. Every experiment remains draft, not evaluated, evidence tier none, and
     without a claim or capsule.
   limitation: 'This is non-claim-bearing engineering history: scientific audit and promotion remain unresolved, evidence tier
-    is none, and no evidence capsule exists.'
+    is none, and no evidence capsule exists. Register only canonical Motion Run E and predictor-feasibility Run B; motion
+    A through D, predictor A, and superseded rank diagnostics remain provisional unregistered engineering history. Do not
+    use the Run-E crop-global/local-window translation-like estimates as motion fields, regressors, measured biological motion,
+    or evidence that motion is absent; all 12 failed reliability review. Do not treat source-off windows as neuron-free, signal-free,
+    pure background, or noise-only; native candidates and biological activity remain unknown rather than negative. Rank-F
+    categories are operational paired top-four recovery patterns only and do not identify a competitor, attenuation, causal
+    response failure, false positive, artifact, or biological source. The source-off residual guardrail is retrospective and
+    its all-raw output establishes exact fallback identity only, not prospective safety, denoising, or residual benefit. EXP-0030
+    evaluation panels applied the predeclared eligibility gate but did not fit, tune, or pre-gate-select the candidate panel,
+    hyperparameters, checkpoints, thresholds, or a favorable reported subset; zero of seven subtractors was eligible. Do not
+    launch another residual-detector screen from these seven subtractors or expand the current tiled decoder in place with
+    more seeds, steps, depth, thresholds, or favorable subgroups. Scientific-audit media, reliable motion/acquisition support,
+    multi-seed evidence, independent-recording support, and biological identity remain incomplete; no claim, evidence capsule,
+    precision, denoising, causality, or generalization statement is authorized.'
   artifacts:
   - ../../docs/workflows/source_off_predictor_feasibility_v1.md
   - ../../research/registry/runs/NREV-RUN-EXP-0030-SCREEN-20260830-B.yaml
@@ -710,6 +800,91 @@ experiments:
     safety. EXP-0030 Run B admitted zero of seven subtractors through its fixed 11-check eligibility gate. Hold this implementation
     path rather than widening it with more seeds, steps, depth, or another detector. This action is design triage, not rejection
     of motion modeling, conditional prediction, JEPA, or background subtraction as general research directions.
+- id: NREV-EXP-0031
+  question: Can causal spatiotemporal upper envelopes provide interpretable scalar context for Raw and learned evidence while
+    retaining ordinal and localization structure beyond simple amplitude squaring?
+  design: Apply frozen global quiet calibration to aligned Raw, current ICA-to-LS, and TMax5-to-LS-to-ICA sources; sweep five
+    causal temporal and three same-size spatial max windows; compare eight current, envelope, product, geometric, ratio, attenuation,
+    and range-position fields; and render fixed-anchor videos.
+  status: draft_not_evaluated_documented_result_history; evidence_tier_none
+  finding: The pilot completed 360 metric rows across three sources, five temporal windows, three spatial supports, and eight
+    feature forms; all 18 representative videos decoded. Added spatial support inflated diffuse and quiet evidence, while
+    H=A^2/U was the cleanest attenuation layer. This is engineering output, not a scientific-audit-complete detector experiment.
+  limitation: 'This is non-claim-bearing engineering history: scientific audit and promotion remain unresolved, evidence tier
+    is none, and no evidence capsule exists. No detector, candidates, full-field precision, biological specificity, identity,
+    or independent transfer was established. The apparent A*U contrast partly reflects the no-pooling A-squared nonlinearity;
+    local coherence retains its separate existing definition.'
+  artifacts:
+  - ../../docs/workflows/contextual_envelope_features_v1.md
+  - ../../docs/research/CONTEXTUAL_ENVELOPE_FEATURES_V1_RESULTS.md
+  - ../../research/registry/decisions/NREV-DEC-0029.yaml
+  next_decision: Keep instantaneous evidence, upper envelope, agreement, gated evidence, and attenuation separate; subsequent
+    retrieval and morphology analyses are recorded as EXP-0032 and EXP-0033.
+- id: NREV-EXP-0032
+  question: Does agreement-attenuated evidence improve confirmed-event localization over instantaneous evidence and amplitude
+    squaring, and is any gain specific to aligned causal context?
+  design: Reconstruct seven frozen instantaneous, amplitude-square, agreement-attenuated, temporally shuffled, and spatially
+    displaced arms for Raw and two learned sources; evaluate all 106 occurrences with same-duration guarded quiet windows
+    and site bootstraps.
+  status: draft_not_evaluated_documented_result_history; evidence_tier_none
+  finding: All 106 occurrences at 50 sites produced 2226 occurrence-feature rows and 106 trace comparisons. No aligned attenuation
+    arm passed the gate against both A-squared and its matched misalignment control. Temporal peak localization nearly tied
+    the amplitude control; the 3-by-3 spatial envelope reduced localization. The run report records validation passed and
+    scientific promotion false.
+  limitation: 'This is non-claim-bearing engineering history: scientific audit and promotion remain unresolved, evidence tier
+    is none, and no evidence capsule exists. This is within-recording operator retrieval; no biological negatives, full-field
+    precision, specificity, identity, or transfer were established. The existing registry retains its draft/evidence-none
+    status until normalized run and audit provenance is reconciled; this decision makes the completed report visible without
+    promotion.'
+  artifacts:
+  - ../../docs/workflows/contextual_envelope_retrieval_v1.md
+  - ../../docs/research/CONTEXTUAL_ENVELOPE_RETRIEVAL_V1_RESULTS.md
+  - ../../research/registry/decisions/NREV-DEC-0030.yaml
+  next_decision: The peak-rank estimand selects maxima where U equals A, so temporal H equals A there. Retain temporal attenuation
+    for trace-morphology diagnosis and do not advance the spatial arm for known-center retrieval.
+- id: NREV-EXP-0033
+  question: What does a 100-ms causal max-pooling envelope change in full event morphology when evaluation is not reduced
+    to the winning peak?
+  design: Align all confirmed occurrences to their source-specific instantaneous-evidence peak and compare six frozen temporal-envelope
+    operators using absolute metrics, normalized morphology, site-bootstrap uncertainty, occurrence panels, and fixed-scale
+    videos.
+  status: validated_supported_documented_result_history; evidence_tier_current_recording
+  finding: The validated current-recording morphology run evaluated six operators across three sources over 106 occurrences
+    at 50 sites with 2000 site-bootstrap resamples. H=A^2/U preserved the aligned anchor, increased event-area/core concentration,
+    and reduced post-peak shoulder across all three sources with paired intervals excluding zero. It produced 106 occurrence
+    panels and three fixed-scale 560-frame videos. Scientific promotion remains false.
+  limitation: 'Registered evidence tier: current_recording. No portable evidence capsule or new claim promotion is recorded.
+    This validated operator audit created no detector, candidate coordinates, model annotations, or portable evidence capsule.
+    Morphology changes do not establish better detection, specificity, biological waveform fidelity, identity, or independent
+    transfer. Raw A remains necessary for biological waveform analysis because H deliberately alters decay morphology.'
+  artifacts:
+  - ../../docs/workflows/contextual_envelope_morphology_v1.md
+  - ../../docs/research/CONTEXTUAL_ENVELOPE_MORPHOLOGY_V1_RESULTS.md
+  - ../../research/registry/runs/NREV-RUN-EXP-0033-MORPHOLOGY-20260831-B.yaml
+  - ../../research/registry/decisions/NREV-DEC-0031.yaml
+  next_decision: Retain U for causal memory, P=A*U for exploratory context-reinforced evidence, and H=A^2/U for peak-preserving
+    attenuation; the measured morphology outcome is supported within the current recording.
+- id: NREV-EXP-0037
+  question: Do temporal-envelope, soma, source-consistency, and nuisance/competition features add ranking information to the
+    frozen candidate union?
+  design: Compare retrained existing and augmented linear models on the same five spatial folds and candidate union; retain
+    grouped intervals, family ablations, leave-one-burst-out results, and the final display-only Run E lineage.
+  status: computed_inconclusive_documented_result_history; evidence_tier_descriptive
+  finding: On the same 1619-candidate union, augmented linear macro held-fold SPU-AUC was 0.984392 versus 0.979734 for the
+    retrained existing model, with 35/78 versus 34/78 at budget 58. The paired global SPU-AUC delta was +0.004784, but its
+    grouped interval [-0.004081, +0.015125] crossed zero. Nuisance/competition had the strongest family point estimate, also
+    with an interval crossing zero. Scientific promotion and the full model-annotation audit remain incomplete.
+  limitation: 'Registered evidence tier: descriptive. No portable evidence capsule or new claim promotion is recorded. SPU-AUC
+    measures positive-versus-unlabeled ranking, not precision, specificity, calibrated neuron probability, or end-to-end proposal
+    recall. The grouped global-AUC interval and macro held-fold AUC are distinct summaries and must retain their names. The
+    final Run E changes a display bound only; failed partial runs and superseded visual iterations remain preserved. The new
+    ranking audit is incomplete and the 78 positive anchors remain part of the same historically examined recording.'
+  artifacts:
+  - ../../docs/workflows/spon_ca_burst_feature_atlas_v1.md
+  - ../../docs/research/SPON_CA_BURST_FEATURE_ATLAS_V1_RESULTS.md
+  - ../../research/registry/decisions/NREV-DEC-0028.yaml
+  next_decision: Retain this as an exploratory feature-engineering result. Competition-aware, identity-safe proposal resolution
+    is the next bounded candidate; the favorable family was selected among four inspected families and requires confirmation.
 next_experiments:
 - id: complete_external_bounded_review_v2
   priority: 1

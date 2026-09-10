@@ -1,0 +1,47 @@
+\subsection{Software architecture and identity-safe data model}
+
+NeuRev Workbench is organized as a Python command-line and library workflow.
+Dataset, experiment, program, run, workbench, reporting, and validation command
+groups are registered through a common command surface; the neuron-identifiability
+program adds preflight, bounded execution, resume, stage-range, CPU-only, strict,
+and paper-export controls. This manuscript evaluates the repository workflow,
+not a finalized public API. Versioned example data, a stable external API, a
+released environment, and archival identifiers remain release gates.
+
+The core schema separates four records. An observation site is an immutable
+identifier for a coordinate-defined measurement. Geometry records retain signal
+and background supports plus hashes. Canonical identity is a separate,
+versioned relation that may group observations without overwriting either
+geometry. Candidate state records known positive (P), unlabeled (U), review
+outcome, and artifact status. This separation permits alternative geometry or
+identity hypotheses to be compared while preserving the original measurement.
+
+\subsection{Run, artifact, evidence, and manuscript lifecycle}
+
+A bounded run resolves its configuration before execution and writes to a new
+output root. Compact tables, validation state, artifact indexes, and file hashes
+are retained with the run. Registered experiments link claims, decisions, run
+records, and portable evidence capsules. The registry compiler validates schemas,
+identifiers, links, and repository-safe artifact paths before generating readable
+claim, timeline, and story views. Capsule-free or unregistered engineering runs
+remain visible as engineering history but cannot silently become repeated
+main-paper facts.
+
+The venue-paper layer adds a second source-binding step. A deterministic facts
+builder reads \VenueFactSourceCount{} compact artifacts, reconciles denominators and identity
+subtypes, and emits shared \LaTeX{} macros plus a source/hash manifest. A separate
+figure builder reads frozen compact tables and emits venue-only figures and an
+asset manifest. Package validation rejects unresolved inputs, private paths,
+stale cohort counts, placeholder figures, ambiguous B58 wording, and missing
+assets. Scientific interpretation remains author-reviewed despite these
+mechanical checks.
+
+\subsection{Review workflow and interoperability boundary}
+
+Review exports preserve blinded identifiers, synchronized event context, exact
+center traces, spatial panels, and an immutable mapping back to source records.
+Normalized calls and morphology attributes are stored separately from ranking
+scores so that a review-priority model cannot be mistaken for a neuron-probability
+model. The current repository can export paper and review artifacts, but a
+portable example dataset, public schema documentation, external format adapters,
+and a clean-install tutorial are not yet complete and are not claimed here.

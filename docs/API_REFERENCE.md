@@ -564,6 +564,325 @@ Event-balanced two-frame CS-Parzen ICA diagnostic workflow.
 - Signature: `run(config: EventWeightedCSParzenConfig, *, preflight_dir: str | Path, authorize_full_spon: bool=False, resume: bool=False) -> dict[str, Any]`
 - Summary: No docstring summary available.
 
+## `neurobench.experiments.gamma_ls_difference`
+
+Core utilities for the Gamma-LS temporal-difference ablation.
+
+### `align_representation_maps`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.gpu_representations`
+- Signature: `align_representation_maps(maps: Mapping[str, DeviceRepresentationMap]) -> tuple[dict[str, DeviceRepresentationMap], torch.Tensor]`
+- Summary: Trim device-resident maps to their exact source-frame intersection.
+
+### `ALL_ARMS`
+
+- Kind: `object`
+- Source: `neurobench.experiments.gamma_ls_difference`
+- Signature: `ALL_ARMS`
+- Summary: Exported by __all__.
+
+### `ALLOWED_NMS_DISTANCES_PX`
+
+- Kind: `object`
+- Source: `neurobench.experiments.gamma_ls_difference`
+- Signature: `ALLOWED_NMS_DISTANCES_PX`
+- Summary: Exported by __all__.
+
+### `BoundedArrivalQueue`
+
+- Kind: `class`
+- Source: `neurobench.experiments.gamma_ls_difference.streaming_benchmark`
+- Signature: `class BoundedArrivalQueue`
+- Summary: Deterministic drop-newest queue for an independent periodic producer.
+
+### `build_representation_bundle`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.gpu_representations`
+- Signature: `build_representation_bundle(values: torch.Tensor, *, frozen_two_frame: Mapping[str, Any], frozen_v5: Mapping[str, Any], source_frame_indices: torch.Tensor | None=None, energy_epsilon: float=1e-08) -> DeviceRepresentationBundle`
+- Summary: Build adjacent-preprocessed and acquisition-raw six-lag arms.
+
+### `BurstCandidateResult`
+
+- Kind: `class`
+- Source: `neurobench.experiments.gamma_ls_difference.evaluation`
+- Signature: `class BurstCandidateResult`
+- Summary: Label-free threshold-occupancy maps and strict separated peaks.
+
+### `calibrate_training_quiet_thresholds`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.evaluation`
+- Signature: `calibrate_training_quiet_thresholds(scores: Any, training_quiet_mask: Any, target_durations: Mapping[Any, int] | Sequence[int], *, target_peak_burdens: Sequence[float]=QUIET_NMS_PEAK_BURDENS, nms_distance_px: int=NMS_DISTANCE_PX, pseudo_burst_starts: Mapping[Any, int] | None=None, max_threshold_candidates: int=129) -> QuietThresholdCalibration`
+- Summary: Freeze score cutoffs from duration-matched training-quiet pseudo-bursts.
+
+### `CANDIDATE_BUDGETS_PER_BURST`
+
+- Kind: `object`
+- Source: `neurobench.experiments.gamma_ls_difference`
+- Signature: `CANDIDATE_BUDGETS_PER_BURST`
+- Summary: Exported by __all__.
+
+### `causal_preprocess_common_input`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.gpu_representations`
+- Signature: `causal_preprocess_common_input(values: torch.Tensor, *, source_frame_indices: torch.Tensor | None=None) -> DeviceRepresentationMap`
+- Summary: Apply the frozen sigma-1 spatial Gaussian and causal alpha-0.4 EMA.
+
+### `CausalPreprocessingConfig`
+
+- Kind: `class`
+- Source: `neurobench.experiments.gamma_ls_difference.representations`
+- Signature: `class CausalPreprocessingConfig`
+- Summary: Configuration for the common causal input of adjacent-frame arms.
+
+### `ContextLane`
+
+- Kind: `class`
+- Source: `neurobench.experiments.gamma_ls_difference.protected`
+- Signature: `class ContextLane`
+- Summary: One pre-label-selected Gamma context role for an outer fold.
+
+### `DIAGNOSTIC_ARMS`
+
+- Kind: `object`
+- Source: `neurobench.experiments.gamma_ls_difference`
+- Signature: `DIAGNOSTIC_ARMS`
+- Summary: Exported by __all__.
+
+### `duration_matched_quiet_windows`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.evaluation`
+- Signature: `duration_matched_quiet_windows(training_quiet_mask: Any, target_durations: Mapping[Any, int] | Sequence[int], *, starts: Mapping[Any, int] | None=None) -> dict[Any, tuple[int, int]]`
+- Summary: Construct deterministic quiet windows with the declared burst durations.
+
+### `energy_normalized_difference_representation`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.gpu_representations`
+- Signature: `energy_normalized_difference_representation(common_input: torch.Tensor, *, epsilon: float=1e-08, lag_frames: int=1, source_frame_indices: torch.Tensor | None=None) -> DeviceRepresentationMap`
+- Summary: Return the signed difference divided by two-frame signal energy.
+
+### `evaluate_sparse_positive_recall`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.evaluation`
+- Signature: `evaluate_sparse_positive_recall(burst_peaks: Mapping[Any, Sequence[Peak]], sparse_positives: Sequence[Mapping[str, Any]], *, budgets: Sequence[int]=CANDIDATE_BUDGETS_PER_BURST, match_radius_px: float=MATCH_RADIUS_PX) -> dict[str, Any]`
+- Summary: Evaluate frozen candidates against sparse positives at fixed budgets.
+
+### `extract_burst_candidates`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.evaluation`
+- Signature: `extract_burst_candidates(scores: Any, burst_windows: Mapping[Any, tuple[int, int]], *, threshold_z: float, nms_distance_px: int=NMS_DISTANCE_PX, limit_per_burst: int=10000) -> BurstCandidateResult`
+- Summary: Threshold frames, aggregate occupancy, then run strict separated NMS.
+
+### `fit_training_quiet_scale_floor`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.evaluation`
+- Signature: `fit_training_quiet_scale_floor(local_std: Any, training_quiet_mask: Any, *, percentile: float) -> LocalStdScaleFloorFit`
+- Summary: Fit a positive local-std floor using training quiet frames and nothing else.
+
+### `frozen_two_frame_cs_parzen_representation`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.gpu_representations`
+- Signature: `frozen_two_frame_cs_parzen_representation(common_input: torch.Tensor, frozen_two_frame: Mapping[str, Any], *, lag_frames: int=1, source_frame_indices: torch.Tensor | None=None) -> DeviceRepresentationMap`
+- Summary: Apply a frozen CS-Parzen component using effective W @ Q.
+
+### `frozen_v5_residual_group_representation`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.gpu_representations`
+- Signature: `frozen_v5_residual_group_representation(acquisition_raw: torch.Tensor, frozen_v5: Mapping[str, Any], *, source_frame_indices: torch.Tensor | None=None) -> DeviceRepresentationMap`
+- Summary: Apply frozen six-lag v5 demixing and residual-subspace energy.
+
+### `load_fold_context_plan`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.protected`
+- Signature: `load_fold_context_plan(selection_dir: str | Path, folds: Sequence[FoldContract]) -> tuple[dict[int, tuple[ContextLane, ...]], dict[str, Any]]`
+- Summary: Load original-screen or extended-support pre-label fold contexts.
+
+### `LocalStdScaleFloorFit`
+
+- Kind: `class`
+- Source: `neurobench.experiments.gamma_ls_difference.evaluation`
+- Signature: `class LocalStdScaleFloorFit`
+- Summary: Positive local-standard-deviation floor fitted on training quiet only.
+
+### `MATCH_RADIUS_PX`
+
+- Kind: `object`
+- Source: `neurobench.experiments.gamma_ls_difference`
+- Signature: `MATCH_RADIUS_PX`
+- Summary: Exported by __all__.
+
+### `MINIMUM_PRODUCTION_DURATION_SECONDS`
+
+- Kind: `object`
+- Source: `neurobench.experiments.gamma_ls_difference`
+- Signature: `MINIMUM_PRODUCTION_DURATION_SECONDS`
+- Summary: Exported by __all__.
+
+### `multilag_energy_normalized_difference_representation`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.gpu_representations`
+- Signature: `multilag_energy_normalized_difference_representation(acquisition_raw: torch.Tensor, *, epsilon: float=1e-08, source_frame_indices: torch.Tensor | None=None) -> DeviceRepresentationMap`
+- Summary: Pool five fixed energy-normalized lag differences at history 16.
+
+### `NMS_DISTANCE_PX`
+
+- Kind: `object`
+- Source: `neurobench.experiments.gamma_ls_difference`
+- Signature: `NMS_DISTANCE_PX`
+- Summary: Exported by __all__.
+
+### `NMS_SENSITIVITY_DISTANCES_PX`
+
+- Kind: `object`
+- Source: `neurobench.experiments.gamma_ls_difference`
+- Signature: `NMS_SENSITIVITY_DISTANCES_PX`
+- Summary: Exported by __all__.
+
+### `paired_representation_equivalence`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.evaluation`
+- Signature: `paired_representation_equivalence(reference: Any, candidate: Any, *, top_fraction: float=0.01) -> dict[str, Any]`
+- Summary: Return correlation, scale-adjusted nRMS, and absolute-tail Jaccard.
+
+### `parse_gamma_context_id`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.streaming_benchmark`
+- Signature: `parse_gamma_context_id(context_id: str, *, scale_floor: float=0.0) -> GammaReferenceSpec`
+- Summary: Reconstruct a guarded radial context while preserving its exact source ID.
+
+### `pca_whitened_delay_total_energy_representation`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.gpu_representations`
+- Signature: `pca_whitened_delay_total_energy_representation(acquisition_raw: torch.Tensor, frozen_v5: Mapping[str, Any], *, source_frame_indices: torch.Tensor | None=None) -> DeviceRepresentationMap`
+- Summary: Apply frozen delay whitening before rotation and pool all coordinates.
+
+### `pca_whitened_derivative_representation`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.gpu_representations`
+- Signature: `pca_whitened_derivative_representation(common_input: torch.Tensor, frozen_two_frame: Mapping[str, Any], *, lag_frames: int=1, source_frame_indices: torch.Tensor | None=None) -> DeviceRepresentationMap`
+- Summary: Apply the frozen full-rank whitening row closest to [-1,+1].
+
+### `ProtectedRepresentationUnavailable`
+
+- Kind: `class`
+- Source: `neurobench.experiments.gamma_ls_difference.protected`
+- Signature: `class ProtectedRepresentationUnavailable`
+- Summary: Raised when the protected run fails a gate before scientific output.
+
+### `quiet_mad_standardized_difference_representation`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.representations`
+- Signature: `quiet_mad_standardized_difference_representation(common_input: np.ndarray, quiet_frame_mask: np.ndarray, *, lag_frames: int=1, mad_floor_percentile: float=10.0, source_frame_indices: np.ndarray | None=None) -> RepresentationMap`
+- Summary: Standardize signed differences with per-pixel statistics from quiet frames.
+
+### `QUIET_NMS_PEAK_BURDENS`
+
+- Kind: `object`
+- Source: `neurobench.experiments.gamma_ls_difference`
+- Signature: `QUIET_NMS_PEAK_BURDENS`
+- Summary: Exported by __all__.
+
+### `QuietThresholdCalibration`
+
+- Kind: `class`
+- Source: `neurobench.experiments.gamma_ls_difference.evaluation`
+- Signature: `class QuietThresholdCalibration`
+- Summary: Frozen score thresholds calibrated to empirical quiet peak burdens.
+
+### `raw_representation`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.gpu_representations`
+- Signature: `raw_representation(common_input: torch.Tensor, *, source_frame_indices: torch.Tensor | None=None) -> DeviceRepresentationMap`
+- Summary: Return the already-preprocessed input without another transform.
+
+### `RepresentationBundle`
+
+- Kind: `class`
+- Source: `neurobench.experiments.gamma_ls_difference.representations`
+- Signature: `class RepresentationBundle`
+- Summary: Representations aligned to a shared set of source frames.
+
+### `RepresentationMap`
+
+- Kind: `class`
+- Source: `neurobench.experiments.gamma_ls_difference.representations`
+- Signature: `class RepresentationMap`
+- Summary: A TYX representation and the source movie frame attached to each row.
+
+### `run_protected_representation_experiment`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.protected`
+- Signature: `run_protected_representation_experiment(config: GammaLSDifferenceConfig, *, preflight_dir: str | Path, context_selection_dir: str | Path, output_dir: str | Path, device: str='cuda:0') -> dict[str, Any]`
+- Summary: Run, seal, and evaluate the protected adjacent-frame comparison.
+
+### `run_streaming_benchmark`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.streaming_benchmark`
+- Signature: `run_streaming_benchmark(config: GammaLSDifferenceConfig, *, preflight_dir: str | Path, screen_dir: str | Path, output_dir: str | Path, context_id: str='gamma_h11_g5_n9_m1', arms: Sequence[str]=STREAMING_ARMS, duration_seconds: float=MINIMUM_PRODUCTION_DURATION_SECONDS, arrival_interval_ms: float=1.0, arrival_queue_capacity: int=DEFAULT_ARRIVAL_QUEUE_CAPACITY, source_ring_frames: int=DEFAULT_SOURCE_RING_FRAMES, stream_start_ui: int=1900, device: str='cuda') -> dict[str, Any]`
+- Summary: Run sustained paced lanes and atomically commit a timing-only artifact.
+
+### `select_fold_ica_fit`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.protected`
+- Signature: `select_fold_ica_fit(rows: Sequence[Mapping[str, Any]], *, fold: int, context_role: str, bandwidths: Sequence[float], seeds: Sequence[int]) -> Mapping[str, Any]`
+- Summary: Select one of exactly nine label-free CS-Parzen fits deterministically.
+
+### `select_fold_pca_fit`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.protected`
+- Signature: `select_fold_pca_fit(rows: Sequence[Mapping[str, Any]], *, fold: int, context_role: str, bandwidths: Sequence[float], seeds: Sequence[int]) -> Mapping[str, Any]`
+- Summary: Select among three seed-specific whitening fits, collapsing bandwidth.
+
+### `signed_difference_representation`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.gpu_representations`
+- Signature: `signed_difference_representation(common_input: torch.Tensor, *, lag_frames: int=1, source_frame_indices: torch.Tensor | None=None) -> DeviceRepresentationMap`
+- Summary: Return P[t] - P[t-lag], aligned to current source frame t.
+
+### `STREAMING_ARMS`
+
+- Kind: `object`
+- Source: `neurobench.experiments.gamma_ls_difference`
+- Signature: `STREAMING_ARMS`
+- Summary: Exported by __all__.
+
+### `strict_separated_nms`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.evaluation`
+- Signature: `strict_separated_nms(score: Any, *, distance_px: int=NMS_DISTANCE_PX, threshold: float=0.0, limit: int=10000) -> list[Peak]`
+- Summary: Apply maintained deterministic NMS with a strict score cutoff.
+
+### `temporal_threshold_occupancy`
+
+- Kind: `function`
+- Source: `neurobench.experiments.gamma_ls_difference.evaluation`
+- Signature: `temporal_threshold_occupancy(scores: Any, *, threshold_z: float) -> np.ndarray`
+- Summary: Aggregate a burst as the fraction of frames strictly above threshold.
+
 ## `neurobench.experiments.hard_roi_adjudication`
 
 Versioned hard-ROI review and frozen re-evaluation workflow.
@@ -592,6 +911,45 @@ Stage-gated hierarchical Parzen ICA experiment.
 - Source: `neurobench.experiments.hierarchical_parzen_ica.config`
 - Signature: `class HierarchicalParzenICAConfig`
 - Summary: No docstring summary available.
+
+## `neurobench.experiments.ica_whitening_evaluation`
+
+Conditional-factorial ICA and whitening evaluation program.
+
+### `build_design`
+
+- Kind: `function`
+- Source: `neurobench.experiments.ica_whitening_evaluation.design`
+- Signature: `build_design(config: ICAWhiteningConfig) -> list[dict[str, Any]]`
+- Summary: Materialize every cell, boundary anchor, Sobol point, and paired seed.
+
+### `design_digest`
+
+- Kind: `function`
+- Source: `neurobench.experiments.ica_whitening_evaluation.design`
+- Signature: `design_digest(rows: list[dict[str, Any]]) -> str`
+- Summary: No docstring summary available.
+
+### `enumerate_cells`
+
+- Kind: `function`
+- Source: `neurobench.experiments.ica_whitening_evaluation.design`
+- Signature: `enumerate_cells(config: ICAWhiteningConfig) -> tuple[DiscreteCell, ...]`
+- Summary: Return the complete valid Cartesian set in deterministic order.
+
+### `ICAWhiteningConfig`
+
+- Kind: `class`
+- Source: `neurobench.experiments.ica_whitening_evaluation.config`
+- Signature: `class ICAWhiteningConfig`
+- Summary: No docstring summary available.
+
+### `ICAWhiteningConfigError`
+
+- Kind: `class`
+- Source: `neurobench.experiments.ica_whitening_evaluation.config`
+- Signature: `class ICAWhiteningConfigError`
+- Summary: Raised when an evaluation manifest violates the frozen contract.
 
 ## `neurobench.experiments.information_source_separation`
 

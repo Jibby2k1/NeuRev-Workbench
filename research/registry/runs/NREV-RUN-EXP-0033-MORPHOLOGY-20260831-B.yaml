@@ -1,0 +1,60 @@
+schema_version: 1
+record_type: run
+id: NREV-RUN-EXP-0033-MORPHOLOGY-20260831-B
+experiment_id: NREV-EXP-0033
+program_id: NREV-PRG-0001
+lifecycle: succeeded
+planned_at: '2026-08-31T14:29:30Z'
+started_at: '2026-08-31T14:30:03Z'
+ended_at: '2026-08-31T14:31:04Z'
+code:
+  repository: https://github.com/Jibby2k1/NeuRev-Workbench
+  commit: 0fe1b38aec6e1748fa5ec056aa883977d9999f05
+  branch: codex/neuron-identifiability-paper-20260822
+  dirty: true
+  diff_sha256: ca842e02f7ae1fa3acaea1c2a846a3b95be0c11d92a47d422f8421f1a0e6b1e0
+configuration:
+  path: docs/workflows/contextual_envelope_morphology_v1.md
+  sha256: 1fed944f50378274375d5a499ce155384df573178e1e35d8bd9961fed9da7725
+inputs:
+- id: CONTEXTUAL-ENVELOPE-MORPHOLOGY-SOURCES-V1
+  role: data
+  sha256: 0912066687b67d36658d1e1319f321bd5f3d4ae2512fbd6b20a7d9be718579e2
+  location: research/data-registry/contextual_envelope_morphology_sources_v1.json
+environment:
+  platform: Linux 7.0.0-28-generic x86_64 with glibc 2.39
+  runtime: CPython 3.12.13, NumPy 2.4.4, SciPy 1.17.1, Matplotlib 3.11.1, Pillow 12.3.0, ffmpeg 6.1.1
+  dependency_lock:
+    path: pyproject.toml
+    sha256: 87709b08b0d8d7e32beecd563c9ae83762c8a4669bbb4c94d5f111ea6b665737
+  hardware: CPU execution
+randomization:
+  deterministic: true
+  seeds:
+  - 20260831
+  notes: Seed 20260831 fixes 2,000 immutable-site bootstrap resamples; operator construction, alignment, videos, and per-occurrence panels are deterministic and contain no fitting.
+artifacts:
+  output_root: Outputs/NeuronIdentifiability/NREV-EXP-0033/runs/NREV-RUN-EXP-0033-MORPHOLOGY-20260831-B
+  manifest_path: Outputs/NeuronIdentifiability/NREV-EXP-0033/runs/NREV-RUN-EXP-0033-MORPHOLOGY-20260831-B/artifact_index.json
+  manifest_sha256: 6477b8ff37df16c2b47f60f69d40f0aca5dd8824042f12d996e35b7862cb76e9
+validation:
+  preflight: passed
+  execution: passed
+  outputs: passed
+  checks:
+  - id: exact_population
+    status: passed
+    summary: All six operators across three frozen sources covered exactly 106 occurrences nested in 50 immutable sites, producing 1,908 finite occurrence-operator rows.
+  - id: visual_inventory
+    status: passed
+    summary: The run contains one aligned population atlas, one paired morphology figure, 106 absolute and normalized occurrence panels, and three H.264 fixed-scale videos with 560 frames each.
+  - id: morphology_visibility
+    status: passed
+    summary: Agreement attenuation preserved the aligned anchor while increasing event-area and core concentration and reducing the post-peak shoulder across all three sources; paired immutable-site bootstrap intervals excluded zero for these endpoints.
+  - id: interpretation_boundary
+    status: passed
+    summary: The audit establishes within-recording operator morphology only; it creates no detector or candidates and does not estimate precision, specificity, identity, biological waveform fidelity, or transfer.
+  - id: scientific_promotion
+    status: passed
+    summary: Experiment validation is complete and the current-recording morphology outcome is supported, but scientific claim promotion remains false and no evidence capsule was created.
+visibility: public

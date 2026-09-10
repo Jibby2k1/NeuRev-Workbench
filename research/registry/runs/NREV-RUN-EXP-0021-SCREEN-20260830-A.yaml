@@ -1,0 +1,93 @@
+schema_version: 1
+record_type: run
+id: NREV-RUN-EXP-0021-SCREEN-20260830-A
+experiment_id: NREV-EXP-0021
+program_id: NREV-PRG-0001
+lifecycle: failed
+planned_at: '2026-08-30T15:59:31.199809Z'
+started_at: '2026-08-30T17:27:38.426089Z'
+ended_at: '2026-08-30T17:28:51.057440Z'
+code:
+  repository: https://github.com/Jibby2k1/NeuRev-Workbench
+  commit: 0fe1b38aec6e1748fa5ec056aa883977d9999f05
+  branch: codex/neuron-identifiability-paper-20260822
+  dirty: true
+  diff_sha256: 8ad7f37eea6e65ae854214f5662795fc5aab1a7bd9fe4ba4388af4863c7e3a6c
+configuration:
+  path: research/run-provenance/NREV-RUN-EXP-0021-SCREEN-20260830-A/resolved_config.json
+  sha256: c2eb92a03b9b953c4148a3b62ef9a68b32d161080168bf0cec9069c696d16073
+inputs:
+- id: NREV-DATA-UNCERTAINTY-AWARE-LEARNING-SOURCES-V1
+  role: data
+  sha256: 658b8d0c77ff156f4abb85763f1616eec4e729110ca4d5092ab635f03369e01d
+  location: research/data-registry/uncertainty_aware_learning_sources_v1.json
+environment:
+  platform: linux/x86_64
+  runtime: CPython 3.12.13; exact package versions and resource snapshot were not serialized before the assembly failure
+  dependency_lock:
+    path: pyproject.toml
+    sha256: 87709b08b0d8d7e32beecd563c9ae83762c8a4669bbb4c94d5f111ea6b665737
+  hardware: CPU execution; exact host resource snapshot was not serialized before failure
+randomization:
+  deterministic: true
+  seeds:
+  - 2101
+  - 3101
+  - 3102
+  - 3103
+  - 3104
+  - 3105
+  - 3106
+  - 3107
+  - 3108
+  - 3109
+  - 3110
+  - 4101
+  - 4201
+  notes: Model, bootstrap, and permutation seeds were frozen in the source configuration. The run stopped during paired-bootstrap
+    assembly before any model metric table or final summary was published.
+artifacts:
+  output_root: Outputs/NeuronIdentifiability/NREV-EXP-0021/runs/NREV-RUN-EXP-0021-SCREEN-20260830-A
+  manifest_path: research/run-provenance/NREV-RUN-EXP-0021-SCREEN-20260830-A/failed_provenance_index.json
+  manifest_sha256: bf5f44063c0659bb5594d8c2188e82a59f8184e18c636f1af1cf0bce61aeba95
+validation:
+  preflight: passed
+  execution: failed
+  outputs: partial
+  checks:
+  - id: persisted_timing_boundary
+    status: partial
+    summary: The runner did not serialize public-entry or failure timestamps. Registry started_at is the first persisted
+      runner progress timestamp, and ended_at is the failed status-file publication timestamp; they bound the preserved
+      failure rather than inventing unavailable internal timing.
+  - id: preflight_integrity
+    status: passed
+    summary: Repository, protocol, descriptor, dependency declaration, all 24 input authorities, all 12 implementation authorities,
+      resource, collision, and candidate-census preflight gates passed read-only.
+  - id: candidate_census
+    status: passed
+    summary: The frozen census materialized exactly 1,999 event candidates and 2,938 quiet source-off controls across the
+      registered four event and four quiet partitions.
+  - id: primary_model_evaluation
+    status: partial
+    summary: The persisted progress log reached primary_oof_evaluation_complete, but no model metric table, bootstrap result,
+      or final summary was serialized; Run A supplies no accepted endpoint result.
+  - id: paired_bootstrap_assembly
+    status: failed
+    summary: Learned methods exposed oof_scores while scalar carrier_signed and cfar_score baselines exposed scores. The
+      contrast assembler directly required oof_scores and raised KeyError at carrier_signed.
+  - id: scientific_audit
+    status: partial
+    summary: The failed partial tree has no complete expert, model, comparison, trace, media-validation, or final scientific-audit
+      package.
+  - id: publication_boundary
+    status: passed
+    summary: Run A remains failed, immutable, and nonresumable; only small sanitized failure provenance is committed and
+      no claim or evidence capsule is created.
+failure:
+  category: runtime
+  summary: A mixed evaluator-result score-schema assumption caused KeyError during paired-bootstrap output assembly after
+    primary OOF evaluation. The partial tree is immutable and nonresumable; v1.1 requires a fresh Run-B root and does not
+    reinterpret Run A as result evidence.
+  recoverable: false
+visibility: public

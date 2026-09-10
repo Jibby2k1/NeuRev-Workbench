@@ -1,0 +1,49 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0036
+origin:
+  kind: migrated_legacy
+  source_path: docs/research/PC_MITL_ICA_SPECIALIZED_CONFIRMATION_RESULTS.md
+  source_sha256: 4addddbd4987e4f4884da24b61a6af04a571bd6480d713aa462ca156d6d99810
+  recorded_on: '2026-09-09'
+  missing_fields:
+  - Retrospective report import, not a new preregistration or execution.
+  - Campaign subruns are retained in the source report and local artifacts; a complete normalized set of native
+    run records and a portable evidence capsule has not been registered.
+program_id: NREV-PRG-0002
+title: PC-MITL-ICA paired development and locked specialized confirmation
+question: Does matrix total correlation improve matched source recovery enough to justify extending the maintained
+  CS-Parzen method?
+objective: Does matrix total correlation improve matched source recovery enough to justify extending the maintained
+  CS-Parzen method?
+rationale: Retrospectively register the existing report and its bounded result without manufacturing run provenance
+  or changing the historical claim ledger.
+lifecycle: computed
+outcome: rejected
+evidence_tier: computational_simulation
+review_state: not_requested
+falsifiers:
+- A report-level completion or software/audit PASS is promoted into an untested scientific conclusion.
+- Different candidate populations, evaluation heads, or biological recordings are pooled as a matched comparison.
+design:
+  summary: Run paired synthetic development followed by the frozen 20-fresh-seed, four-component Laplace confirmation
+    with sparse-calcium guardrails and no confirmation bandwidth search.
+  protocol_path: docs/research/PC_MITL_ICA_PHASE1_PLAN.md
+  results_path: docs/research/PC_MITL_ICA_SPECIALIZED_CONFIRMATION_RESULTS.md
+  unit_of_analysis: Seed-clustered paired synthetic fixtures; 40 primary and 40 sparse-calcium confirmation cells.
+  comparison: Matrix-TC alpha 2 versus factorized CS-Parzen with matched fixtures, train-only whitening, optimization,
+    and untouched contiguous test blocks.
+  data_scope: 80 paired development fixtures and 80 locked confirmation fixtures; no real movie or biological labels.
+gates:
+- id: report_provenance_boundary
+  criterion: Preserve the source report, its stated artifact authorities, failed gates, and scope; retrospective
+    registration is not scientific claim promotion.
+  stage: publication
+  required: true
+claim_ids: []
+decision_ids:
+- NREV-DEC-0027
+run_ids: []
+visibility: public
+created_on: '2026-09-09'
+updated_on: '2026-09-09'

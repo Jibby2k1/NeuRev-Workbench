@@ -1,0 +1,37 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0026
+origin:
+  kind: native
+program_id: NREV-PRG-0002
+title: Record completed ICA artifact gates with bounded sparse-positive conclusions
+lifecycle: active
+action: retain
+rationale: Retain the completed artifact and visual-audit gate state and the documented synthetic amendment without
+  equating sparse-positive retrieval with biological source recovery or population generalization.
+evidence_summary: 'The real-data completion audit passed all eight gates: 30891 exact eligible fits, 28928 converged,
+  26333 whitening-resolved. Protected macro known-positive recall at B58 was 0.300 with burst-bootstrap interval
+  0.092 to 0.509. One finalist passed scientific-audit inventory, decode, and visual inspection. Its independent
+  15 right readout recovered 20/51 at B58 per block for each of three seeds from 18689 frozen candidates. The synthetic
+  screen had 106080 fits and zero fits passing every original source-recovery gate; that failure was explicitly
+  amended to a nonblocking warning.'
+effective_on: '2026-09-09'
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0035
+claim_ids: []
+evidence_capsule_ids: []
+constraints:
+- No portable evidence capsule or new repository claim promotion is created by this retrospective report registration.
+- The single independent recording and seed refits do not establish population-level generalization; unmatched proposals
+  remain unknown.
+- The ICA 20/51 result and Gamma-LS 6/51 result use different pipelines and candidate universes and are not a matched
+  superiority test.
+- Synthetic recovery failure remains a warning; stable ICA components do not establish biological source identity
+  or biological precision.
+follow_up:
+- Use the final real-data report instead of the August 31 progress snapshot.
+- Preserve superseded mixed-implementation spatial artifacts and exclude them from scientific evidence.
+visibility: public
+created_on: '2026-09-09'
+updated_on: '2026-09-09'

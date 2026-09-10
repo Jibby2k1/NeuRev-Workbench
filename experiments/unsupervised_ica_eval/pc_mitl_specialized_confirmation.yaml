@@ -1,0 +1,31 @@
+schema_version: 1
+experiment_id: pc_mitl_ica_specialized_confirmation_v1
+status: frozen_confirmation
+component_count: 4
+train_fraction: 0.70
+seeds: [202609100, 202609101, 202609102, 202609103, 202609104, 202609105, 202609106, 202609107, 202609108, 202609109, 202609110, 202609111, 202609112, 202609113, 202609114, 202609115, 202609116, 202609117, 202609118, 202609119]
+locked_bandwidths:
+  cs_parzen: 1.0
+  matrix_tc_alpha2: 0.5
+bandwidth_provenance:
+  source_run: Outputs/UnsupervisedICAEval/pc_mitl_ica_e01_e02_v3/method_rows.csv
+  rule: modal bandwidth in q4_laplace_easy development cells, locked before confirmation
+optimizer:
+  steps: 60
+  learning_rate: 0.03
+scenarios:
+  - {id: confirm_laplace_n384_c2, role: primary, sample_count: 384, source_family: laplace, condition_number: 2.0, noise_std: 0.02}
+  - {id: confirm_laplace_n384_c4, role: primary, sample_count: 384, source_family: laplace, condition_number: 4.0, noise_std: 0.05}
+  - {id: guard_calcium_n384_c2, role: guardrail, sample_count: 384, source_family: sparse_calcium, condition_number: 2.0, noise_std: 0.02}
+  - {id: guard_calcium_n384_c4, role: guardrail, sample_count: 384, source_family: sparse_calcium, condition_number: 4.0, noise_std: 0.05}
+decision_gate:
+  primary_mean_delta: 0.02
+  primary_ci_lower_bound: 0.0
+  primary_win_fraction: 0.60
+  guardrail_max_mean_loss: -0.02
+  on_pass: advance_to_trajectory_matrix_tc_simulations
+  on_fail: stop_matrix_tc_extension_retain_cs_parzen
+scientific_audit:
+  enabled: true
+  phase: synthetic_confirmation
+  real_video_authorized: false

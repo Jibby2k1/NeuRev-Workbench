@@ -1,0 +1,69 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0033
+origin:
+  kind: native
+program_id: NREV-PRG-0001
+title: Temporal contextual-envelope morphology audit v1
+question: What does a 100-ms causal max-pooling envelope change in full event morphology when evaluation is not
+  reduced to the winning peak?
+objective: Visually and quantitatively compare instantaneous evidence, amplitude squaring, the temporal upper envelope,
+  envelope agreement, envelope-gated evidence, and agreement-attenuated evidence over every canonical-v7 occurrence.
+rationale: NREV-EXP-0032 showed that peak localization is structurally insensitive to temporal agreement attenuation
+  because attenuation vanishes at an included local maximum. A morphology-sensitive audit is required before judging
+  temporal pooling useful or useless.
+lifecycle: validated
+outcome: supported
+evidence_tier: current_recording
+review_state: not_requested
+falsifiers:
+- Alignment, support, window, calibration, or endpoints are changed after operator-level outcomes are inspected.
+- Pixels, frames, or repeated bursts are treated as independent biological replicates instead of grouping by immutable
+  site.
+- Peak normalization is used to conceal absolute event loss or amplification.
+- A morphology result is described as detection, precision, biological identity, or independent-recording evidence.
+design:
+  summary: Align all confirmed occurrences to their source-specific instantaneous-evidence peak and compare six
+    frozen temporal-envelope operators using absolute metrics, normalized morphology, site-bootstrap uncertainty,
+    occurrence panels, and fixed-scale videos.
+  protocol_path: docs/workflows/contextual_envelope_morphology_v1.md
+  results_path: docs/research/CONTEXTUAL_ENVELOPE_MORPHOLOGY_V1_RESULTS.md
+  unit_of_analysis: Confirmed burst occurrence nested in immutable coordinate-defined site; 106 occurrences at 50
+    sites.
+  comparison: A, A-squared, five-frame causal upper envelope U, agreement A-over-U, gated evidence A-times-U, and
+    attenuation A-squared-over-U within each of three frozen sources.
+  data_scope: UI frames 1800 through 2359, four frozen burst intervals, three previously analyzed representations,
+    and guarded same-site quiet references in one recording.
+  grouping_or_blocking: Immutable site is the bootstrap unit; every operator within a source shares the A-derived
+    alignment anchor.
+  sample_plan: Complete fixed population with 2,000 deterministic site-bootstrap resamples and no favorable-subset
+    rerun.
+  randomization: Bootstrap seed 20260831; no learned parameters or randomized feature construction.
+  blinding: Protocol, operators, alignment, endpoints, and visual supports are frozen before computation.
+  analysis_plan: Compare full-trace area, energy, event concentration, core and shoulder fractions, contiguous half-maximum
+    width, peak preservation, aligned bootstrap traces, paired changes, per-occurrence panels, and fixed-scale videos.
+gates:
+- id: exact_population
+  criterion: Every operator has finite required metrics for exactly 106 occurrences and 50 immutable sites.
+  stage: analysis
+  required: true
+- id: morphology_visibility
+  criterion: A morphology interpretation requires a paired site-bootstrap interval excluding zero for a prespecified
+    endpoint and concordant aligned visual evidence without hidden absolute event loss.
+  stage: analysis
+  required: true
+- id: publication_boundary
+  criterion: Results remain descriptive within-recording operator evidence and do not establish detection, precision,
+    specificity, identity, or transfer.
+  stage: publication
+  required: true
+claim_ids: []
+decision_ids:
+- NREV-DEC-0031
+run_ids:
+- NREV-RUN-EXP-0033-MORPHOLOGY-20260831-B
+depends_on_experiment_ids:
+- NREV-EXP-0032
+visibility: public
+created_on: '2026-08-31'
+updated_on: '2026-09-09'

@@ -1,9 +1,25 @@
-# NeuRev Journal of Neuroscience Methods manuscript package
+# NeuRev identity-safe manuscript workspace
 
 This directory is an Overleaf-compatible working manuscript for a full
 Research Article in *Journal of Neuroscience Methods*. It uses Elsevier's
 `elsarticle` class and is organized so final analysis outputs can replace all
 provisional numbers without editing prose by hand.
+
+## Current entry points
+
+The current identity-safe working drafts are
+[`main_jnm_identity_safe_draft.tex`](main_jnm_identity_safe_draft.tex) and
+[`main_neuroinformatics_identity_safe_draft.tex`](main_neuroinformatics_identity_safe_draft.tex).
+Use the [venue draft guide](VENUE_DRAFTS_README.md) for their source-bound facts,
+figures, and package builders. Dated upload packages are local build outputs;
+the maintained sources and builders are the reproducible handoff.
+
+The September 9 **Gamma-LS campaign is a separate paper direction**. Start with
+its [final results](../../docs/research/SPON_CA_BURST_GAMMA_LS_PAPER_SUCCESS_RESULTS_2026_09_09.md)
+and [paper outline](../../docs/research/SPON_CA_BURST_GAMMA_LS_PAPER_V2_OUTLINE.md),
+or the repository [paper map](../README.md). Its protected 79-occurrence study,
+full-record frame-level proposals, and independent block readout do not replace
+the identity-safe manuscript's 106-occurrence cohort or claim ledger.
 
 The protected single-recording analysis is complete. Current generated analysis
 figures, including the three detection-profile taxonomy panels, are included under
@@ -12,7 +28,7 @@ an author-review draft: affiliations, corresponding author, CRediT roles, ethics
 funding, conflicts, acknowledgements, and data/code release identifiers must still
 be completed before journal submission.
 
-## Two manuscript versions
+## Earlier manuscript and companion entry points
 
 - `main_technical.tex` is the evidence-complete version. It delegates to
   `main.tex`, the canonical journal manuscript, and includes the full methods,
@@ -24,7 +40,7 @@ be completed before journal submission.
   record for each validated experiment, explicitly bounded non-claim-bearing
   engineering-run history, and the prioritized next queue.
 
-Both documents are drafts and deliberately preserve unresolved author and
+These documents are drafts and deliberately preserve unresolved author and
 submission metadata. See `CURRENT_RESEARCH_STATE.md` for a concise handoff.
 
 ## Research-story build
@@ -41,8 +57,11 @@ make diagnostics  # rebuild Figures 4--7, then refresh the story views
 ```
 
 Generated files are intentionally reviewable and should not be edited by hand:
-`STORY_INDEX.md`, `EXPERIMENT_STORY.md`, `generated/story_status_table.tex`, and
-`generated/experiment_story.tex`.
+`story/research_story.yaml`, `STORY_INDEX.md`, `EXPERIMENT_STORY.md`,
+`generated/story_status_table.tex`, and `generated/experiment_story.tex`.
+The paper story is scoped to the identity-safe program. The repository
+[project story](../../research/generated/PROJECT_STORY.md) also covers Gamma-LS,
+ICA/whitening, and the stopped PC-MITL extension.
 
 ## Compile
 

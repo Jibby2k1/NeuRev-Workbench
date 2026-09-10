@@ -70,6 +70,10 @@ site
 *.7z
 *.rar
 
+# Rebuilt, dated Overleaf distributions duplicate the maintained manuscript
+# sources under paper/overleaf_jnm. Preserve them locally, outside Git history.
+/paper/overleaf_uploads/
+
 # Local meeting-deck packages may retain workstation paths in speaker-note
 # metadata. Curated source notes and rendered slide assets remain eligible.
 /paper/weekly_meeting/**/*.pptx

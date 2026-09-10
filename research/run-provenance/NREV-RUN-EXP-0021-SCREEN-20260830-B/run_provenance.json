@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "record_type": "sanitized_portable_run_provenance",
+  "run_id": "NREV-RUN-EXP-0021-SCREEN-20260830-B",
+  "experiment_id": "NREV-EXP-0021",
+  "lifecycle": "succeeded",
+  "planned_at": "2026-08-30T17:32:51.163081Z",
+  "started_at": "2026-08-30T17:40:27.018054Z",
+  "ended_at": "2026-08-30T17:42:46.733445Z",
+  "duration_seconds": 139.715391,
+  "source_execution_provenance": {
+    "location": "Outputs/NeuronIdentifiability/NREV-EXP-0021/runs/NREV-RUN-EXP-0021-SCREEN-20260830-B/execution_provenance.json",
+    "sha256": "ee1c51001e2b9163ee98a40f236a69eb4ce803dd6963f91170634bcf257162fd",
+    "committed_exact_copy": false,
+    "reason": "The source records host-specific numeric-library file paths; this portable derivative retains the exact scientific and execution authorities without workstation paths."
+  },
+  "repository_git_at_start": {
+    "repository": "https://github.com/Jibby2k1/NeuRev-Workbench",
+    "commit": "0fe1b38aec6e1748fa5ec056aa883977d9999f05",
+    "branch": "codex/neuron-identifiability-paper-20260822",
+    "dirty": true,
+    "diff_sha256": "5dd4c0b1a381eb7d5edf3f5a2e09a5e1b413097e1775f8126f3785f1fa84d070",
+    "dirty_status_sha256": "5ac643c0fbcefcf2c06e46e50afc74406fd48d9cb1b32b6ffb5aaab7dcbaa487",
+    "dirty_entry_count": 13,
+    "dirty_paths_persisted": false
+  },
+  "authorities": {
+    "source_config_sha256": "489e5f448d72fb5325f0531558d5a531eaa31ca8e7ba70362b26e9070a410063",
+    "portable_resolved_config_sha256": "cf07e65c8fc194918b3950bfb4760cb1a36ee8c5293479a38311e036dd3f348d",
+    "protocol_sha256": "99161431d3ba27192c3ffff85b926fa2a10871e869bd3ad3edb82fb50a4379b7",
+    "input_descriptor_sha256": "658b8d0c77ff156f4abb85763f1616eec4e729110ca4d5092ab635f03369e01d",
+    "runner_sha256": "9ee07cfe0549dc357f5adcdb70415983d955bf04bd552ece4e5678cb6632cf25",
+    "dependency_declaration_sha256": "87709b08b0d8d7e32beecd563c9ae83762c8a4669bbb4c94d5f111ea6b665737"
+  },
+  "runtime": {
+    "platform": "linux/x86_64",
+    "python": "CPython 3.12.13",
+    "numpy": "2.4.4",
+    "scipy": "1.17.1",
+    "tifffile": "2026.5.15",
+    "psutil": "7.2.2",
+    "threadpoolctl": "3.6.0",
+    "dependency_semantics": "pyproject.toml is a project dependency declaration, not a fully resolved environment lock",
+    "device": "CPU",
+    "requested_numeric_threads": 1,
+    "numeric_thread_cap_observed": true
+  },
+  "randomization": {
+    "deterministic": true,
+    "bagged_pu_seed": 2101,
+    "tiny_mlp_seeds": [3101, 3102, 3103, 3104, 3105, 3106, 3107, 3108, 3109, 3110],
+    "grouped_bootstrap_seed": 4101,
+    "representative_component_permutation_seed": 4201,
+    "grouped_bootstrap_draws": 2000,
+    "representative_component_permutation_draws": 2000
+  },
+  "execution": {
+    "module": "neurobench.experiments.neuron_identifiability.uncertainty_aware_learning",
+    "mode": "bounded_non_claim_bearing_engineering_screen",
+    "configuration": "examples/uncertainty_aware_feature_learning_v1_1.example.json",
+    "data_authority": "$NEUROBENCH_DATA_ROOT",
+    "maximum_end_to_end_wall_minutes": 30,
+    "atomic_promotion": true
+  },
+  "scope_disclosures": {
+    "oracle_temporal_window_conditioning": true,
+    "historical_same_recording_label_informed_feature_program": true,
+    "cfar_arm_is_same_union_reranking": true,
+    "cfar_score_is_also_a_model_input": true,
+    "end_to_end_detector_generalization_evaluated": false,
+    "unlabeled_candidates_are_verified_negatives": false,
+    "scientific_audit_complete": false,
+    "scientific_completion": false,
+    "claim_promotion_allowed": false
+  }
+}

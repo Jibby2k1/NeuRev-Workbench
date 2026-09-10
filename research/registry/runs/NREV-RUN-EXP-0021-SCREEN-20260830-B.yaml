@@ -1,0 +1,115 @@
+schema_version: 1
+record_type: run
+id: NREV-RUN-EXP-0021-SCREEN-20260830-B
+experiment_id: NREV-EXP-0021
+program_id: NREV-PRG-0001
+lifecycle: succeeded
+planned_at: '2026-08-30T17:32:51.163081Z'
+started_at: '2026-08-30T17:40:27.018054Z'
+ended_at: '2026-08-30T17:42:46.733445Z'
+code:
+  repository: https://github.com/Jibby2k1/NeuRev-Workbench
+  commit: 0fe1b38aec6e1748fa5ec056aa883977d9999f05
+  branch: codex/neuron-identifiability-paper-20260822
+  dirty: true
+  diff_sha256: 5dd4c0b1a381eb7d5edf3f5a2e09a5e1b413097e1775f8126f3785f1fa84d070
+configuration:
+  path: research/run-provenance/NREV-RUN-EXP-0021-SCREEN-20260830-B/resolved_config.json
+  sha256: cf07e65c8fc194918b3950bfb4760cb1a36ee8c5293479a38311e036dd3f348d
+inputs:
+- id: NREV-DATA-UNCERTAINTY-AWARE-LEARNING-SOURCES-V1
+  role: data
+  sha256: 658b8d0c77ff156f4abb85763f1616eec4e729110ca4d5092ab635f03369e01d
+  location: research/data-registry/uncertainty_aware_learning_sources_v1.json
+- id: NREV-RUN-EXP-0021-SCREEN-A-FAILURE
+  role: reference
+  sha256: bf5f44063c0659bb5594d8c2188e82a59f8184e18c636f1af1cf0bce61aeba95
+  location: research/run-provenance/NREV-RUN-EXP-0021-SCREEN-20260830-A/failed_provenance_index.json
+environment:
+  platform: linux/x86_64
+  runtime: CPython 3.12.13, NumPy 2.4.4, SciPy 1.17.1, tifffile 2026.5.15, psutil 7.2.2, and threadpoolctl 3.6.0;
+    the dependency record below is a project declaration rather than a fully resolved environment lock
+  dependency_lock:
+    path: pyproject.toml
+    sha256: 87709b08b0d8d7e32beecd563c9ae83762c8a4669bbb4c94d5f111ea6b665737
+  hardware: CPU-only execution with one requested and observed numeric thread
+randomization:
+  deterministic: true
+  seeds:
+  - 2101
+  - 3101
+  - 3102
+  - 3103
+  - 3104
+  - 3105
+  - 3106
+  - 3107
+  - 3108
+  - 3109
+  - 3110
+  - 4101
+  - 4201
+  notes: Seed 2101 fixed bagged-PU sampling; 3101 through 3110 fixed the tiny-MLP ensemble; 4101 fixed 2,000 whole-component
+    bootstrap draws; and 4201 fixed 2,000 fold-stratified representative-component score permutations.
+artifacts:
+  output_root: Outputs/NeuronIdentifiability/NREV-EXP-0021/runs/NREV-RUN-EXP-0021-SCREEN-20260830-B
+  manifest_path: research/run-provenance/NREV-RUN-EXP-0021-SCREEN-20260830-B/artifact_index.json
+  manifest_sha256: 763b188dcef96e1f9168748b6ed5a2824dec337a224d4e0dc56b0aa5844ac863
+validation:
+  preflight: passed
+  execution: passed
+  outputs: partial
+  checks:
+  - id: engineering_completion
+    status: passed
+    summary: The CPU run completed in 139.715391 seconds and atomically promoted 42 indexed artifacts totaling 11,586,631
+      bytes. The index and all indexed artifact sizes and SHA-256 values passed independent verification.
+  - id: version_and_provenance_binding
+    status: passed
+    summary: Run B used source-config SHA-256 489e5f448d72fb5325f0531558d5a531eaa31ca8e7ba70362b26e9070a410063,
+      protocol SHA-256 99161431d3ba27192c3ffff85b926fa2a10871e869bd3ad3edb82fb50a4379b7, runner SHA-256
+      9ee07cfe0549dc357f5adcdb70415983d955bf04bd552ece4e5678cb6632cf25, and a non-colliding Run-B output root.
+  - id: census_label_and_cohort_integrity
+    status: passed
+    summary: Exact census, one-to-one label join, review reserve, and denominator checks yielded 1,619 OOF rows containing
+      78 positives and 1,541 unknown U candidates, zero unreserved misses, 27 reserved matched anchors, and one reserved miss
+      reconciling all 106 confirmed occurrences.
+  - id: spatial_holdout_and_guard
+    status: passed
+    summary: All five frozen fold assignments and train/test/purge memberships matched their hashes; every eligible candidate
+      received one finite OOF score per method, leakage groups stayed whole, and no retained train/test pair violated the inclusive
+      12-pixel guard.
+  - id: reference_solver_completion
+    status: passed
+    summary: Five L2, five elastic, and 50 bagged-PU base fits completed at common penalty 0.01, tolerance 1e-6, and maximum
+      50,000 iterations with zero nonconvergence exceptions.
+  - id: nonlinear_advance_signal
+    status: failed
+    summary: Tiny-MLP macro SPU-AUC was 0.9740218518 versus 0.9740959140 for linear SPU. The paired delta was -0.0000740622
+      with whole-component 95% interval [-0.0046074197, 0.0059124340], missing both predeclared nonlinear advance thresholds.
+  - id: same_union_cfar_context
+    status: partial
+    summary: Tiny MLP exceeded cfar_score by 0.2093615770 with interval [0.1207303370, 0.3036814877] and recovered 34 of
+      78 positives at budget 58 versus 14 of 78. CFAR is same-union reranking and also an MLP input, so this is not end-to-end
+      detector replacement or evidence that nonlinearity caused the gain.
+  - id: seed_and_component_association
+    status: passed
+    summary: Median MLP seed rank correlation was 0.9942944810, seed recall-at-58 range was zero, and the representative
+      whole-component score-permutation p value was 1/2001 = 0.0004997501. These checks do not establish a gain over linear.
+  - id: robustness_sensitivities
+    status: not_run
+    summary: Leave-one-burst-out and alternate frozen review-policy sensitivities were not emitted, so a single burst, block,
+      or review policy was not excluded as the explanation before advancement.
+  - id: scientific_audit
+    status: partial
+    summary: Numeric execution passed, but required expert-only and model-only full-field videos, close-ups, full-duration
+      traces, matched comparison figures and tables, and media validation are absent.
+  - id: scientific_promotion
+    status: passed
+    summary: The fail-closed boundary held; scientific_completion and claim_promotion_allowed remain false, NREV-EXP-0021
+      remains draft/not_evaluated/evidence none, and no claim or evidence capsule is created.
+  - id: publication_boundary
+    status: passed
+    summary: Small exact portable outputs and a path-sanitized provenance derivative are committed without raw video, feature
+      arrays, caches, reviewer identities, secrets, or workstation paths.
+visibility: public

@@ -1,0 +1,74 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0032
+origin:
+  kind: native
+program_id: NREV-PRG-0001
+title: Contextual-envelope retrieval comparison v1
+question: Does agreement-attenuated evidence improve confirmed-event localization over instantaneous evidence and
+  amplitude squaring, and is any gain specific to aligned causal context?
+objective: Evaluate temporal-only and spatiotemporal agreement attenuation with amplitude, shuffled-envelope, and
+  displaced-envelope controls over all canonical-v7 occurrences.
+rationale: NREV-EXP-0031 identified A-squared-over-U as the cleanest attenuation field but did not evaluate event
+  retrieval or distinguish aligned context from matched incoherent envelopes. The frozen all-occurrence comparison
+  found no aligned arm that passed its advance gate. Temporal attenuation was effectively invariant under the peak-localization
+  estimand, while the spatial envelope reduced known-center localization, especially for the temporal-envelope-to-LS-to-ICA
+  source. Temporal H is therefore retained only as a morphology diagnostic pending an estimand sensitive to trace
+  shape.
+lifecycle: draft
+outcome: not_evaluated
+evidence_tier: none
+review_state: not_requested
+falsifiers:
+- Any window or control is changed after observing occurrence-level outcomes.
+- Pixels, frames, or repeated bursts are treated as independent biological replicates instead of grouping by immutable
+  site.
+- Quiet windows or unmatched activity are described as verified biological negatives.
+- An aligned feature advances without beating both A-squared and its matched misalignment control under the frozen
+  paired-site gate.
+design:
+  summary: Reconstruct seven frozen instantaneous, amplitude-square, agreement-attenuated, temporally shuffled,
+    and spatially displaced arms for Raw and two learned sources; evaluate all 106 occurrences with same-duration
+    guarded quiet windows and site bootstraps.
+  protocol_path: docs/workflows/contextual_envelope_retrieval_v1.md
+  unit_of_analysis: Confirmed burst occurrence nested in immutable coordinate-defined site; 106 occurrences at 50
+    sites.
+  comparison: Source-specific H-t3 and H-t5 versus A-squared and temporal shuffle-137; H-st5-k3 versus A-squared
+    and spatial displacement 11-by-17; A retained as the unexponentiated reference.
+  data_scope: Three frozen representations, seven arms per source, UI frames 1800 through 2359, four burst intervals,
+    and guarded same-site quiet windows in one previously analyzed recording.
+  grouping_or_blocking: Immutable site is the bootstrap unit; burst-specific medians and cross-burst shared-site
+    rank correlations remain separate diagnostics.
+  sample_plan: Complete fixed population of 106 canonical-v7 occurrences and 50 sites with 5,000 deterministic site-bootstrap
+    resamples; no candidate subset or favorable-source rerun.
+  randomization: Bootstrap seed 20260831; temporal control shift 137 frames; spatial control displacement y-11 x-17
+    pixels; no learned parameters.
+  blinding: Feature definitions, windows, shifts, gates, and controls are frozen before occurrence outcomes are
+    computed; labels provide only the prespecified evaluation intervals and immutable grouping.
+  analysis_plan: Compute same-duration quiet-window event localization, robust event-quiet effect, event-energy
+    fraction, paired site-bootstrap deltas, burst medians, and shared-site cross-burst rank repeatability; apply
+    conjunctive source-specific gates.
+  results_path: docs/research/CONTEXTUAL_ENVELOPE_RETRIEVAL_V1_RESULTS.md
+gates:
+- id: exact_population
+  criterion: Every arm has finite metrics for exactly 106 occurrences and 50 immutable sites.
+  stage: analysis
+  required: true
+- id: aligned_context_specificity
+  criterion: An attenuation arm advances only if its paired site-bootstrap delta is positive versus both A-squared
+    and its matched shuffled or displaced envelope control, with no material burst regression.
+  stage: analysis
+  required: true
+- id: publication_boundary
+  criterion: Passed gates remain exploratory within-recording feature evidence and do not establish precision, specificity,
+    biological identity, or independent-recording transfer.
+  stage: publication
+  required: true
+claim_ids: []
+decision_ids:
+- NREV-DEC-0030
+depends_on_experiment_ids:
+- NREV-EXP-0031
+visibility: public
+created_on: '2026-08-31'
+updated_on: '2026-09-09'

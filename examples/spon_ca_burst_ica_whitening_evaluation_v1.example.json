@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_ica_whitening_evaluation_v1",
+  "source_video": "data://Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+  "labels_tsv": "data://Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+  "label_summary": "data://Inputs/Spon Ca Burst/labels/label_summary.json",
+  "output_dir": "repo://Outputs/ICAWhiteningEvaluation/spon_ca_burst_ica_whitening_evaluation_v1",
+  "frames": {
+    "review_start_ui": 1800,
+    "review_end_ui": 2359,
+    "quiet_start_ui": 1800,
+    "quiet_end_ui": 1899,
+    "frame_period_ms": 20.0
+  },
+  "design": {
+    "master_seed": 20260831,
+    "sobol_points_per_cell": 32,
+    "families": ["temporal", "spatial", "joint_spatiotemporal"],
+    "objectives": ["fastica_logcosh", "hsic_pairwise"],
+    "whitening_geometries": ["none", "spatial", "temporal", "spatial_then_temporal", "temporal_then_spatial", "joint_spatiotemporal"],
+    "covariance_scopes": ["global_quiet", "regional_quiet"],
+    "causalities": ["centered", "causal"],
+    "ranks": [2, 4],
+    "spatial_widths_px": [3, 5],
+    "temporal_widths_frames": [3, 5],
+    "screen_seeds": [7, 13, 19],
+    "confirmation_seeds": [7, 13, 19, 29, 37],
+    "maximum_joint_dimension": 128
+  },
+  "continuous_bounds": {
+    "whitening_exponent": [0.0, 1.0],
+    "shrinkage": [0.0001, 0.5],
+    "eigen_floor_ratio": [0.000001, 0.01],
+    "raw_preserving_blend": [0.0, 1.0],
+    "objective_scale": [0.5, 2.0]
+  },
+  "evaluation": {
+    "fixed_candidates_per_burst": 58,
+    "nms_distance_px": 6,
+    "match_radius_px": 6,
+    "temporal_pool": "lme0.25"
+  },
+  "gates": {
+    "maximum_condition_number": 1000000.0,
+    "minimum_effective_rank_fraction": 0.25,
+    "minimum_converged_fraction": 0.8,
+    "minimum_truth_source_correlation": 0.7,
+    "maximum_truth_crosstalk": 0.25,
+    "minimum_trace_preservation": 0.7,
+    "minimum_macro_kpr_delta": 0.0
+  },
+  "resources": {
+    "device": "cpu",
+    "cpu_threads": 4,
+    "max_ram_mib": 8192,
+    "min_free_disk_mib": 16384,
+    "max_output_mib": 8192,
+    "maximum_fit_samples": 4096,
+    "application_chunk_size": 16
+  },
+  "scientific_audit": {
+    "enabled": true,
+    "opt_out_reason": null
+  }
+}

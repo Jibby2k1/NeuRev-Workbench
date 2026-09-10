@@ -1,6 +1,6 @@
 # Codebase Navigation
 
-Last updated: 2026-08-29.
+Last updated: 2026-09-09.
 
 This guide is a fast map for humans and coding agents. It names the stable
 entry points first, then points to the implementation modules behind common
@@ -14,6 +14,7 @@ machine-readable companion `docs/navigation.json`.
 
 | Goal | Start Here | Then Read |
 | --- | --- | --- |
+| Catch up on current research and evidence gates | [Current work](research/CURRENT_WORK.md) | [Research index](research/README.md), then the report for the relevant population and readout |
 | Design, run, or complete any experiment | `docs/workflows/SCIENTIFIC_AUDIT_OUTPUT_STANDARD.md` | `neurobench/reports/scientific_audit.py`, then the experiment-specific workflow |
 | Use the dashboard to review or correct labels | `docs/HOW_TO_USE_DASHBOARD.md` | `docs/NEURON_WORKBENCH.md`, then the dataset-specific workflow |
 | Run CLI workflows | `neurobench/cli/main.py` | The matching file under `neurobench/cli/` |
@@ -40,7 +41,33 @@ machine-readable companion `docs/navigation.json`.
 | Add or inspect reports | `neurobench/cli/report.py` | `neurobench/reports/`, `neurobench/review_reports.py`, `docs/TEST_AND_EXPERIMENT_REPORT.md` |
 | Understand schemas and artifacts | `schemas/`, `neurobench/models/` | `neurobench/validation/schemas.py`, `examples/` |
 | Inspect or extend the neuron-identifiability program | `paper/overleaf_jnm/CURRENT_RESEARCH_STATE.md` | `paper/overleaf_jnm/story/research_story.yaml`, `neurobench/experiments/neuron_identifiability/`, matching focused tests |
-| Revisit the next automated learning program | `docs/research/SPON_CA_BURST_UNCERTAINTY_AWARE_LEARNING_PLAN_V1.md` | future manifest-driven module under `neurobench/experiments/neuron_identifiability/`; do not infer that the specified run has occurred |
+| Inspect uncertainty-aware feature fusion | `docs/research/UNCERTAINTY_AWARE_FEATURE_LEARNING_V1_1_RESULTS.md` | `docs/workflows/uncertainty_aware_feature_learning_v1_1.md`, `neurobench/experiments/neuron_identifiability/uncertainty_aware_learning.py`; engineering completion does not imply nonlinear advantage |
+
+## Current research implementation routes
+
+These packages serve distinct experiments. Read the result and workflow before
+reusing a runner, and preserve each experiment's source hashes, candidate
+universe, label isolation, and counting units.
+
+| Research thread | Scientific entry point | Maintained implementation | Focused tests |
+| --- | --- | --- | --- |
+| Causal Gamma-LS pipeline and protected ablations | [Final campaign](research/SPON_CA_BURST_GAMMA_LS_PAPER_SUCCESS_RESULTS_2026_09_09.md), [workflow](workflows/spon_ca_burst_gamma_ls_difference_ablation.md) | `neurobench/algorithms/gamma_local_standardization.py`; `neurobench/experiments/gamma_ls_difference/` | `tests/test_gamma_local_standardization.py`, `tests/test_gamma_ls_difference_*`, `tests/test_gamma_ls_*` |
+| ICA/whitening factorial, finalists, and independent confirmation | [Final real-data results](research/ICA_WHITENING_REAL_DATA_V1_FINAL_RESULTS.md), [workflow](workflows/spon_ca_burst_ica_whitening_evaluation.md) | `neurobench/experiments/ica_whitening_evaluation/`; completion authority in `completion_audit.py` and `concluding_report.py` | `tests/test_ica_whitening_*` |
+| PC-MITL synthetic comparisons | [Specialized confirmation](research/PC_MITL_ICA_SPECIALIZED_CONFIRMATION_RESULTS.md), [phase-1 plan](research/PC_MITL_ICA_PHASE1_PLAN.md) | `neurobench/experiments/unsupervised_ica_eval/matrix_itl.py`, `pc_mitl_benchmark.py`; bounded entry scripts under `scripts/run_pc_mitl_*.py` | `tests/test_pc_mitl_ica_phase1.py`, `tests/test_pc_mitl_benchmark.py` |
+| Contextual-envelope retrieval and morphology | [Retrieval](research/CONTEXTUAL_ENVELOPE_RETRIEVAL_V1_RESULTS.md), [morphology](research/CONTEXTUAL_ENVELOPE_MORPHOLOGY_V1_RESULTS.md) | `neurobench/experiments/neuron_identifiability/contextual_envelope_retrieval.py`, `contextual_envelope_morphology.py` | `tests/test_contextual_envelope_retrieval.py`, `tests/test_contextual_envelope_morphology.py` |
+| Feature Atlas reranking | [Results](research/SPON_CA_BURST_FEATURE_ATLAS_V1_RESULTS.md), [workflow](workflows/spon_ca_burst_feature_atlas_v1.md) | `neurobench/experiments/neuron_identifiability/feature_atlas_v1.py` | `tests/test_feature_atlas_v1.py` |
+| Uncertainty-aware feature learning | [v1.1 results](research/UNCERTAINTY_AWARE_FEATURE_LEARNING_V1_1_RESULTS.md), [workflow](workflows/uncertainty_aware_feature_learning_v1_1.md) | `neurobench/experiments/neuron_identifiability/uncertainty_aware_census.py`, `uncertainty_aware_data.py`, `uncertainty_aware_models.py`, `uncertainty_aware_learning.py` | `tests/test_uncertainty_aware_*` |
+
+For Gamma-LS, `full_recording.py` and `full_recording_scientific_audit.py`
+cover operational frame-level proposals; `protected.py` covers the protected
+burst-occupancy comparison; `independent_validation.py` covers the separate
+blockwise sparse-positive evaluation. Do not substitute one head's artifacts
+for another's audit.
+
+For ICA/whitening, start completion checks at the small audit and conclusion
+JSON files before opening finalist media. The earlier real-data progress note
+is a historical checkpoint. The concluded ICA independent readout and the
+Gamma-LS independent readout are not a matched head-to-head comparison.
 
 ## Package Map
 

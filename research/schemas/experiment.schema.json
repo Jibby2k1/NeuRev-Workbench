@@ -69,6 +69,7 @@
       "properties": {
         "summary": {"$ref": "#/$defs/nonempty_text"},
         "protocol_path": {"$ref": "#/$defs/repository_path"},
+        "results_path": {"$ref": "#/$defs/repository_path"},
         "unit_of_analysis": {"$ref": "#/$defs/nonempty_text"},
         "comparison": {"$ref": "#/$defs/nonempty_text"},
         "data_scope": {"$ref": "#/$defs/nonempty_text"},

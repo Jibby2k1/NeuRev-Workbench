@@ -1,0 +1,96 @@
+% Venue-specific content draft for Neuroinformatics.
+% Uses the official Springer Nature journal-article class (December 2024,
+% template version 3.1). The shared scientific body remains in venue_drafts/.
+\documentclass[pdflatex,sn-mathphys-ay]{sn-jnl}
+
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs,tabularx,array}
+\usepackage{xcolor}
+\usepackage{url}
+
+\input{macros/provisional}
+\input{macros/venue_results}
+\renewcommand{\DraftBanner}{%
+  \begin{center}
+  \fcolorbox{draftred}{red!3}{\parbox{0.94\linewidth}{\small
+  \textbf{Working manuscript.} Main-paper values and figures are source-bound
+  and package-checked. Daggered Appendix values remain provisional. Author,
+  ethics, funding, release, independent-review, and transfer fields remain open.}}
+  \end{center}}
+
+\raggedbottom
+
+\begin{document}
+
+\title[NeuRev Workbench]{NeuRev Workbench: identity-safe evaluation and evidence provenance for sparse-positive calcium imaging}
+
+\author*[1,2]{\fnm{Raul} \sur{Valle}}
+\author[3]{\fnm{Jose} \sur{Principe}}
+\author[3]{\fnm{Yinong} \sur{Chen}}
+\author[3]{\fnm{Chenyu} \sur{Liang}}
+\author[3]{\fnm{Xin} \sur{Tang}}
+
+\affil*[1]{\orgdiv{Department of Electrical and Computer Engineering},
+  \orgname{University of Florida},
+  \orgaddress{\city{Gainesville}, \state{Florida}, \country{United States}}}
+\affil[2]{\orgname{Computational NeuroEngineering Laboratory},
+  \orgaddress{\city{Gainesville}, \state{Florida}, \country{United States}}}
+\affil[3]{\orgname{Affiliation to be confirmed}}
+
+\abstract{
+Incomplete neuronal annotations create inferential and provenance problems for
+calcium-imaging software: unmatched detections are not verified negatives,
+coordinate updates can silently change biological identity, and results can be
+detached from the data and configuration that produced them. NeuRev Workbench
+implements immutable observation identifiers, separately hashed geometry and
+trace records, explicit canonical-identity relations, positive--unlabeled
+estimands, versioned artifacts, and human-gated evidence status. We demonstrate
+the system on one zebrafish fluorescence recording with
+\VenueCohortBursts{} burst intervals, \VenueCohortOccurrences{} confirmed
+neuron--burst occurrences, and \VenueCohortSites{} immutable sites. At a
+per-lane \(B=\VenuePerLaneBudget\) operating point, the any-lane union recovered
+\VenueStrictRecovered/\VenueCohortOccurrences{} occurrences. Among the
+\VenueStrictMissed{} all-lane misses, \VenueIdentityCollision{} apparent local
+improvements crossed into labeled identities and \VenueIdentityClear{} remained
+identity-clear proposal-absence hypotheses. In a separate selected batch,
+one blinded reviewer called \VenueReviewDefinite{} of
+\VenueReviewedCandidates{} unmatched sites definite and
+\VenueReviewProbable{} probable; the fraction is not precision. Registered
+exact-truth simulations supplied functional validation while keeping
+computational and biological evidence tiers separate. A source-bound manuscript
+build synchronizes repeated facts and figures and rejects stale cohorts,
+placeholder figures, and ambiguous budget wording. Public release,
+independent adjudication, bounded-field truth, and cross-recording transfer
+remain explicit gates.
+}
+
+\keywords{neuroinformatics, calcium imaging, research provenance,
+reproducible workflow, positive--unlabeled evaluation, identity-aware
+annotation, zebrafish}
+
+\maketitle
+
+\DraftBanner
+
+\input{venue_drafts/neuroinformatics/01_introduction}
+\input{venue_drafts/shared/02_materials_and_methods}
+\input{venue_drafts/neuroinformatics/02_system_and_methods}
+\input{venue_drafts/shared/03_results}
+\input{venue_drafts/neuroinformatics/03_software_validation}
+\input{venue_drafts/neuroinformatics/04_discussion}
+\input{venue_drafts/neuroinformatics/05_conclusion}
+\input{sections/06_declarations}
+
+\appendix
+\section{Evidence-status convention and supplementary operator note}
+\label{app:result-status-neuroinformatics}
+Main-paper quantitative facts are generated from compact source artifacts and
+checked during packaging. Values marked with a dagger remain provisional and
+must be regenerated or removed before release. Run completion, artifact
+validation, scientific audit, and claim promotion are distinct states.
+\input{venue_drafts/shared/06_supplementary_operator_note}
+
+\bibliography{references}
+
+\end{document}

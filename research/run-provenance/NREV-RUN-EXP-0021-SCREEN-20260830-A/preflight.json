@@ -1,0 +1,571 @@
+{
+  "census_preflight": {
+    "code": {
+      "feature_utility_config": {
+        "bytes": 8551,
+        "path": "repo://neurobench/experiments/hierarchical_parzen_ica/feature_utility_config.py",
+        "sha256": "321eaecc90ecd4e3264eca7f8c67563ba7ff600c67b34eb11ff5a242c2b2b4cb"
+      },
+      "feature_utility_program": {
+        "bytes": 53051,
+        "path": "repo://neurobench/experiments/hierarchical_parzen_ica/feature_utility_program.py",
+        "sha256": "94bb6f6c47573d1b33ab6aeb9dbdab8af17b0f907355a13e09aa73541a0017f8"
+      },
+      "innovation_ranker_config": {
+        "bytes": 10878,
+        "path": "repo://neurobench/experiments/hierarchical_parzen_ica/innovation_ranker_config.py",
+        "sha256": "2ca2ed10b924af1ea0701e0475c0ba212614b0e2c14d604320b8f10c5deaa188"
+      },
+      "innovation_ranker_program": {
+        "bytes": 71606,
+        "path": "repo://neurobench/experiments/hierarchical_parzen_ica/innovation_ranker_program.py",
+        "sha256": "1b4bd8a8f326c87b20e0f10c1b45fb4f2b1dfda92e54e4145366de212e804dcd"
+      },
+      "label_loader": {
+        "bytes": 35253,
+        "path": "repo://neurobench/experiments/learnable_contrast/core.py",
+        "sha256": "e321ed1953115ad2253d84748ae39ae53d8807a80b94cb3ae571e37351273a3e"
+      },
+      "proposal_ranking": {
+        "bytes": 15125,
+        "path": "repo://neurobench/algorithms/proposal_ranking.py",
+        "sha256": "0407b541874e288bc4300861e9deeee495fa3b778e5b2e0f81c80fd763a6c54b"
+      },
+      "sparse_detection": {
+        "bytes": 8154,
+        "path": "repo://neurobench/metrics/sparse_detection.py",
+        "sha256": "d661201ec5193e47df2c9f9260a02c5dea329b5b30f6ba6df13a05599b582b46"
+      }
+    },
+    "config": {
+      "file_sha256": "b04edc06d0ee7276f847b38dae5b3ee861ea9bc6cd9ebc774c89ad25f0267d99",
+      "portable_resolved": {
+        "evaluation": {
+          "fixed_candidates_per_burst": 58,
+          "match_radius_px": 6.0,
+          "oracle_source_budgets": [
+            20,
+            40,
+            58,
+            80,
+            100
+          ],
+          "quiet_false_candidates_per_map": 1.0
+        },
+        "experiment_id": "spon_ca_burst_innovation_ranker_v5",
+        "feature_manifest": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/feature_manifest.json",
+        "feature_root": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1",
+        "frames": {
+          "quiet_count": 100,
+          "review_end_ui": 2359,
+          "review_start_ui": 1800
+        },
+        "labels_tsv": "data://Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+        "linear_grid": {
+          "epochs": 300,
+          "feature_sets": [
+            "separation",
+            "temporal",
+            "cut_aware",
+            "calibrated",
+            "full"
+          ],
+          "l2_values": [
+            0.01,
+            0.1,
+            1.0
+          ],
+          "learning_rates": [
+            0.003,
+            0.01,
+            0.03
+          ],
+          "maximum_total_weights": [
+            0.25,
+            0.5,
+            1.0
+          ]
+        },
+        "map_generation": {
+          "artifact_authorities": [
+            0.5,
+            1.0
+          ],
+          "center_sigmas_px": [
+            1.5,
+            2.5,
+            3.5
+          ],
+          "crowd_sigma_px": 8.0,
+          "normalization_clip": 8.0,
+          "ring_specs": [
+            [
+              3.0,
+              0.75
+            ],
+            [
+              3.0,
+              1.25
+            ],
+            [
+              4.5,
+              0.75
+            ],
+            [
+              4.5,
+              1.25
+            ],
+            [
+              6.0,
+              0.75
+            ],
+            [
+              6.0,
+              1.25
+            ]
+          ],
+          "signed_powers": [
+            1.25,
+            1.5,
+            2.0
+          ],
+          "whitening_rhos": [
+            0.25,
+            0.5,
+            1.0
+          ]
+        },
+        "mlp_grid": {
+          "confirmation_seeds": [
+            17,
+            29,
+            43
+          ],
+          "epochs": 150,
+          "feature_sets": [
+            "separation",
+            "temporal",
+            "cut_aware",
+            "calibrated",
+            "full"
+          ],
+          "hidden_units": [
+            8,
+            16
+          ],
+          "inner_seeds": [
+            17,
+            29
+          ],
+          "learning_rates": [
+            0.0003,
+            0.001,
+            0.003
+          ],
+          "maximum_residuals": [
+            0.25,
+            0.5
+          ],
+          "weight_decays": [
+            0.001,
+            0.01
+          ]
+        },
+        "output_dir": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_innovation_ranker_v5",
+        "preflight_dir": "data://Outputs/HierarchicalParzenICA/preflight_spon_ca_burst_innovation_ranker_v5",
+        "proposals": {
+          "dedupe_radius_px": 3.0,
+          "nms_distance_px": 6,
+          "per_source_limit": 100,
+          "source_ids": [
+            "carrier_signed",
+            "local_psd_signal",
+            "asymmetric_state",
+            "spatial_coherence",
+            "cross_scale_rank",
+            "cross_scale_recall",
+            "cfar_score",
+            "signed_power_1p25",
+            "signed_power_1p5",
+            "signed_power_2",
+            "shot_whitened_rho0p25",
+            "shot_whitened_rho0p5",
+            "shot_whitened_rho1",
+            "cut_center_sigma1p5",
+            "cut_center_sigma2p5",
+            "cut_center_sigma3p5",
+            "cut_ring_r3p0_t0p75",
+            "cut_ring_r3p0_t1p25",
+            "cut_ring_r4p5_t0p75",
+            "cut_ring_r4p5_t1p25",
+            "cut_ring_r6p0_t0p75",
+            "cut_ring_r6p0_t1p25"
+          ]
+        },
+        "resources": {
+          "cpu_threads": 2,
+          "max_output_mib": 2048,
+          "max_ram_mib": 12288,
+          "min_free_disk_mib": 8192
+        },
+        "schema_version": 1,
+        "selection": {
+          "candidate_penalty": 0.02,
+          "mean_weight": 1.0,
+          "minimum_weight": 0.25,
+          "threshold_weight": 0.1
+        },
+        "source_video": "data://Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+        "visualization": {
+          "compression": "zlib",
+          "overlay_candidate_limit": 100,
+          "score_sigma_px": 2.0
+        }
+      },
+      "portable_semantic_sha256": "4b86fbfce306ec5bf2a28d427f4f2cadf45afa2324c62834c7a816f93bbe9b75"
+    },
+    "expected_counts": {
+      "event": {
+        "1": 544,
+        "2": 530,
+        "3": 476,
+        "4": 449
+      },
+      "quiet": [
+        683,
+        748,
+        759,
+        748
+      ]
+    },
+    "gates": {
+      "code_hashes_exact": true,
+      "data_authority_valid": true,
+      "input_hashes_exact": true,
+      "output_absent": true,
+      "partial_output_absent": true,
+      "portable_config_hash_exact": true,
+      "progress_absent": true,
+      "proposal_contract_exact": true,
+      "repository_valid": true
+    },
+    "inputs": {
+      "event_window_labels": {
+        "bytes": 4175,
+        "path": "data://Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+        "sha256": "8f008fede5771d83e949d805094292aae7516cc30353dd383da7ff1cf20b077e"
+      },
+      "feature_manifest": {
+        "bytes": 14031,
+        "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/feature_manifest.json",
+        "sha256": "e53c92dc9f58f6b5f2f9e37f207ffb05a908c04304e27218f632d6cc00295361"
+      },
+      "feature_utility_config": {
+        "bytes": 4449,
+        "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/config.resolved.json",
+        "sha256": "48fcb5e7714e6e64ab12bba7b4656498bae2d5fbc43e5c15fce0f82e80586e07"
+      },
+      "feature_utility_run_state": {
+        "bytes": 237,
+        "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/run_state.json",
+        "sha256": "7a8eba3ef0bade5644eb7055bd85bfc4e5993589b5aebe4b6ee0af445da77c33"
+      },
+      "source_video": {
+        "bytes": 919160888,
+        "path": "data://Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+        "sha256": "04dfbe2f7cb69d72ff75e23ad17c87b3fd406c96a4b872148de2285a9a44d449"
+      }
+    },
+    "kind": "read_only_uncertainty_aware_census_preflight",
+    "materializer_code": {
+      "bytes": 34524,
+      "path": "repo://neurobench/experiments/neuron_identifiability/uncertainty_aware_census.py",
+      "sha256": "5538acf1b703c2d0d3499f6da5d8c9d8511e1247ff33f8736997fea505b10264"
+    },
+    "paths": {
+      "config": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_innovation_ranker_v5/config.resolved.json",
+      "output": "repo://Outputs/NeuronIdentifiability/NREV-EXP-0021/runs/NREV-RUN-EXP-0021-SCREEN-20260830-A.partial/census",
+      "progress": "repo://Outputs/NeuronIdentifiability/NREV-EXP-0021/runs/NREV-RUN-EXP-0021-SCREEN-20260830-A.partial/progress/census.jsonl"
+    },
+    "proposal_contract": {
+      "candidate_labels_joined": false,
+      "dedupe_radius_px": 3.0,
+      "experiment_id": "spon_ca_burst_innovation_ranker_v5",
+      "nms_distance_px": 6,
+      "per_source_limit": 100,
+      "source_count": 22,
+      "source_ids": [
+        "carrier_signed",
+        "local_psd_signal",
+        "asymmetric_state",
+        "spatial_coherence",
+        "cross_scale_rank",
+        "cross_scale_recall",
+        "cfar_score",
+        "signed_power_1p25",
+        "signed_power_1p5",
+        "signed_power_2",
+        "shot_whitened_rho0p25",
+        "shot_whitened_rho0p5",
+        "shot_whitened_rho1",
+        "cut_center_sigma1p5",
+        "cut_center_sigma2p5",
+        "cut_center_sigma3p5",
+        "cut_ring_r3p0_t0p75",
+        "cut_ring_r3p0_t1p25",
+        "cut_ring_r4p5_t0p75",
+        "cut_ring_r4p5_t1p25",
+        "cut_ring_r6p0_t0p75",
+        "cut_ring_r6p0_t1p25"
+      ]
+    },
+    "ready": true,
+    "schema_version": 1,
+    "scientific_scope": "read-only provenance and collision check; does not generate maps, join candidate labels, fit preprocessing, or fit models"
+  },
+  "claim_boundary": {
+    "claim_promotion_allowed": false,
+    "scientific_audit_complete": false,
+    "scientific_completion": false
+  },
+  "experiment_id": "NREV-EXP-0021",
+  "gates": {
+    "census_preflight_ready": true,
+    "dependency_declaration_present_and_hashed": true,
+    "descriptor_hash_exact": true,
+    "descriptor_identity_exact": true,
+    "dirty_state_content_digest_present_when_required": true,
+    "execution_authorization_bounded": true,
+    "implementation_hashes_exact": true,
+    "input_hashes_exact": true,
+    "loaded_module_authority_exact_for_all_pinned_execution_modules": true,
+    "output_absent": true,
+    "partial_output_absent": true,
+    "protocol_hash_exact": true,
+    "repository_authority_exact": true,
+    "repository_git_origin_branch_and_base_exact": true
+  },
+  "hashes": {
+    "config_sha256": "49878846d1c8dff898f4648d1af5f8e33215eb3d961f678c2edd723558591b27",
+    "dependency_declaration_sha256": "87709b08b0d8d7e32beecd563c9ae83762c8a4669bbb4c94d5f111ea6b665737",
+    "descriptor_sha256": "658b8d0c77ff156f4abb85763f1616eec4e729110ca4d5092ab635f03369e01d",
+    "protocol_sha256": "a9d637e50252d82d64e30530aeb257016dbb67eb798b456d59873e13b663b7ee"
+  },
+  "implementation": {
+    "neurobench/algorithms/proposal_ranking.py": {
+      "bytes": 15125,
+      "path": "repo-workspace://neurobench/algorithms/proposal_ranking.py",
+      "role": "upstream_candidate_nms_and_deduplication",
+      "sha256": "0407b541874e288bc4300861e9deeee495fa3b778e5b2e0f81c80fd763a6c54b"
+    },
+    "neurobench/experiments/hierarchical_parzen_ica/feature_utility_config.py": {
+      "bytes": 8551,
+      "path": "repo-workspace://neurobench/experiments/hierarchical_parzen_ica/feature_utility_config.py",
+      "role": "upstream_feature_utility_configuration",
+      "sha256": "321eaecc90ecd4e3264eca7f8c67563ba7ff600c67b34eb11ff5a242c2b2b4cb"
+    },
+    "neurobench/experiments/hierarchical_parzen_ica/feature_utility_program.py": {
+      "bytes": 53051,
+      "path": "repo-workspace://neurobench/experiments/hierarchical_parzen_ica/feature_utility_program.py",
+      "role": "upstream_feature_utility_implementation",
+      "sha256": "94bb6f6c47573d1b33ab6aeb9dbdab8af17b0f907355a13e09aa73541a0017f8"
+    },
+    "neurobench/experiments/hierarchical_parzen_ica/innovation_ranker_config.py": {
+      "bytes": 10878,
+      "path": "repo-workspace://neurobench/experiments/hierarchical_parzen_ica/innovation_ranker_config.py",
+      "role": "upstream_map_and_proposal_configuration",
+      "sha256": "2ca2ed10b924af1ea0701e0475c0ba212614b0e2c14d604320b8f10c5deaa188"
+    },
+    "neurobench/experiments/hierarchical_parzen_ica/innovation_ranker_program.py": {
+      "bytes": 71606,
+      "path": "repo-workspace://neurobench/experiments/hierarchical_parzen_ica/innovation_ranker_program.py",
+      "role": "upstream_map_and_proposal_implementation",
+      "sha256": "1b4bd8a8f326c87b20e0f10c1b45fb4f2b1dfda92e54e4145366de212e804dcd"
+    },
+    "neurobench/experiments/learnable_contrast/core.py": {
+      "bytes": 35253,
+      "path": "repo-workspace://neurobench/experiments/learnable_contrast/core.py",
+      "role": "legacy_event_window_label_loader",
+      "sha256": "e321ed1953115ad2253d84748ae39ae53d8807a80b94cb3ae571e37351273a3e"
+    },
+    "neurobench/experiments/neuron_identifiability/uncertainty_aware_census.py": {
+      "bytes": 34524,
+      "path": "repo-workspace://neurobench/experiments/neuron_identifiability/uncertainty_aware_census.py",
+      "role": "frozen_broad_candidate_census",
+      "sha256": "5538acf1b703c2d0d3499f6da5d8c9d8511e1247ff33f8736997fea505b10264"
+    },
+    "neurobench/experiments/neuron_identifiability/uncertainty_aware_data.py": {
+      "bytes": 110199,
+      "path": "repo-workspace://neurobench/experiments/neuron_identifiability/uncertainty_aware_data.py",
+      "role": "label_harmonization_exclusion_and_fold_contract",
+      "sha256": "f7d4085062fd426e7575e56b7547afd411e488802444b71edc2a12cfdba0afc7"
+    },
+    "neurobench/experiments/neuron_identifiability/uncertainty_aware_learning.py": {
+      "bytes": 165430,
+      "path": "repo-workspace://neurobench/experiments/neuron_identifiability/uncertainty_aware_learning.py",
+      "role": "canonical_runner_provenance_outputs_and_validation",
+      "sha256": "3fa813f12ee2e0d61331d6fb4ef4c1a671fb7b24fa86ed5ac16b03d853b78360"
+    },
+    "neurobench/experiments/neuron_identifiability/uncertainty_aware_models.py": {
+      "bytes": 79325,
+      "path": "repo-workspace://neurobench/experiments/neuron_identifiability/uncertainty_aware_models.py",
+      "role": "fold_local_baselines_linear_and_tiny_mlp_evaluation",
+      "sha256": "8d399e08dbb00620c30792f46c440c66e7752d54549527b5ceaf8636f3be4fdd"
+    },
+    "neurobench/experiments/pairwise_separation/evaluation.py": {
+      "bytes": 4401,
+      "path": "repo-workspace://neurobench/experiments/pairwise_separation/evaluation.py",
+      "role": "legacy_event_interval_and_temporal_pool_contract",
+      "sha256": "38018d85d5f6e98bc00cd107a95b07c1d6364ada5a9263ffb2b1267a7eba6e07"
+    },
+    "neurobench/metrics/sparse_detection.py": {
+      "bytes": 8154,
+      "path": "repo-workspace://neurobench/metrics/sparse_detection.py",
+      "role": "upstream_sparse_detection_primitives",
+      "sha256": "d661201ec5193e47df2c9f9260a02c5dea329b5b30f6ba6df13a05599b582b46"
+    }
+  },
+  "inputs": {
+    "canonical_v7_adjudication": {
+      "bytes": 43415,
+      "path": "data://Outputs/HardROIAdjudication/spon_ca_burst_hard_roi_adjudication_final_v7/adjudication_final.tsv",
+      "sha256": "73958f7462731c69050c3b11a7cf4a50a2b9a89d261b769197363c595f8ed31b"
+    },
+    "detection_profile_taxonomy_v5_occurrences": {
+      "bytes": 49226,
+      "path": "repo-workspace://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/detection_profile_taxonomy_v5/detection_occurrence_profiles.tsv",
+      "sha256": "9b01e2286ffbb203d97afbda04191d0e797390611008f8d6941259738c7b54ab"
+    },
+    "detection_profile_taxonomy_v5_sites": {
+      "bytes": 2770,
+      "path": "repo-workspace://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/detection_profile_taxonomy_v5/detection_site_profiles.tsv",
+      "sha256": "4db074a06afb9b5610bd47a99256dd841e033c4a78b340defe44bc1f98d67a93"
+    },
+    "feature_array_asymmetric_state": {
+      "bytes": 218198528,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/asymmetric_state.npy",
+      "sha256": "cc9737d2ef96c4eac8e77fccf1c28de0a46f88cd1f87f2d08630dd2b7cddd422"
+    },
+    "feature_array_carrier_signed": {
+      "bytes": 218198528,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/carrier_signed.npy",
+      "sha256": "a3733c7df0768d49779f2c08d38bf0d1a3005e52fcdc136dbd3b9ed95f988a61"
+    },
+    "feature_array_cfar_background": {
+      "bytes": 218198528,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/cfar_background.npy",
+      "sha256": "fe817a119ba1c6262706e2b1bc4de0e222f57382057fd36b09b80af01e74d365"
+    },
+    "feature_array_cfar_noise": {
+      "bytes": 218198528,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/cfar_noise.npy",
+      "sha256": "8523bb37c9c212e44bc5634291fb580326597ffe535b3249d9625c57cd556356"
+    },
+    "feature_array_cfar_score": {
+      "bytes": 218198528,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/cfar_score.npy",
+      "sha256": "af63e7df6d50a75f5d479e33500f22d0be011ec44c80069f9f6d27cfc8be950b"
+    },
+    "feature_array_cross_scale_rank": {
+      "bytes": 218198528,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/cross_scale_rank.npy",
+      "sha256": "1e9e5846df391be00ad6dacebaeba64276318bce9cf076eb2e67bc47d4b405d6"
+    },
+    "feature_array_cross_scale_recall": {
+      "bytes": 218198528,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/cross_scale_recall.npy",
+      "sha256": "af9b81e23c88d0f37146ed7e24816e5db6cf8c751e81a235f6a7e51fc22d536a"
+    },
+    "feature_array_derivative_negative_lag1": {
+      "bytes": 218198528,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/derivative_negative_lag1.npy",
+      "sha256": "ed53706d7e956b1afd10357b706dda46eff03eba832fe3135480e990a9301dcd"
+    },
+    "feature_array_derivative_positive_lag1": {
+      "bytes": 218198528,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/derivative_positive_lag1.npy",
+      "sha256": "09612991c375686cdbf0dd8f2a35333c10216da839fa086c1500a1a96b1982b0"
+    },
+    "feature_array_local_psd_signal": {
+      "bytes": 218198528,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/local_psd_signal.npy",
+      "sha256": "68de579822daa7cb23c7c4e0c555dfa8d319c30a6b107e2dfb5779ddbe4c4659"
+    },
+    "feature_array_persistence_activity_gate": {
+      "bytes": 218198528,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/persistence_activity_gate.npy",
+      "sha256": "68750d8379ae8e29a455d4891d76b44580b2e3c0a0e4dae31558a19cb3a386e0"
+    },
+    "feature_array_persistent_artifact_score": {
+      "bytes": 218198528,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/persistent_artifact_score.npy",
+      "sha256": "b21e84d1e1367a09ccc6666d8b5b9fe02f49a3363f619771f894a4ba2ed32812"
+    },
+    "feature_array_spatial_coherence": {
+      "bytes": 218198528,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/spatial_coherence.npy",
+      "sha256": "fa5f3b81a9d9cae3743e28ce84173c3283ca5d218e91ee668fbc674916f7e612"
+    },
+    "feature_manifest": {
+      "bytes": 14031,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/feature_manifest.json",
+      "sha256": "e53c92dc9f58f6b5f2f9e37f207ffb05a908c04304e27218f632d6cc00295361"
+    },
+    "feature_structure_unit": {
+      "bytes": 779408,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/structure_unit.npy",
+      "sha256": "261803501aa7d62fe315e443d576f1f94e6203b078298e4d2987ff3131e36250"
+    },
+    "feature_utility_resolved_config": {
+      "bytes": 4449,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/config.resolved.json",
+      "sha256": "48fcb5e7714e6e64ab12bba7b4656498bae2d5fbc43e5c15fce0f82e80586e07"
+    },
+    "feature_utility_run_state": {
+      "bytes": 237,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/run_state.json",
+      "sha256": "7a8eba3ef0bade5644eb7055bd85bfc4e5993589b5aebe4b6ee0af445da77c33"
+    },
+    "innovation_ranker_v5_resolved_config": {
+      "bytes": 3976,
+      "path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_innovation_ranker_v5/config.resolved.json",
+      "sha256": "b04edc06d0ee7276f847b38dae5b3ee861ea9bc6cd9ebc774c89ad25f0267d99"
+    },
+    "legacy_event_window_labels": {
+      "bytes": 4175,
+      "path": "data://Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+      "sha256": "8f008fede5771d83e949d805094292aae7516cc30353dd383da7ff1cf20b077e"
+    },
+    "new_candidate_single_reviewer_labels": {
+      "bytes": 3149,
+      "path": "repo-workspace://Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/user_review_v1.tsv",
+      "sha256": "45608b3240dca0a7c26113898c3d9d0e5ca555b7cc85ba570080b5ee8a4252ea"
+    },
+    "source_video": {
+      "bytes": 919160888,
+      "path": "data://Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+      "sha256": "04dfbe2f7cb69d72ff75e23ad17c87b3fd406c96a4b872148de2285a9a44d449"
+    }
+  },
+  "kind": "read_only_uncertainty_aware_learning_preflight",
+  "paths": {
+    "config": "repo-workspace://examples/uncertainty_aware_feature_learning_v1.example.json",
+    "descriptor": "repo-workspace://research/data-registry/uncertainty_aware_learning_sources_v1.json",
+    "output": "repo-workspace://Outputs/NeuronIdentifiability/NREV-EXP-0021/runs/NREV-RUN-EXP-0021-SCREEN-20260830-A",
+    "protocol": "repo-workspace://docs/workflows/uncertainty_aware_feature_learning_v1.md"
+  },
+  "ready": true,
+  "repository_git": {
+    "branch": "codex/neuron-identifiability-paper-20260822",
+    "commit": "0fe1b38aec6e1748fa5ec056aa883977d9999f05",
+    "diff_algorithm": "NEUREV-DIRTY-STATE-V1",
+    "diff_sha256": "8ad7f37eea6e65ae854214f5662795fc5aab1a7bd9fe4ba4388af4863c7e3a6c",
+    "dirty": true,
+    "dirty_entry_count": 11,
+    "dirty_paths_persisted": false,
+    "dirty_status_sha256": "96862a1e14979389c7d6184a4efddf9c0433b1c5ad5ec66dcc0ffa7a2b7870ef",
+    "repository": "https://github.com/Jibby2k1/NeuRev-Workbench"
+  },
+  "run_id": "NREV-RUN-EXP-0021-SCREEN-20260830-A",
+  "schema_version": 1
+}

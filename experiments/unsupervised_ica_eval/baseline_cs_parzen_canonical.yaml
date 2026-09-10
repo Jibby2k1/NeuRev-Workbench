@@ -1,0 +1,42 @@
+schema_version: 1
+experiment_id: pc_mitl_ica_phase1
+status: frozen_reference
+data:
+  identifier: synthetic_phase1_two_source_v1
+  sample_count: 96
+  source_count: 2
+  seed: 20260904
+  split:
+    strategy: contiguous
+    train: [0, 58]
+    validation: [58, 77]
+    test: [77, 96]
+preprocessing:
+  centering: train_mean
+  detrending: none
+  pca_rank: 2
+  whitening: symmetric_eigh_train_only
+  eigenvalue_floor_ratio: 1.0e-6
+cs_parzen:
+  implementation: neurobench.algorithms.pairwise_separation.fit_cs_parzen_ica
+  bandwidth: 0.35
+  initial_angles_degrees: [0, 15, 30, 45, 60, 75]
+  angle_span_degrees: 12
+  coarse_step_degrees: 1
+  fine_step_degrees: 0.1
+matrix_tc:
+  implementation: neurobench.experiments.unsupervised_ica_eval.matrix_itl.fit_matrix_tc_ica
+  alpha: 2.0
+  bandwidths: [1.0, 1.0]
+  steps: 200
+  learning_rate: 0.03
+evaluation:
+  primary: absolute_source_correlation_after_hungarian_matching
+  secondary: [objective, orthogonality_error, same_seed_max_abs_difference]
+  same_seed_relative_tolerance: 1.0e-6
+scientific_audit:
+  enabled: true
+  phase1_mode: synthetic_unlabeled_candidate_surrogate
+provenance:
+  baseline_fingerprint_inputs: [serialized_configuration, data_identifier, git_commit]
+  real_video_authorized: false

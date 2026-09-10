@@ -1,0 +1,18 @@
+{
+  "completed_bagged_pu_base_fits": 50,
+  "completed_elastic_fits": 5,
+  "completed_l2_fits": 5,
+  "completed_reference_fit_total": 60,
+  "completed_without_nonconvergence_exception": true,
+  "contract": {
+    "bagged_pu_base_fits_per_fold": 10,
+    "common_penalty": 0.01,
+    "convergence_tolerance": 1e-06,
+    "maximum_iterations": 50000,
+    "outer_folds": 5
+  },
+  "interpretation": "completion evidence for the canonical evaluation only; pre-run convergence-probe telemetry is a separate artifact",
+  "nonconvergence_exception_count": 0,
+  "per_fit_iteration_telemetry_available": false,
+  "schema_version": 1
+}

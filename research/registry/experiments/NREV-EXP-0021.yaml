@@ -13,29 +13,131 @@ origin:
   - experiment-specific falsifiers
   - normalized unit of analysis, comparison, and data scope
 program_id: NREV-PRG-0001
-title: Uncertainty Aware Learning V1
-question: Run the prespecified harmonized feature audit, positive-unlabeled learning, label-sensitivity models, leakage-resistant
-  grouped validation, feature stability, counterfactual perturbation, and hard-subgroup tests without promoting provisional
-  labels.
+title: Uncertainty-Aware Positive-Unlabeled Feature Fusion V1 with v1.1 output-assembly amendment
+question: Can a tiny nonlinear model combine the already-developed activity features more usefully than frozen CFAR-score,
+  expert equal-weight, and matched linear positive-unlabeled comparators when every model is evaluated on held spatial groups
+  that it did not train on?
 objective: Run the prespecified harmonized feature audit, positive-unlabeled learning, label-sensitivity models, leakage-resistant
   grouped validation, feature stability, counterfactual perturbation, and hard-subgroup tests without promoting provisional
   labels.
-rationale: Priority 2 item in the migrated v1 next-experiment queue.
+rationale: The prior expert concatenation and scalar CFAR score do not test whether compact nonlinear feature interactions
+  improve ranking. A small fixed network and matched linear/PU comparators can answer that engineering question without
+  treating unreviewed candidates as negatives or presenting scores as neuron probabilities.
 lifecycle: draft
 outcome: not_evaluated
 evidence_tier: none
 review_state: not_requested
-falsifiers: []
+falsifiers:
+- The tiny MLP fails to exceed matched linear SPU by 0.03 macro-fold SPU-AUC or the whole-leakage-component interval includes
+  zero.
+- A favorable nonlinear result disappears under leave-one-burst-out, alternate frozen review-policy, or hard-subgroup sensitivity.
+- A gain is confined to scalar CFAR reranking while the tiny MLP does not improve over equal-weight or linear fusion using
+  the same feature panel.
+- Seed rank stability falls below 0.90 or recall at budget 58 varies by more than 0.05 across the ten frozen MLP seeds.
+- Any fit uses coordinates, identity, partition, proposal rank, detector outcome, reviewer text, quiet rows as negatives,
+  held-fold preprocessing, or outer-test tuning.
+- Any interpretation claims precision, calibrated neuron probability, end-to-end detector replacement, causal feature
+  importance, or independent-recording generalization from this same-recording P/U screen.
 design:
-  summary: Run the prespecified harmonized feature audit, positive-unlabeled learning, label-sensitivity models, leakage-resistant
-    grouped validation, feature stability, counterfactual perturbation, and hard-subgroup tests without promoting provisional
-    labels.
-  protocol_path: docs/research/SPON_CA_BURST_UNCERTAINTY_AWARE_LEARNING_PLAN_V1.md
-gates: []
+  summary: Reconstruct the exact 1,999-event and 2,938-quiet Innovation-Ranker-v5 proposal census before joining current
+    labels; match canonical-v7 confirmed occurrences, reserve the later 18-site review neighborhoods, fit eight frozen scalar,
+    expert, linear, bagged-PU, reference, and four-unit tanh methods on 12 compact features, and score every eligible event
+    candidate out of fold under five frozen spatial blocks and a whole-leakage-component guard.
+  protocol_path: docs/workflows/uncertainty_aware_feature_learning_v1_1.md
+  results_path: docs/research/UNCERTAINTY_AWARE_FEATURE_LEARNING_V1_1_RESULTS.md
+  unit_of_analysis: One eligible frozen event candidate, with repeated canonical identity and fixed 12-pixel spatial-cell
+    dependencies merged into indivisible leakage components; positive-containing and unlabeled-only components are the
+    bootstrap and permutation dependence units.
+  comparison: Ten-seed four-unit tanh MLP versus matched linear SPU, elastic linear SPU, bagged-PU linear, fold-local positive
+    reference, seven-feature equal-weight expert fusion, carrier_signed, and cfar_score reranking over the same frozen broad
+    candidate union.
+  data_scope: One previously analyzed Spon Ca Burst recording; 106 canonical-v7 confirmed occurrences, later 18-site review
+    reserve, legacy label-derived event windows, historically same-recording label-informed features, and source-off quiet
+    candidates used only as descriptive null controls.
+  grouping_or_blocking: Five positive-anchor-balanced contiguous representative-x blocks with whole leakage-group closure;
+    purge a complete training group when any member is within the inclusive 12-pixel Euclidean guard of a held candidate
+    or intersects a guarded nominal boundary.
+  sample_plan: The primary cohort is the complete eligible frozen census after label and review exclusion, not a power-selected
+    sample; require at least 75 unreserved positives and at least ten positive anchors and ten unlabeled groups per held fold.
+  randomization: Fix bagged-PU seed 2101, MLP seeds 3101 through 3110, whole-component bootstrap seed 4101, and representative-component
+    permutation seed 4201; no outer-test hyperparameter selection is permitted.
+  blinding: Materialize candidates before current-label joins; prohibit labels, coordinates, identities, proposal order,
+    morphology, reviewer fields, and detector outcomes from model inputs; keep later review and quiet panels locked until
+    primary scores are frozen.
+  analysis_plan: Use macro mean within-fold SPU-AUC as primary, label-free held-fold midrank percentiles for global budgets
+    20, 58, and 100, paired whole-component bootstrap contrasts, one fixed representative per component for post-hoc score
+    permutation, and an explicit no-promotion boundary until robustness sensitivities and the complete scientific media audit pass.
+gates:
+- id: output_collision
+  criterion: The versioned final and partial output roots are absent immediately before execution; failed or completed roots
+    are never overwritten or resumed.
+  stage: preflight
+  required: true
+- id: authority_hashes
+  criterion: Repository branch/base, dirty-state digest, protocol, descriptor, 24 input authorities, 12 implementation files,
+    and dependency declaration match their frozen hashes before execution and remain unchanged through publication.
+  stage: preflight
+  required: true
+- id: candidate_and_label_contract
+  criterion: Exact event and quiet census counts, one-to-one canonical matching, review reservation, positive/unlabeled/null
+    semantics, proposal-miss denominator, and absence of prohibited model inputs all reconcile.
+  stage: execution
+  required: true
+- id: spatial_generalization
+  criterion: Every eligible row receives exactly one finite OOF score; identity/leakage groups never cross held folds; every
+    retained train/test pair exceeds the inclusive 12-pixel guard; and frozen assignment and membership hashes match.
+  stage: execution
+  required: true
+- id: reference_solver_completion
+  criterion: All five L2, five elastic, and 50 bagged-PU base fits complete at penalty 0.01, tolerance 1e-6, and maximum
+    50000 iterations without a nonconvergence exception.
+  stage: execution
+  required: true
+- id: nonlinear_gain
+  criterion: Tiny-MLP macro-fold SPU-AUC exceeds linear SPU and same-union CFAR reranking by at least 0.03, and each paired
+    whole-component 95% interval lower bound exceeds zero.
+  stage: analysis
+  required: true
+- id: budget_and_seed_stability
+  criterion: Tiny-MLP recall at budget 58 exceeds the strongest frozen baseline by at least 0.03, no fold loses more than
+    0.10, median pairwise seed rank correlation is at least 0.90, and seed recall range is at most 0.05.
+  stage: analysis
+  required: true
+- id: dependence_safe_association
+  criterion: The fold-stratified one-representative-per-whole-component score-permutation p value is at most 0.05 without
+    treating candidate rows or unequal-size group maxima as independent.
+  stage: analysis
+  required: true
+- id: robustness_sensitivities
+  criterion: Leave-one-burst-out, alternate frozen review-policy, and prespecified hard-subgroup analyses exclude a single
+    burst, spatial block, or review policy as the sole explanation before advancement.
+  stage: analysis
+  required: true
+- id: scientific_audit
+  criterion: Expert-only and model-only full-field videos, close-ups and full-duration traces, matched comparison figures
+    and tables, decode checks, and the scientific-audit inventory pass before scientific completion.
+  stage: review
+  required: true
+- id: publication_boundary
+  criterion: No claim or evidence capsule is created from an engineering screen; any future public capsule requires passed
+    scientific, privacy, path, hash, and independent-scope review.
+  stage: publication
+  required: true
+preregistration:
+  frozen_on: '2026-08-30T17:32:51.163081Z'
+  protocol_sha256: 99161431d3ba27192c3ffff85b926fa2a10871e869bd3ad3edb82fb50a4379b7
+  code_commit: 0fe1b38aec6e1748fa5ec056aa883977d9999f05
+  notes: The exact dirty-state and implementation-file hashes are carried by the Run-B provenance. Version 1.1 changes
+    only the mixed evaluator score-schema accessor and Run-B identity/root binding after immutable Run A failed during
+    output assembly.
 claim_ids: []
-decision_ids: []
+decision_ids:
+- NREV-DEC-0024
+run_ids:
+- NREV-RUN-EXP-0021-SCREEN-20260830-A
+- NREV-RUN-EXP-0021-SCREEN-20260830-B
 visibility: public
 legacy_id: uncertainty_aware_learning_v1
 legacy_status: next_experiment
 created_on: '2026-08-29'
-updated_on: '2026-08-29'
+updated_on: '2026-08-30'

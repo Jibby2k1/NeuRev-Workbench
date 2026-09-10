@@ -1,0 +1,227 @@
+{
+  "outputs": [
+    {
+      "path": "paper/overleaf_jnm/figures/venue/fig01_jnm_identity_contract.png",
+      "sha256": "170d94dfce7b723001d8e38481cde7338bbb5a94c1289d4d0928155ee3dfc01f"
+    },
+    {
+      "path": "paper/overleaf_jnm/figures/venue/fig01_neuroinformatics_architecture.png",
+      "sha256": "304d20b257e8a3a62d128ccb4c84e06e18e3d964b375472791c1cedeeb4add40"
+    },
+    {
+      "path": "paper/overleaf_jnm/figures/venue/fig02_measurement_representations.png",
+      "sha256": "4f8f189c8cf2149a645ac1d4bdd06f7e68cb8998401946f086bb4c9cbee370ba"
+    },
+    {
+      "path": "paper/overleaf_jnm/figures/venue/fig03_known_positive_evaluation.png",
+      "sha256": "073beff25a1b2e92b533f70e553fa477ea90c73fc6a71990d86d74204f50455c"
+    },
+    {
+      "path": "paper/overleaf_jnm/figures/venue/fig04_candidate_review.png",
+      "sha256": "20c54202a1f373f793ed3e230f011899fc1d22efe23e92dee20ecabaeb6a8dd8"
+    },
+    {
+      "path": "paper/overleaf_jnm/figures/venue/fig05_identity_aware_misses.png",
+      "sha256": "38d99da1cae27b1499a19c9b55301d706eb62d6ae2380e7e68c620831cfcdad5"
+    },
+    {
+      "path": "paper/overleaf_jnm/figures/venue/fig06_exact_truth_validation.png",
+      "sha256": "297ccd11ee498462d374ad299852414539098e6f5916dddac4469b4d84867698"
+    },
+    {
+      "path": "paper/overleaf_jnm/figures/venue/figS1_feature_atlas_presubmission_audit.png",
+      "sha256": "2a3ac6e4c1fca06f8dc07d6849031cb8c800a23d7ed71d14d19b1fbecc0acd12"
+    }
+  ],
+  "purpose": "venue manuscript figure presentation derivatives",
+  "schema_version": 2,
+  "scientific_boundary": "No model refit, cohort change, new label, or new estimand.",
+  "sources": [
+    {
+      "availability": "repository",
+      "path": "paper/overleaf_jnm/figures/final/fig03a_cs_parzen_hero_roi003_b03.png",
+      "sha256": "e2e7403adc89515f4fea918bd3c2092c50d44305744d109213813f5951200aab",
+      "size_bytes": 87759
+    },
+    {
+      "availability": "repository",
+      "path": "paper/overleaf_jnm/figures/final/fig04_population_trace_summary_source.tsv",
+      "sha256": "2eb031fcdda75ee4b334a2c9fc13373fd7513ceb0b2bc9f7515a518ac8504c55",
+      "size_bytes": 2350539
+    },
+    {
+      "availability": "repository",
+      "path": "paper/overleaf_jnm/figures/final/fig04_trace_taxonomy_experiment.json",
+      "sha256": "df03ec768d58385d8b678f69845b9c7a5690ab7761cbde67d5ed48a10e075417",
+      "size_bytes": 5683
+    },
+    {
+      "availability": "repository",
+      "path": "docs/research/SPON_CA_BURST_MULTILAG_MSICA_V5_RESULTS.md",
+      "sha256": "1dbfc64ff7894a6b22791fc26d084e517b737fb5a03b4d57e3cfd9a440035d00",
+      "size_bytes": 4144
+    },
+    {
+      "availability": "repository",
+      "path": "research/registry/index.yaml",
+      "sha256": "119d7043ae39906b2b24240494fb08ae2bf7f4e21d8df3c277b3fea2b1c6a072",
+      "size_bytes": 6219
+    },
+    {
+      "availability": "repository",
+      "path": "research/generated/canonical.json",
+      "sha256": "ea146bbf7e59d381502b87bdb672070b12940c1b4b32ef5ce43f896786a2b696",
+      "size_bytes": 387453
+    },
+    {
+      "availability": "repository",
+      "path": "neurobench/research/registry.py",
+      "sha256": "0f173b2400ae7cb6b61b5c511c53114fbb14ed33ad5b33abd850a0d8477cfb8c",
+      "size_bytes": 47972
+    },
+    {
+      "availability": "repository",
+      "path": "paper/overleaf_jnm/generated_analysis/automated_feature_validation_v1/temporal_retrieval_summary.tsv",
+      "sha256": "e1cf7830b9413ac148f1e3f5c6db2be9a4f8c5419a6be05a7ec6db62730911f8",
+      "size_bytes": 4837
+    },
+    {
+      "availability": "repository",
+      "path": "paper/overleaf_jnm/generated_analysis/automated_feature_validation_v1/spatial_displacement_summary.tsv",
+      "sha256": "278a77863a8617715365964747de9492fde27937ac194987737a841af96e5c83",
+      "size_bytes": 691
+    },
+    {
+      "availability": "repository",
+      "path": "paper/overleaf_jnm/generated_analysis/automated_feature_validation_v1/summary.json",
+      "sha256": "104b7872bae62e166ff4d9c022d671fe259aed497c880806aca4dd35df7bfab2",
+      "size_bytes": 6617
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/review_summary_v1.json",
+      "sha256": "e2cd88113caf136e89e0267e52c5ca0391754f0bd60a85d9cc0fa6d5be789f1f",
+      "size_bytes": 1470
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/user_review_v1.tsv",
+      "sha256": "45608b3240dca0a7c26113898c3d9d0e5ca555b7cc85ba570080b5ee8a4252ea",
+      "size_bytes": 3149
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/NC003__new_candidate__still.png",
+      "sha256": "7f1af64aa465d0fbba4b7be0810b02b0ee57efe0f8db904a61586d6994b9c4e4",
+      "size_bytes": 482466
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/NC006__new_candidate__still.png",
+      "sha256": "fefe3f8af97dbcaafc1f99dd30a124e5f49a1470c25c3a83f4ebc3987c2a47e7",
+      "size_bytes": 467815
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/NC013__new_candidate__still.png",
+      "sha256": "06b57d2b14d3fc88a3f1b45228b2ec5a77957564cb7af56bb86e44717fa5298f",
+      "size_bytes": 483271
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/NC008__new_candidate__still.png",
+      "sha256": "f2654e0b494079982f41cc26cd6d192c42abc0e13cbb5b115c7563f37cec4ad8",
+      "size_bytes": 479010
+    },
+    {
+      "availability": "repository",
+      "path": "paper/overleaf_jnm/generated_analysis/identity_aware_feature_inspection_v8/summary.json",
+      "sha256": "6cec38fbdc9d49397fb20b556f7242e77f231f6e833f05da6c7835fcf94eb928",
+      "size_bytes": 1084
+    },
+    {
+      "availability": "repository",
+      "path": "paper/overleaf_jnm/generated_analysis/identity_aware_feature_inspection_v8/offset_stability.tsv",
+      "sha256": "d46865dec942ae93440985bf65f31ad009d5d7e4877c1c2bf04bc7126f5532f3",
+      "size_bytes": 5263
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/spon_ca_burst_identity_aware_validation_suite_v2/identity_contamination.tsv",
+      "sha256": "be3e2a29b0a53278fb262aa501022faa4c54a4330b4ca9eb6bee7e23708a066c",
+      "size_bytes": 1911
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/spon_ca_burst_identity_aware_validation_suite_v2/budget_nms_counterfactual.tsv",
+      "sha256": "f1fc6cc61f97743b413ba2da4206844fc0b6a54586a9c3ecdd43cb78abf4e15c",
+      "size_bytes": 25820
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/realistic_movie_detector_benchmark_v3/summary.json",
+      "sha256": "694fa39d158e7e73ee0d668ae98b31584ecf06db3a789759775c27c91189e6ed",
+      "size_bytes": 5737
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/realistic_movie_generator_family_holdout_v4/summary.json",
+      "sha256": "ddd31bbdedcd0fb331064b0aebf770537420ae9b1530959e6a05ae93cf5b4d3f",
+      "size_bytes": 8697
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/automated_challenge_suite_v7/summary.json",
+      "sha256": "c703c491573ef7a157fd9c43c6a600431243294fc2a1a0cc7be629ed43e46981",
+      "size_bytes": 4506
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/spon_ca_burst_feature_atlas_v1_20260905_e/tables/model_metrics.tsv",
+      "sha256": "56be07bbcd65a29bd541deb1594fa7b91d97fe4eff03fdeef198e2efe3eea329",
+      "size_bytes": 871
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/spon_ca_burst_feature_atlas_v1_20260905_e/tables/leave_one_burst_out.tsv",
+      "sha256": "51198df03b19ca94d5aaaca7fc2cbcb453cd172db781426a1847e2554823c9d2",
+      "size_bytes": 551
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/spon_ca_burst_feature_atlas_v1_20260905_e/tables/family_paired_group_bootstraps.json",
+      "sha256": "9bd2e2ae33f9e1842215d2a2ecb07994d1bb5b0d969c3cf24b9387dfa20d80c0",
+      "size_bytes": 3632
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/spon_ca_burst_feature_atlas_v1_20260905_e/tables/univariate_feature_metrics.tsv",
+      "sha256": "29e70290b6b69cf192a012925d30bf5609af631e3052c62e7c10d4c1a092c4cf",
+      "size_bytes": 1274
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/spon_ca_burst_feature_atlas_v1_20260905_e/tables/new_feature_spearman.tsv",
+      "sha256": "a584a1ba611243d9556801d1ea46478905b617f2cdbb2143e65cac378380cdd3",
+      "size_bytes": 8017
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/spon_ca_burst_feature_atlas_v1_20260905_e/summary.json",
+      "sha256": "5c108da76a7420afca1638c28f124e0689b545aace5c601a79a875e30ef6daa9",
+      "size_bytes": 5902
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/spon_ca_burst_feature_atlas_v1_20260905_e/validation.json",
+      "sha256": "ad6fc5c4c54b40ed7bb8fc0feb7e8fa8224e4efc49480d4c5a261e0a06903ed3",
+      "size_bytes": 327
+    },
+    {
+      "availability": "local_metadata_only",
+      "path": "Outputs/NeuronIdentifiability/spon_ca_burst_feature_atlas_v1_20260905_e/status.json",
+      "sha256": "6ad717af260543a3b79fb7c94f712e1f7c4b96d1a6a3083f1f668e0c4f79afaa",
+      "size_bytes": 98
+    }
+  ]
+}

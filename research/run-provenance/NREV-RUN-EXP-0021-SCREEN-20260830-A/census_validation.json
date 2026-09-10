@@ -1,0 +1,45 @@
+{
+  "counts": {
+    "event": {
+      "1": 544,
+      "2": 530,
+      "3": 476,
+      "4": 449
+    },
+    "event_total": 1999,
+    "quiet": [
+      683,
+      748,
+      759,
+      748
+    ],
+    "quiet_total": 2938
+  },
+  "feature_count": 34,
+  "gates": {
+    "candidate_counts_exact": true,
+    "candidate_ids_unique": true,
+    "candidate_labels_absent": true,
+    "candidate_schema_exact": true,
+    "candidate_values_finite": true,
+    "code_hashes_exact": true,
+    "feature_map_schema_exact": true,
+    "feature_map_values_finite": true,
+    "input_hashes_exact": true,
+    "portable_config_hash_exact": true,
+    "proposal_contract_exact": true
+  },
+  "map_shape_yx": [
+    340,
+    573
+  ],
+  "passed": true,
+  "proposal_source_count": 22,
+  "schema_version": 1,
+  "table_hashes": {
+    "event_rows_sha256": "a551b1af47893e453d6cb94ab66b079ccc0a49d33a41a22e8ca19e13f5740cf6",
+    "event_tsv_sha256": "082d005491a27c54c431c04619f78cb3a518e250b31bb3c03a560bf4e3844348",
+    "quiet_rows_sha256": "c019be1eb59abe2e96dded6637db10749d00c8eba3a7c1afda22d3f39ce04017",
+    "quiet_tsv_sha256": "4733d9ed2843ecb4b4ce108da15b5e2f74512a7524b6360c599cbba4649467ce"
+  }
+}

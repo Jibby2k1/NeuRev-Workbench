@@ -186,6 +186,7 @@ def inspect_three_section_scientific_audit(
     expected_expert_roi_count: int,
     expected_model_roi_count: int,
     expected_expert_occurrence_count: int,
+    expected_comparison_panels: list[str] | None = None,
 ) -> ThreeSectionAuditInventory:
     """Inspect the finalized expert/model/comparison audit contract."""
     if min(
@@ -209,12 +210,15 @@ def inspect_three_section_scientific_audit(
     comparison_closeups = list(comparison.glob("**/closeups/*"))
     llm_path = target / "llm_context.json"
     llm_valid = False
+    comparison_panels = expected_comparison_panels or [
+        "Raw matched comparison", "MSICA + MSLN matched comparison"
+    ]
     if llm_path.is_file():
         payload = json.loads(llm_path.read_text(encoding="utf-8"))
         llm_valid = (
             payload.get("annotation_separation") == "strict"
             and payload.get("comparison_spatial_panels")
-            == ["Raw matched comparison", "MSICA + MSLN matched comparison"]
+            == comparison_panels
             and len(payload.get("model_stage_sequence", [])) >= 3
         )
     root_index = all(
@@ -262,12 +266,14 @@ def require_three_section_scientific_audit(
     expected_expert_roi_count: int,
     expected_model_roi_count: int,
     expected_expert_occurrence_count: int,
+    expected_comparison_panels: list[str] | None = None,
 ) -> ThreeSectionAuditInventory:
     inventory = inspect_three_section_scientific_audit(
         root,
         expected_expert_roi_count=expected_expert_roi_count,
         expected_model_roi_count=expected_model_roi_count,
         expected_expert_occurrence_count=expected_expert_occurrence_count,
+        expected_comparison_panels=expected_comparison_panels,
     )
     if not inventory.complete:
         raise ScientificAuditError(

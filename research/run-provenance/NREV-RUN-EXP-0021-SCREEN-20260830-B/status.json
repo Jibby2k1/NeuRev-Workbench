@@ -1,0 +1,8 @@
+{
+  "claim_promotion_allowed": false,
+  "engineering_execution_complete": true,
+  "schema_version": 1,
+  "scientific_audit_complete": false,
+  "scientific_completion": false,
+  "status": "complete_non_claim_bearing_engineering_screen"
+}

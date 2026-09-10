@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_ica_whitening_real_data_v1",
+  "parent_config": "repo://examples/spon_ca_burst_ica_whitening_evaluation_v1.example.json",
+  "synthetic_registry": "repo://Outputs/ICAWhiteningEvaluation/spon_ca_burst_ica_whitening_evaluation_v1/stages/S1_NUMERICAL_TRUTH_KNOWN_SHARDED/fit_registry.tsv",
+  "decision_amendment": "repo://Outputs/ICAWhiteningEvaluation/spon_ca_burst_ica_whitening_evaluation_v1/decision_amendment.json",
+  "output_dir": "repo://Outputs/ICAWhiteningEvaluation/spon_ca_burst_ica_whitening_evaluation_v1/real_data_v1",
+  "proposals": {
+    "lanes": ["raw_activity", "signed_temporal_difference", "spatial_highpass"],
+    "temporal_pool": "lme0.25",
+    "per_lane_per_burst": 512,
+    "proposal_nms_distance_px": 3,
+    "union_separation_px": 3,
+    "evaluation_budgets": [10, 20, 58, 100, 200],
+    "match_radius_px": 6
+  },
+  "fitting": {
+    "eligibility": "synthetic_all_numerically_resolved_only",
+    "maximum_fit_samples": 4096,
+    "activity_fraction": 0.5,
+    "shard_count": 4
+  },
+  "controls": [
+    "raw_direct",
+    "signed_temporal_difference",
+    "rank_matched_pca",
+    "random_rotation",
+    "separable_control"
+  ],
+  "synthetic_warning_non_blocking": true
+}

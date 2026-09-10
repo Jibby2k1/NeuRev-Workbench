@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_gamma_ls_conditioning_sensitivity_v1",
+  "sources": {
+    "base_config": "repo://examples/spon_ca_burst_gamma_ls_difference_ablation_v1.example.json",
+    "support_screen": "repo://Outputs/GammaLSDifference/spon_ca_burst_gamma_ls_support_sufficiency_v1_gpu_screen_20260908_r2"
+  },
+  "design": {
+    "gaussian_sigma_px": [0.0, 0.5, 1.0, 1.5],
+    "causal_ema_alpha": [1.0, 0.6666666666666666, 0.4, 0.25],
+    "training_quiet_scale_floor_percentile": [5.0, 10.0, 20.0],
+    "representations": [
+      "raw",
+      "difference_signed",
+      "difference_energy_normalized"
+    ],
+    "outer_folds": "leave_one_burst_out",
+    "support_context_role": "support_candidate_context",
+    "quiet_calibration": "split_contiguous_halves_and_reverse_roles",
+    "tail_quantile": 0.999,
+    "tail_population": "all_pixels",
+    "event_aggregation": "equal_mean_of_three_training_burst_frame_tails",
+    "selection_scope": "independent_per_representation_within_outer_training_fold",
+    "selection_objectives": [
+      "maximize_mean_event_minus_quiet_tail_contrast",
+      "maximize_minimum_quiet_swap_tail_contrast",
+      "minimize_online_inference_runtime_ms_per_frame"
+    ],
+    "pareto_tie_break": [
+      "highest_mean_tail_contrast",
+      "highest_minimum_swap_tail_contrast",
+      "lowest_online_inference_runtime_ms_per_frame",
+      "lexicographic_setting_id"
+    ],
+    "anchor": {
+      "gaussian_sigma_px": 1.0,
+      "causal_ema_alpha": 0.4,
+      "training_quiet_scale_floor_percentile": 10.0
+    },
+    "acquisition_raw_definition": "raw_representation_with_gaussian_sigma0_and_ema_alpha1",
+    "historical_raw_lane_definition": "raw_representation_with_gaussian_sigma1_and_ema_alpha0p4"
+  },
+  "downstream": {
+    "freeze_roles": ["historical_anchor", "training_pareto_selected"],
+    "next_stage": "protected_B_and_NMS_evaluation",
+    "protected_evaluation_in_this_run": false
+  },
+  "resources": {
+    "device": "cuda",
+    "source_chunk_frames": 64,
+    "gamma_chunk_frames": 64,
+    "max_peak_vram_gib": 8.0,
+    "minimum_free_disk_gib": 20.0
+  },
+  "scientific_audit": {
+    "enabled": true
+  }
+}

@@ -1,0 +1,50 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0037
+origin:
+  kind: migrated_legacy
+  source_path: docs/research/SPON_CA_BURST_FEATURE_ATLAS_V1_RESULTS.md
+  source_sha256: c8bcb6498a242cccd7a96836cef345a8522cb42732db38a362b1ff6239caf229
+  recorded_on: '2026-09-09'
+  missing_fields:
+  - Retrospective report import, not a new preregistration or execution.
+  - Campaign subruns are retained in the source report and local artifacts; a complete normalized set of native
+    run records and a portable evidence capsule has not been registered.
+program_id: NREV-PRG-0001
+title: Feature Atlas v1 grouped incremental-reranking evaluation
+question: Do temporal-envelope, soma, source-consistency, and nuisance/competition features add ranking information
+  to the frozen candidate union?
+objective: Do temporal-envelope, soma, source-consistency, and nuisance/competition features add ranking information
+  to the frozen candidate union?
+rationale: Retrospectively register the existing report and its bounded result without manufacturing run provenance
+  or changing the historical claim ledger.
+lifecycle: computed
+outcome: inconclusive
+evidence_tier: descriptive
+review_state: not_requested
+falsifiers:
+- A report-level completion or software/audit PASS is promoted into an untested scientific conclusion.
+- Different candidate populations, evaluation heads, or biological recordings are pooled as a matched comparison.
+design:
+  summary: Compare retrained existing and augmented linear models on the same five spatial folds and candidate union;
+    retain grouped intervals, family ablations, leave-one-burst-out results, and the final display-only Run E lineage.
+  protocol_path: docs/workflows/spon_ca_burst_feature_atlas_v1.md
+  results_path: docs/research/SPON_CA_BURST_FEATURE_ATLAS_V1_RESULTS.md
+  unit_of_analysis: '1619 fixed candidates: 78 positive anchors and 1541 unknown candidates; grouped uncertainty
+    respects the frozen spatial units.'
+  comparison: Retrained existing 12-feature linear model versus all Atlas features and each of four feature families
+    under matched scoring and candidate budgets.
+  data_scope: One historically examined recording; candidate reranking only, with no new end-to-end proposal evaluation.
+gates:
+- id: report_provenance_boundary
+  criterion: Preserve the source report, its stated artifact authorities, failed gates, and scope; retrospective
+    registration is not scientific claim promotion.
+  stage: publication
+  required: true
+claim_ids: []
+decision_ids:
+- NREV-DEC-0028
+run_ids: []
+visibility: public
+created_on: '2026-09-09'
+updated_on: '2026-09-09'

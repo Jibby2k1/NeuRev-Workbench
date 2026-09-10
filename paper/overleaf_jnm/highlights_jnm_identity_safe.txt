@@ -1,0 +1,5 @@
+• Preserves neuronal identity when evaluating local coordinate changes
+• Treats unmatched calcium-imaging candidates as unknown, not false
+• Separates proposal, ranking, suppression, and identity failure modes
+• Finds 13 provisional likely-neuron calls in a selected 18-site review
+• Uses exact truth to expose close-source and stopping limits

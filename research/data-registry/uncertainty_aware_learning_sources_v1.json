@@ -1,0 +1,195 @@
+{
+  "schema_version": 1,
+  "descriptor_id": "NREV-DATA-UNCERTAINTY-AWARE-LEARNING-SOURCES-V1",
+  "experiment_id": "NREV-EXP-0021",
+  "classification": "sanitized_descriptor_for_local_restricted_and_unpublished_label_artifacts",
+  "runtime_authorities": {
+    "data_root_environment_variable": "NEUROBENCH_DATA_ROOT",
+    "repository_root": "current substantive NeuRev checkout"
+  },
+  "sources": [
+        {
+            "source_id": "innovation_ranker_v5_resolved_config",
+            "role": "frozen label-free map and broad proposal contract",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_innovation_ranker_v5/config.resolved.json",
+            "sha256": "b04edc06d0ee7276f847b38dae5b3ee861ea9bc6cd9ebc774c89ad25f0267d99",
+            "payload_committed": false
+        },
+        {
+            "source_id": "source_video",
+            "role": "raw recording consumed by the frozen map generator",
+            "portable_path": "data://Outputs/GammaCFAR/spon_ca_burst_3_hindbrain_to_tail_488_20ms/spon_ca_burst_3_hindbrain_to_tail_488_20ms.npy",
+            "sha256": "04dfbe2f7cb69d72ff75e23ad17c87b3fd406c96a4b872148de2285a9a44d449",
+            "payload_committed": false
+        },
+        {
+            "source_id": "legacy_event_window_labels",
+            "role": "historical 79-row label sheet used only to define the frozen event windows",
+            "portable_path": "data://Inputs/Spon Ca Burst/labels/labels_normalized.tsv",
+            "sha256": "8f008fede5771d83e949d805094292aae7516cc30353dd383da7ff1cf20b077e",
+            "payload_committed": false
+        },
+        {
+            "source_id": "feature_manifest",
+            "role": "frozen feature inventory and shape contract",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/feature_manifest.json",
+            "sha256": "e53c92dc9f58f6b5f2f9e37f207ffb05a908c04304e27218f632d6cc00295361",
+            "payload_committed": false
+        },
+        {
+            "source_id": "feature_utility_resolved_config",
+            "role": "frozen feature-generation configuration",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/config.resolved.json",
+            "sha256": "48fcb5e7714e6e64ab12bba7b4656498bae2d5fbc43e5c15fce0f82e80586e07",
+            "payload_committed": false
+        },
+        {
+            "source_id": "feature_utility_run_state",
+            "role": "completed upstream feature-run state",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/run_state.json",
+            "sha256": "7a8eba3ef0bade5644eb7055bd85bfc4e5993589b5aebe4b6ee0af445da77c33",
+            "payload_committed": false
+        },
+        {
+            "source_id": "feature_array_carrier_signed",
+            "role": "frozen upstream feature array consumed by the map generator",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/carrier_signed.npy",
+            "sha256": "a3733c7df0768d49779f2c08d38bf0d1a3005e52fcdc136dbd3b9ed95f988a61",
+            "payload_committed": false
+        },
+        {
+            "source_id": "feature_array_local_psd_signal",
+            "role": "frozen upstream feature array consumed by the map generator",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/local_psd_signal.npy",
+            "sha256": "68de579822daa7cb23c7c4e0c555dfa8d319c30a6b107e2dfb5779ddbe4c4659",
+            "payload_committed": false
+        },
+        {
+            "source_id": "feature_array_asymmetric_state",
+            "role": "frozen upstream feature array consumed by the map generator",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/asymmetric_state.npy",
+            "sha256": "cc9737d2ef96c4eac8e77fccf1c28de0a46f88cd1f87f2d08630dd2b7cddd422",
+            "payload_committed": false
+        },
+        {
+            "source_id": "feature_array_spatial_coherence",
+            "role": "frozen upstream feature array consumed by the map generator",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/spatial_coherence.npy",
+            "sha256": "fa5f3b81a9d9cae3743e28ce84173c3283ca5d218e91ee668fbc674916f7e612",
+            "payload_committed": false
+        },
+        {
+            "source_id": "feature_array_cross_scale_rank",
+            "role": "frozen upstream feature array consumed by the map generator",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/cross_scale_rank.npy",
+            "sha256": "1e9e5846df391be00ad6dacebaeba64276318bce9cf076eb2e67bc47d4b405d6",
+            "payload_committed": false
+        },
+        {
+            "source_id": "feature_array_cross_scale_recall",
+            "role": "frozen upstream feature array consumed by the map generator",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/cross_scale_recall.npy",
+            "sha256": "af9b81e23c88d0f37146ed7e24816e5db6cf8c751e81a235f6a7e51fc22d536a",
+            "payload_committed": false
+        },
+        {
+            "source_id": "feature_array_cfar_score",
+            "role": "frozen upstream feature array consumed by the map generator",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/cfar_score.npy",
+            "sha256": "af63e7df6d50a75f5d479e33500f22d0be011ec44c80069f9f6d27cfc8be950b",
+            "payload_committed": false
+        },
+        {
+            "source_id": "feature_array_cfar_background",
+            "role": "frozen upstream feature array consumed by the map generator",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/cfar_background.npy",
+            "sha256": "fe817a119ba1c6262706e2b1bc4de0e222f57382057fd36b09b80af01e74d365",
+            "payload_committed": false
+        },
+        {
+            "source_id": "feature_array_cfar_noise",
+            "role": "frozen upstream feature array consumed by the map generator",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/cfar_noise.npy",
+            "sha256": "8523bb37c9c212e44bc5634291fb580326597ffe535b3249d9625c57cd556356",
+            "payload_committed": false
+        },
+        {
+            "source_id": "feature_array_derivative_positive_lag1",
+            "role": "frozen upstream feature array consumed by the map generator",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/derivative_positive_lag1.npy",
+            "sha256": "09612991c375686cdbf0dd8f2a35333c10216da839fa086c1500a1a96b1982b0",
+            "payload_committed": false
+        },
+        {
+            "source_id": "feature_array_derivative_negative_lag1",
+            "role": "frozen upstream feature array consumed by the map generator",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/derivative_negative_lag1.npy",
+            "sha256": "ed53706d7e956b1afd10357b706dda46eff03eba832fe3135480e990a9301dcd",
+            "payload_committed": false
+        },
+        {
+            "source_id": "feature_array_persistence_activity_gate",
+            "role": "frozen upstream feature array consumed by the map generator",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/persistence_activity_gate.npy",
+            "sha256": "68750d8379ae8e29a455d4891d76b44580b2e3c0a0e4dae31558a19cb3a386e0",
+            "payload_committed": false
+        },
+        {
+            "source_id": "feature_array_persistent_artifact_score",
+            "role": "frozen upstream feature array consumed by the map generator",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/features/persistent_artifact_score.npy",
+            "sha256": "b21e84d1e1367a09ccc6666d8b5b9fe02f49a3363f619771f894a4ba2ed32812",
+            "payload_committed": false
+        },
+        {
+            "source_id": "feature_structure_unit",
+            "role": "frozen structure array consumed by generated cut and whitening maps",
+            "portable_path": "data://Outputs/HierarchicalParzenICA/spon_ca_burst_feature_utility_v1/structure_unit.npy",
+            "sha256": "261803501aa7d62fe315e443d576f1f94e6203b078298e4d2987ff3131e36250",
+            "payload_committed": false
+        },
+        {
+            "source_id": "canonical_v7_adjudication",
+      "role": "confirmed positive occurrence and immutable identity authority",
+      "portable_path": "data://Outputs/HardROIAdjudication/spon_ca_burst_hard_roi_adjudication_final_v7/adjudication_final.tsv",
+      "sha256": "73958f7462731c69050c3b11a7cf4a50a2b9a89d261b769197363c595f8ed31b",
+      "payload_committed": false
+    },
+    {
+      "source_id": "new_candidate_single_reviewer_labels",
+      "role": "locked review-conflict audit labels, never primary fitting labels",
+      "portable_path": "repo-workspace://Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/user_review_v1.tsv",
+      "sha256": "45608b3240dca0a7c26113898c3d9d0e5ca555b7cc85ba570080b5ee8a4252ea",
+      "payload_committed": false
+    },
+    {
+      "source_id": "detection_profile_taxonomy_v5_sites",
+      "role": "legacy detection-site coordinates used only to project locked reviewer IDs",
+      "portable_path": "repo-workspace://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/detection_profile_taxonomy_v5/detection_site_profiles.tsv",
+      "sha256": "4db074a06afb9b5610bd47a99256dd841e033c4a78b340defe44bc1f98d67a93",
+      "payload_committed": false
+    },
+    {
+      "source_id": "detection_profile_taxonomy_v5_occurrences",
+      "role": "legacy detection occurrence to site mapping used only to project review coordinates",
+      "portable_path": "repo-workspace://Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/detection_profile_taxonomy_v5/detection_occurrence_profiles.tsv",
+      "sha256": "9b01e2286ffbb203d97afbda04191d0e797390611008f8d6941259738c7b54ab",
+      "payload_committed": false
+    }
+  ],
+  "frozen_candidate_scope": {
+    "recording_id": "spon_ca_burst_3_hindbrain_to_tail_488_20ms",
+    "event_bursts": 4,
+    "event_candidates": 1999,
+    "quiet_candidates": 2938,
+    "feature_count": 34,
+    "proposal_source_count": 22
+  },
+  "truth_boundary": {
+    "canonical_v7": "positive reference with repeated occurrences nested within immutable identities; it is not exhaustive full-field truth",
+    "unmatched_event_candidates": "unknown, never verified negative",
+    "quiet_candidates": "source-off null controls, never verified negative",
+    "new_review": "single-reviewer, detector-selected, and label-policy-conflicted with canonical v7; reserved from primary model fitting and evaluation"
+  },
+  "publication_boundary": "This descriptor publishes hashes and portable locators only. The local tables and raw/processed authorities remain outside the Git publication boundary."
+}

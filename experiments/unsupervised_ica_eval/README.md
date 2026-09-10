@@ -17,3 +17,13 @@ under `docs/research/`. Stage B does not estimate precision because the labels
 are sparse positives rather than exhaustive negatives.
 
 Run the commands in `docs/workflows/unsupervised_two_frame_ica_eval.md`.
+
+The bounded PC-MITL-ICA matrix-Rényi continuation is documented separately in
+`docs/research/PC_MITL_ICA_PHASE1_PLAN.md`. It is an additive synthetic phase-1
+evaluation and does not replace any configuration above.
+Its frozen paired E01/E02 continuation is `pc_mitl_e01_e02.yaml`; results and
+decision boundaries are recorded in
+`docs/research/PC_MITL_ICA_E01_E02_RESULTS.md`.
+The locked follow-up is `pc_mitl_specialized_confirmation.yaml`; its failed
+advance gate and stop decision are documented in
+`docs/research/PC_MITL_ICA_SPECIALIZED_CONFIRMATION_RESULTS.md`.

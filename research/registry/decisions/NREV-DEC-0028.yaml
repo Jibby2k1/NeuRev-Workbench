@@ -1,0 +1,35 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0028
+origin:
+  kind: native
+program_id: NREV-PRG-0001
+title: Hold Feature Atlas replacement and prioritize competition-aware confirmation
+lifecycle: active
+action: hold
+rationale: Retain this as an exploratory feature-engineering result. Competition-aware, identity-safe proposal resolution
+  is the next bounded candidate; the favorable family was selected among four inspected families and requires confirmation.
+evidence_summary: On the same 1619-candidate union, augmented linear macro held-fold SPU-AUC was 0.984392 versus
+  0.979734 for the retrained existing model, with 35/78 versus 34/78 at budget 58. The paired global SPU-AUC delta
+  was +0.004784, but its grouped interval [-0.004081, +0.015125] crossed zero. Nuisance/competition had the strongest
+  family point estimate, also with an interval crossing zero. Scientific promotion and the full model-annotation
+  audit remain incomplete.
+effective_on: '2026-09-09'
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0037
+claim_ids: []
+evidence_capsule_ids: []
+constraints:
+- SPU-AUC measures positive-versus-unlabeled ranking, not precision, specificity, calibrated neuron probability,
+  or end-to-end proposal recall.
+- The grouped global-AUC interval and macro held-fold AUC are distinct summaries and must retain their names.
+- The final Run E changes a display bound only; failed partial runs and superseded visual iterations remain preserved.
+- The new ranking audit is incomplete and the 78 positive anchors remain part of the same historically examined
+  recording.
+follow_up:
+- Freeze a cluster-resolution comparison before another recording or exhaustively reviewed field is evaluated.
+- Use source consistency as quality-control/abstention context; it does not measure independently refitted ICA reproducibility.
+visibility: public
+created_on: '2026-09-09'
+updated_on: '2026-09-09'

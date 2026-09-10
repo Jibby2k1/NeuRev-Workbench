@@ -13,6 +13,7 @@ claims.
 [![Research registry](https://img.shields.io/badge/research-registry--backed-6e53a4?style=flat-square)](research/README.md)
 [![Evidence boundary](https://img.shields.io/badge/evidence-bounded-102733?style=flat-square)](docs/PUBLICATION_BOUNDARY.md)
 
+[Current work](docs/research/CURRENT_WORK.md) ·
 [Research story](research/generated/PROJECT_STORY.md) ·
 [Repository guide](docs/REPOSITORY_GUIDE.md) ·
 [Documentation](docs/README.md) ·
@@ -54,13 +55,34 @@ Those are registered open questions, not footnotes. See the generated
 | [Source Separation and Representation](docs/research/README.md) | Interpretable temporal, spatial, and multiscale representations for separating neural signal, structured artifact, and measurement noise. | active |
 | [Fish Intent and Inverse Control](docs/programs/fish_inverse_control/README.md) | Stage-gated measurement, intent decoding, action-conditioned system identification, simulation, and safety-bounded control research. | draft |
 | [Grid and Latent Dynamics](docs/GRID_LATENT_DYNAMICS.md) | Template-aligned neural-state grids, latent representations, forecasting baselines, and video-level classifiers. | active |
+| [Gamma Local Standardization](docs/research/SPON_CA_BURST_GAMMA_LS_PAPER_SUCCESS_RESULTS_2026_09_09.md) | Single-scale causal signed-difference proposals with guarded radial Gamma-weighted local standardization and explicit calibration, support, and timing audits. | active |
 
 <!-- END GENERATED RESEARCH SNAPSHOT -->
+
+## Latest work
+
+Start with the [current-work synthesis](docs/research/CURRENT_WORK.md) for the
+latest reports, implementation routes, and unresolved gates. The compact
+Gamma-LS architecture and the broader neuron-identifiability study use
+different evaluation populations and readouts; their results stay separate.
+
+| Research thread | Latest reading | What the evidence supports |
+| --- | --- | --- |
+| Causal candidate extraction | [Gamma-LS final campaign, September 9](docs/research/SPON_CA_BURST_GAMMA_LS_PAPER_SUCCESS_RESULTS_2026_09_09.md) | Signed differencing and one fixed Gamma-LS context; frame-level proposals, with support sufficiency and sustained 1-kHz gates unpassed |
+| ICA and whitening | [Final real-data results](docs/research/ICA_WHITENING_REAL_DATA_V1_FINAL_RESULTS.md) · [synthetic screen](docs/research/ICA_WHITENING_HYPERPARAMETER_EVALUATION_RESULTS.md) | Concluded real-data evaluation and its completion gates; independent scoring differs from the Gamma-LS readout |
+| Matrix-information ICA | [PC-MITL specialized confirmation](docs/research/PC_MITL_ICA_SPECIALIZED_CONFIRMATION_RESULTS.md) | The locked improvement threshold was missed; retain CS-Parzen |
+| Context and feature engineering | [Envelope morphology](docs/research/CONTEXTUAL_ENVELOPE_MORPHOLOGY_V1_RESULTS.md) · [Feature Atlas](docs/research/SPON_CA_BURST_FEATURE_ATLAS_V1_RESULTS.md) | Distinct morphology roles and exploratory ranking signals; no detector promotion |
+| Uncertainty-aware feature fusion | [v1.1 results](docs/research/UNCERTAINTY_AWARE_FEATURE_LEARNING_V1_1_RESULTS.md) | Completed engineering screen; no demonstrated nonlinear advantage over matched linear fusion |
+
+[Browse the research index](docs/research/README.md) ·
+[Find a workflow contract](docs/workflows/README.md) ·
+[Inspect report artifacts](docs/reports/README.md)
 
 ## Choose your route
 
 | I want to… | Start here |
 | --- | --- |
+| Catch up on the latest repository work | [Current work and evidence boundaries](docs/research/CURRENT_WORK.md) |
 | Understand the research in five minutes | [Generated research story](research/generated/PROJECT_STORY.md) |
 | Inspect every claim and its boundary | [Claim ledger](research/generated/CLAIM_LEDGER.md) |
 | Follow the question → result → decision history | [Experiment timeline](research/generated/EXPERIMENT_TIMELINE.md) |

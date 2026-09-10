@@ -1,0 +1,92 @@
+\section{Discussion}
+
+NeuRev Workbench treats scientific interpretation as a provenance problem as
+well as a modeling problem. In the present recording, the same pipeline can
+produce a recovered known-positive occurrence, an unmatched candidate for expert
+review, a ranking miss, a proposal-absence case, or an apparent recentering gain
+that actually crosses identity. Representing all of these outputs as detections
+would discard the information needed to audit or improve the system.
+
+\subsection{Identity is a first-class data structure}
+
+The empirical recentering analysis shows why observation site, geometry, and
+canonical identity should not be stored as one mutable record.
+\VenueIdentityCollision{} of \VenueStrictMissed{} local improvements overlapped
+an existing identity. A software system that updates the
+center in place could convert those cases into apparent recoveries without
+leaving evidence of reassignment. Immutable observations and explicit identity
+relationships instead permit alternative geometries to be evaluated while the
+original reference remains recoverable.
+
+This pattern extends beyond calcium imaging. Any workflow with crowded objects,
+repeated observations, uncertain matching, or human adjudication benefits from
+separating what was measured from what it is believed to represent. Geometry
+hashes and versioned identity decisions provide a practical basis for that
+separation.
+
+\subsection{Unknown is an operational state, not missing metadata}
+
+Positive--unlabeled evaluation is often introduced as a statistical choice. Here
+it is also enforced as a data-state contract. Unmatched candidates stay unknown
+through feature computation, out-of-fold scoring, review export, and manuscript
+generation. This prevents downstream tables from silently converting missing
+labels into negatives.
+
+The \VenueReviewedCandidates{}-site review illustrates the benefit.
+\VenueReviewLikely{} calls were definite or probable, but their selected-batch
+frequency was never routed into a precision field. \VenueReviewUncertain{}
+uncertain calls remained unresolved rather than negative. The
+priority score was retained as review value despite poor alignment with obvious
+likely-neuron calls, because its intended target was ambiguity and crowding.
+Explicit task semantics make that result interpretable rather than erroneous.
+
+\subsection{Evidence-bound generation limits narrative drift}
+
+The workflow separates run completion, artifact validation, scientific-audit
+completion, and scientific promotion. This distinction was consequential during
+manuscript audit: a completed local Feature Atlas run had numerical artifacts but
+no canonical experiment/run binding and an incomplete model-annotation media
+audit. The corrected build excludes its values from both abstracts, main Results,
+and main figures. Completion is visible as engineering history without being
+misrepresented as a registered model replacement.
+
+Generating synchronized technical, overview, and experiment-history views from
+the same registry reduces copy-and-paste drift. The venue layer adds a compact
+source-to-fact manifest because not every maintained result is yet represented
+by a portable registry capsule. Quantitative facts, scope, evidence links, and
+status are appropriate generated fields; nuanced interpretation remains in
+author-reviewed prose.
+
+\subsection{Software direction}
+
+After independent adjudication and a bounded truth set, a useful next software
+component to test is a competition-aware identity resolver.
+Rather than producing one scalar score per location, it should construct local
+candidate clusters and represent retain, merge, split, or abstain decisions.
+Cluster size, footprint overlap, peak separation, trace partial correlation,
+within-cluster score entropy, and assignment stability are candidate inputs.
+Evaluation should preserve identity-level recovery, duplicate count, and review
+coverage as separate outputs.
+
+Future resolver studies should include quality-control or abstention fields and
+keep their intended role separate from neuron-probability ranking. Future
+releases should also provide portable example data, a documented command-line
+workflow, machine-readable schemas, deterministic smoke tests, and archive
+identifiers for code and artifacts.
+
+\subsection{Limitations and generalization}
+
+The current demonstration uses one recording and historically informed event
+windows. It does not establish cross-recording transfer or broad software utility.
+The candidate review has one expert and awaits adjudication. Full-field precision
+requires a bounded exhaustive truth set. Some analyses have few independent
+identity groups, while exact-truth simulations do not establish biological
+transfer. The public software/data release and clean release-suite
+record are also pending.
+
+These limitations define the next validation sequence: freeze the identity and
+candidate contracts, complete independent review, construct bounded truth without
+exposing model scores during raw-first annotation, and then transfer the frozen
+workflow to another recording. A successful result would support a general
+neuroinformatics contribution; a failed transfer would still localize which
+data, acquisition, or identity assumptions did not generalize.

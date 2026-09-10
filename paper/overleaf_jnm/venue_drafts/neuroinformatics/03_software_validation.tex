@@ -1,0 +1,52 @@
+\subsection{Software invariants were tested as distinct evidence states}
+
+The empirical and simulation results above act as a case study for the software
+contract rather than as a claim of broad deployment readiness. The current
+validation matrix is summarized in Table~\ref{tab:software-validation}. Identity
+and positive--unlabeled invariants are supported in the maintained checkout;
+human truth, independent-recording transfer, and release portability remain
+open.
+
+\begin{table*}[!htbp]
+\centering
+\caption{NeuRev Workbench validation matrix. ``Passed'' refers to the bounded
+artifact or contract shown, not to biological generalization or public-release
+readiness.}
+\label{tab:software-validation}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.20\textwidth}
+  >{\raggedright\arraybackslash}p{0.30\textwidth}
+  >{\raggedright\arraybackslash}p{0.18\textwidth}
+  >{\raggedright\arraybackslash}X}
+\toprule
+Invariant & Evidence & Current state & Remaining gate \\
+\midrule
+Observation and identity separation & \VenueCohortOccurrences{} occurrence
+geometries remain bound to \VenueCohortSites{} immutable sites; recentering
+audit preserves the originals & Passed for case study & Cross-recording schema
+use \\
+P/U state preservation & Unmatched sites remain U through ranking, review, and
+reporting & Passed for audited paths & Bounded exhaustive truth \\
+Budget semantics & Per-burst B\VenuePerLaneBudget{} recovery is named separately
+from other global budgets; generated facts reconcile counts & Passed in both
+venue builds & Maintain as estimands evolve \\
+Artifact lineage & \VenueFactSourceCount{} fact sources and all venue-figure sources/outputs have
+SHA-256 manifests & Passed for manuscript package & Public archive and DOI \\
+Human review lifecycle & All \VenueReviewedCandidates{} selected sites have one
+stored blinded review outcome & Single-reviewer complete & Independent second
+review and adjudication \\
+Evidence status & Unregistered Feature Atlas results are excluded from main
+claims; numerical completion does not imply promotion & Enforced in this draft &
+Registry and media audit if reconsidered \\
+Release reproducibility & Focused tests and deterministic packaging are present &
+Partial & Clean isolated install, example data, full release suite \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+The package therefore demonstrates a usable provenance architecture and catches
+the concrete errors found during manuscript audit: stale cohort counts,
+occurrence-versus-site denominator drift, per-lane-versus-global budget
+conflation, provisional operator promotion, and missing visuals. It does not yet
+demonstrate third-party installation, interoperability across acquisition
+formats, multi-recording scale, or independent regeneration by another group.

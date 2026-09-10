@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "experiment_id": "gamma_ls_exact_truth_framewise_v1",
+  "simulator": {
+    "frames": 96,
+    "height_px": 64,
+    "width_px": 64,
+    "frame_interval_ms": 20.0,
+    "source_counts": [2, 4, 8],
+    "active_trace_threshold": 0.12,
+    "source_margin_px": 10.0,
+    "minimum_anchor_separation_px": 8.0,
+    "families": [
+      "baseline",
+      "dense_neuropil",
+      "bleaching",
+      "source_specific_nonrigid_motion",
+      "empirical_noise",
+      "compound_shift"
+    ]
+  },
+  "splits": {
+    "scale_floor_fit": {
+      "families": ["baseline", "dense_neuropil", "bleaching"],
+      "seeds": [101, 102, 103],
+      "source_count": 0
+    },
+    "threshold_calibration": {
+      "families": ["baseline", "dense_neuropil", "bleaching"],
+      "seeds": [201, 202, 203, 204],
+      "source_count": 0
+    },
+    "evaluation": {
+      "families": [
+        "baseline",
+        "dense_neuropil",
+        "bleaching",
+        "source_specific_nonrigid_motion",
+        "empirical_noise",
+        "compound_shift"
+      ],
+      "seeds": [1001, 1002, 1003, 1004, 1005, 1006],
+      "source_counts": [2, 4, 8]
+    },
+    "latency": {
+      "family": "baseline",
+      "seed": 9001,
+      "source_count": 0
+    }
+  },
+  "representations": {
+    "ordered": ["raw", "difference_signed", "difference_energy_normalized"],
+    "common_preprocessing": "causal_gaussian_sigma1_then_ema_alpha0p4",
+    "aligned_current_frame_starts_at_zero_based_index": 1,
+    "energy_epsilon": 1e-8
+  },
+  "operators": {
+    "ordered": [
+      "radial_gamma_h15_g7_n9_m0p5",
+      "signed_square_annulus_h11_g3",
+      "maintained_positive_box_cfar_h11_g3"
+    ],
+    "radial_gamma": {
+      "half_width_px": 15,
+      "guard_radius_px": 7,
+      "shape_n": 9.0,
+      "mode_fraction_of_half_width": 0.5,
+      "support_geometry": "disk",
+      "boundary_mode": "valid_renormalized_zero"
+    },
+    "signed_square_annulus": {
+      "outer_half_width_px": 11,
+      "guard_half_width_px": 3,
+      "boundary_mode": "valid_reference_renormalized_zero"
+    },
+    "maintained_positive_box_cfar": {
+      "outer_half_width_px": 11,
+      "guard_half_width_px": 3,
+      "boundary_mode": "replicate",
+      "input_clipping": "positive"
+    },
+    "epsilon": 1e-6,
+    "scale_floor_percentile": 10.0
+  },
+  "calibration": {
+    "target_nms_proposals_per_frame": [0.25, 0.5, 1.0, 2.0, 5.0],
+    "primary_target_nms_proposals_per_frame": 1.0,
+    "threshold_rule": "largest_empirical_null_nms_burden_not_exceeding_target",
+    "source_count_used": 0,
+    "source_count_derived_threshold_or_budget": false,
+    "probability_of_false_alarm_claimed": false
+  },
+  "evaluation": {
+    "grain": "source_frame",
+    "temporal_aggregation": "none_framewise",
+    "temporal_max_pooling": false,
+    "time_collapsed_site_score": false,
+    "nms_distance_px": 6,
+    "match_radius_px": 6.0,
+    "one_to_one_matching": "score_ranked_greedy_nearest_remaining_truth",
+    "candidate_budget": "none_threshold_only",
+    "safety_peak_limit_per_frame": 10000,
+    "metrics": ["precision", "recall", "f1", "localization_px", "duplicates"]
+  },
+  "empirical_noise_profile": {
+    "recording_id": "15 right crop512",
+    "source_sha256": "ede3f57dd65d5fb2a13c389da3ea0ef4cd1f9fdd83c19f4b3b9ffa7009a13603",
+    "source_shape_tyx": [1608, 512, 512],
+    "sampled_frame_count": 48,
+    "sample_crop_yxhw": [128, 128, 256, 256],
+    "median_intensity": 716.0,
+    "frame_difference_noise_mad": 57.659607740394165,
+    "robust_noise_to_median": 0.08053017840837173,
+    "simulator_read_sigma": 0.40265089204185867,
+    "label_use": "none",
+    "role": "frozen_label_free_noise_scale_only_not_biological_truth"
+  },
+  "resources": {
+    "device": "cpu",
+    "cpu_threads": 1,
+    "chunk_frames": 32,
+    "latency_warmup_iterations": 10,
+    "latency_timed_iterations": 50,
+    "minimum_free_disk_gib": 2.0
+  },
+  "scientific_audit": {
+    "enabled": true,
+    "status_after_metric_runner": "pending_full_media_renderer_and_inventory_validation"
+  },
+  "outputs": {
+    "plan_root": "Outputs/GammaLSDifference/gamma_ls_exact_truth_framewise_v1_plan",
+    "result_root": "Outputs/GammaLSDifference/gamma_ls_exact_truth_framewise_v1"
+  }
+}

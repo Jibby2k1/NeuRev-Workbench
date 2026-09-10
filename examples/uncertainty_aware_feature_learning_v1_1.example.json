@@ -1,0 +1,321 @@
+{
+  "schema_version": 1,
+  "experiment_id": "NREV-EXP-0021",
+  "run_id": "NREV-RUN-EXP-0021-SCREEN-20260830-B",
+  "planned_at_utc": "2026-08-30T17:32:51.163081Z",
+  "repository_contract": {
+    "origin_https": "https://github.com/Jibby2k1/NeuRev-Workbench",
+    "branch": "codex/neuron-identifiability-paper-20260822",
+    "base_commit_sha": "0fe1b38aec6e1748fa5ec056aa883977d9999f05",
+    "dirty_execution_allowed_with_content_digest": true
+  },
+  "runner_module": "neurobench.experiments.neuron_identifiability.uncertainty_aware_learning",
+  "protocol_path": "docs/workflows/uncertainty_aware_feature_learning_v1_1.md",
+  "protocol_sha256": "99161431d3ba27192c3ffff85b926fa2a10871e869bd3ad3edb82fb50a4379b7",
+  "output_root": "Outputs/NeuronIdentifiability/NREV-EXP-0021/runs/NREV-RUN-EXP-0021-SCREEN-20260830-B",
+  "execution_role": "bounded_non_claim_bearing_positive_unlabeled_feature_fusion_screen",
+  "engineering_execution_authorized": true,
+  "scientific_execution_authorized": false,
+  "claim_bearing_execution_authorized": false,
+  "scientific_completion_allowed": false,
+  "claim_or_evidence_capsule_creation_allowed": false,
+  "input_descriptor": "research/data-registry/uncertainty_aware_learning_sources_v1.json",
+  "input_descriptor_sha256": "658b8d0c77ff156f4abb85763f1616eec4e729110ca4d5092ab635f03369e01d",
+  "data_root_environment_variable": "NEUROBENCH_DATA_ROOT",
+  "inputs": {
+    "innovation_ranker_v5_config_relative_to_data_root": "Outputs/HierarchicalParzenICA/spon_ca_burst_innovation_ranker_v5/config.resolved.json",
+    "canonical_v7_labels_relative_to_data_root": "Outputs/HardROIAdjudication/spon_ca_burst_hard_roi_adjudication_final_v7/adjudication_final.tsv",
+    "new_review_labels_relative_to_repository": "Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/user_review_v1.tsv",
+    "legacy_taxonomy_sites_relative_to_repository": "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/detection_profile_taxonomy_v5/detection_site_profiles.tsv",
+    "legacy_taxonomy_occurrences_relative_to_repository": "Outputs/NeuronIdentifiability/spon_ca_burst_identifiability_paper_v1_v8/detection_profile_taxonomy_v5/detection_occurrence_profiles.tsv"
+  },
+  "candidate_census": {
+    "materialized_census_id": "innovation_ranker_v5_broad_proposal_census",
+    "harmonizer_contract_id": "innovation_ranker_v5_broad_union",
+    "proposal_source_count": 22,
+    "per_source_limit": 100,
+    "nms_distance_px": 6,
+    "dedupe_radius_px": 3.0,
+    "event_candidate_counts_by_burst": {
+      "1": 544,
+      "2": 530,
+      "3": 476,
+      "4": 449
+    },
+    "quiet_candidate_counts_by_map": [
+      683,
+      748,
+      759,
+      748
+    ],
+    "feature_count": 34,
+    "current_label_tables_joined_only_after_census_materialization": true,
+    "canonical_v7_or_new_review_labels_used_to_rank_or_select_candidates": false,
+    "legacy_label_derived_event_windows_used": true,
+    "historically_label_informed_feature_program": true
+  },
+  "label_contract": {
+    "canonical_confirmed_match_radius_px": 6.0,
+    "canonical_match_rule": "within_burst_greedy_one_to_one_minimum_distance_then_candidate_id",
+    "canonical_inclusive_exclusion_radius_px": 12.0,
+    "new_review_reserve_radius_px": 6.0,
+    "new_review_unlabeled_exclusion_radius_px": 12.0,
+    "review_neighborhoods_reserved_from_primary_fit_and_evaluation": true,
+    "unmatched_event_candidates": "unlabeled_unknown",
+    "quiet_candidates": "source_off_null_control",
+    "review_artifact_label": "case_study_not_negative",
+    "primary_policy": "canonical_v7_confirmed_only_after_review_reservation"
+  },
+  "features": {
+    "primary_compact_feature_ids": [
+      "carrier_signed",
+      "local_psd_signal",
+      "asymmetric_state",
+      "spatial_coherence",
+      "cross_scale_rank",
+      "cross_scale_recall",
+      "cfar_score",
+      "cfar_background",
+      "cfar_noise",
+      "persistent_artifact_score",
+      "cut_center_sigma2p5",
+      "cut_ring_r4p5_t1p25"
+    ],
+    "expert_separation_feature_ids": [
+      "carrier_signed",
+      "local_psd_signal",
+      "asymmetric_state",
+      "spatial_coherence",
+      "cross_scale_rank",
+      "cross_scale_recall",
+      "cfar_score"
+    ],
+    "scalar_baselines": [
+      "carrier_signed",
+      "cfar_score"
+    ],
+    "prohibited_inputs": [
+      "coordinates",
+      "partition_or_burst_id",
+      "candidate_or_identity_id",
+      "proposal_order",
+      "proposal_source_count",
+      "precomputed_full_census_z_scores",
+      "detector_outcomes",
+      "reviewer_labels_or_descriptions",
+      "morphology",
+      "priority_scores_or_ranks"
+    ],
+    "fold_local_preprocessing": {
+      "imputation": "training_median_with_missing_indicator_only_if_needed",
+      "scaling": "training_median_and_MAD_with_IQR_fallback_and_fail_closed_nonzero_scale",
+      "fit_on_test_or_quiet_controls": false
+    }
+  },
+  "outer_validation": {
+    "scheme": "five_positive_anchor_median_x_blocks_with_whole_leakage_group_closure",
+    "fold_count": 5,
+    "boundary_guard_px": 12.0,
+    "positive_group_representative_x": "median_unreserved_positive_anchor_x",
+    "unlabeled_only_group_representative_x": "median_all_eligible_group_rows_x",
+    "raw_candidate_extent_overlap_allowed_only_by_whole_group_closure": true,
+    "training_guard_rule": "purge_whole_group_on_nominal_boundary_plus_or_minus_12px_interval_intersection_or_when_any_member_is_within_inclusive_euclidean_12px_of_any_held_test_candidate",
+    "minimum_positive_anchors_per_fold": 10,
+    "minimum_unlabeled_spatial_groups_per_fold": 10,
+    "spatial_group_cell_size_px": 12.0,
+    "expected_assignment_sha256": "517fbb0ef37ea7b57917367f9e39efe931c01ea9f848a53acde097cc47b221ba",
+    "expected_train_test_guard_membership_sha256": "4425f9a12a8d367969edd50c2daf4192b450d4de27fc5776628881c5538e0a9c",
+    "identity_cross_fold_allowed": false,
+    "feature_or_score_informed_boundaries_allowed": false,
+    "all_eligible_event_rows_receive_exactly_one_oof_score": true
+  },
+  "models": {
+    "methods": [
+      "carrier_signed",
+      "cfar_score",
+      "expert_separation_equal_weight",
+      "positive_reference",
+      "linear_spu",
+      "elastic_linear_spu",
+      "bagged_pu_linear",
+      "tiny_mlp_spu"
+    ],
+    "linear_spu": {
+      "loss": "class_balanced_binary_cross_entropy_P_vs_U_ranking_surrogate",
+      "l2": 0.01,
+      "maximum_proximal_gradient_iterations": 50000,
+      "convergence_tolerance": 1e-6
+    },
+    "elastic_linear_spu": {
+      "loss": "class_balanced_binary_cross_entropy_P_vs_U_ranking_surrogate",
+      "penalty_strength": 0.01,
+      "l1_ratio": 0.5,
+      "maximum_proximal_gradient_iterations": 50000,
+      "convergence_tolerance": 1e-6
+    },
+    "bagged_pu_linear": {
+      "bags": 10,
+      "unlabeled_per_positive": 3,
+      "base_l2": 0.01,
+      "base_maximum_proximal_gradient_iterations": 50000,
+      "base_convergence_tolerance": 1e-6,
+      "seed": 2101
+    },
+    "tiny_mlp_spu": {
+      "hidden_units": 4,
+      "activation": "tanh",
+      "loss": "class_balanced_binary_cross_entropy_P_vs_U_ranking_surrogate",
+      "optimizer": "deterministic_full_batch_Adam_style_with_explicit_L2",
+      "learning_rate": 0.003,
+      "l2": 0.01,
+      "maximum_epochs": 500,
+      "training_only_early_stop_patience": 35,
+      "training_only_epoch_selection_folds": 2,
+      "batch_mode": "deterministic_full_batch",
+      "seeds": [
+        3101,
+        3102,
+        3103,
+        3104,
+        3105,
+        3106,
+        3107,
+        3108,
+        3109,
+        3110
+      ],
+      "seed_aggregation": "mean_score_per_candidate"
+    },
+    "hyperparameter_selection": "none_fixed_before_outer_scoring",
+    "output_semantics": "positive_versus_unlabeled_ranking_score_not_probability"
+  },
+  "evaluation": {
+    "global_candidate_budgets": [
+      20,
+      58,
+      100
+    ],
+    "primary_budget": 58,
+    "primary_metric": "spu_auc",
+    "secondary_metrics": [
+      "known_positive_proposal_recall_at_budget",
+      "held_positive_rank",
+      "per_fold_recall_at_58",
+      "seed_rank_stability"
+    ],
+    "cross_fold_score_contract": {
+      "primary_auc": "macro_mean_of_within_fold_spu_auc",
+      "global_fixed_budget_score": "label_free_within_test_fold_midrank_percentile",
+      "raw_cross_fold_score_ranking": "sensitivity_only"
+    },
+    "canonical_proposal_stage_misses_in_recall_denominator": true,
+    "grouped_bootstrap_draws": 2000,
+    "grouped_bootstrap_seed": 4101,
+    "grouped_bootstrap_resampling_unit": "whole_leakage_group_with_positive_and_unlabeled_members_joint",
+    "grouped_bootstrap_strata": "positive_containing_vs_unlabeled_only_within_outer_fold",
+    "representative_unit_score_permutations": 2000,
+    "representative_unit_score_permutation_seed": 4201,
+    "permutation_semantics": "fold_stratified_one_pre_score_representative_per_whole_leakage_group_score_assignment_permutation_posthoc_not_refitted",
+    "ordinary_auc_precision_specificity_or_fpr_language_allowed": false
+  },
+  "locked_audits": {
+    "review_conflict_panel_scored_after_primary_freeze": true,
+    "quiet_null_panel_scored_after_primary_freeze": true,
+    "panel_values_may_tune_or_select_model": false,
+    "scientific_audit": {
+      "enabled": true,
+      "full_three_section_media_generated_in_this_screen": false,
+      "required_status": "incomplete",
+      "reason": "bounded automated engineering screen; any promoted finalist requires a subsequent frozen media-audit run"
+    }
+  },
+  "advance_signals": {
+    "minimum_unreserved_positive_anchors": 75,
+    "tiny_mlp_minus_linear_spu_auc_minimum": 0.03,
+    "tiny_mlp_minus_linear_grouped_ci_lower_minimum": 0.0,
+    "tiny_mlp_minus_cfar_spu_auc_minimum": 0.03,
+    "tiny_mlp_minus_cfar_grouped_ci_lower_minimum": 0.0,
+    "tiny_mlp_minus_strongest_frozen_recall_at_58_minimum": 0.03,
+    "maximum_per_fold_recall_loss": 0.10,
+    "maximum_representative_unit_permutation_p": 0.05,
+    "minimum_mlp_seed_rank_correlation": 0.90,
+    "maximum_mlp_seed_recall_at_58_range": 0.05,
+    "interpretation": "descriptive_engineering_advance_signal_not_scientific_gate"
+  },
+  "resources": {
+    "device": "cpu",
+    "numpy_threads": 1,
+    "maximum_end_to_end_wall_minutes": 30,
+    "deadline_enforcement": "posix_process_alarm_from_run_start_through_pre_promotion_validation_then_disarm_before_single_atomic_rename",
+    "atomic_partial_then_rename": true,
+    "resume_supported": false,
+    "refuse_existing_final_or_partial": true
+  },
+  "implementation_hash_contract": {
+    "algorithm": "sha256",
+    "scope": "complete_file_bytes",
+    "mismatch_policy": "fail_read_only_preflight_and_require_a_new_versioned_run",
+    "sources": [
+      {
+        "path": "neurobench/experiments/neuron_identifiability/uncertainty_aware_census.py",
+        "sha256": "5538acf1b703c2d0d3499f6da5d8c9d8511e1247ff33f8736997fea505b10264",
+        "role": "frozen_broad_candidate_census"
+      },
+      {
+        "path": "neurobench/experiments/neuron_identifiability/uncertainty_aware_data.py",
+        "sha256": "f7d4085062fd426e7575e56b7547afd411e488802444b71edc2a12cfdba0afc7",
+        "role": "label_harmonization_exclusion_and_fold_contract"
+      },
+      {
+        "path": "neurobench/experiments/neuron_identifiability/uncertainty_aware_models.py",
+        "sha256": "8d399e08dbb00620c30792f46c440c66e7752d54549527b5ceaf8636f3be4fdd",
+        "role": "fold_local_baselines_linear_and_tiny_mlp_evaluation"
+      },
+      {
+        "path": "neurobench/algorithms/proposal_ranking.py",
+        "sha256": "0407b541874e288bc4300861e9deeee495fa3b778e5b2e0f81c80fd763a6c54b",
+        "role": "upstream_candidate_nms_and_deduplication"
+      },
+      {
+        "path": "neurobench/experiments/hierarchical_parzen_ica/feature_utility_config.py",
+        "sha256": "321eaecc90ecd4e3264eca7f8c67563ba7ff600c67b34eb11ff5a242c2b2b4cb",
+        "role": "upstream_feature_utility_configuration"
+      },
+      {
+        "path": "neurobench/experiments/hierarchical_parzen_ica/feature_utility_program.py",
+        "sha256": "94bb6f6c47573d1b33ab6aeb9dbdab8af17b0f907355a13e09aa73541a0017f8",
+        "role": "upstream_feature_utility_implementation"
+      },
+      {
+        "path": "neurobench/experiments/hierarchical_parzen_ica/innovation_ranker_config.py",
+        "sha256": "2ca2ed10b924af1ea0701e0475c0ba212614b0e2c14d604320b8f10c5deaa188",
+        "role": "upstream_map_and_proposal_configuration"
+      },
+      {
+        "path": "neurobench/experiments/hierarchical_parzen_ica/innovation_ranker_program.py",
+        "sha256": "1b4bd8a8f326c87b20e0f10c1b45fb4f2b1dfda92e54e4145366de212e804dcd",
+        "role": "upstream_map_and_proposal_implementation"
+      },
+      {
+        "path": "neurobench/experiments/learnable_contrast/core.py",
+        "sha256": "e321ed1953115ad2253d84748ae39ae53d8807a80b94cb3ae571e37351273a3e",
+        "role": "legacy_event_window_label_loader"
+      },
+      {
+        "path": "neurobench/experiments/pairwise_separation/evaluation.py",
+        "sha256": "38018d85d5f6e98bc00cd107a95b07c1d6364ada5a9263ffb2b1267a7eba6e07",
+        "role": "legacy_event_interval_and_temporal_pool_contract"
+      },
+      {
+        "path": "neurobench/metrics/sparse_detection.py",
+        "sha256": "d661201ec5193e47df2c9f9260a02c5dea329b5b30f6ba6df13a05599b582b46",
+        "role": "upstream_sparse_detection_primitives"
+      },
+      {
+        "path": "neurobench/experiments/neuron_identifiability/uncertainty_aware_learning.py",
+        "sha256": "9ee07cfe0549dc357f5adcdb70415983d955bf04bd552ece4e5678cb6632cf25",
+        "role": "canonical_runner_provenance_outputs_and_validation"
+      }
+    ]
+  }
+}

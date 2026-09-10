@@ -1,0 +1,31 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0029
+origin:
+  kind: native
+program_id: NREV-PRG-0001
+title: Retain contextual-envelope semantics as bounded operator diagnostics
+lifecycle: active
+action: retain
+rationale: Keep instantaneous evidence, upper envelope, agreement, gated evidence, and attenuation separate; subsequent
+  retrieval and morphology analyses are recorded as EXP-0032 and EXP-0033.
+evidence_summary: The pilot completed 360 metric rows across three sources, five temporal windows, three spatial
+  supports, and eight feature forms; all 18 representative videos decoded. Added spatial support inflated diffuse
+  and quiet evidence, while H=A^2/U was the cleanest attenuation layer. This is engineering output, not a scientific-audit-complete
+  detector experiment.
+effective_on: '2026-09-09'
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0031
+claim_ids: []
+evidence_capsule_ids: []
+constraints:
+- No detector, candidates, full-field precision, biological specificity, identity, or independent transfer was established.
+- The apparent A*U contrast partly reflects the no-pooling A-squared nonlinearity; local coherence retains its separate
+  existing definition.
+follow_up:
+- Follow the matched retrieval and full-trace morphology results instead of treating a visual pilot as an advance
+  gate.
+visibility: public
+created_on: '2026-09-09'
+updated_on: '2026-09-09'

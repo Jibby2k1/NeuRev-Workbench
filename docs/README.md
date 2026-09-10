@@ -3,12 +3,12 @@
 Use this page as a role-based index. For the smallest possible orientation,
 start with the [repository guide](REPOSITORY_GUIDE.md).
 
-## First five links
+## Start here
 
-1. [Generated research story](../research/generated/PROJECT_STORY.md) — what the
-   repository currently shows, does not show, and plans next.
-2. [Current neuron-identifiability state](../paper/overleaf_jnm/CURRENT_RESEARCH_STATE.md)
-   — the flagship study in manuscript language.
+1. [Current work](research/CURRENT_WORK.md) — the latest repository evidence,
+   implementation routes, and remaining gates across research threads.
+2. [Generated research story](../research/generated/PROJECT_STORY.md) — registered
+   claim states and the question-to-decision history.
 3. [Scientific audit standard](workflows/SCIENTIFIC_AUDIT_OUTPUT_STANDARD.md) —
    the required contract for new experiments.
 4. [Neuron Workbench](NEURON_WORKBENCH.md) — local review UI, annotations,
@@ -24,12 +24,16 @@ The machine-readable companions are [`navigation.json`](navigation.json),
 
 | Document | Use it for |
 | --- | --- |
+| [Current work](research/CURRENT_WORK.md) | Cross-program synthesis that keeps dated snapshots and finalized results distinct |
+| [Gamma-LS final campaign, September 9](research/SPON_CA_BURST_GAMMA_LS_PAPER_SUCCESS_RESULTS_2026_09_09.md) | Compact causal architecture, protected ablations, full-record proposal audit, independent sparse-positive readout, and failed timing gates |
+| [ICA/whitening final real-data results](research/ICA_WHITENING_REAL_DATA_V1_FINAL_RESULTS.md) | Concluded factorial, protected finalist and independent evaluation, with its own readout and claim limits |
 | [Claim ledger](../research/generated/CLAIM_LEDGER.md) | Atomic claims, registered scope, limitations, state, and linked experiments |
 | [Experiment timeline](../research/generated/EXPERIMENT_TIMELINE.md) | Question-to-decision chronology, including negative and planned work |
 | [Research registry guide](../research/README.md) | Canonical records, IDs, lifecycle fields, capsules, and generation workflow |
-| [Neuron-identifiability result index](research/README.md) | Detailed result reports and interpretation notes |
+| [Research result index](research/README.md) | Gamma-LS, ICA/whitening, PC-MITL, contextual envelopes, Feature Atlas, learning, and historical studies |
 | [Analytical report artifact index](reports/README.md) | Source-backed analytical artifacts and generated-reader status |
-| [Uncertainty-aware learning plan](research/SPON_CA_BURST_UNCERTAINTY_AWARE_LEARNING_PLAN_V1.md) | Prespecified learning, leakage, robustness, and label-sensitivity work |
+| [Uncertainty-aware learning v1.1 results](research/UNCERTAINTY_AWARE_FEATURE_LEARNING_V1_1_RESULTS.md) | Completed engineering screen and the unresolved nonlinear-versus-linear contrast |
+| [Current neuron-identifiability state](../paper/overleaf_jnm/CURRENT_RESEARCH_STATE.md) | The flagship study in manuscript language |
 | [External bounded-review package](research/SPON_CA_BURST_EXTERNAL_BOUNDED_REVIEW_V2_PACKAGE.md) | What is ready for independent review and what remains human-gated |
 | [New candidate review](research/SPON_CA_BURST_NEW_CANDIDATE_REVIEW_V1_RESULTS.md) | Provisional single-reviewer labels and ascertainment boundary |
 | [Publication boundary](PUBLICATION_BOUNDARY.md) | Public/private/generated/release artifact rules |
@@ -41,6 +45,10 @@ is historical evidence; current claim state comes from the root
 ## Run a workflow
 
 - [Workflow index](workflows/README.md)
+- [Gamma-LS difference/ICA ablation](workflows/spon_ca_burst_gamma_ls_difference_ablation.md)
+- [ICA and whitening evaluation](workflows/spon_ca_burst_ica_whitening_evaluation.md)
+- [Feature Atlas](workflows/spon_ca_burst_feature_atlas_v1.md)
+- [Uncertainty-aware learning v1.1](workflows/uncertainty_aware_feature_learning_v1_1.md)
 - [Raw video to report](workflows/raw_video_to_report.md)
 - [Neuron-identifiability paper workflow](workflows/spon_ca_burst_neuron_identifiability_paper.md)
 - [Full-trace feature panel](workflows/spon_ca_burst_full_trace_feature_panel.md)
@@ -108,7 +116,7 @@ generated claim state conflict, inspect the capsule and canonical record.
 
 ### Reviewer
 
-1. [Research story](../research/generated/PROJECT_STORY.md)
+1. [Current work](research/CURRENT_WORK.md) and [research story](../research/generated/PROJECT_STORY.md)
 2. [Claim ledger](../research/generated/CLAIM_LEDGER.md)
 3. [Current manuscript state](../paper/overleaf_jnm/CURRENT_RESEARCH_STATE.md)
 4. Relevant evidence capsules and result reports

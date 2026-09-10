@@ -1,0 +1,108 @@
+{
+  "all_preregistered_advance_signals_passed": false,
+  "checks": {
+    "maximum_mlp_seed_recall_at_58_range": {
+      "observed": 0.0,
+      "passed": true,
+      "threshold": 0.05
+    },
+    "maximum_per_fold_recall_loss": {
+      "observed": 0.0,
+      "passed": true,
+      "per_fold": [
+        {
+          "fold_id": 1,
+          "strongest_frozen_baseline": "expert_separation_equal_weight",
+          "strongest_frozen_baseline_recall_at_58": 0.5882352941176471,
+          "tiny_mlp_loss_relative_to_baseline": 0.0,
+          "tiny_mlp_recall_at_58": 0.7058823529411765
+        },
+        {
+          "fold_id": 2,
+          "strongest_frozen_baseline": "expert_separation_equal_weight",
+          "strongest_frozen_baseline_recall_at_58": 0.9473684210526315,
+          "tiny_mlp_loss_relative_to_baseline": 0.0,
+          "tiny_mlp_recall_at_58": 1.0
+        },
+        {
+          "fold_id": 3,
+          "strongest_frozen_baseline": "expert_separation_equal_weight",
+          "strongest_frozen_baseline_recall_at_58": 1.0,
+          "tiny_mlp_loss_relative_to_baseline": 0.0,
+          "tiny_mlp_recall_at_58": 1.0
+        },
+        {
+          "fold_id": 4,
+          "strongest_frozen_baseline": "expert_separation_equal_weight",
+          "strongest_frozen_baseline_recall_at_58": 1.0,
+          "tiny_mlp_loss_relative_to_baseline": 0.0,
+          "tiny_mlp_recall_at_58": 1.0
+        },
+        {
+          "fold_id": 5,
+          "strongest_frozen_baseline": "expert_separation_equal_weight",
+          "strongest_frozen_baseline_recall_at_58": 1.0,
+          "tiny_mlp_loss_relative_to_baseline": 0.0,
+          "tiny_mlp_recall_at_58": 1.0
+        }
+      ],
+      "threshold": 0.1
+    },
+    "minimum_fold_support": {
+      "observed_minimum_positive_anchors": 12,
+      "observed_minimum_unlabeled_spatial_groups": 19,
+      "passed": true,
+      "threshold_each": 10
+    },
+    "minimum_mlp_seed_rank_correlation": {
+      "observed": 0.9942944810229658,
+      "passed": true,
+      "threshold": 0.9
+    },
+    "minimum_unreserved_positive_anchors": {
+      "observed": 78,
+      "passed": true,
+      "threshold": 75
+    },
+    "single_burst_spatial_block_and_review_policy_explanation_excluded": {
+      "observed": "not_evaluated_in_this_bounded_primary_screen",
+      "passed": false,
+      "reason": "leave-one-burst-out and alternate frozen review-policy sensitivities are not primary outputs",
+      "threshold": "must_be_excluded_before_advancement"
+    },
+    "tiny_mlp_minus_cfar_grouped_ci_lower": {
+      "observed": 0.12073033696569294,
+      "passed": true,
+      "threshold": 0.0
+    },
+    "tiny_mlp_minus_cfar_macro_fold_spu_auc": {
+      "observed": 0.20936157700758384,
+      "passed": true,
+      "threshold": 0.03
+    },
+    "tiny_mlp_minus_linear_grouped_ci_lower": {
+      "observed": -0.004607419722739924,
+      "passed": false,
+      "threshold": 0.0
+    },
+    "tiny_mlp_minus_linear_macro_fold_spu_auc": {
+      "observed": -7.406216907024366e-05,
+      "passed": false,
+      "threshold": 0.03
+    },
+    "tiny_mlp_minus_strongest_frozen_recall_at_58": {
+      "observed": 0.051282051282051266,
+      "passed": true,
+      "strongest_frozen_baseline": "expert_separation_equal_weight",
+      "threshold": 0.03
+    },
+    "tiny_mlp_representative_unit_permutation_p": {
+      "observed": 0.0004997501249375312,
+      "passed": true,
+      "threshold": 0.05
+    }
+  },
+  "interpretation": "descriptive_engineering_advance_signal_not_scientific_gate",
+  "schema_version": 1,
+  "scientific_claim_promotion_allowed": false
+}

@@ -1,0 +1,217 @@
+{
+  "artifact_count": 42,
+  "artifacts": [
+    {
+      "bytes": 3230,
+      "path": "REPORT.md",
+      "sha256": "c7ac84e1bbaefeebad320bee6be1222435a9ceb259e4b365ae6ee1df715e6fad"
+    },
+    {
+      "bytes": 3574,
+      "path": "advance_signals.json",
+      "sha256": "e69669a452c0ed690783782a88b1ca3b651acc84c335a02743068eb70141aa20"
+    },
+    {
+      "bytes": 11345,
+      "path": "bootstrap.json",
+      "sha256": "6a3efdc407f49a2e8d75131c160588751f3ad2975d5728f7277b6976bd423d14"
+    },
+    {
+      "bytes": 1313212,
+      "path": "census/event_candidates.tsv",
+      "sha256": "082d005491a27c54c431c04619f78cb3a518e250b31bb3c03a560bf4e3844348"
+    },
+    {
+      "bytes": 11816,
+      "path": "census/feature_dictionary.json",
+      "sha256": "2499de68bc5f5073afe2733977bea9da3fba9c379dd485c103be31e506e22697"
+    },
+    {
+      "bytes": 9659,
+      "path": "census/provenance.json",
+      "sha256": "c771ef437970faa5021afef81d8cab2ec4864792ad0598b0616e6a19c1050e0c"
+    },
+    {
+      "bytes": 1741297,
+      "path": "census/quiet_candidates.tsv",
+      "sha256": "4733d9ed2843ecb4b4ce108da15b5e2f74512a7524b6360c599cbba4649467ce"
+    },
+    {
+      "bytes": 783,
+      "path": "census/summary.json",
+      "sha256": "be612ac2c5dd05f92a5a7e042b34bf07e336e4509a016f149b3e2a94ac88208a"
+    },
+    {
+      "bytes": 1166,
+      "path": "census/validation.json",
+      "sha256": "8b6d4c3dde74983a1106532ed6f9053df96ac0d801d5d767ed418497b101c421"
+    },
+    {
+      "bytes": 13674,
+      "path": "configuration.source.json",
+      "sha256": "ebb49e121b4f04685c89b80d82a5417804514cf628ac64d4a41c948927404a61"
+    },
+    {
+      "bytes": 2248403,
+      "path": "evaluation.json",
+      "sha256": "f41a1eba0c29af23e76b055fd1bf9901e85f481616019e792d7fc6135d03d612"
+    },
+    {
+      "bytes": 38494,
+      "path": "execution_provenance.json",
+      "sha256": "ee1c51001e2b9163ee98a40f236a69eb4ce803dd6963f91170634bcf257162fd"
+    },
+    {
+      "bytes": 667824,
+      "path": "fold_plan.json",
+      "sha256": "429d331a8a7227743035a937a8ac0ca4e3156247a291d40933faa0ecb5196dc0"
+    },
+    {
+      "bytes": 12123,
+      "path": "llm_context.json",
+      "sha256": "5e7cb3118cc5d1d2ed8b47ff62a1704ec7debb0748efc66987702d7f2026571c"
+    },
+    {
+      "bytes": 1971,
+      "path": "locked_audits.json",
+      "sha256": "95cc84e97b982674b87025422691690acab00ffdc528c6f201cbe73848f6b261"
+    },
+    {
+      "bytes": 23328,
+      "path": "preflight.json",
+      "sha256": "39da75f129a94ea3ea71ad3aa881083287cfd554c8d148836142fbfa8ebab26b"
+    },
+    {
+      "bytes": 2605,
+      "path": "progress/census.jsonl",
+      "sha256": "0630e83157c87fc84b35ead3e7d9597629bf6a280d7586fa1ae201d170766413"
+    },
+    {
+      "bytes": 462,
+      "path": "progress/runner.jsonl",
+      "sha256": "28ad11ada080581c85288d9487139322e4a7d0c6631c56ba46ae412a9a6b6e60"
+    },
+    {
+      "bytes": 16622,
+      "path": "resolved_config.json",
+      "sha256": "cf07e65c8fc194918b3950bfb4760cb1a36ee8c5293479a38311e036dd3f348d"
+    },
+    {
+      "bytes": 2386,
+      "path": "resource_usage.json",
+      "sha256": "33a413e1bf986f1a865af3f95ffd4f6d15530629a49b934ad93903ccefa1e3ec"
+    },
+    {
+      "bytes": 12654,
+      "path": "seed_stability.json",
+      "sha256": "abe33694df17a0c841918ea2321ebf34167bbdbc6c75e8d273367e6f2f67b666"
+    },
+    {
+      "bytes": 620,
+      "path": "solver_completion.json",
+      "sha256": "bafb19d45b4c25aea17b10f826bedffd6a5eee773086953c45c227d64950ce0f"
+    },
+    {
+      "bytes": 237,
+      "path": "status.json",
+      "sha256": "8aa084eb836f96bf78e848878d4c97b29839d8c6a6fde69400cfa09114fb0ebb"
+    },
+    {
+      "bytes": 13538,
+      "path": "summary.json",
+      "sha256": "f7669ed32f4c6ec39cc3380dfd7260b9c408385b565f421e19363f74f0be2614"
+    },
+    {
+      "bytes": 958,
+      "path": "tables/advance_signals.tsv",
+      "sha256": "3645a68a006789ce81c656691e69634577cf367f6094802e4b17bdab4cc47142"
+    },
+    {
+      "bytes": 7609,
+      "path": "tables/aggregate_metrics.tsv",
+      "sha256": "a2a044419fdeb5754ea827588940c8f7766bb7a6d1b897b2b41d754de19d2656"
+    },
+    {
+      "bytes": 351880,
+      "path": "tables/fold_assignments.tsv",
+      "sha256": "0ce84266f0f0b2e1faa593a14ce5f58d04f9f93e4ca60eae9fe08ab204a87ac5"
+    },
+    {
+      "bytes": 446,
+      "path": "tables/fold_boundaries.tsv",
+      "sha256": "130876d5b74d4ec9ceb8056b4fcda755884fccf87e5c71b7d58118ac5c9aa70b"
+    },
+    {
+      "bytes": 87604,
+      "path": "tables/fold_guard_purges.tsv",
+      "sha256": "3a009cf3a99f3ed8da1e59340b5b430a70231072416d8791cf8406ecaf34a8ea"
+    },
+    {
+      "bytes": 573,
+      "path": "tables/fold_summary.tsv",
+      "sha256": "080463448a3b7a45dc95aa25739f245a932f00b649bcdeb5c9b0d649173d1799"
+    },
+    {
+      "bytes": 1167,
+      "path": "tables/fold_whole_group_closure_extensions.tsv",
+      "sha256": "183f8a10dc52ff7a06da7c9cb6afde354a3d73bde132cec695186c06cf9c89a0"
+    },
+    {
+      "bytes": 3855398,
+      "path": "tables/harmonized_candidates.tsv",
+      "sha256": "abbd5923989bf2871a6788361197e242e125195a2a8a86db5b7a1d96d1395747"
+    },
+    {
+      "bytes": 567397,
+      "path": "tables/oof_scores.tsv",
+      "sha256": "0dcf6c776a30e5faf625ed795c419405c977ba9a7f10de171bd75924b32ebf85"
+    },
+    {
+      "bytes": 12731,
+      "path": "tables/per_fold_metrics.tsv",
+      "sha256": "0d6d7ad007f1920fed6f7509e65a45b6df1695391c0aaeff4e27b16eb42fd375"
+    },
+    {
+      "bytes": 9729,
+      "path": "tables/permutation_controls.tsv",
+      "sha256": "9baf577e630f8d833a90d432992b0c96e159f91506fb895f406c48398e80b20d"
+    },
+    {
+      "bytes": 454,
+      "path": "tables/proposal_stage_misses.tsv",
+      "sha256": "f7d725e2fcfe9956c1655d97cc29123812c7eaf59cfc430a88d5ec612829a26b"
+    },
+    {
+      "bytes": 310933,
+      "path": "tables/quiet_null_panel.tsv",
+      "sha256": "113f332ab29b8ee67a6d1154ef84d87a80d881b01196ddfcf85edb3366a16f97"
+    },
+    {
+      "bytes": 177275,
+      "path": "tables/representative_unit_scores.tsv",
+      "sha256": "aec9718f37cefca82896774677b5f633c2e6a9fc705bd1fee26ebdc9304b73ec"
+    },
+    {
+      "bytes": 22295,
+      "path": "tables/review_conflict_candidate_scores.tsv",
+      "sha256": "92180a5e83df06b36eab4eadf60cb6f3226dcaa20af238d77908b31ce7152b97"
+    },
+    {
+      "bytes": 3279,
+      "path": "tables/review_conflict_panel.tsv",
+      "sha256": "e3c4c71c5ead207f140afb137294b7c4ff861144a170bbe96f1a0901e4b1f916"
+    },
+    {
+      "bytes": 2464,
+      "path": "tables/seed_stability.tsv",
+      "sha256": "37c621d731528c4d656415691da8810e24e0903b2a9278a400ef6d5380db5e11"
+    },
+    {
+      "bytes": 23416,
+      "path": "validation.json",
+      "sha256": "31689aec4c291be11f7a27238aaf0983613247813b9477ce254c5ec461c86c6b"
+    }
+  ],
+  "index_scope": "complete_run_tree_excluding_artifact_index_itself",
+  "schema_version": 1
+}

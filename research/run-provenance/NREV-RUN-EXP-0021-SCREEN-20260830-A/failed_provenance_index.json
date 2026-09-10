@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "run_id": "NREV-RUN-EXP-0021-SCREEN-20260830-A",
+  "run_lifecycle": "failed",
+  "partial_status": "failed_nonresumable_partial",
+  "source_artifact_policy": "sanitized_byte_exact_small_provenance_only",
+  "source_partial_root_committed": false,
+  "model_metric_or_result_summary_serialized": false,
+  "scientific_evidence_capsule_created": false,
+  "artifacts": [
+    {
+      "path": "census_summary.json",
+      "bytes": 783,
+      "sha256": "be612ac2c5dd05f92a5a7e042b34bf07e336e4509a016f149b3e2a94ac88208a"
+    },
+    {
+      "path": "census_validation.json",
+      "bytes": 1166,
+      "sha256": "8b6d4c3dde74983a1106532ed6f9053df96ac0d801d5d767ed418497b101c421"
+    },
+    {
+      "path": "preflight.json",
+      "bytes": 23324,
+      "sha256": "a830c74c0fcb50dbc70e8c36bd74ccff08c85b6370c7bec7512f9493ef961b71"
+    },
+    {
+      "path": "resolved_config.json",
+      "bytes": 13672,
+      "sha256": "c2eb92a03b9b953c4148a3b62ef9a68b32d161080168bf0cec9069c696d16073"
+    },
+    {
+      "path": "runner_progress.jsonl",
+      "bytes": 303,
+      "sha256": "3adf8be55e5bbc04567b7553b6b7d6873c6ad25f048def817824b0ad64e6f600"
+    },
+    {
+      "path": "status.json",
+      "bytes": 203,
+      "sha256": "b28b5161ef34ac7ee11b0676966bd6421c3c52c306c410ac8f1dd96d3688cb9f"
+    }
+  ],
+  "omitted_from_git": [
+    "event_and_quiet_candidate_tables",
+    "full_partial_census_provenance",
+    "large_feature_arrays_and_source_video",
+    "workstation_paths"
+  ],
+  "interpretation": "Run A completed its frozen census, harmonization, and primary model evaluation but failed during paired-bootstrap output assembly because the runner assumed a learned-model score alias for scalar baselines. No model metric table or final run summary was serialized. The partial tree is immutable and nonresumable; it is engineering failure evidence, not a scientific result or evidence capsule."
+}

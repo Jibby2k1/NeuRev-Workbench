@@ -1,0 +1,147 @@
+{
+  "excluded": {
+    "feature_atlas_v1": "registered descriptively; model-annotation media audit and claim promotion incomplete"
+  },
+  "facts": {
+    "VenueAuditFrames": "560",
+    "VenueCanonicalOccurrences": "102",
+    "VenueCanonicalRecovered": "93",
+    "VenueCanonicalSensitivity": "91.2\\%",
+    "VenueCarrierAUC": "0.920",
+    "VenueClearDirectionCosine": "0.448",
+    "VenueClearNeighborRtwo": "0.088",
+    "VenueCoherenceAUC": "0.915",
+    "VenueCohortBursts": "4",
+    "VenueCohortOccurrences": "106",
+    "VenueCohortSites": "50",
+    "VenueCollisionDirectionCosine": "0.972",
+    "VenueCollisionNeighborRtwo": "0.523",
+    "VenueCounterfactualBudget": "100",
+    "VenueCrescentAUC": "0.817",
+    "VenueFactSchemaVersion": "1",
+    "VenueFactSourceCount": "12",
+    "VenueFamilyCombinedFone": "0.466",
+    "VenueFamilyHoldoutCount": "108",
+    "VenueFamilySpatialFone": "0.515",
+    "VenueIdentityClear": "4",
+    "VenueIdentityCollision": "8",
+    "VenueLSMaxError": "7.63\\times10^{-6}",
+    "VenueLSMaxErrorText": "7.63e-6",
+    "VenueLSRMSE": "6.96\\times10^{-7}",
+    "VenueLSRMSEText": "6.96e-7",
+    "VenueLagAUC": "0.905",
+    "VenueLongDelayInversionRMS": "5.68\\times10^{-12}",
+    "VenueLongDelayInversionRMSText": "5.68e-12",
+    "VenueMovieBenchmarkCount": "432",
+    "VenueMovieCombinedFone": "0.471",
+    "VenueMovieSpatialFone": "0.447",
+    "VenueOtherIdentityCollision": "6",
+    "VenuePerLaneBudget": "58",
+    "VenueRawAUC": "0.931",
+    "VenueRawAUCHigh": "0.952",
+    "VenueRawAUCLow": "0.906",
+    "VenueReviewArtifact": "1",
+    "VenueReviewDefinite": "9",
+    "VenueReviewLikely": "13",
+    "VenueReviewPriorityAUC": "0.308",
+    "VenueReviewProbable": "4",
+    "VenueReviewUncertain": "4",
+    "VenueReviewedCandidates": "18",
+    "VenueSameIdentityCollision": "2",
+    "VenueStrictMissed": "12",
+    "VenueStrictRecovered": "94",
+    "VenueStrictSensitivity": "88.7\\%",
+    "VenueTraceClassOneSites": "38",
+    "VenueTraceClassTwoSites": "12",
+    "VenueTwoFrameSampleCorrelation": "-0.9969",
+    "VenueTwoFrameSampleRtwo": "0.9938"
+  },
+  "purpose": "evidence-bound repeated facts for both venue manuscripts",
+  "schema_version": 2,
+  "sources": [
+    {
+      "availability": "repository",
+      "key": "automated_validation",
+      "path": "paper/overleaf_jnm/generated_analysis/automated_feature_validation_v1/summary.json",
+      "sha256": "104b7872bae62e166ff4d9c022d671fe259aed497c880806aca4dd35df7bfab2",
+      "size_bytes": 6617
+    },
+    {
+      "availability": "repository",
+      "key": "identity_offsets",
+      "path": "paper/overleaf_jnm/generated_analysis/identity_aware_feature_inspection_v8/offset_stability.tsv",
+      "sha256": "d46865dec942ae93440985bf65f31ad009d5d7e4877c1c2bf04bc7126f5532f3",
+      "size_bytes": 5263
+    },
+    {
+      "availability": "repository",
+      "key": "identity_summary",
+      "path": "paper/overleaf_jnm/generated_analysis/identity_aware_feature_inspection_v8/summary.json",
+      "sha256": "6cec38fbdc9d49397fb20b556f7242e77f231f6e833f05da6c7835fcf94eb928",
+      "size_bytes": 1084
+    },
+    {
+      "availability": "local_metadata_only",
+      "key": "identity_contamination",
+      "path": "Outputs/NeuronIdentifiability/spon_ca_burst_identity_aware_validation_suite_v2/identity_contamination.tsv",
+      "sha256": "be3e2a29b0a53278fb262aa501022faa4c54a4330b4ca9eb6bee7e23708a066c",
+      "size_bytes": 1911
+    },
+    {
+      "availability": "local_metadata_only",
+      "key": "candidate_review",
+      "path": "Outputs/NeuronIdentifiability/new_candidate_roi_review_batch_v1/review_summary_v1.json",
+      "sha256": "e2cd88113caf136e89e0267e52c5ca0391754f0bd60a85d9cc0fa6d5be789f1f",
+      "size_bytes": 1470
+    },
+    {
+      "availability": "local_metadata_only",
+      "key": "movie_benchmark",
+      "path": "Outputs/NeuronIdentifiability/realistic_movie_detector_benchmark_v3/summary.json",
+      "sha256": "694fa39d158e7e73ee0d668ae98b31584ecf06db3a789759775c27c91189e6ed",
+      "size_bytes": 5737
+    },
+    {
+      "availability": "local_metadata_only",
+      "key": "family_holdout",
+      "path": "Outputs/NeuronIdentifiability/realistic_movie_generator_family_holdout_v4/summary.json",
+      "sha256": "ddd31bbdedcd0fb331064b0aebf770537420ae9b1530959e6a05ae93cf5b4d3f",
+      "size_bytes": 8697
+    },
+    {
+      "availability": "local_metadata_only",
+      "key": "challenge_suite",
+      "path": "Outputs/NeuronIdentifiability/automated_challenge_suite_v7/summary.json",
+      "sha256": "c703c491573ef7a157fd9c43c6a600431243294fc2a1a0cc7be629ed43e46981",
+      "size_bytes": 4506
+    },
+    {
+      "availability": "repository",
+      "key": "long_delay_audit",
+      "path": "paper/overleaf_jnm/figures/final/fig06_ica_model_internals.json",
+      "sha256": "bc6a36ec2c6b92c20f8225b73b0800c56ca022830aa4383f0e33a6cac6521b9e",
+      "size_bytes": 1408
+    },
+    {
+      "availability": "repository",
+      "key": "local_standardization_audit",
+      "path": "paper/overleaf_jnm/figures/final/fig07_ls_denominator_diagnostics.json",
+      "sha256": "08aad57d4964eed9edc92ffe64ee65ca5e882092912df9ddf0a11725fa7e9a2b",
+      "size_bytes": 1872
+    },
+    {
+      "availability": "repository",
+      "key": "trace_taxonomy",
+      "path": "paper/overleaf_jnm/figures/final/fig04_trace_taxonomy_experiment.json",
+      "sha256": "df03ec768d58385d8b678f69845b9c7a5690ab7761cbde67d5ed48a10e075417",
+      "size_bytes": 5683
+    },
+    {
+      "availability": "local_metadata_only",
+      "key": "two_frame_operator",
+      "path": "Outputs/UnsupervisedICAEval/two_frame_stage_a_v1/summary.json",
+      "sha256": "3689cd1091447359da4cef3d30f20079178e49f954bb9d167f09c22326f5eb25",
+      "size_bytes": 7679
+    }
+  ]
+}

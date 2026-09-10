@@ -1,0 +1,40 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0025
+origin:
+  kind: native
+program_id: NREV-PRG-0005
+title: Retain the fixed signed-difference Gamma-LS context with failed scientific gates explicit
+lifecycle: active
+action: retain
+rationale: Document the single-scale signed-difference architecture as the operational result, preserving the distinction
+  between passed artifact/audit checks and unsuccessful support, representation, superiority, and sustained-timing
+  decisions.
+evidence_summary: The h15 context won all four coordinate-free training folds but failed protected support sufficiency.
+  Two-frame ICA did not pass its paired gain gate; radial superiority was not established. The q1 full-record ledger
+  contains 371 frame-local proposals on 295 of 2259 frames. Its final model-only audit passed with 24 label-free
+  surrogates, 25 decoded videos, 27 PNGs, no annotation source opened, and manual visual QA. The independent 15
+  right B58-per-block result was 6/51. Corrected batch throughput was 1470 to 2216 frames/s, while both strict 1-kHz
+  paced trials failed.
+effective_on: '2026-09-09'
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0034
+claim_ids: []
+evidence_capsule_ids: []
+constraints:
+- This separate Gamma-LS program does not update the 106-occurrence identity-safe flagship claim ledger or its independent-generalization
+  gate.
+- The protected burst-occupancy, independent block-ranking, and operational frame-level proposal heads are different
+  estimands.
+- h15 is operational, not sufficient or optimal; 371 proposal rows are not unique neurons, events, or confirmed
+  detections.
+- One independent sparse-positive recording does not establish population generalization or biological precision,
+  specificity, false-positive rate, or identity.
+- Batch throughput does not establish zero-miss/zero-drop sustained 1-kHz readiness.
+follow_up:
+- Use the September 9 result report and distinct Gamma-LS paper outline as the manuscript authority.
+- Keep the six-lag low-burden finding supplementary until a separate confirmation passes its full gate.
+visibility: public
+created_on: '2026-09-09'
+updated_on: '2026-09-09'

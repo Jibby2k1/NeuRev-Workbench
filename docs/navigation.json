@@ -14,6 +14,34 @@
   },
   "routes": [
     {
+      "id": "current_work",
+      "human_start": "docs/research/CURRENT_WORK.md",
+      "authority": "research/registry",
+      "validation": [
+        ".venv-neurobench/bin/python -m neurobench.research.registry check"
+      ]
+    },
+    {
+      "id": "gamma_local_standardization",
+      "human_start": "docs/research/SPON_CA_BURST_GAMMA_LS_PAPER_SUCCESS_RESULTS_2026_09_09.md",
+      "authority": "research/registry/programs/gamma-local-standardization.yaml",
+      "implementation": "neurobench/experiments/gamma_ls_difference",
+      "validation": [
+        "Gamma-LS focused tests",
+        "frozen campaign artifact validations"
+      ]
+    },
+    {
+      "id": "ica_whitening_final_results",
+      "human_start": "docs/research/ICA_WHITENING_REAL_DATA_V1_FINAL_RESULTS.md",
+      "authority": "research/registry/experiments/NREV-EXP-0035.yaml",
+      "implementation": "neurobench/experiments/ica_whitening_evaluation",
+      "validation": [
+        "ICA/whitening focused tests",
+        "completion_audit_latest.json"
+      ]
+    },
+    {
       "id": "project_story",
       "human_start": "research/generated/PROJECT_STORY.md",
       "authority": "research/registry",

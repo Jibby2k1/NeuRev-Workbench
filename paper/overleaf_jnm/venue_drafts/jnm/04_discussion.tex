@@ -1,0 +1,90 @@
+\section{Discussion}
+
+This study shows that neuron-detection performance cannot be interpreted safely
+without preserving both annotation uncertainty and spatial identity. The frozen
+pipeline recovered most known-positive occurrences, but the unresolved portion
+did not reduce to one technical cause. Previously unmatched candidates included
+provisional single-reviewer likely-neuron calls with appearances outside a
+simple circular high-signal
+template. Conversely, most local response improvements around known misses
+crossed into existing identities. A final candidate score alone would obscure
+both findings.
+
+\subsection{Candidate discovery is useful before it is a precision estimate}
+
+The \VenueReviewLikely{} definite or probable calls among
+\VenueReviewedCandidates{} reviewed sites provide hypothesis-generating
+evidence. They expand the set of appearances that future
+annotation and proposal methods should accommodate, including small, weak, and
+irregular structures. Their value does not depend on mislabeling the selected
+fraction as precision. Independent second review can strengthen the individual
+site decisions, while bounded exhaustive annotation is required to estimate how
+often the detector is correct across the field.
+
+This separation also clarifies the purpose of ranking. A review-value score may
+rationally prioritize ambiguity, crowding, and possible failure modes. Such a
+score can be negatively associated with obvious neuron calls and still be useful
+for allocating expert effort. A neuron-probability score has a different target
+and requires independent labels suitable for calibration.
+
+\subsection{Localization and identity are different estimands}
+
+Response-maximizing recentering appears attractive because it can increase
+signal-to-background measurements. In crowded fields, however, the higher
+response may belong to a neighbor. The \VenueIdentityCollision{} collision cases
+demonstrate that a coordinate gain without an identity guard can overstate
+recovery. The \VenueIdentityClear{} identity-clear cases expose a different
+limitation: none was represented in the
+nearby frozen proposal lists even at larger budgets. Improving those cases
+requires proposal formation rather than reranking alone.
+
+After independent review and bounded truth are completed, the result motivates
+testing competition-aware candidate clusters that incorporate
+distance, footprint overlap, peak separation, trace dependence, and split-versus-
+two-source evidence. Outputs should support retain, merge, split, and abstain
+decisions while preserving the original measurement. Evaluation should count
+recovered identities, duplicate proposals, assignment stability, and abstention
+coverage at a fixed review budget.
+
+\subsection{Representation quality is task specific}
+
+Raw fluorescence was strongest for frame-level retrieval, while spatial and
+contextual features retained localized structure and ranking value. Registered
+exact-truth simulations assigned the most robust proposal role under mechanism
+shift to spatial context, while equal-weight combination was stronger only in
+the original compact-budget factorial benchmark. A provisional legacy
+two-frame audit remains an Appendix operator control rather than a main finding.
+Together, these results discourage a single representation hierarchy.
+Amplitude, context, stability, and source-separation outputs should be evaluated
+for their intended roles rather than assumed to provide interchangeable evidence.
+
+The exact-truth challenge suite reinforces the same boundary: crescent
+morphology, close unequal-amplitude sources, deployable stopping, and parameter
+stability remained limitations. These tests support mechanism-specific roles,
+not a universal feature ordering or biological transfer.
+
+\subsection{Limitations and next evidence}
+
+All biological analyses come from one recording, so no population or
+cross-recording generalization is claimed. Event windows and feature choices have
+historical contact with this recording. Quiet intervals and displaced tissue are
+not exhaustive negatives. The unmatched batch has one reviewer, and the
+\VenueReviewUncertain{} uncertain calls remain unresolved. The
+collision-versus-clear comparison contains only \VenueIdentityCollision{} and
+\VenueIdentityClear{} cases. The simulation protocols provide known truth but
+cannot reproduce the full acquisition or biological distribution.
+
+The highest-value next evidence is therefore not a larger same-recording feature
+search. It is independent adjudication of the \VenueReviewedCandidates{}
+reviewed sites, exhaustive
+annotation of a bounded field, and transfer of frozen rules to an independent
+recording. A competition-aware resolver is a candidate design direction after
+those truth and robustness gates and must be specified and frozen before any
+evaluation used to support it. Motion and registration residuals should also be exported to
+separate acquisition structure from neuronal observability.
+
+The broader methodological lesson is that incomplete truth does not prevent
+rigorous evaluation, but it changes the questions that can be answered. Known
+positives support sensitivity and positive--unlabeled ranking. Matched controls
+support operator and localization tests. Expert review generates hypotheses.
+Only exhaustive or independent truth authorizes precision and generalization.

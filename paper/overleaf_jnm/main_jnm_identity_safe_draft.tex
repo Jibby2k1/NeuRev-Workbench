@@ -1,0 +1,118 @@
+% Venue-specific working draft for Journal of Neuroscience Methods.
+% The shared scientific body remains in venue_drafts/shared/*.tex.
+% This is not the canonical journal filename; main.tex remains canonical.
+\documentclass[preprint,12pt,authoryear]{elsarticle}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,bm,mathtools}
+\usepackage{booktabs,tabularx,longtable,array,multirow}
+\usepackage{graphicx,subcaption,float}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage[nameinlink,capitalize,noabbrev]{cleveref}
+
+\graphicspath{{figures/}}
+\setlength{\emergencystretch}{3em}
+\sisetup{detect-all,group-separator={,},group-minimum-digits=4}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!45!black,
+  citecolor=green!35!black,
+  urlcolor=blue!55!black,
+  pdftitle={Identity-Safe Evaluation of Neuron Detection in Sparse-Positive Zebrafish Calcium Imaging},
+  pdfauthor={Raul Valle, Jose Principe, Yinong Chen, Chenyu Liang, Xin Tang}
+}
+
+\input{macros/notation}
+\input{macros/provisional}
+\input{macros/venue_results}
+\renewcommand{\DraftBanner}{%
+  \begin{center}
+  \fcolorbox{draftred}{red!3}{\parbox{0.94\linewidth}{\small
+  \textbf{Working manuscript.} Main-paper values and figures are source-bound
+  and package-checked. Daggered Appendix values remain provisional. Author,
+  ethics, funding, release, independent-review, and transfer fields remain open.}}
+  \end{center}}
+
+\journal{Journal of Neuroscience Methods}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Identity-safe evaluation of neuron detection in sparse-positive zebrafish calcium imaging}
+
+\author[uf]{Raul Valle}
+\author[affpending]{Jose Principe}
+\author[affpending]{Yinong Chen}
+\author[affpending]{Chenyu Liang}
+\author[affpending]{Xin Tang}
+
+% Use the long-standing \address syntax so the submission source compiles with
+% both older and current elsarticle releases available on Overleaf.
+\address[uf]{Department of Electrical and Computer Engineering, University of Florida, Gainesville, Florida, United States}
+\address[affpending]{Affiliations to be confirmed for Jose Principe, Yinong Chen, Chenyu Liang, and Xin Tang}
+
+\begin{abstract}
+Calcium-imaging pipelines are often evaluated against incomplete annotations,
+so unmatched detections cannot safely be treated as false positives and local
+recentering can cross neuronal identities. We developed an identifiability-first
+evaluation framework and applied it to one zebrafish fluorescence recording
+containing \VenueCohortBursts{} burst intervals,
+\VenueCohortOccurrences{} confirmed neuron--burst occurrences, and
+\VenueCohortSites{} immutable coordinate-defined sites. At the frozen per-lane
+\(B=\VenuePerLaneBudget\) operating point, each of three candidate lists was
+evaluated separately; their any-lane union recovered
+\VenueStrictRecovered/\VenueCohortOccurrences{} occurrences. A separate
+canonical-collapsed sensitivity analysis recovered
+\VenueCanonicalRecovered/\VenueCanonicalOccurrences. Identity-aware analysis
+of the \VenueStrictMissed{} all-lane misses found
+\VenueIdentityCollision{} apparent recentering gains that collided with an
+existing labeled identity and \VenueIdentityClear{} identity-clear hypotheses
+absent from all audited proposal lists within eight pixels through per-lane
+\(B=\VenueCounterfactualBudget\). In a distinct detector-selected batch of
+\VenueReviewedCandidates{} previously unmatched sites, one blinded reviewer
+called \VenueReviewDefinite{} definite and \VenueReviewProbable{} probable
+neurons; this selected-batch yield is not detector precision. Raw fluorescence
+led event-versus-guarded-quiet retrieval (site-weighted AUC \VenueRawAUC,
+95\% interval \VenueRawAUCLow--\VenueRawAUCHigh). Exact-truth simulations
+supported complementary amplitude and spatial-context roles while exposing
+close-source identity and deployable-stopping limits. The framework separates
+proposal, ranking, suppression, identity, and review failures without claiming
+full-field precision or cross-recording generalization.
+\end{abstract}
+
+\begin{keyword}
+zebrafish \sep calcium imaging \sep sparse-positive annotation \sep identity-aware evaluation \sep positive--unlabeled learning \sep research provenance
+\end{keyword}
+
+\end{frontmatter}
+
+\DraftBanner
+
+\input{venue_drafts/jnm/01_introduction}
+\input{venue_drafts/shared/02_materials_and_methods}
+\input{venue_drafts/shared/03_results}
+\input{venue_drafts/jnm/04_discussion}
+\input{venue_drafts/shared/05_conclusion}
+\input{sections/06_declarations}
+
+\appendix
+\section{Evidence-status convention and supplementary operator note}
+\label{app:result-status-jnm}
+Main-paper quantitative facts are generated from compact source artifacts and
+checked during packaging. Values marked with a dagger remain provisional and
+must be regenerated or removed before release. Run completion, artifact
+validation, scientific audit, and claim promotion are distinct states.
+\input{venue_drafts/shared/06_supplementary_operator_note}
+
+\bibliographystyle{elsarticle-harv}
+\bibliography{references}
+
+\end{document}

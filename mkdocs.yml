@@ -118,6 +118,7 @@ validation:
 nav:
   - Home: index.md
   - Start here:
+      - Current work: research/CURRENT_WORK.md
       - Repository guide: REPOSITORY_GUIDE.md
       - Publication boundary: PUBLICATION_BOUNDARY.md
   - Research and evidence:
@@ -127,18 +128,61 @@ nav:
       - Result index: research/README.md
       - Analytical report artifacts: reports/README.md
       - Scientific audit standard: workflows/SCIENTIFIC_AUDIT_OUTPUT_STANDARD.md
-      - Neuron-identifiability study: research/SPON_CA_BURST_NEURON_IDENTIFIABILITY_PAPER_V1_RESULTS.md
-      - Uncertainty-aware learning plan: research/SPON_CA_BURST_UNCERTAINTY_AWARE_LEARNING_PLAN_V1.md
-      - Compact JEPA bounded screen: research/SPATIOTEMPORAL_JEPA_SCREEN_V1_RESULTS.md
-      - Conditional-background residual run-A failure: research/CONDITIONAL_BACKGROUND_RESIDUAL_V1_RUN_A_FAILURE.md
-      - Conditional-background residual v1.1 screen: research/CONDITIONAL_BACKGROUND_RESIDUAL_V1_1_RESULTS.md
-      - Conditional-background residual derived diagnostics: research/CONDITIONAL_BACKGROUND_RESIDUAL_DERIVED_DIAGNOSTICS_V1_RESULTS.md
-      - Motion and registration-confound audit: research/MOTION_REGISTRATION_CONFOUND_V2_RESULTS.md
-      - Source-off predictor feasibility: research/SOURCE_OFF_PREDICTOR_FEASIBILITY_V1_RESULTS.md
-      - External bounded review: research/SPON_CA_BURST_EXTERNAL_BOUNDED_REVIEW_V2_PACKAGE.md
+      - Gamma-LS candidate extraction:
+          - Final campaign — September 9: research/SPON_CA_BURST_GAMMA_LS_PAPER_SUCCESS_RESULTS_2026_09_09.md
+          - Paper v2 outline: research/SPON_CA_BURST_GAMMA_LS_PAPER_V2_OUTLINE.md
+          - Frozen campaign: research/SPON_CA_BURST_GAMMA_LS_PAPER_SUCCESS_CAMPAIGN_2026_09_08.md
+          - Deployment context: research/SPON_CA_BURST_GAMMA_LS_DEPLOYMENT_CONTEXT_FREEZE_2026_09_08.md
+          - Difference and ICA ablation plan: research/SPON_CA_BURST_GAMMA_LS_DIFFERENCE_ABLATION_V1_PLAN.md
+          - Support-sufficiency plan: research/SPON_CA_BURST_GAMMA_LS_SUPPORT_SUFFICIENCY_V1_PLAN.md
+          - Conditioning sensitivity plan: research/SPON_CA_BURST_GAMMA_LS_CONDITIONING_SENSITIVITY_V1_PLAN.md
+          - Protected conditioning plan: research/SPON_CA_BURST_GAMMA_LS_CONDITIONING_PROTECTED_V1_PLAN.md
+      - ICA and whitening:
+          - Final real-data results: research/ICA_WHITENING_REAL_DATA_V1_FINAL_RESULTS.md
+          - Synthetic evaluation results: research/ICA_WHITENING_HYPERPARAMETER_EVALUATION_RESULTS.md
+          - Evaluation plan: research/ICA_WHITENING_HYPERPARAMETER_EVALUATION_PLAN.md
+          - Historical real-data progress: research/ICA_WHITENING_REAL_DATA_V1_PROGRESS.md
+          - PC-MITL specialized confirmation: research/PC_MITL_ICA_SPECIALIZED_CONFIRMATION_RESULTS.md
+          - PC-MITL E01/E02 development results: research/PC_MITL_ICA_E01_E02_RESULTS.md
+          - PC-MITL phase-1 plan: research/PC_MITL_ICA_PHASE1_PLAN.md
+          - PC-MITL phase-1 findings: research/reports/phase1_findings.md
+          - ICA implementation audit: research/reports/ica_repo_audit.md
+      - Envelopes and feature learning:
+          - Feature Atlas results: research/SPON_CA_BURST_FEATURE_ATLAS_V1_RESULTS.md
+          - Uncertainty-aware learning v1.1 results: research/UNCERTAINTY_AWARE_FEATURE_LEARNING_V1_1_RESULTS.md
+          - Uncertainty-aware learning plan: research/SPON_CA_BURST_UNCERTAINTY_AWARE_LEARNING_PLAN_V1.md
+          - Envelope terminology: research/CONTEXTUAL_ENVELOPE_TERMINOLOGY_V1.md
+          - Envelope pilot results: research/CONTEXTUAL_ENVELOPE_FEATURES_V1_RESULTS.md
+          - Envelope retrieval results: research/CONTEXTUAL_ENVELOPE_RETRIEVAL_V1_RESULTS.md
+          - Envelope morphology results: research/CONTEXTUAL_ENVELOPE_MORPHOLOGY_V1_RESULTS.md
+      - Identifiability and residual diagnostics:
+          - Neuron-identifiability study: research/SPON_CA_BURST_NEURON_IDENTIFIABILITY_PAPER_V1_RESULTS.md
+          - New-candidate review: research/SPON_CA_BURST_NEW_CANDIDATE_REVIEW_V1_RESULTS.md
+          - External bounded review: research/SPON_CA_BURST_EXTERNAL_BOUNDED_REVIEW_V2_PACKAGE.md
+          - Compact JEPA bounded screen: research/SPATIOTEMPORAL_JEPA_SCREEN_V1_RESULTS.md
+          - Conditional-background residual run-A failure: research/CONDITIONAL_BACKGROUND_RESIDUAL_V1_RUN_A_FAILURE.md
+          - Conditional-background residual v1.1 screen: research/CONDITIONAL_BACKGROUND_RESIDUAL_V1_1_RESULTS.md
+          - Conditional-background residual derived diagnostics: research/CONDITIONAL_BACKGROUND_RESIDUAL_DERIVED_DIAGNOSTICS_V1_RESULTS.md
+          - Motion and registration-confound audit: research/MOTION_REGISTRATION_CONFOUND_V2_RESULTS.md
+          - Source-off predictor feasibility: research/SOURCE_OFF_PREDICTOR_FEASIBILITY_V1_RESULTS.md
       - Repository decisions: decisions/README.md
   - Run a workflow:
       - Workflow index: workflows/README.md
+      - Gamma-LS:
+          - Difference and ICA ablation: workflows/spon_ca_burst_gamma_ls_difference_ablation.md
+          - Protected simple controls: workflows/gamma_ls_protected_simple_controls.md
+          - Exact-truth benchmark: workflows/gamma_ls_exact_truth_benchmark_v1.md
+          - Independent sparse-positive confirmation: workflows/gamma_ls_independent_sparse_positive_confirmation.md
+      - ICA and whitening:
+          - ICA/whitening evaluation: workflows/spon_ca_burst_ica_whitening_evaluation.md
+          - Unsupervised two-frame ICA: workflows/unsupervised_two_frame_ica_eval.md
+      - Envelopes and feature learning:
+          - Contextual-envelope pilot: workflows/contextual_envelope_features_v1.md
+          - Contextual-envelope retrieval: workflows/contextual_envelope_retrieval_v1.md
+          - Contextual-envelope morphology: workflows/contextual_envelope_morphology_v1.md
+          - Feature Atlas: workflows/spon_ca_burst_feature_atlas_v1.md
+          - Uncertainty-aware learning v1.1: workflows/uncertainty_aware_feature_learning_v1_1.md
+          - Historical uncertainty-aware learning v1: workflows/uncertainty_aware_feature_learning_v1.md
       - Raw video to report: workflows/raw_video_to_report.md
       - Neuron-identifiability paper: workflows/spon_ca_burst_neuron_identifiability_paper.md
       - Full-trace feature panel: workflows/spon_ca_burst_full_trace_feature_panel.md

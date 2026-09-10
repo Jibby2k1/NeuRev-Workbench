@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_gamma_ls_conditioning_protected_v1",
+  "sources": {
+    "conditioning_config": "repo://examples/spon_ca_burst_gamma_ls_conditioning_sensitivity_v1.example.json",
+    "conditioning_preflight_artifact_index_sha256": "ef1a79c135ecfde5d6dc9b4d567d79c8d9192ef3c0f3acb6b9c0cb8038a9f494",
+    "conditioning_preflight_sha256": "740e51413736a0e80ffb5219fad973200a1dbd585c3dc620ab65ce80eff27711",
+    "conditioning_screen_artifact_index_sha256": "71b55a0b56f2c4e096730d1671532ded9a031ddbaa6fe55d7db39d8c528e8efb",
+    "conditioning_selection_sha256": "3011bdbc3ad47260e19401ec2f7acc60f16fea195542380cd2e08f544a83a816"
+  },
+  "design": {
+    "conditioning_roles": ["historical_anchor", "training_pareto_selected"],
+    "representations": [
+      "raw",
+      "difference_signed",
+      "difference_energy_normalized"
+    ],
+    "outer_folds": "leave_one_burst_out",
+    "quiet_crossfit": "a_train_b_test_and_b_train_a_test",
+    "quiet_nms_peaks_per_pseudo_burst": [0.25, 0.5, 1.0, 2.0, 5.0],
+    "nms_distance_px": [4, 6, 8],
+    "primary_nms_distance_px": 6,
+    "candidate_budgets_per_burst": [20, 40, 58, 80, 100],
+    "primary_candidate_budget_per_burst": 58,
+    "match_radius_px": 6,
+    "burst_aggregation": "temporal_threshold_occupancy",
+    "unmatched_candidates": "unknown_not_negative"
+  },
+  "label_join": {
+    "protected_v1_selector": "include_inclusive",
+    "protected_v1_expected_occurrences": 79,
+    "protected_v1_expected_canonical_identities": 26,
+    "latest_v7_selector": "include_confirmed",
+    "latest_v7_expected_occurrences": 106,
+    "latest_v7_inferential_claim": false,
+    "candidate_seal_required_before_join": true
+  },
+  "bootstrap": {
+    "cluster_field": "canonical_roi_id",
+    "cluster_count": 26,
+    "seed": 20260908,
+    "replicates": 2000,
+    "confidence_interval_percent": 95.0
+  },
+  "materiality": {
+    "primary_scope": "crossfit_average_nms6",
+    "budget_curve_auc_absolute_delta": 0.02,
+    "requires_ci_excluding_zero": true,
+    "representation_level_rule": "all_five_quiet_burdens_same_material_direction"
+  },
+  "resources": {
+    "device": "cuda",
+    "source_chunk_frames": 64,
+    "gamma_chunk_frames": 64,
+    "max_peak_vram_gib": 8.0,
+    "minimum_free_disk_gib": 20.0
+  },
+  "scientific_audit": {
+    "enabled": true
+  }
+}

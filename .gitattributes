@@ -1,3 +1,6 @@
+# Markdown uses two trailing spaces for intentional line breaks.
+*.md whitespace=-blank-at-eol,-blank-at-eof
+
 # Generated artifacts should not dominate language statistics or code review.
 neurobench/workbench/assets/workbench.js linguist-generated=true
 docs/reports/**/report.html linguist-generated=true
@@ -22,3 +25,6 @@ research/run-provenance/**/*.tsv linguist-generated=true -diff -whitespace
 *.npy binary
 *.tif binary
 *.tiff binary
+
+# Preserve upstream TeX class/style files byte for byte, including line endings.
+paper/overleaf_jnm/vendor/** -whitespace

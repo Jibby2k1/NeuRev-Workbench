@@ -1,0 +1,263 @@
+{
+  "comparisons": {
+    "carrier_signed": {
+      "bootstrap_delta_ci95_high": 0.07138612927737037,
+      "bootstrap_delta_ci95_low": 0.006468971017181765,
+      "bootstrap_delta_median": 0.03942639037770359,
+      "dependency_components_split": false,
+      "draws": 2000,
+      "estimand": "paired delta in macro mean of within-fold positive-vs-unlabeled rank AUC",
+      "fold_count": 5,
+      "observed_by_fold": [
+        {
+          "fold_id": 1,
+          "positive_containing_leakage_component_count": 9,
+          "score_a": 0.9421208850512682,
+          "score_b": 0.8678494333513221,
+          "unlabeled_only_leakage_component_count": 317,
+          "unlabeled_rows_inside_positive_containing_components": 82,
+          "unlabeled_rows_inside_unlabeled_only_components": 790
+        },
+        {
+          "fold_id": 2,
+          "positive_containing_leakage_component_count": 3,
+          "score_a": 0.9565217391304348,
+          "score_b": 0.8535469107551488,
+          "unlabeled_only_leakage_component_count": 14,
+          "unlabeled_rows_inside_positive_containing_components": 18,
+          "unlabeled_rows_inside_unlabeled_only_components": 51
+        },
+        {
+          "fold_id": 3,
+          "positive_containing_leakage_component_count": 3,
+          "score_a": 0.9747474747474747,
+          "score_b": 0.9656565656565657,
+          "unlabeled_only_leakage_component_count": 22,
+          "unlabeled_rows_inside_positive_containing_components": 10,
+          "unlabeled_rows_inside_unlabeled_only_components": 56
+        },
+        {
+          "fold_id": 4,
+          "positive_containing_leakage_component_count": 2,
+          "score_a": 1.0,
+          "score_b": 0.9995642701525055,
+          "unlabeled_only_leakage_component_count": 38,
+          "unlabeled_rows_inside_positive_containing_components": 14,
+          "unlabeled_rows_inside_unlabeled_only_components": 139
+        },
+        {
+          "fold_id": 5,
+          "positive_containing_leakage_component_count": 4,
+          "score_a": 0.9967191601049868,
+          "score_b": 0.9809711286089239,
+          "unlabeled_only_leakage_component_count": 128,
+          "unlabeled_rows_inside_positive_containing_components": 14,
+          "unlabeled_rows_inside_unlabeled_only_components": 367
+        }
+      ],
+      "observed_delta_a_minus_b": 0.04050419010193973,
+      "observed_score_a_macro_fold_spu_auc": 0.9740218518068329,
+      "observed_score_b_macro_fold_spu_auc": 0.9335176617048931,
+      "resampling_strata": "positive_containing_vs_unlabeled_only_within_outer_fold",
+      "resampling_unit": "whole_leakage_group_with_all_positive_and_unlabeled_members_joint",
+      "score_a_name": "tiny_mlp_spu_within_fold_oof",
+      "score_b_name": "carrier_signed_within_fold_oof",
+      "seed": 4101
+    },
+    "cfar_score": {
+      "bootstrap_delta_ci95_high": 0.30368148772016273,
+      "bootstrap_delta_ci95_low": 0.12073033696569294,
+      "bootstrap_delta_median": 0.20900089787880657,
+      "dependency_components_split": false,
+      "draws": 2000,
+      "estimand": "paired delta in macro mean of within-fold positive-vs-unlabeled rank AUC",
+      "fold_count": 5,
+      "observed_by_fold": [
+        {
+          "fold_id": 1,
+          "positive_containing_leakage_component_count": 9,
+          "score_a": 0.9421208850512682,
+          "score_b": 0.6070223961144091,
+          "unlabeled_only_leakage_component_count": 317,
+          "unlabeled_rows_inside_positive_containing_components": 82,
+          "unlabeled_rows_inside_unlabeled_only_components": 790
+        },
+        {
+          "fold_id": 2,
+          "positive_containing_leakage_component_count": 3,
+          "score_a": 0.9565217391304348,
+          "score_b": 0.6903127383676583,
+          "unlabeled_only_leakage_component_count": 14,
+          "unlabeled_rows_inside_positive_containing_components": 18,
+          "unlabeled_rows_inside_unlabeled_only_components": 51
+        },
+        {
+          "fold_id": 3,
+          "positive_containing_leakage_component_count": 3,
+          "score_a": 0.9747474747474747,
+          "score_b": 0.8888888888888888,
+          "unlabeled_only_leakage_component_count": 22,
+          "unlabeled_rows_inside_positive_containing_components": 10,
+          "unlabeled_rows_inside_unlabeled_only_components": 56
+        },
+        {
+          "fold_id": 4,
+          "positive_containing_leakage_component_count": 2,
+          "score_a": 1.0,
+          "score_b": 0.9045751633986928,
+          "unlabeled_only_leakage_component_count": 38,
+          "unlabeled_rows_inside_positive_containing_components": 14,
+          "unlabeled_rows_inside_unlabeled_only_components": 139
+        },
+        {
+          "fold_id": 5,
+          "positive_containing_leakage_component_count": 4,
+          "score_a": 0.9967191601049868,
+          "score_b": 0.7325021872265967,
+          "unlabeled_only_leakage_component_count": 128,
+          "unlabeled_rows_inside_positive_containing_components": 14,
+          "unlabeled_rows_inside_unlabeled_only_components": 367
+        }
+      ],
+      "observed_delta_a_minus_b": 0.20936157700758384,
+      "observed_score_a_macro_fold_spu_auc": 0.9740218518068329,
+      "observed_score_b_macro_fold_spu_auc": 0.764660274799249,
+      "resampling_strata": "positive_containing_vs_unlabeled_only_within_outer_fold",
+      "resampling_unit": "whole_leakage_group_with_all_positive_and_unlabeled_members_joint",
+      "score_a_name": "tiny_mlp_spu_within_fold_oof",
+      "score_b_name": "cfar_score_within_fold_oof",
+      "seed": 4101
+    },
+    "expert_separation_equal_weight": {
+      "bootstrap_delta_ci95_high": 0.04459450882582682,
+      "bootstrap_delta_ci95_low": -0.005543024853791158,
+      "bootstrap_delta_median": 0.021664633157019476,
+      "dependency_components_split": false,
+      "draws": 2000,
+      "estimand": "paired delta in macro mean of within-fold positive-vs-unlabeled rank AUC",
+      "fold_count": 5,
+      "observed_by_fold": [
+        {
+          "fold_id": 1,
+          "positive_containing_leakage_component_count": 9,
+          "score_a": 0.9421208850512682,
+          "score_b": 0.9092012951969779,
+          "unlabeled_only_leakage_component_count": 317,
+          "unlabeled_rows_inside_positive_containing_components": 82,
+          "unlabeled_rows_inside_unlabeled_only_components": 790
+        },
+        {
+          "fold_id": 2,
+          "positive_containing_leakage_component_count": 3,
+          "score_a": 0.9565217391304348,
+          "score_b": 0.881769641495042,
+          "unlabeled_only_leakage_component_count": 14,
+          "unlabeled_rows_inside_positive_containing_components": 18,
+          "unlabeled_rows_inside_unlabeled_only_components": 51
+        },
+        {
+          "fold_id": 3,
+          "positive_containing_leakage_component_count": 3,
+          "score_a": 0.9747474747474747,
+          "score_b": 0.9737373737373738,
+          "unlabeled_only_leakage_component_count": 22,
+          "unlabeled_rows_inside_positive_containing_components": 10,
+          "unlabeled_rows_inside_unlabeled_only_components": 56
+        },
+        {
+          "fold_id": 4,
+          "positive_containing_leakage_component_count": 2,
+          "score_a": 1.0,
+          "score_b": 0.9969498910675382,
+          "unlabeled_only_leakage_component_count": 38,
+          "unlabeled_rows_inside_positive_containing_components": 14,
+          "unlabeled_rows_inside_unlabeled_only_components": 139
+        },
+        {
+          "fold_id": 5,
+          "positive_containing_leakage_component_count": 4,
+          "score_a": 0.9967191601049868,
+          "score_b": 0.989063867016623,
+          "unlabeled_only_leakage_component_count": 128,
+          "unlabeled_rows_inside_positive_containing_components": 14,
+          "unlabeled_rows_inside_unlabeled_only_components": 367
+        }
+      ],
+      "observed_delta_a_minus_b": 0.023877438104121795,
+      "observed_score_a_macro_fold_spu_auc": 0.9740218518068329,
+      "observed_score_b_macro_fold_spu_auc": 0.9501444137027111,
+      "resampling_strata": "positive_containing_vs_unlabeled_only_within_outer_fold",
+      "resampling_unit": "whole_leakage_group_with_all_positive_and_unlabeled_members_joint",
+      "score_a_name": "tiny_mlp_spu_within_fold_oof",
+      "score_b_name": "expert_separation_equal_weight_within_fold_oof",
+      "seed": 4101
+    },
+    "linear_spu": {
+      "bootstrap_delta_ci95_high": 0.00591243402667829,
+      "bootstrap_delta_ci95_low": -0.004607419722739924,
+      "bootstrap_delta_median": 0.0003220588545000291,
+      "dependency_components_split": false,
+      "draws": 2000,
+      "estimand": "paired delta in macro mean of within-fold positive-vs-unlabeled rank AUC",
+      "fold_count": 5,
+      "observed_by_fold": [
+        {
+          "fold_id": 1,
+          "positive_containing_leakage_component_count": 9,
+          "score_a": 0.9421208850512682,
+          "score_b": 0.952711818672423,
+          "unlabeled_only_leakage_component_count": 317,
+          "unlabeled_rows_inside_positive_containing_components": 82,
+          "unlabeled_rows_inside_unlabeled_only_components": 790
+        },
+        {
+          "fold_id": 2,
+          "positive_containing_leakage_component_count": 3,
+          "score_a": 0.9565217391304348,
+          "score_b": 0.9488939740655988,
+          "unlabeled_only_leakage_component_count": 14,
+          "unlabeled_rows_inside_positive_containing_components": 18,
+          "unlabeled_rows_inside_unlabeled_only_components": 51
+        },
+        {
+          "fold_id": 3,
+          "positive_containing_leakage_component_count": 3,
+          "score_a": 0.9747474747474747,
+          "score_b": 0.9717171717171718,
+          "unlabeled_only_leakage_component_count": 22,
+          "unlabeled_rows_inside_positive_containing_components": 10,
+          "unlabeled_rows_inside_unlabeled_only_components": 56
+        },
+        {
+          "fold_id": 4,
+          "positive_containing_leakage_component_count": 2,
+          "score_a": 1.0,
+          "score_b": 1.0,
+          "unlabeled_only_leakage_component_count": 38,
+          "unlabeled_rows_inside_positive_containing_components": 14,
+          "unlabeled_rows_inside_unlabeled_only_components": 139
+        },
+        {
+          "fold_id": 5,
+          "positive_containing_leakage_component_count": 4,
+          "score_a": 0.9967191601049868,
+          "score_b": 0.9971566054243219,
+          "unlabeled_only_leakage_component_count": 128,
+          "unlabeled_rows_inside_positive_containing_components": 14,
+          "unlabeled_rows_inside_unlabeled_only_components": 367
+        }
+      ],
+      "observed_delta_a_minus_b": -7.406216907024366e-05,
+      "observed_score_a_macro_fold_spu_auc": 0.9740218518068329,
+      "observed_score_b_macro_fold_spu_auc": 0.9740959139759031,
+      "resampling_strata": "positive_containing_vs_unlabeled_only_within_outer_fold",
+      "resampling_unit": "whole_leakage_group_with_all_positive_and_unlabeled_members_joint",
+      "score_a_name": "tiny_mlp_spu_within_fold_oof",
+      "score_b_name": "linear_spu_within_fold_oof",
+      "seed": 4101
+    }
+  },
+  "estimand": "paired_delta_in_macro_mean_within_fold_positive_vs_unlabeled_rank_auc",
+  "observed_strongest_baseline_selection_repeated_inside_draws": false,
+  "schema_version": 1
+}

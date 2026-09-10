@@ -24,7 +24,7 @@ Generated from the repository research registry. Order is explicit; historical e
 | `NREV-EXP-0018` | Temporal Ica Internals | validated | supported | current_recording | retain |
 | `NREV-EXP-0019` | Ls Denominator Audit | validated | supported | current_recording | retain |
 | `NREV-EXP-0020` | Complete External Bounded Review V2 | draft | not_evaluated | none | pending |
-| `NREV-EXP-0021` | Uncertainty Aware Learning V1 | draft | not_evaluated | none | pending |
+| `NREV-EXP-0021` | Uncertainty-Aware Positive-Unlabeled Feature Fusion V1 with v1.1 output-assembly amendment | draft | not_evaluated | none | hold |
 | `NREV-EXP-0022` | Identity Aware Bounded Review | draft | not_evaluated | none | pending |
 | `NREV-EXP-0023` | Bounded Field Precision | draft | not_evaluated | none | pending |
 | `NREV-EXP-0024` | Independent Recording Confirmation | draft | not_evaluated | none | pending |
@@ -34,3 +34,10 @@ Generated from the repository research registry. Order is explicit; historical e
 | `NREV-EXP-0028` | Compact Spatiotemporal JEPA Representation Pilot V1 | draft | not_evaluated | none | hold |
 | `NREV-EXP-0029` | Frozen-JEPA Conditional-Background Residual Screen V1 with v1.1 domain amendment | draft | not_evaluated | none | hold, hold, hold |
 | `NREV-EXP-0030` | Source-off conditional-background predictor feasibility v1 | draft | not_evaluated | none | hold |
+| `NREV-EXP-0031` | Contextual-envelope feature semantics pilot v1 | draft | not_evaluated | none | retain |
+| `NREV-EXP-0032` | Contextual-envelope retrieval comparison v1 | draft | not_evaluated | none | hold |
+| `NREV-EXP-0033` | Temporal contextual-envelope morphology audit v1 | validated | supported | current_recording | retain |
+| `NREV-EXP-0034` | Gamma-LS protected, operational, independent, and timing campaign | computed | mixed | descriptive | retain |
+| `NREV-EXP-0035` | ICA and whitening synthetic-to-real factorial evaluation | computed | mixed | descriptive | retain |
+| `NREV-EXP-0036` | PC-MITL-ICA paired development and locked specialized confirmation | computed | rejected | computational_simulation | stop |
+| `NREV-EXP-0037` | Feature Atlas v1 grouped incremental-reranking evaluation | computed | inconclusive | descriptive | hold |

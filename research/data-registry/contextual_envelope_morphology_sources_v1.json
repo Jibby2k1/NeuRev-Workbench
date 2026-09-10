@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "CONTEXTUAL-ENVELOPE-MORPHOLOGY-SOURCES-V1",
+  "recording_scope": "One previously analyzed NeuRev recording, UI frames 1800 through 2359",
+  "canonical_v7_manifest_sha256": "b481b7e92fc4792482f6f4f00923e8ce23fcc5508dd0dcc8b5e401d87b2bca7d",
+  "sources": {
+    "RAW": "04dfbe2f7cb69d72ff75e23ad17c87b3fd406c96a4b872148de2285a9a44d449",
+    "Z_CURRENT": "339598552e293717df417918c767b2ba2a74e23c2d71e684bcedc7cc6519d6f7",
+    "T_ENVELOPE": "03c82d0c7047c44af904d557329072e75fc88d332b9bb0308bd7e65b99aaf401"
+  },
+  "semantics": {
+    "population": "106 confirmed occurrences nested in 50 immutable sites",
+    "unmatched_activity": "unknown_not_negative",
+    "expert_media": "validated canonical-v7 upstream media",
+    "model_annotations": "not_applicable_no_new_detections"
+  }
+}

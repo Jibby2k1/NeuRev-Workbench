@@ -57,23 +57,62 @@ def test_story_registry_has_unique_scoped_claims_and_portable_evidence() -> None
             assert (PAPER / row["plan"]).is_file()
 
 
-def test_native_engineering_runs_are_visible_without_scientific_promotion() -> None:
+def test_registered_engineering_runs_are_visible_without_scientific_promotion() -> None:
     payload = yaml.safe_load((PAPER / "story" / "research_story.yaml").read_text())
     experiments = {row["id"]: row for row in payload["experiments"]}
 
+    feature_learning = experiments["NREV-EXP-0021"]
     jepa = experiments["NREV-EXP-0028"]
     residual = experiments["NREV-EXP-0029"]
-    for row in (jepa, residual):
+    for row in (feature_learning, jepa, residual):
         assert row["status"].startswith("draft_not_evaluated_engineering_run_history_")
         assert "evidence_tier_none" in row["status"]
         assert "evidence_capsule" not in row
         assert "non-claim-bearing engineering history" in row["limitation"]
         assert all("Outputs" not in path for path in row["artifacts"])
 
+    assert "failed_then_succeeded" in feature_learning["status"]
+    assert "did not improve the primary estimand" in feature_learning["next_decision"]
+    assert "34 of 78" in feature_learning["finding"]
+    assert (
+        "../../docs/research/UNCERTAINTY_AWARE_FEATURE_LEARNING_V1_1_RESULTS.md"
+        in feature_learning["artifacts"]
+    )
     assert "failed_then_succeeded" in residual["status"]
     assert "0.1875 raw" in residual["finding"]
     assert "Hold this implementation path" in residual["next_decision"]
     assert "design triage" in residual["next_decision"]
+
+
+def test_report_history_preserves_program_and_audit_boundaries() -> None:
+    from neurobench.research.registry import compile_registry, _llm_context, _paper_story
+
+    registry = compile_registry()
+    context = _llm_context(registry)
+    results = {row["id"]: row for row in context["documented_results"]}
+    paper = {row["id"]: row for row in _paper_story(registry)["experiments"]}
+
+    # A result on another recording in a distinct program must not widen the
+    # identity-safe manuscript's cohort or its generalization claims.
+    assert results["NREV-EXP-0034"]["program_id"] != registry["index"]["flagship_program_id"]
+    assert "6/51" in results["NREV-EXP-0034"]["finding"]
+    assert "20/51" in results["NREV-EXP-0035"]["finding"]
+    assert not {"NREV-EXP-0034", "NREV-EXP-0035", "NREV-EXP-0036"} & paper.keys()
+    assert "NREV-EXP-0037" in paper
+
+    # The renderer must not contradict a validated morphology outcome or
+    # pretend an incomplete new-ranking audit passed.
+    morphology = paper["NREV-EXP-0033"]
+    assert "validated_supported" in morphology["status"]
+    assert "scientific outcome was evaluated" not in morphology["finding"]
+    assert "current_recording" in morphology["limitation"]
+    assert "evidence tier is none" not in morphology["limitation"]
+    assert "remain incomplete" in paper["NREV-EXP-0037"]["finding"]
+    for row in registry["experiments"]:
+        if row["id"] in {"NREV-EXP-0034", "NREV-EXP-0035", "NREV-EXP-0036", "NREV-EXP-0037"}:
+            assert not row["claim_ids"]
+            assert not row["run_ids"]
+            assert "evidence_capsule_id" not in row
 
 
 def test_clean_clone_story_check_uses_capsule_for_ignored_output(

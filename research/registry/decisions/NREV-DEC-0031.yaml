@@ -1,0 +1,32 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0031
+origin:
+  kind: native
+program_id: NREV-PRG-0001
+title: Retain distinct temporal-envelope morphology roles without detector promotion
+lifecycle: active
+action: retain
+rationale: Retain U for causal memory, P=A*U for exploratory context-reinforced evidence, and H=A^2/U for peak-preserving
+  attenuation; the measured morphology outcome is supported within the current recording.
+evidence_summary: The validated current-recording morphology run evaluated six operators across three sources over
+  106 occurrences at 50 sites with 2000 site-bootstrap resamples. H=A^2/U preserved the aligned anchor, increased
+  event-area/core concentration, and reduced post-peak shoulder across all three sources with paired intervals excluding
+  zero. It produced 106 occurrence panels and three fixed-scale 560-frame videos. Scientific promotion remains false.
+effective_on: '2026-09-09'
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0033
+claim_ids: []
+evidence_capsule_ids: []
+constraints:
+- This validated operator audit created no detector, candidate coordinates, model annotations, or portable evidence
+  capsule.
+- Morphology changes do not establish better detection, specificity, biological waveform fidelity, identity, or
+  independent transfer.
+- Raw A remains necessary for biological waveform analysis because H deliberately alters decay morphology.
+follow_up:
+- Any detector use of P or H requires a separately frozen bounded-field proposal/specificity comparison with A retained.
+visibility: public
+created_on: '2026-09-09'
+updated_on: '2026-09-09'

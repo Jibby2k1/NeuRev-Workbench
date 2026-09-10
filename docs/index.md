@@ -13,7 +13,7 @@ visual adjudication, and scientific provenance in one inspectable workflow.
 Software status, evidence tier, review state, and scientific outcome remain
 separate—so a finished run never masquerades as a finished conclusion.
 
-[Choose a reading path](#choose-your-reading-path){ .md-button .md-button--primary }
+[Explore current work](research/CURRENT_WORK.md){ .md-button .md-button--primary }
 [Inspect the repository guide](REPOSITORY_GUIDE.md){ .md-button }
 </div>
 
@@ -21,6 +21,46 @@ separate—so a finished run never masquerades as a finished conclusion.
   <div role="listitem"><strong>Audit first</strong><span>Every scientific workflow inherits a shared evidence contract.</span></div>
   <div role="listitem"><strong>Immutable runs</strong><span>New work receives a new output root; prior evidence remains inspectable.</span></div>
   <div role="listitem"><strong>Bounded claims</strong><span>Registered limitations travel with results into every presentation view.</span></div>
+</div>
+
+## Current work, with its limits in view
+
+The [current-work synthesis](research/CURRENT_WORK.md) connects the latest
+reports to their code and scientific gates. Read each result within its own
+population, evaluation head, and audit boundary.
+
+<div class="grid cards neurev-current-grid" markdown>
+
+-   **Causal Gamma-LS candidate extraction**
+
+    ---
+
+    The September 9 campaign retains signed differencing and one fixed local
+    context. Full-record proposals are audited; support sufficiency and strict
+    sustained 1-kHz readiness remain unpassed.
+
+    [Read the final campaign](research/SPON_CA_BURST_GAMMA_LS_PAPER_SUCCESS_RESULTS_2026_09_09.md)
+
+-   **Representations and feature evidence**
+
+    ---
+
+    Follow ICA/whitening, PC-MITL, contextual envelopes, Feature Atlas, and
+    uncertainty-aware fusion through their completed comparisons and
+    unresolved confirmation gates.
+
+    [Browse research by thread](research/README.md)
+
+-   **Reproduce and inspect**
+
+    ---
+
+    Find frozen workflow contracts, small artifact indexes, and maintained
+    modules. A recorded execution and a scientific advance are separate
+    outcomes.
+
+    [Choose a workflow](workflows/README.md)
+
 </div>
 
 ## Choose your reading path

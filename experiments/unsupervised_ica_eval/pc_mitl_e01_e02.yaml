@@ -1,0 +1,31 @@
+schema_version: 1
+experiment_id: pc_mitl_ica_e01_e02_v1
+status: frozen_development_gate
+sample_count: 192
+split:
+  strategy: contiguous
+  train_stop: 116
+  validation_stop: 154
+seeds: [202609040, 202609041, 202609042, 202609043, 202609044, 202609045, 202609046, 202609047, 202609048, 202609049]
+bandwidth_candidates: [0.5, 1.0, 2.0]
+optimizer:
+  steps: 60
+  learning_rate: 0.03
+scenarios:
+  - {id: q2_laplace_easy, component_count: 2, source_family: laplace, condition_number: 2.0, noise_std: 0.02}
+  - {id: q2_laplace_hard, component_count: 2, source_family: laplace, condition_number: 12.0, noise_std: 0.15}
+  - {id: q2_calcium_easy, component_count: 2, source_family: sparse_calcium, condition_number: 2.0, noise_std: 0.02}
+  - {id: q2_calcium_hard, component_count: 2, source_family: sparse_calcium, condition_number: 12.0, noise_std: 0.15}
+  - {id: q4_laplace_easy, component_count: 4, source_family: laplace, condition_number: 2.0, noise_std: 0.02}
+  - {id: q4_laplace_hard, component_count: 4, source_family: laplace, condition_number: 12.0, noise_std: 0.15}
+  - {id: q4_calcium_easy, component_count: 4, source_family: sparse_calcium, condition_number: 2.0, noise_std: 0.02}
+  - {id: q4_calcium_hard, component_count: 4, source_family: sparse_calcium, condition_number: 12.0, noise_std: 0.15}
+decision_gate:
+  broad_advance_mean_delta: 0.02
+  broad_advance_win_fraction: 0.60
+  specialized_retain_subgroup_delta: 0.02
+  catastrophic_delta: -0.05
+scientific_audit:
+  enabled: true
+  phase: synthetic_truth_available
+  real_video_authorized: false

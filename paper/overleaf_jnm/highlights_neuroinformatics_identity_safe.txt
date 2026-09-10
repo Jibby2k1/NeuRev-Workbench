@@ -1,0 +1,5 @@
+• Links claims to immutable sites, run records, and versioned evidence
+• Keeps positive--unlabeled estimands explicit throughout evaluation
+• Separates proposal, ranking, suppression, identity, and review outcomes
+• Supports blinded review without exposing model rank or candidate identity
+• Provides reproducible foundations for bounded and independent validation

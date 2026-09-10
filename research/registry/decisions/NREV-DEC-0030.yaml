@@ -1,0 +1,31 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0030
+origin:
+  kind: native
+program_id: NREV-PRG-0001
+title: Hold contextual attenuation for peak retrieval and retain morphology diagnostics
+lifecycle: active
+action: hold
+rationale: The peak-rank estimand selects maxima where U equals A, so temporal H equals A there. Retain temporal
+  attenuation for trace-morphology diagnosis and do not advance the spatial arm for known-center retrieval.
+evidence_summary: All 106 occurrences at 50 sites produced 2226 occurrence-feature rows and 106 trace comparisons.
+  No aligned attenuation arm passed the gate against both A-squared and its matched misalignment control. Temporal
+  peak localization nearly tied the amplitude control; the 3-by-3 spatial envelope reduced localization. The run
+  report records validation passed and scientific promotion false.
+effective_on: '2026-09-09'
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0032
+claim_ids: []
+evidence_capsule_ids: []
+constraints:
+- This is within-recording operator retrieval; no biological negatives, full-field precision, specificity, identity,
+  or transfer were established.
+- The existing registry retains its draft/evidence-none status until normalized run and audit provenance is reconciled;
+  this decision makes the completed report visible without promotion.
+follow_up:
+- Use the full-trace morphology experiment EXP-0033 for event-area, shoulder, and duration questions.
+visibility: public
+created_on: '2026-09-09'
+updated_on: '2026-09-09'

@@ -91,7 +91,7 @@ def test_native_draft_is_rendered_without_fabricated_legacy_priority() -> None:
             "title": "Native future experiment",
             "objective": "Exercise the post-migration queue contract.",
             "lifecycle": "draft",
-            "created_on": "2026-08-30",
+            "created_on": max(row.get("created_on", "") for row in payload["experiments"]),
         }
     )
 

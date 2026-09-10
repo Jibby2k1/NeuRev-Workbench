@@ -382,30 +382,35 @@ def _legacy_story(payload: dict[str, Any]) -> dict[str, Any]:
 
 
 def _paper_story(payload: dict[str, Any]) -> dict[str, Any]:
-    """Extend the frozen migration view with bounded native run history.
+    """Extend the frozen flagship view with bounded documented result history.
 
     `_legacy_story` remains an exact reconstruction of the retained v1
-    snapshot. The Overleaf compatibility view may additionally expose native
-    engineering executions, provided their draft/evidence boundaries remain
-    explicit and no evidence capsule is manufactured.
+    snapshot. The Overleaf compatibility view may additionally expose
+    executions and retrospective result records registered after migration.
+    Other programs remain in the repository story; they do not silently widen
+    the identity-safe manuscript's cohort or scientific claims.
     """
     story = _legacy_story(payload)
     decisions = {row["id"]: row for row in payload["decisions"]}
     runs = {row["id"]: row for row in payload["runs"]}
     for row in _ordered_experiments(payload):
-        if row["origin"]["kind"] != "native":
+        if row["program_id"] != payload["index"]["flagship_program_id"]:
             continue
         executed_runs = [
             runs[run_id]
             for run_id in row.get("run_ids", [])
             if runs[run_id]["lifecycle"] in {"succeeded", "failed"}
         ]
-        if not executed_runs or row.get("evidence_capsule_id"):
-            continue
         decision_rows = [decisions[item] for item in row.get("decision_ids", [])]
         latest_decision = decision_rows[-1] if decision_rows else None
+        if row.get("evidence_capsule_id") or not (
+            executed_runs or (latest_decision and row["design"].get("results_path"))
+        ):
+            continue
         run_states = "_then_".join(run["lifecycle"] for run in executed_runs)
         artifact_paths = [row["design"]["protocol_path"]]
+        if row["design"].get("results_path"):
+            artifact_paths.append(row["design"]["results_path"])
         for run in executed_runs:
             artifact_paths.extend(
                 [
@@ -418,35 +423,70 @@ def _paper_story(payload: dict[str, Any]) -> dict[str, Any]:
             artifact_paths.append(
                 f"research/registry/decisions/{latest_decision['id']}.yaml"
             )
+        # Ignored Outputs remain identified inside run records. A public story
+        # without a capsule must stay usable from a clean clone.
+        artifact_paths = [path for path in artifact_paths if "Outputs" not in Path(path).parts]
+        engineering = row["lifecycle"] == "draft" and row["evidence_tier"] == "none"
+        history = f"engineering_run_history_{run_states}" if executed_runs and engineering else "documented_result_history"
+        boundary = (
+            "This is non-claim-bearing engineering history: scientific audit and promotion "
+            "remain unresolved, evidence tier is none, and no evidence capsule exists."
+            if engineering else
+            f"Registered evidence tier: {row['evidence_tier']}. No portable evidence capsule or new claim promotion is recorded."
+        )
+        if latest_decision:
+            boundary += " " + " ".join(latest_decision["constraints"])
         story["experiments"].append(
             {
                 "id": row["id"],
                 "question": row["question"],
                 "design": row["design"]["summary"],
                 "status": (
-                    f"{row['lifecycle']}_{row['outcome']}_engineering_run_history_"
-                    f"{run_states}; evidence_tier_{row['evidence_tier']}"
+                    f"{row['lifecycle']}_{row['outcome']}_{history}; evidence_tier_{row['evidence_tier']}"
                 ),
                 "finding": (
                     latest_decision["evidence_summary"]
                     if latest_decision
-                    else "A bounded engineering run is registered; no scientific outcome was evaluated."
+                    else "A run is registered; consult its validation record for the bounded outcome."
                 ),
-                "limitation": (
-                    "This is non-claim-bearing engineering history: scientific audit and promotion "
-                    "remain unresolved, evidence tier is none, and no evidence capsule exists."
-                ),
+                "limitation": boundary,
                 "artifacts": list(
                     dict.fromkeys(_paper_relative(item) for item in artifact_paths)
                 ),
                 "next_decision": (
                     latest_decision["rationale"]
                     if latest_decision
-                    else "Retain the registered draft state pending an explicit decision."
+                    else "Retain the registered state pending an explicit decision."
                 ),
             }
         )
     return story
+
+
+def _documented_results(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    """Expose report-backed decisions without treating them as evidence capsules."""
+    decisions = {row["id"]: row for row in payload["decisions"]}
+    rows = []
+    for experiment in _ordered_experiments(payload):
+        if experiment.get("evidence_capsule_id") or not experiment.get("design", {}).get("results_path"):
+            continue
+        if not experiment.get("decision_ids"):
+            continue
+        decision = decisions[experiment["decision_ids"][-1]]
+        rows.append({
+            "id": experiment["id"],
+            "program_id": experiment["program_id"],
+            "title": experiment["title"],
+            "lifecycle": experiment["lifecycle"],
+            "outcome": experiment["outcome"],
+            "evidence_tier": experiment["evidence_tier"],
+            "results_path": experiment["design"]["results_path"],
+            "decision_id": decision["id"],
+            "action": decision["action"],
+            "finding": decision["evidence_summary"],
+            "boundaries": decision["constraints"],
+        })
+    return rows
 
 
 def _ordered_experiments(payload: dict[str, Any]) -> list[dict[str, Any]]:
@@ -505,7 +545,7 @@ def _project_story(payload: dict[str, Any]) -> str:
         f"- {len(planned)} planned experiments",
         f"- {len(payload['runs'])} registered run records",
         "",
-        "Historical v1 experiments intentionally have no fabricated run records; their capsules preserve results, hashes, and explicit provenance gaps.",
+        "Historical v1 results intentionally have no fabricated run records; their capsules preserve results, hashes, and explicit provenance gaps. Post-migration executions of drafted v1 entries are registered explicitly and remain separate from scientific completion.",
         "",
         "## Current flagship boundary",
         "",
@@ -515,6 +555,18 @@ def _project_story(payload: dict[str, Any]) -> str:
         "",
     ]
     rows += [f"- {item}" for item in flagship["boundaries"]]
+    rows += [
+        "", "## Documented results beyond the historical capsules", "",
+        "These report-backed records preserve computed outcomes and decisions. They do not add portable evidence capsules or promote the flagship claims. Different programs, populations, and evaluation heads remain separate.", "",
+    ]
+    for result in _documented_results(payload):
+        rows += [
+            f"### {result['id']}: {result['title']}", "",
+            f"Program `{result['program_id']}`; registry lifecycle **{result['lifecycle']}**, outcome **{result['outcome']}**, evidence tier **{result['evidence_tier']}**; action **{result['action']}**.", "",
+            result["finding"], "",
+            f"[Result and provenance](../../{result['results_path']}) · [Decision](../registry/decisions/{result['decision_id']}.yaml)", "",
+            "**Boundary:** " + " ".join(result["boundaries"]), "",
+        ]
     rows += ["", "## Current decision queue", ""]
     for row in _planned_queue(payload):
         legacy = priority.get(row.get("legacy_id"))
@@ -609,6 +661,7 @@ def _llm_context(payload: dict[str, Any]) -> dict[str, Any]:
             {key: row[key] for key in ("id", "statement", "scope", "limitations", "claim_state", "evidence_tier", "review_state")}
             for row in sorted(payload["claims"], key=lambda item: item["id"])
         ],
+        "documented_results": _documented_results(payload),
         "next_experiments": [
             {
                 "id": row["id"],
@@ -655,6 +708,26 @@ def _navigation(payload: dict[str, Any]) -> dict[str, Any]:
             "portable_evidence": "research/evidence",
         },
         "routes": [
+            {
+                "id": "current_work",
+                "human_start": "docs/research/CURRENT_WORK.md",
+                "authority": "research/registry",
+                "validation": [".venv-neurobench/bin/python -m neurobench.research.registry check"],
+            },
+            {
+                "id": "gamma_local_standardization",
+                "human_start": "docs/research/SPON_CA_BURST_GAMMA_LS_PAPER_SUCCESS_RESULTS_2026_09_09.md",
+                "authority": "research/registry/programs/gamma-local-standardization.yaml",
+                "implementation": "neurobench/experiments/gamma_ls_difference",
+                "validation": ["Gamma-LS focused tests", "frozen campaign artifact validations"],
+            },
+            {
+                "id": "ica_whitening_final_results",
+                "human_start": "docs/research/ICA_WHITENING_REAL_DATA_V1_FINAL_RESULTS.md",
+                "authority": "research/registry/experiments/NREV-EXP-0035.yaml",
+                "implementation": "neurobench/experiments/ica_whitening_evaluation",
+                "validation": ["ICA/whitening focused tests", "completion_audit_latest.json"],
+            },
             {
                 "id": "project_story",
                 "human_start": "research/generated/PROJECT_STORY.md",
@@ -838,7 +911,8 @@ def _readme_snapshot(payload: dict[str, Any]) -> str:
         "| --- | --- | --- |",
     ]
     for row in programs:
-        rows.append(f"| [{row['title']}]({links[row['slug']]}) | {row['summary']} | {row['lifecycle']} |")
+        target = links.get(row["slug"], row.get("documentation", ["research/generated/PROJECT_STORY.md"])[0])
+        rows.append(f"| [{row['title']}]({target}) | {row['summary']} | {row['lifecycle']} |")
     return "\n".join(rows)
 
 

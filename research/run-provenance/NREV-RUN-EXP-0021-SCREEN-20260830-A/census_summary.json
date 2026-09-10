@@ -1,0 +1,31 @@
+{
+  "census_id": "innovation_ranker_v5_broad_proposal_census",
+  "counts": {
+    "event": {
+      "1": 544,
+      "2": 530,
+      "3": 476,
+      "4": 449
+    },
+    "event_total": 1999,
+    "quiet": [
+      683,
+      748,
+      759,
+      748
+    ],
+    "quiet_total": 2938
+  },
+  "feature_count": 34,
+  "paths": {
+    "event_candidates": "event_candidates.tsv",
+    "feature_dictionary": "feature_dictionary.json",
+    "provenance": "provenance.json",
+    "quiet_candidates": "quiet_candidates.tsv",
+    "validation": "validation.json"
+  },
+  "proposal_source_count": 22,
+  "schema_version": 1,
+  "scientific_scope": "development census from one recording and frozen V5 proposal distribution; no candidate labels or model decisions",
+  "status": "materialized_unlabeled_census"
+}

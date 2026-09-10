@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "experiment_id": "spon_ca_burst_gamma_ls_support_sufficiency_v1",
+  "sources": {
+    "base_config": "repo://examples/spon_ca_burst_gamma_ls_difference_ablation_v1.example.json",
+    "base_gpu_screen": "repo://Outputs/GammaLSDifference/spon_ca_burst_gamma_ls_difference_ablation_v1_gpu_screen_20260908_r1"
+  },
+  "design": {
+    "stage_a_radius_guard_pairs": [[11, 5], [15, 5], [15, 7], [19, 5], [19, 7], [23, 5], [23, 9], [31, 7], [31, 11]],
+    "conditional_stage_b_radius_guard_pairs": [[39, 9], [39, 15], [47, 11], [47, 19]],
+    "shape_n": [2.0, 5.0, 9.0],
+    "mode_fraction_of_half_width": [0.5, 0.75, 1.0],
+    "primary_candidate_max_half_width_px": 23,
+    "screen_representations": ["raw", "difference_signed", "difference_energy_normalized"],
+    "controls": [
+      "legacy_exact_n9_mode35_w23_eps64",
+      "signed_square_annulus_ls_h11_g3",
+      "maintained_positive_box_cfar_h11_g3"
+    ]
+  },
+  "stopping_rule": {
+    "training_near_optimal_absolute_contrast": 0.005,
+    "training_near_optimal_relative_fraction": 0.05,
+    "minimum_representation_contrast_floor": -0.005,
+    "stage_b_trigger": "h31_best_or_within_training_near_optimal_tolerance_in_any_fold",
+    "stage_b_max_half_width_px": 47,
+    "protected_b58_total_match_tolerance": 1,
+    "protected_per_burst_match_tolerance": 1,
+    "protected_budget_curve_auc_tolerance": 0.02,
+    "final_claim_requires": ["training_window_contrast", "protected_recall_sensitivity", "repeated_latency"]
+  },
+  "latency": {
+    "warmup_iterations": 50,
+    "timed_iterations": 200,
+    "single_frame_deadline_ms": 1.0,
+    "relative_p50_cap_vs_h11": 1.25,
+    "absolute_p50_increase_cap_ms": 0.1
+  },
+  "resources": {
+    "device": "cuda",
+    "chunk_frames": 64,
+    "max_peak_vram_gib": 8.0,
+    "minimum_free_disk_gib": 20.0
+  },
+  "scientific_audit": {
+    "enabled": true
+  }
+}

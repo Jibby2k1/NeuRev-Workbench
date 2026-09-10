@@ -1,0 +1,52 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0035
+origin:
+  kind: migrated_legacy
+  source_path: docs/research/ICA_WHITENING_REAL_DATA_V1_FINAL_RESULTS.md
+  source_sha256: 67a544149ccded9e2d20afa6a6785500185593e8c11d56ca0fa18b638ee25fae
+  recorded_on: '2026-09-09'
+  missing_fields:
+  - Retrospective report import, not a new preregistration or execution.
+  - Campaign subruns are retained in the source report and local artifacts; a complete normalized set of native
+    run records and a portable evidence capsule has not been registered.
+program_id: NREV-PRG-0002
+title: ICA and whitening synthetic-to-real factorial evaluation
+question: Which ICA and whitening configurations retain sparse-positive retrieval after complete-factorial, held-burst,
+  visual-audit, and independent-recording checks?
+objective: Which ICA and whitening configurations retain sparse-positive retrieval after complete-factorial, held-burst,
+  visual-audit, and independent-recording checks?
+rationale: Retrospectively register the existing report and its bounded result without manufacturing run provenance
+  or changing the historical claim ledger.
+lifecycle: computed
+outcome: mixed
+evidence_tier: descriptive
+review_state: not_requested
+falsifiers:
+- A report-level completion or software/audit PASS is promoted into an untested scientific conclusion.
+- Different candidate populations, evaluation heads, or biological recordings are pooled as a matched comparison.
+design:
+  summary: Preserve the failed synthetic source-recovery screen and documented nonblocking amendment; evaluate the
+    exact eligible real factorial, train-burst-only selection, seed-aligned finalist, scientific audit, and a frozen
+    independent candidate universe.
+  protocol_path: docs/research/ICA_WHITENING_HYPERPARAMETER_EVALUATION_PLAN.md
+  results_path: docs/research/ICA_WHITENING_REAL_DATA_V1_FINAL_RESULTS.md
+  unit_of_analysis: Conditional factorial configurations and held-out bursts; three refit seeds are robustness checks;
+    sparse-positive occurrences within independent one-second blocks.
+  comparison: ICA families and whitening geometries under the matched event-standardized scorer, protected selection,
+    and frozen independent-readout contract.
+  data_scope: 106080 synthetic fits, 30891 eligible real fits, 79 Spon sparse-positive occurrences, and 51 occurrences
+    on the independent 15 right recording.
+gates:
+- id: report_provenance_boundary
+  criterion: Preserve the source report, its stated artifact authorities, failed gates, and scope; retrospective
+    registration is not scientific claim promotion.
+  stage: publication
+  required: true
+claim_ids: []
+decision_ids:
+- NREV-DEC-0026
+run_ids: []
+visibility: public
+created_on: '2026-09-09'
+updated_on: '2026-09-09'

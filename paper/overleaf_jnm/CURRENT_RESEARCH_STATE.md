@@ -1,5 +1,23 @@
 # Current research state
 
+## Scope and latest parallel work
+
+This page describes the identity-safe study of 106 occurrences at 50 immutable
+sites. The [current repository work map](../../docs/research/CURRENT_WORK.md)
+and [generated project story](../../research/generated/PROJECT_STORY.md) cover
+the other programs through September 9, 2026.
+
+The separate Gamma-LS campaign now has a completed full-record model-only audit
+and a 6/51 sparse-positive result on `15 right` at B58 per one-second block.
+The separate ICA/whitening study completed its requested artifact gates and
+recovered 20/51 under its own independent block-ranking protocol. These use
+different candidate universes and pipelines; they are not a matched comparison,
+and neither result closes this manuscript's independent-transfer or population
+generalization gates. Read the
+[Gamma-LS final report](../../docs/research/SPON_CA_BURST_GAMMA_LS_PAPER_SUCCESS_RESULTS_2026_09_09.md)
+and [ICA/whitening final report](../../docs/research/ICA_WHITENING_REAL_DATA_V1_FINAL_RESULTS.md)
+for their exact readouts and boundaries.
+
 ## Documents to inspect
 
 - `main_technical.tex`: evidence-complete manuscript with full methods and
@@ -54,6 +72,14 @@ generated Overleaf compatibility view. Update canonical records, run
   treated as safe coordinate corrections.
 
 ## Suggestive but not confirmatory
+
+- Feature Atlas v1 increased augmented macro held-fold SPU-AUC to 0.984392
+  from 0.979734 for the retrained existing linear model on the same 1,619
+  candidates, with 35/78 versus 34/78 known positives at budget 58. The paired
+  global-AUC delta interval [-0.004081, 0.015125] crossed zero; full new-ranking
+  audit and scientific promotion remain incomplete. The
+  [Atlas result](../../docs/research/SPON_CA_BURST_FEATURE_ATLAS_V1_RESULTS.md)
+  motivates a frozen competition-aware proposal-resolution test.
 
 - A blinded single-reviewer pass over all 18 previously unmatched consolidated
   detector sites produced 9 definite-neuron, 4 probable-neuron, 4 uncertain,
@@ -111,6 +137,13 @@ generated Overleaf compatibility view. Update canonical records, run
   AUC 0.814; both require independent confirmation.
 - A simple five-neighbor spatial graph has negligible association with recovery
   (-0.009), so distance-only crowding is not an adequate feature model.
+- The bounded uncertainty-aware feature-fusion Run B completed 1,619 spatially
+  held-out candidate scores (78 known positives and 1,541 unknown candidates).
+  Tiny-MLP macro-fold SPU-AUC was 0.97402 versus 0.97410 for linear SPU, with
+  MLP-minus-linear interval [-0.00461, 0.00591]; the nonlinear replacement is
+  therefore held. The favorable same-union CFAR reranking contrast is useful
+  engineering context, not end-to-end detector replacement or scientific
+  promotion.
 
 ## Still unresolved
 
@@ -152,8 +185,11 @@ generated Overleaf compatibility view. Update canonical records, run
 
 1. Distribute and complete the staged external bounded review, adjudicate all
    disagreements, and freeze the resulting local truth revision.
-2. Run the specified uncertainty-aware learning and robustness suite while
-   preserving provisional labels, spatial groups, and ascertainment boundaries.
+2. Run a separately versioned automated robustness package for the frozen
+   linear SPU candidate, retaining elastic and bagged-PU sensitivities and
+   adding leave-one-burst-out, alternate review-policy, hard-subgroup,
+   feature-family-ablation, and source-off/null stress tests. Do not tune the
+   held tiny MLP on Run-B outcomes.
 3. Jointly review remaining ambiguous identity clusters.
 4. Exhaustively expand beyond the enriched region for broader precision estimation.
 5. Apply the frozen pipeline and class-assignment rules to an independent recording.
@@ -164,5 +200,8 @@ generated Overleaf compatibility view. Update canonical records, run
    additional deblender complexity until bounded biological identity truth or
    a genuinely independent labelled recording is available.
 
-The automated learning specification is
+The completed bounded screen, hold decision, and interpretation boundary are
+recorded in
+`../../docs/research/UNCERTAINTY_AWARE_FEATURE_LEARNING_V1_1_RESULTS.md`.
+The broader legacy learning plan remains
 `../../docs/research/SPON_CA_BURST_UNCERTAINTY_AWARE_LEARNING_PLAN_V1.md`.

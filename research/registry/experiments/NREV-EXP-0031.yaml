@@ -1,0 +1,68 @@
+schema_version: 1
+record_type: experiment
+id: NREV-EXP-0031
+origin:
+  kind: native
+program_id: NREV-PRG-0001
+title: Contextual-envelope feature semantics pilot v1
+question: Can causal spatiotemporal upper envelopes provide interpretable scalar context for Raw and learned evidence
+  while retaining ordinal and localization structure beyond simple amplitude squaring?
+objective: Separate instantaneous evidence, contextual upper envelope, envelope agreement, envelope-gated evidence,
+  and agreement-attenuated evidence across frozen Raw and learned representations.
+rationale: Max pooling appeared visually useful but imported old and displaced evidence, while LS suggested a related
+  context-conditioned normalization interpretation. A factorial operator pilot was needed to distinguish contextual
+  effects from the identity-window A-squared nonlinearity and to standardize non-conflicting terminology.
+lifecycle: draft
+outcome: not_evaluated
+evidence_tier: none
+review_state: not_requested
+falsifiers:
+- Any claim that A times U preserves global order without measuring order inversions.
+- Any contextual-envelope benefit inferred without the w-1 k-1 A-squared and identity controls.
+- Any use of local coherence as an alias for envelope agreement, because local coherence is already a frozen causal
+  correlation feature.
+- Any interpretation of quiet frames as verified negatives or of pooled support as a localized biological source.
+design:
+  summary: Apply frozen global quiet calibration to aligned Raw, current ICA-to-LS, and TMax5-to-LS-to-ICA sources;
+    sweep five causal temporal and three same-size spatial max windows; compare eight current, envelope, product,
+    geometric, ratio, attenuation, and range-position fields; and render fixed-anchor videos.
+  protocol_path: docs/workflows/contextual_envelope_features_v1.md
+  results_path: docs/research/CONTEXTUAL_ENVELOPE_FEATURES_V1_RESULTS.md
+  unit_of_analysis: Sampled full-field frame-pixel values and fixed visual-anchor traces within UI frames 1800 through
+    2359 of one previously analyzed recording.
+  comparison: Every contextual transform is compared with positive instantaneous evidence, the no-pooling A-squared
+    or identity control, and matched temporal-spatial window settings.
+  data_scope: Three frozen representations from one recording, five temporal windows, three spatial footprints,
+    eight deterministic feature forms, 360 metric rows, and 18 representative videos.
+  grouping_or_blocking: Metrics retain source and window identity; visual anchors retain immutable rank, coordinate,
+    and clip identity; pixels and frames are not treated as independent biological replicates.
+  sample_plan: One deterministic bounded factorial with no favorable-window rerun or label-driven tuning.
+  randomization: Deterministic seed 310519 selects metric samples and pair-order comparisons; feature construction
+    is deterministic.
+  blinding: No label enters feature construction, calibration, window selection, or reported operator metrics; previously
+    frozen anchors are used only for visualization.
+  analysis_plan: Quantify association and order inversion relative to instantaneous evidence, quiet and dynamic-range
+    behavior, imported-envelope magnitude, envelope agreement, area inflation, and trace persistence; retain explanations
+    separately from candidate signal fields.
+gates:
+- id: identity_controls
+  criterion: The no-pooling arm exactly gives A-times-U equal to A-squared and geometric and agreement-attenuated
+    forms equal to A for positive A.
+  stage: analysis
+  required: true
+- id: terminology_separation
+  criterion: Local coherence remains reserved for the established causal correlation feature and is never used for
+    envelope agreement.
+  stage: publication
+  required: true
+- id: scientific_boundary
+  criterion: The bounded pilot remains non-claim-bearing until a task-specific frozen evaluation and complete scientific
+    audit are performed.
+  stage: publication
+  required: true
+claim_ids: []
+decision_ids:
+- NREV-DEC-0029
+visibility: public
+created_on: '2026-08-31'
+updated_on: '2026-09-09'

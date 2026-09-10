@@ -1,0 +1,33 @@
+schema_version: 1
+record_type: program
+id: NREV-PRG-0005
+slug: gamma-local-standardization
+title: Gamma Local Standardization
+summary: Single-scale causal signed-difference proposals with guarded radial Gamma-weighted local standardization
+  and explicit calibration, support, and timing audits.
+lifecycle: active
+scientific_scope: 'A distinct operator and deployment-characterization campaign: 79 protected Spon occurrences from
+  26 identities, an annotation-free full-record proposal ledger, one independent 15 right sparse-positive readout,
+  and exact-truth simulations.'
+objectives:
+- Audit the simplest fixed signed-difference/Gamma-LS pipeline under matched operator and representation controls.
+- Keep protected burst occupancy, independent one-second-block ranking, frame-local deployment proposals, and GPU
+  service timing separate.
+boundaries:
+- The operational h15 support did not pass support sufficiency; radial superiority and protected two-frame ICA benefit
+  were not established.
+- Both strict sustained 1-kHz timing trials failed; batch throughput is a separate engineering result.
+- The independent result is 6/51 sparse-positive occurrences at B58 per block in one recording; it does not resolve
+  the flagship independent-recording or population-generalization gates.
+- 371 frame-local proposals are not unique neurons or confirmed biological detections; precision, specificity, false-positive
+  rate, and biological identity remain unidentified.
+related_program_ids:
+- NREV-PRG-0001
+- NREV-PRG-0002
+documentation:
+- docs/research/SPON_CA_BURST_GAMMA_LS_PAPER_SUCCESS_RESULTS_2026_09_09.md
+- docs/research/SPON_CA_BURST_GAMMA_LS_PAPER_V2_OUTLINE.md
+- docs/research/SPON_CA_BURST_GAMMA_LS_PAPER_SUCCESS_CAMPAIGN_2026_09_08.md
+visibility: public
+created_on: '2026-09-09'
+updated_on: '2026-09-09'

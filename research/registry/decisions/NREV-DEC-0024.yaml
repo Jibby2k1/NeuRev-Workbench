@@ -1,0 +1,53 @@
+schema_version: 1
+record_type: decision
+id: NREV-DEC-0024
+origin:
+  kind: native
+program_id: NREV-PRG-0001
+title: Hold tiny-MLP replacement and retain simple positive-unlabeled fusion for frozen robustness tests
+lifecycle: draft
+action: hold
+rationale: The tiny MLP substantially exceeded scalar carrier and same-union CFAR reranking, but it did not improve the primary
+  estimand over the matched linear SPU model and its whole-component interval crossed zero. Elastic and bagged-PU linear models
+  also matched or slightly exceeded the MLP primary point estimate. This pattern supports the richer feature/P-U objective
+  as worth testing while providing no evidence that nonlinear interactions justify replacing the simpler fusion layer.
+evidence_summary: Run B completed 1,619 OOF candidate scores across 78 positives and 1,541 unknown U candidates. Macro-fold
+  SPU-AUC was 0.9740218518 for tiny MLP, 0.9740959140 for linear, 0.9756013670 for elastic, 0.9754961258 for bagged PU,
+  0.9501444137 for equal-weight expert fusion, 0.9335176617 for carrier, and 0.7646602748 for same-union CFAR reranking.
+  MLP-minus-linear was -0.0000740622 with interval [-0.0046074197, 0.0059124340]; MLP-minus-CFAR was +0.2093615770 with
+  interval [0.1207303370, 0.3036814877]. MLP and bagged PU each recovered 34 of 78 at budget 58, versus 33 linear, 30 expert,
+  29 carrier, and 14 CFAR. Seed stability and component association passed, but nonlinear advance and the required burst/review-policy
+  sensitivity panel did not. Scientific audit and promotion remain incomplete.
+effective_on: '2026-08-30'
+review_state: not_requested
+experiment_ids:
+- NREV-EXP-0021
+claim_ids: []
+evidence_capsule_ids: []
+constraints:
+- Preserve NREV-RUN-EXP-0021-SCREEN-20260830-A and its `.partial` tree as failed, immutable, and nonresumable; do not relabel
+  it succeeded or use its unserialized model evaluation as result evidence.
+- Preserve completed Run B, its frozen runner/config/protocol, and its exact output index; engineering PASS is separate from
+  the failed nonlinear advance signal, incomplete scientific audit, and false claim-promotion state.
+- Do not tune MLP width, depth, optimizer, seed selection, feature set, folds, review reserve, or favorable subgroups on Run-B
+  outcomes and call the result confirmation.
+- Keep U candidates unknown rather than negative, quiet candidates source-off controls rather than negatives, and later review
+  labels locked and descriptive.
+- Treat cfar_score only as same-union scalar reranking and one fusion input; do not describe the favorable MLP-CFAR contrast
+  as end-to-end CFAR replacement or nonlinear causal benefit.
+- Do not report ordinary precision, specificity, false-positive rate, calibrated neuron probability, causal feature importance,
+  independent-recording generalization, biological identity, or scientific completion from this screen.
+- Whole-component intervals are descriptive because positive-containing component support is only 9, 3, 3, 2, and 4 across
+  folds; stable MLP seeds do not replace independent biological replication.
+follow_up:
+- Retain linear SPU as the simplest frozen confirmation candidate, with elastic and bagged-PU linear as prespecified sensitivity
+  comparators; do not advance the tiny MLP as the default fusion layer.
+- Run a separately versioned automated robustness package with the census, features, labels, groups, and model parameters frozen,
+  adding leave-one-burst-out, alternate review-policy, hard-subgroup, feature-family ablation, and source-off/null stress analyses.
+- If the simple fusion survives those tests, freeze it before evaluation on a compatible independent recording; do not adapt
+  it on the transfer recording.
+- Complete the required expert, model, comparison, trace, media-validation, and bounded-review audit before any claim-bearing
+  evaluation or detector replacement decision.
+visibility: public
+created_on: '2026-08-30'
+updated_on: '2026-08-30'
