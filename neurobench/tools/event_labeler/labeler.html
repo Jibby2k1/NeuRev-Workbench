@@ -63,6 +63,25 @@ kbd { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; border: 1px sol
 #overlay.on { display: flex; }
 #overlay h2 { margin: 0; font-size: 22px; }
 #overlay p { margin: 0; color: var(--muted); max-width: 46ch; }
+#overlay .row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.card.ov { max-width: 480px; text-align: left; }
+#resume { background: var(--accent); color: var(--panel); border-color: transparent; }
+#setup { position: fixed; inset: 0; background: color-mix(in srgb, var(--bg) 92%, transparent); display: none; align-items: center; justify-content: center; z-index: 6; padding: 16px; }
+#setup.on { display: flex; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; max-width: 620px; width: 100%; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 10px 30px rgb(0 0 0 / .12); }
+.card h2 { margin: 0; font-size: 20px; }
+.card .lead { margin: 0; color: var(--muted); }
+fieldset { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+legend { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; margin-bottom: 8px; padding: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips label { position: relative; }
+.chips input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.chips span { display: inline-block; padding: 7px 13px; border: 1px solid var(--line); border-radius: 18px; background: var(--bg); font-variant-numeric: tabular-nums; cursor: pointer; }
+.chips input:checked + span { background: var(--accent); border-color: var(--accent); color: var(--panel); font-weight: 600; }
+.chips input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+.card .actions { display: flex; justify-content: flex-end; gap: 10px; }
+#startBtn { background: var(--accent); color: var(--panel); border-color: transparent; }
+.sess { font-variant-numeric: tabular-nums; padding: 2px 10px; border-radius: 12px; background: var(--chip); color: var(--ink); font-size: 13px; }
 #toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 7px 14px; border-radius: 6px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
 #toast.on { opacity: .92; }
 @media (prefers-reduced-motion: reduce) { #toast { transition: none; } }
@@ -74,6 +93,7 @@ kbd { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; border: 1px sol
   <span class="meta" id="who"></span>
   <span class="meta" id="count"></span>
   <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+  <span class="sess" id="sess" title="Progress toward this sitting's goal"></span>
   <span class="meta" id="timer"></span>
 </header>
 
@@ -114,14 +134,42 @@ kbd { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; border: 1px sol
 </div>
 <div class="help">
   <span><kbd>A</kbd> accept</span><span><kbd>D</kbd> decline</span><span><kbd>B</kbd> back</span>
-  <span><kbd>Space</kbd> play / stop</span><span><kbd>←</kbd><kbd>→</kbd> step frames</span><span><kbd>P</kbd> pause</span><span><kbd>C</kbd> contrast</span>
+  <span><kbd>Space</kbd> play / stop</span><span><kbd>←</kbd><kbd>→</kbd> step frames</span><span><kbd>P</kbd> pause or change goal</span><span><kbd>C</kbd> contrast</span>
   <span id="logpath"></span>
 </div>
 
 <div id="overlay" role="dialog" aria-modal="true" aria-labelledby="ovt">
+  <div class="card ov">
   <h2 id="ovt">Paused</h2>
   <p id="ovp">Every decision so far is saved. You can close this window; starting the labeler again resumes where you left off.</p>
-  <button id="resume" class="big">Resume</button>
+  <div class="row"><button id="ovAlt">Change goal</button><button id="resume" class="big">Resume</button></div>
+  </div>
+</div>
+
+<div id="setup" role="dialog" aria-modal="true" aria-labelledby="setupTitle">
+  <form class="card" id="setupForm">
+    <h2 id="setupTitle">How much would you like to review?</h2>
+    <p class="lead" id="setupLead"></p>
+    <fieldset>
+      <legend>This sitting</legend>
+      <div class="chips" id="goalChips">
+        <label><input type="radio" name="goal" value="items:25"><span>25 items</span></label>
+        <label><input type="radio" name="goal" value="items:50"><span>50 items</span></label>
+        <label><input type="radio" name="goal" value="items:100"><span>100 items</span></label>
+        <label><input type="radio" name="goal" value="items:200"><span>200 items</span></label>
+        <label><input type="radio" name="goal" value="minutes:10"><span>10 min</span></label>
+        <label><input type="radio" name="goal" value="minutes:20"><span>20 min</span></label>
+        <label><input type="radio" name="goal" value="minutes:30"><span>30 min</span></label>
+        <label><input type="radio" name="goal" value="none:0"><span>No limit</span></label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Out of the queue (most relevant first)</legend>
+      <div class="chips" id="scopeChips"></div>
+    </fieldset>
+    <p class="lead">You can stop at any time; every answer is saved as you go.</p>
+    <div class="actions"><button type="submit" id="startBtn" class="big">Start</button></div>
+  </form>
 </div>
 <div id="toast" role="status"></div>
 
@@ -130,6 +178,7 @@ kbd { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; border: 1px sol
 const $ = id => document.getElementById(id);
 let M, S, F, N, items, decisions = {}, k = 0, frame = 0, playing = true, paused = false, done = false;
 let raw = null, ls = null, cache = new Map(), activeMs = 0, lastTick = performance.now(), sessionMs = 0;
+let goal = { kind: "items", value: 50 }, scope = null, sitCount = 0, sitStartMs = 0, mode = "setup";
 const store = { get(key, d) { try { const v = localStorage.getItem("evlab:" + key); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(key, v) { try { localStorage.setItem("evlab:" + key, JSON.stringify(v)); } catch (e) {} } };
 
@@ -301,8 +350,8 @@ function initKnobs() {
 // ---------------------------------------------------------------- items
 async function show(i) {
   k = i; activeMs = 0; lastTick = performance.now();
-  if (i < N) proc = newProc(items[i]);
-  if (k >= N) return finish();
+  if (i < limit()) proc = newProc(items[i]);
+  if (k >= limit()) return scopeDone();
   done = false;
   const clip = await fetchClip(k);
   if (k !== i) return;
@@ -315,23 +364,65 @@ async function show(i) {
   updateHeader();
   for (let j = 1; j <= 3; j++) if (k + j < N) fetchClip(k + j);
 }
+function limit() { return scope ? Math.min(scope, N) : N; }
+function decidedIn(lim) { let n = 0; for (let j = 0; j < lim; j++) if (decisions[items[j].id]) n++; return n; }
 function nextOpen(from) {
-  for (let j = from; j < N; j++) if (!decisions[items[j].id]) return j;
-  for (let j = 0; j < N; j++) if (!decisions[items[j].id]) return j;
-  return N;
+  const L = limit();
+  for (let j = from; j < L; j++) if (!decisions[items[j].id]) return j;
+  for (let j = 0; j < L; j++) if (!decisions[items[j].id]) return j;
+  return L;
+}
+function goalText() {
+  if (goal.kind === "items") return "this sitting " + sitCount + " / " + goal.value;
+  if (goal.kind === "minutes") {
+    const left = Math.max(0, goal.value * 60000 - (sessionMs - sitStartMs));
+    return "this sitting " + sitCount + " · " + mmss(left) + " left";
+  }
+  return "this sitting " + sitCount;
+}
+function goalReached() {
+  if (goal.kind === "items") return sitCount >= goal.value;
+  if (goal.kind === "minutes") return sessionMs - sitStartMs >= goal.value * 60000;
+  return false;
+}
+function openOverlay(m, title, text, primary, alt) {
+  mode = m; done = true; raw = null;
+  $("ovt").textContent = title; $("ovp").textContent = text;
+  $("resume").textContent = primary;
+  $("ovAlt").hidden = !alt; if (alt) $("ovAlt").textContent = alt;
+  $("overlay").classList.add("on");
+  $("resume").focus();
+  updateHeader();
 }
 function updateHeader() {
-  const n = Object.keys(decisions).length;
-  $("count").textContent = n + " / " + N + " decided" + (k < N ? " · item " + (k + 1) : "");
-  $("bar").style.width = (100 * n / N).toFixed(2) + "%";
+  const L = limit(), n = decidedIn(L);
+  $("count").textContent = n + " / " + L + " decided" + (L < N ? " (top " + L + " of " + N + ")" : "") +
+    (k < L ? " · item " + (k + 1) : "");
+  $("bar").style.width = (100 * n / L).toFixed(2) + "%";
+  $("sess").textContent = goalText();
 }
-function finish() {
-  done = true; raw = null;
-  $("ovt").textContent = "All items decided";
-  $("ovp").textContent = "Thank you. Every decision is saved in " + logPath + ". Use Back to review any item.";
-  $("resume").textContent = "Review items";
-  $("overlay").classList.add("on");
-  updateHeader();
+function scopeDone() {
+  const L = limit();
+  if (L >= N) return openOverlay("alldone", "All items decided",
+    "Thank you. Every decision is saved in " + logPath + ". Use Back to look at any item again.", "Look back through items", null);
+  const more = Math.min(100, N - L);
+  openOverlay("scope", "Top " + L + " items done",
+    "Every decision is saved. You can widen the review to the next " + more + " items, or finish for now.",
+    "Review the next " + more, "Finish for now");
+}
+function finishForNow() {
+  const nx = nextOpen(0);
+  openOverlay("finished", "All saved. See you next time",
+    "Close this window and press Ctrl+C in the terminal. Run the same command again to continue" +
+    (nx < limit() ? " at item " + (nx + 1) + "." : "."), "Keep going instead", null);
+}
+function goalDone() {
+  const t = goal.kind === "minutes" ? goal.value + " minutes" : goal.value + " items";
+  post({ type: "goal_reached", item_index: k, goal,
+         session: { decisions: sitCount, active_ms: Math.round(sessionMs - sitStartMs) } }).catch(() => {});
+  openOverlay("goal", "Goal reached",
+    "You set " + t + " for this sitting and made " + sitCount + " decisions in " + mmss(sessionMs - sitStartMs) +
+    " of active time. Everything is saved.", "Keep going", "Finish for now");
 }
 let busy = false;
 async function decide(dec, input) {
@@ -343,8 +434,10 @@ async function decide(dec, input) {
                            display: Object.assign(radii(), { contrast: $("contrast").value, speed: +$("speed").value }),
                            process: procOut(input || "mouse") });
     decisions[it.id] = dec;
+    sitCount++;
     toast(dec === "accept" ? "Accepted" : "Declined");
-    await show(nextOpen(k + 1));
+    if (goalReached()) goalDone();
+    else await show(nextOpen(k + 1));
   } catch (e) { toast("Not saved: " + e.message); }
   busy = false;
 }
@@ -352,6 +445,8 @@ async function setPaused(p) {
   if (p === paused) return;
   paused = p;
   if (!done) {
+    mode = p ? "pause" : "review";
+    $("ovAlt").hidden = false; $("ovAlt").textContent = "Change goal";
     $("ovt").textContent = "Paused";
     $("ovp").textContent = "Every decision so far is saved. You can close this window; starting the labeler again resumes where you left off.";
     $("resume").textContent = "Resume";
@@ -372,6 +467,7 @@ function tick(now) {
     if (proc && raw) { proc.active_ms += dt; proc.dwell_ms[frame] += dt; }
     if (playing && raw) { acc += dt; const per = 1000 / +$("speed").value; while (acc >= per) { acc -= per; frame = (frame + 1) % F; if (frame === 0 && proc) proc.loops++; drawFrame(); } }
     $("timer").textContent = "active " + mmss(sessionMs);
+    if (goal.kind === "minutes") $("sess").textContent = goalText();
   }
   requestAnimationFrame(tick);
 }
@@ -382,7 +478,9 @@ document.addEventListener("keydown", e => {
   if ((e.target.tagName === "INPUT" || e.target.tagName === "SELECT") && e.key !== " ") return;
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   const key = e.key.toLowerCase();
+  if (mode === "setup") return;                      // the form handles Enter
   if (paused) { if (key === "p" || key === "enter") { e.preventDefault(); setPaused(false); } return; }
+  if (done) { if (key === "enter") { e.preventDefault(); $("resume").click(); } return; }
   if (key === "a") { e.preventDefault(); decide("accept", "key"); return; }
   else if (key === "d") { e.preventDefault(); decide("decline", "key"); return; }
   touch();
@@ -406,10 +504,68 @@ $("decline").onclick = e => decide("decline", e.detail === 0 ? "key" : "mouse");
 $("back").onclick = () => { touch(); goBack("mouse"); };
 $("play").onclick = togglePlay;
 $("pause").onclick = () => setPaused(true);
-$("resume").onclick = () => { if (done) { $("overlay").classList.remove("on"); done = false; show(N - 1); } else setPaused(false); };
+$("resume").onclick = () => {
+  if (mode === "pause") return setPaused(false);
+  $("overlay").classList.remove("on"); done = false;
+  if (mode === "goal" || mode === "finished") { sitCount = 0; sitStartMs = sessionMs; mode = "review"; return show(nextOpen(k)); }
+  if (mode === "scope") { setScope(Math.min(N, limit() + 100)); mode = "review"; return show(nextOpen(0)); }
+  mode = "review"; return show(Math.max(0, limit() - 1));
+};
+$("ovAlt").onclick = () => {
+  if (mode === "pause") {
+    $("overlay").classList.remove("on"); paused = false;
+    post({ type: "resume", item_index: k, input: "ui" }).catch(() => {});
+    return openSetup();
+  }
+  if (mode === "goal" || mode === "scope") return finishForNow();
+};
+function setScope(v) {
+  scope = v >= N ? null : v;
+  post({ type: "settings", item_index: k, scope, goal }).catch(() => {});
+}
+function openSetup() {
+  mode = "setup"; done = true;
+  const L = limit(), nx = nextOpen(0), dec = Object.keys(decisions).length;
+  $("setupLead").textContent = dec ? "You have decided " + dec + " of " + N + " items so far." +
+    (nx < L ? " You will continue at item " + (nx + 1) + "." : "") : N + " items are waiting, most relevant first.";
+  const gv = goal.kind + ":" + goal.value;
+  for (const r of document.querySelectorAll("input[name=goal]")) r.checked = r.value === gv;
+  if (!document.querySelector("input[name=goal]:checked")) document.querySelector("input[name=goal][value='items:50']").checked = true;
+  const opts = [100, 200, 300].filter(v => v < N).concat([N]);
+  if (L < N && !opts.includes(L)) { opts.push(L); opts.sort((a, b) => a - b); }
+  $("scopeChips").innerHTML = opts.map(v => `<label><input type="radio" name="scope" value="${v}"${v === L ? " checked" : ""}><span>${v === N ? "All " + N : "Top " + v}</span></label>`).join("");
+  $("setup").classList.add("on");
+  $("startBtn").focus();
+}
+let started = false;
+$("setupForm").onsubmit = async e => {
+  e.preventDefault();
+  const [kind, v] = document.querySelector("input[name=goal]:checked").value.split(":");
+  goal = { kind, value: +v }; store.set("goal", goal);
+  const sc = +document.querySelector("input[name=scope]:checked").value;
+  scope = sc >= N ? null : sc;
+  sitCount = 0; sitStartMs = sessionMs;
+  $("setup").classList.remove("on"); done = false; mode = "review"; lastTick = performance.now();
+  await post({ type: "settings", item_index: k, scope, goal });
+  if (!started) {
+    started = true;
+    await post({ type: "session_start", item_index: nextOpen(0), goal, scope,
+                 client: { user_agent: navigator.userAgent, viewport: [innerWidth, innerHeight], dpr: devicePixelRatio,
+                           screen: [screen.width, screen.height], tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                           theme: matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
+                           canvas_scale: SCALE } });
+  }
+  await show(nextOpen(0));
+  $("accept").focus();
+};
 window.addEventListener("beforeunload", () => { navigator.sendBeacon && navigator.sendBeacon("/api/log", new Blob([JSON.stringify({ type: "pause", item_index: k })], { type: "application/json" })); });
 
 let logPath = "";
+function ensureGoalChip() {          // a goal from --budget / --minutes that is not one of the chips gets its own chip
+  if (goal.kind === "none" || document.querySelector(`input[name=goal][value='${goal.kind}:${goal.value}']`)) return;
+  const unit = goal.kind === "items" ? " items" : " min";
+  $("goalChips").insertAdjacentHTML("afterbegin", `<label><input type="radio" name="goal" value="${goal.kind}:${goal.value}"><span>${goal.value}${unit}</span></label>`);
+}
 (async function boot() {
   const st = await (await fetch("/api/state")).json();
   M = st.manifest; S = M.clip.size; F = M.clip.frames; items = M.items; N = items.length; decisions = st.decisions; logPath = st.log_file;
@@ -418,13 +574,11 @@ let logPath = "";
   $("logpath").textContent = "saving to " + st.log_file;
   ctxBytes = new Uint8Array(await (await fetch("/api/context")).arrayBuffer());
   setupCanvases(); initKnobs();
-  await post({ type: "session_start", item_index: st.next,
-               client: { user_agent: navigator.userAgent, viewport: [innerWidth, innerHeight], dpr: devicePixelRatio,
-                         screen: [screen.width, screen.height], tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                         theme: matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
-                         canvas_scale: SCALE } });
-  await show(st.next);
-  $("accept").focus();
+  const d = st.defaults || {};
+  scope = (typeof st.scope === "number" && st.scope > 0) ? st.scope : (d.scope || null);
+  goal = d.budget ? { kind: "items", value: d.budget } : d.minutes ? { kind: "minutes", value: d.minutes } : store.get("goal", goal);
+  ensureGoalChip();
+  openSetup();
   requestAnimationFrame(tick);
 })().catch(e => { document.body.insertAdjacentHTML("afterbegin", "<p style='color:var(--decline)'>Could not start: " + e.message + ". Is the labeler server still running?</p>"); });
 </script>

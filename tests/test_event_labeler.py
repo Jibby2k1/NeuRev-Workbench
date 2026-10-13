@@ -68,5 +68,7 @@ def test_build_and_review(tmp_path):
     srv.shutdown()
     again = LS.Log(tmp_path / "l.jsonl", m["pack_id"], "tester")      # resume
     assert again.decisions == {first: "accept"} and LS.first_open(p, again) == 1
+    again.write(dict(type="settings", scope=1))                     # review only the top item: it is done
+    assert LS.first_open(p, again) == 1 and LS.Log(tmp_path / "l.jsonl", m["pack_id"], "tester").scope == 1
     with pytest.raises(SystemExit):
         LS.Log(tmp_path / "l.jsonl", "otherpack", "tester")

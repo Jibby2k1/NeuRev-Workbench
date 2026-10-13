@@ -77,7 +77,24 @@ python3 label_server.py . --annotator YOURNAME
 
 <sub>On Windows: <code>py label_server.py . --annotator YOURNAME</code>. Always use the same name.</sub>
 
-Your browser opens on the first item you have not decided yet.
+### Choose how much to review
+
+The page opens by asking how much you have time for. Nobody has to get through the whole queue.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/setup-dark.png">
+    <img src="docs/setup-light.png" alt="Start dialog: choose a goal for this sitting (items, minutes or no limit) and how much of the ranked queue to review." width="520">
+  </picture>
+</p>
+
+| Choice | Options | What happens |
+|---|---|---|
+| **This sitting** | 25 · 50 · 100 · 200 items, 10 · 20 · 30 min, or no limit | A counter in the header tracks the goal. When it is reached you choose **Keep going** or **Finish for now**. Finishing tells you exactly where you will resume. |
+| **Out of the queue** | Top 100 · 200 · 300, or all | The queue is ranked, so the top of it matters most. When the chosen part is done you can widen it by 100 or stop. |
+
+Press <kbd>P</kbd> at any time to pause or to change the goal. The pack builder can suggest defaults when
+starting the server, for example `--budget 50`, `--minutes 20` or `--scope 200`.
 
 ### What you see
 
@@ -97,7 +114,7 @@ brightening of the whole area.
 | <kbd>A</kbd> | Accept | | <kbd>Space</kbd> | Play or stop the clip |
 | <kbd>D</kbd> | Decline | | <kbd>←</kbd> <kbd>→</kbd> | Step one frame |
 | <kbd>B</kbd> | Back, to change an answer | | <kbd>C</kbd> | Contrast: pack-wide or this clip |
-| <kbd>P</kbd> | Pause | | | The ring sizes are sliders under the traces |
+| <kbd>P</kbd> | Pause, or change the goal | | | The ring sizes are sliders under the traces |
 
 > [!TIP]
 > **To stop,** close the window and press <kbd>Ctrl</kbd>+<kbd>C</kbd> in the terminal. Run the same command
@@ -252,7 +269,7 @@ centre is brightest.
 `summarize.py` prints a block per labeller:
 
 ```text
-== NAME: <decisions> decisions
+== NAME: <decisions> decisions in <n> sittings (<g> session goals reached; scope: top <N> | whole queue)
   annotation                     <accepted> / <decided> accepted (<rate>)
   proposal                       ...
   proposal_covering_annotation   ...
@@ -290,6 +307,8 @@ Add `--json report.json` for a machine-readable copy.
 
 - **Session start:** the browser name, screen size, and hashes of the tool files.
 - **Pause, resume, back and stop:** the session timeline.
+- **Settings and goals:** every goal and scope choice, and each goal reached, with that sitting's decisions and
+  active time.
 
 The log holds nothing else from the labeller's computer. A log is tied to one pack and cannot be resumed against
 another.
@@ -347,6 +366,19 @@ pack from a fresh clone reproduced the same pack id and byte-identical clips.
 ---
 
 ## Troubleshooting
+
+<details>
+<summary><strong>Server options</strong></summary>
+
+| Option | Meaning |
+|---|---|
+| `--annotator NAME` | Who is labelling; it names the log file |
+| `--port N` | Port, 8765 by default |
+| `--log-dir DIR` | Where the log goes, the pack folder by default |
+| `--budget N` · `--minutes M` · `--scope N` | Preselect the sitting goal and the queue scope |
+| `--export FILE.tsv` | Write the decisions as a table and exit |
+| `--no-browser` | Don't open a browser |
+</details>
 
 <details>
 <summary><strong>"Address already in use"</strong></summary>

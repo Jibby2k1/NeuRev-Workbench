@@ -20,6 +20,7 @@ from collections import defaultdict
 def load_logs(paths, pack_id):
     by_ann = defaultdict(dict)
     proc = defaultdict(list)
+    sittings = defaultdict(lambda: dict(sessions=0, goals_reached=0, last_scope=None))
     for p in paths:
         with open(p, encoding="utf-8") as f:
             for line in f:
@@ -32,12 +33,19 @@ def load_logs(paths, pack_id):
                     continue
                 if r.get("pack_id") != pack_id:
                     raise SystemExit(f"{p} belongs to pack {r.get('pack_id')}, the key is for {pack_id}")
+                st = sittings[r.get("annotator")]
+                if r.get("type") == "session_start":
+                    st["sessions"] += 1
+                elif r.get("type") == "goal_reached":
+                    st["goals_reached"] += 1
+                elif r.get("type") == "settings":
+                    st["last_scope"] = r.get("scope")
                 if r.get("type") == "decision":
                     by_ann[r["annotator"]][r["item_id"]] = r["decision"]
                     ms = (r.get("process") or {}).get("active_ms", r.get("active_ms"))
                     if isinstance(ms, (int, float)):
                         proc[r["annotator"]].append(ms / 1000.0)
-    return by_ann, proc
+    return by_ann, proc, sittings
 
 
 def rate(decs):
@@ -54,7 +62,7 @@ def main():
     a = ap.parse_args()
     key = json.load(open(a.key, encoding="utf-8"))
     items = {it["id"]: it for it in key["items"]}
-    by_ann, secs = load_logs(a.logs, key["pack_id"])
+    by_ann, secs, sittings = load_logs(a.logs, key["pack_id"])
     report = dict(pack_id=key["pack_id"], counts=key["counts"], annotators={})
     for name, decs in sorted(by_ann.items()):
         kinds = defaultdict(list)
@@ -70,7 +78,7 @@ def main():
                 blocks[it["position"] // 100].append(d)
         ref = kinds.get("annotation", []) + kinds.get("proposal_covering_annotation", [])
         s = secs.get(name, [])
-        rep = dict(decisions=len(decs),
+        rep = dict(decisions=len(decs), sittings=sittings[name],
                    by_kind={k: rate(v) for k, v in sorted(kinds.items())},
                    reference_annotations_reaccepted=rate(ref),
                    seconds_per_decision=dict(median=round(statistics.median(s), 2) if s else None,
@@ -80,7 +88,10 @@ def main():
                    proposal_accept_rate_by_queue_block={f"{100 * k + 1}-{100 * k + 100}": rate(v)["accept_rate"]
                                                         for k, v in sorted(blocks.items())})
         report["annotators"][name] = rep
-        print(f"\n== {name}: {len(decs)} decisions")
+        sit = sittings[name]
+        print(f"\n== {name}: {len(decs)} decisions in {sit['sessions']} sittings "
+              f"({sit['goals_reached']} session goals reached; scope: "
+              f"{'top ' + str(sit['last_scope']) if sit['last_scope'] else 'whole queue'})")
         for k, v in rep["by_kind"].items():
             print(f"  {k:30s} {v['accepted']:4d} / {v['decided']:4d} accepted ({v['accept_rate']})")
         r = rep["reference_annotations_reaccepted"]

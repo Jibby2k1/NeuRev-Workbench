@@ -13,7 +13,14 @@ python3 label_server.py . --annotator YOURNAME
 
 On Windows, use `py label_server.py . --annotator YOURNAME`.
 
-Your browser opens on the first item you have not decided yet. Use the same name every time.
+Your browser opens and asks **how much you want to review**:
+
+- **This sitting:** a number of items (25, 50, 100, 200), a time (10, 20 or 30 min), or no limit. When you
+  reach it, choose **Keep going** or **Finish for now**.
+- **Out of the queue:** the items are ordered most relevant first. Choose to review only the top 100, 200 or
+  300, or all of them. You can widen this later.
+
+Then you start on the first item you have not decided yet. Use the same name every time.
 
 ## Decide each item
 
@@ -37,7 +44,7 @@ software found; a few are controls. Judge only what you see.
 | `Space` | Play / stop the clip |
 | `←` `→` | Step one frame |
 | `C` | Switch contrast: the same scale for every clip, or one scale for this clip |
-| `P` | Pause |
+| `P` | Pause, or change this sitting's goal |
 
 ## Stop and continue
 

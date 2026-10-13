@@ -6,7 +6,11 @@
 Opens http://127.0.0.1:PORT in the browser. Every decision is appended to
     <log-dir>/labels_<pack_id>_<annotator>.jsonl      (one JSON object per line, flushed + fsynced)
 so closing the browser, the terminal or the machine never loses a decision. Starting the server again with the
-same pack and annotator resumes at the first item without a decision. Items are in the pack's order (most
+same pack and annotator resumes at the first item without a decision.
+
+When the page opens the labeller picks a goal for the sitting (a number of items, a number of minutes, or no
+limit) and how much of the queue to review (the top N items, or all). --budget, --minutes and --scope preselect
+those choices. Reaching the goal offers to keep going or to finish; the scope can be widened later. Items are in the pack's order (most
 relevant first). The latest decision for an item wins
 (Back lets you change one). Session start / pause / resume / navigate / stop lines are logged too.
 
@@ -30,7 +34,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 DECISIONS = ("accept", "decline")
-EVENTS = ("session_start", "pause", "resume", "session_stop", "navigate")
+EVENTS = ("session_start", "pause", "resume", "session_stop", "navigate", "settings", "goal_reached")
 MAX_RECORD_BYTES = 64 * 1024
 
 
@@ -82,6 +86,7 @@ class Log:
     def __init__(self, path, pack_id, annotator):
         self.path, self.pack_id, self.annotator = Path(path), pack_id, annotator
         self.decisions = {}
+        self.scope = None            # latest "review the top N items" choice (None = whole queue)
         self.lock = threading.Lock()
         if self.path.exists():
             with open(self.path, encoding="utf-8") as f:
@@ -100,6 +105,8 @@ class Log:
                                          f"not {pack_id}: refusing to mix packs")
                     if r.get("type") == "decision":
                         self.decisions[r["item_id"]] = r["decision"]
+                    elif r.get("type") == "settings" and "scope" in r:
+                        self.scope = r["scope"]
         self.f = open(self.path, "a", encoding="utf-8")
 
     def write(self, rec):
@@ -111,17 +118,27 @@ class Log:
             os.fsync(self.f.fileno())
             if rec.get("type") == "decision":
                 self.decisions[rec["item_id"]] = rec["decision"]
+            elif rec.get("type") == "settings" and "scope" in rec:
+                self.scope = rec["scope"]
         return rec
 
 
+def scope_limit(pack, log):
+    s = log.scope
+    return pack.n if not isinstance(s, int) or s <= 0 else min(s, pack.n)
+
+
 def first_open(pack, log):
-    for k, i in enumerate(pack.ids):
+    """First undecided item within the chosen scope; the scope size when every item in it is decided."""
+    lim = scope_limit(pack, log)
+    for k, i in enumerate(pack.ids[:lim]):
         if i not in log.decisions:
             return k
-    return pack.n
+    return lim
 
 
-def make_handler(pack, log):
+def make_handler(pack, log, defaults=None):
+    defaults = dict(defaults or {})
     page = (HERE / "labeler.html").read_bytes()
 
     class H(BaseHTTPRequestHandler):
@@ -146,7 +163,7 @@ def make_handler(pack, log):
             if p == "/api/state":
                 return self._json(dict(manifest=pack.public_manifest(), annotator=log.annotator,
                                        decisions=log.decisions, next=first_open(pack, log),
-                                       log_file=str(log.path)))
+                                       scope=log.scope, defaults=defaults, log_file=str(log.path)))
             if p == "/api/context":
                 return self._send(200, pack.context(), "application/octet-stream")
             parts = p.strip("/").split("/")
@@ -175,7 +192,7 @@ def make_handler(pack, log):
                            display=r.get("display"), process=r.get("process"))
             elif t in EVENTS:
                 rec = dict(type=t, item_index=r.get("item_index"))
-                for f in ("to_index", "reason", "input", "client", "process"):
+                for f in ("to_index", "reason", "input", "client", "process", "goal", "scope", "session"):
                     if f in r:
                         rec[f] = r[f]
                 if t == "session_start":
@@ -184,7 +201,7 @@ def make_handler(pack, log):
             else:
                 return self._json(dict(error="unknown record type"), 400)
             log.write(rec)
-            return self._json(dict(ok=True, decided=len(log.decisions), next=first_open(pack, log)))
+            return self._json(dict(ok=True, decided=len(log.decisions), next=first_open(pack, log), scope=log.scope))
 
     return H
 
@@ -207,6 +224,9 @@ def main():
     ap.add_argument("--log-dir", default=None, help="default: the pack directory")
     ap.add_argument("--export", default=None, help="write decisions to this TSV and exit")
     ap.add_argument("--no-browser", action="store_true")
+    ap.add_argument("--budget", type=int, default=None, help="suggested session goal: this many decisions")
+    ap.add_argument("--minutes", type=float, default=None, help="suggested session goal: this many active minutes")
+    ap.add_argument("--scope", type=int, default=None, help="suggested scope: review only the top N items")
     a = ap.parse_args()
     name = "".join(ch for ch in a.annotator if ch.isalnum() or ch in "-_")
     if not name:
@@ -217,7 +237,8 @@ def main():
     log = Log(log_dir / f"labels_{pack.m['pack_id']}_{name}.jsonl", pack.m["pack_id"], name)
     if a.export:
         return export(pack, log, a.export)
-    srv = ThreadingHTTPServer(("127.0.0.1", a.port), make_handler(pack, log))
+    defaults = {k: v for k, v in (("budget", a.budget), ("minutes", a.minutes), ("scope", a.scope)) if v}
+    srv = ThreadingHTTPServer(("127.0.0.1", a.port), make_handler(pack, log, defaults))
     url = f"http://127.0.0.1:{a.port}/"
     print(f"pack {pack.m['pack_id']} ({pack.n} items), annotator {name}: {len(log.decisions)} decided, "
           f"resuming at item {first_open(pack, log) + 1}\nlog: {log.path}\nopen {url}  (Ctrl+C to stop)")
