@@ -33,8 +33,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-DECISIONS = ("accept", "decline")
-EVENTS = ("session_start", "pause", "resume", "session_stop", "navigate", "settings", "goal_reached")
+DECISIONS = ("accept", "decline", "unsure")
+EVENTS = ("session_start", "pause", "resume", "session_stop", "navigate", "settings", "goal_reached", "reviewer")
 MAX_RECORD_BYTES = 64 * 1024
 
 
@@ -87,6 +87,7 @@ class Log:
         self.path, self.pack_id, self.annotator = Path(path), pack_id, annotator
         self.decisions = {}
         self.scope = None            # latest "review the top N items" choice (None = whole queue)
+        self.notes = {}
         self.lock = threading.Lock()
         if self.path.exists():
             with open(self.path, encoding="utf-8") as f:
@@ -105,9 +106,16 @@ class Log:
                                          f"not {pack_id}: refusing to mix packs")
                     if r.get("type") == "decision":
                         self.decisions[r["item_id"]] = r["decision"]
+                        self._note(r)
                     elif r.get("type") == "settings" and "scope" in r:
                         self.scope = r["scope"]
         self.f = open(self.path, "a", encoding="utf-8")
+
+    def _note(self, r):
+        if r.get("note"):
+            self.notes[r["item_id"]] = r["note"]
+        else:
+            self.notes.pop(r["item_id"], None)
 
     def write(self, rec):
         rec = dict(rec, pack_id=self.pack_id, annotator=self.annotator,
@@ -118,6 +126,7 @@ class Log:
             os.fsync(self.f.fileno())
             if rec.get("type") == "decision":
                 self.decisions[rec["item_id"]] = rec["decision"]
+                self._note(rec)
             elif rec.get("type") == "settings" and "scope" in rec:
                 self.scope = rec["scope"]
         return rec
@@ -163,7 +172,8 @@ def make_handler(pack, log, defaults=None):
             if p == "/api/state":
                 return self._json(dict(manifest=pack.public_manifest(), annotator=log.annotator,
                                        decisions=log.decisions, next=first_open(pack, log),
-                                       scope=log.scope, defaults=defaults, log_file=str(log.path)))
+                                       notes=log.notes, scope=log.scope, defaults=defaults,
+                                       log_file=str(log.path)))
             if p == "/api/context":
                 return self._send(200, pack.context(), "application/octet-stream")
             parts = p.strip("/").split("/")
@@ -190,9 +200,12 @@ def make_handler(pack, log, defaults=None):
                 rec = dict(type="decision", item_id=r["item_id"], item_index=pack.index[r["item_id"]],
                            decision=r["decision"], active_ms=r.get("active_ms"),
                            display=r.get("display"), process=r.get("process"))
+                if isinstance(r.get("note"), str) and r["note"].strip():
+                    rec["note"] = r["note"].strip()[:500]
             elif t in EVENTS:
                 rec = dict(type=t, item_index=r.get("item_index"))
-                for f in ("to_index", "reason", "input", "client", "process", "goal", "scope", "session"):
+                for f in ("to_index", "reason", "input", "client", "process", "goal", "scope", "session", "name",
+                          "experience"):
                     if f in r:
                         rec[f] = r[f]
                 if t == "session_start":
@@ -208,11 +221,12 @@ def make_handler(pack, log, defaults=None):
 
 def export(pack, log, out):
     with open(out, "w", encoding="utf-8") as f:
-        f.write("item_id\tframe_ui\ty_px\tx_px\tdecision\tannotator\tpack_id\n")
+        f.write("item_id\tframe_ui\ty_px\tx_px\tdecision\tnote\tannotator\tpack_id\n")
         for it in pack.m["items"]:
             d = log.decisions.get(it["id"])
             if d:
-                f.write(f"{it['id']}\t{it['t']}\t{it['y']}\t{it['x']}\t{d}\t{log.annotator}\t{pack.m['pack_id']}\n")
+                note = log.notes.get(it["id"], "").replace("\t", " ").replace("\n", " ")
+                f.write(f"{it['id']}\t{it['t']}\t{it['y']}\t{it['x']}\t{d}\t{note}\t{log.annotator}\t{pack.m['pack_id']}\n")
     print(f"wrote {out}: {len(log.decisions)} of {pack.n} items decided")
 
 

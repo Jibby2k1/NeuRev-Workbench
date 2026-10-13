@@ -14,6 +14,7 @@
 </p>
 
 <p align="center">
+  <a href="https://www.raulv.dev/neurev/review/"><strong>Open NeuRev Review</strong></a> ·
   <a href="#label-a-pack">Label a pack</a> ·
   <a href="#build-a-pack">Build a pack</a> ·
   <a href="#walkthrough-spon-ca-burst">Spon Ca Burst walkthrough</a> ·
@@ -59,7 +60,7 @@ Three things set it apart from a plain viewer:
 | | Role | Does | Needs |
 |---|---|---|---|
 | 🧰 | **Pack builder** | Runs the detector on a recording, gives out the **pack**, keeps the **key**, and summarizes the logs. | This repository, Python ≥ 3.9 and three packages |
-| 👀 | **Labeller** | Opens the pack in a browser, decides each item, and sends back one log file. | Python ≥ 3.8, nothing else |
+| 👀 | **Labeller** | Opens the pack in a browser, decides each item, and sends back one results file. | A web browser (or Python ≥ 3.8 for the local server) |
 
 > [!IMPORTANT]
 > **The builder of a pack must not label it.** The key says which items are controls and which are hidden
@@ -69,13 +70,30 @@ Three things set it apart from a plain viewer:
 
 ## Label a pack
 
-You received a pack folder. Open a terminal **inside it** and run:
+There are two ways to review a pack. Both use the same screen and record the same things.
+
+**In a browser: nothing to install.**
+1. Open **[NeuRev Review](https://www.raulv.dev/neurev/review/)**.
+2. Enter your name and your experience with calcium imaging, then choose the pack `.zip` you were sent.
+3. Review. Answers are saved in your browser, so you can close the tab and come back later in the same browser.
+4. Press **Download results** and send the zip back.
+
+Nothing is uploaded: the pack is read on your own computer. The same page also works offline: open
+`labeler.html` from the pack folder directly.
+
+<details>
+<summary><strong>With the local server (Python)</strong></summary>
+
+Open a terminal **inside the pack folder** and run:
 
 ```bash
 python3 label_server.py . --annotator YOURNAME
 ```
 
 <sub>On Windows: <code>py label_server.py . --annotator YOURNAME</code>. Always use the same name.</sub>
+
+Answers go to `labels_<pack id>_YOURNAME.jsonl` in the pack folder; send that file back.
+</details>
 
 ### Choose how much to review
 
@@ -105,7 +123,8 @@ starting the server, for example `--budget 50`, `--minutes 20` or `--scope 200`.
 | **Centre vs annulus** | ΔF/F₀ inside the orange circle and in the ring between the dashed circles. The dashed line is the item's frame. | The centre rising well above the annulus, then decaying. |
 
 **Accept** when a cell at the centre lights up. **Decline** anything else: noise, flicker, movement, or a
-brightening of the whole area.
+brightening of the whole area. **Unsure** is a real answer too; add a short **note** (<kbd>N</kbd>) whenever
+something is worth saying.
 
 ### Keys
 
@@ -113,13 +132,13 @@ brightening of the whole area.
 |:---:|---|---|:---:|---|
 | <kbd>A</kbd> | Accept | | <kbd>Space</kbd> | Play or stop the clip |
 | <kbd>D</kbd> | Decline | | <kbd>←</kbd> <kbd>→</kbd> | Step one frame |
+| <kbd>U</kbd> | Unsure | | <kbd>N</kbd> | Type a note (<kbd>Esc</kbd> to leave the box) |
 | <kbd>B</kbd> | Back, to change an answer | | <kbd>C</kbd> | Contrast: pack-wide or this clip |
 | <kbd>P</kbd> | Pause, or change the goal | | | The ring sizes are sliders under the traces |
 
 > [!TIP]
-> **To stop,** close the window and press <kbd>Ctrl</kbd>+<kbd>C</kbd> in the terminal. Run the same command
-> again to carry on exactly where you left off. When you are done, send back
-> `labels_<pack id>_YOURNAME.jsonl` from the pack folder.
+> **To stop,** just close the tab (or, with the local server, press <kbd>Ctrl</kbd>+<kbd>C</kbd> in the
+> terminal). Opening it again carries on exactly where you left off.
 
 ---
 
@@ -188,13 +207,14 @@ Both files are in the lab's shared `NeuRev-Workbench` folder, under `Inputs/Spon
 python neurobench/tools/event_labeler/build_pack.py --preset spon \
     --tif "PATH/TO/Inputs/Spon Ca Burst/3 hindbrain to tail 488 20ms.tif" \
     --annotations "PATH/TO/Inputs/Spon Ca Burst/labels/labels_normalized.tsv" \
-    --out packs/spon
+    --out packs/spon --zip
 ```
 
-You get two folders:
+You get:
 
 ```text
-packs/spon/                     ← the pack (~70 MB): give this out
+packs/spon/                     ← the pack folder
+packs/spon.zip                  ← the same pack zipped (--zip): give this out
 packs/spon_KEY_DO_NOT_SHARE/    ← the key: keep it
 ```
 
@@ -209,16 +229,17 @@ The pack holds **699 items**:
 The other 47 reference annotations already have a proposal within 6 px inside their burst. The key records which
 proposal covers each one.
 
-**2 · Share.** Zip `packs/spon/` and send it, or put it in the shared folder. Never include the key.
+**2 · Share.** Send `packs/spon.zip` (or put it in the shared folder) together with the link
+<https://www.raulv.dev/neurev/review/>. Never include the key.
 
 **3 · Label.** Each labeller follows [Label a pack](#label-a-pack). The same guide ships inside the pack as
 `LABELLING.md`.
 
-**4 · Summarize.** Collect the `.jsonl` files and run:
+**4 · Summarize.** Collect the results zips (or `.jsonl` logs from the local server) and run:
 
 ```bash
 python neurobench/tools/event_labeler/summarize.py \
-    --key packs/spon_KEY_DO_NOT_SHARE/key.json  labels_*.jsonl
+    --key packs/spon_KEY_DO_NOT_SHARE/key.json  neurev_review_*.zip labels_*.jsonl
 ```
 
 ---
@@ -245,6 +266,7 @@ calibration is fitted on the next 200.
 | `--z-min Z` | 4.0 | Detector threshold for an event |
 | `--half H` · `--pre N` · `--post N` | 12 · 15 · 25 | Clip size 2H+1 px, frames before and after |
 | `--fps F` | 50 | Frame rate, used only for display |
+| `--zip` | off | Also write `<out>.zip`, ready to send |
 | `--first-ui N` | 1 | Frame number of the TIFF's first frame |
 | `--key-out DIR` | `<out>_KEY_DO_NOT_SHARE` | Where the key goes; never inside the pack |
 
@@ -266,12 +288,21 @@ centre is brightest.
 
 ## Read the results
 
+Each reviewer's **results zip** holds:
+
+| File | Content |
+|---|---|
+| `labels_<pack>_<name>.jsonl` | The complete log: every answer, note and review record (same format as the local server's log) |
+| `decisions.csv` | One row per decided item: position, frame, location, answer, note, seconds |
+| `summary.txt` | Counts, sittings and median time per decision, readable at a glance |
+| `reviewer.json` | Name and stated experience |
+
 `summarize.py` prints a block per labeller:
 
 ```text
 == NAME: <decisions> decisions in <n> sittings (<g> session goals reached; scope: top <N> | whole queue)
   annotation                     <accepted> / <decided> accepted (<rate>)
-  proposal                       ...
+  proposal                       <accepted> / <decided> accepted (<rate>), <n> unsure
   proposal_covering_annotation   ...
   random                         ...
   reference annotations re-accepted: <accepted> / <decided>

@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Event Labeler</title>
+<title>NeuRev Review</title>
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="NeuRev Review: decide whether short clips from a calcium-imaging recording show real events.">
 <style>
 :root {
   --bg: #f3f4f2; --panel: #ffffff; --ink: #1d2321; --muted: #5d6763; --line: #d6dbd8;
@@ -45,10 +47,24 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 button.big { font-size: 16px; font-weight: 650; padding: 12px 26px; min-width: 150px; }
 #accept { background: var(--accept); color: #fff; border-color: transparent; }
 #decline { background: var(--decline); color: #fff; border-color: transparent; }
+#unsure { min-width: 110px; }
+.prior.unsure { color: var(--ink); }
+#note { font: inherit; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; width: min(320px, 100%); }
+#download { border-color: var(--accent); color: var(--accent); }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field input[type=text] { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 9px 11px; }
+.filepick { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.filepick input[type=file] { font: inherit; color: var(--muted); max-width: 100%; }
+.resume-list { display: flex; flex-direction: column; gap: 8px; }
+.resume-list button { text-align: left; display: flex; justify-content: space-between; gap: 12px; }
+.resume-list small { color: var(--muted); }
+.err { color: var(--decline); margin: 0; }
+.privacy { font-size: 13px; color: var(--muted); margin: 0; }
 button[disabled] { opacity: .45; cursor: default; }
 .prior { font-size: 13px; padding: 3px 9px; border-radius: 12px; background: var(--chip); color: var(--muted); }
 .prior.accept { color: var(--accept); } .prior.decline { color: var(--decline); }
 .spacer { flex: 1; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .knobs { display: flex; flex-wrap: wrap; gap: 6px 16px; color: var(--muted); font-size: 12px; align-items: center; }
 .knobs label { display: flex; align-items: center; gap: 6px; }
 .knobs input[type=range] { width: 90px; }
@@ -66,8 +82,8 @@ kbd { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; border: 1px sol
 #overlay .row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
 .card.ov { max-width: 480px; text-align: left; }
 #resume { background: var(--accent); color: var(--panel); border-color: transparent; }
-#setup { position: fixed; inset: 0; background: color-mix(in srgb, var(--bg) 92%, transparent); display: none; align-items: center; justify-content: center; z-index: 6; padding: 16px; }
-#setup.on { display: flex; }
+#setup, #welcome { position: fixed; inset: 0; background: color-mix(in srgb, var(--bg) 92%, transparent); display: none; align-items: center; justify-content: center; z-index: 6; padding: 16px; }
+#setup.on, #welcome.on { display: flex; }
 .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; max-width: 620px; width: 100%; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 10px 30px rgb(0 0 0 / .12); }
 .card h2 { margin: 0; font-size: 20px; }
 .card .lead { margin: 0; color: var(--muted); }
@@ -80,7 +96,7 @@ legend { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; colo
 .chips input:checked + span { background: var(--accent); border-color: var(--accent); color: var(--panel); font-weight: 600; }
 .chips input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
 .card .actions { display: flex; justify-content: flex-end; gap: 10px; }
-#startBtn { background: var(--accent); color: var(--panel); border-color: transparent; }
+#startBtn, #welcomeBtn { background: var(--accent); color: var(--panel); border-color: transparent; }
 .sess { font-variant-numeric: tabular-nums; padding: 2px 10px; border-radius: 12px; background: var(--chip); color: var(--ink); font-size: 13px; }
 #toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 7px 14px; border-radius: 6px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
 #toast.on { opacity: .92; }
@@ -89,7 +105,7 @@ legend { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; colo
 </head>
 <body>
 <header>
-  <h1>Event Labeler</h1>
+  <h1>NeuRev Review</h1>
   <span class="meta" id="who"></span>
   <span class="meta" id="count"></span>
   <div class="bar" aria-hidden="true"><i id="bar"></i></div>
@@ -129,11 +145,15 @@ legend { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; colo
   <span class="prior" id="prior" hidden></span>
   <span class="spacer"></span>
   <button id="pause" title="Pause the session (P)">Pause session</button>
+  <button id="download" hidden title="Download your results as a zip">Download results</button>
+  <label class="sr-only" for="note">Note for this item</label>
+  <input id="note" type="text" maxlength="500" placeholder="Note (optional) — N to type, Esc to leave" autocomplete="off">
   <button id="decline" class="big" title="Decline (D)">Decline</button>
+  <button id="unsure" title="Unsure (U)">Unsure</button>
   <button id="accept" class="big" title="Accept (A)">Accept</button>
 </div>
 <div class="help">
-  <span><kbd>A</kbd> accept</span><span><kbd>D</kbd> decline</span><span><kbd>B</kbd> back</span>
+  <span><kbd>A</kbd> accept</span><span><kbd>D</kbd> decline</span><span><kbd>U</kbd> unsure</span><span><kbd>N</kbd> note</span><span><kbd>B</kbd> back</span>
   <span><kbd>Space</kbd> play / stop</span><span><kbd>←</kbd><kbd>→</kbd> step frames</span><span><kbd>P</kbd> pause or change goal</span><span><kbd>C</kbd> contrast</span>
   <span id="logpath"></span>
 </div>
@@ -171,6 +191,35 @@ legend { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; colo
     <div class="actions"><button type="submit" id="startBtn" class="big">Start</button></div>
   </form>
 </div>
+<div id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+  <form class="card" id="welcomeForm">
+    <h2 id="welcomeTitle">Welcome to NeuRev Review</h2>
+    <p class="lead">You will see short clips from a calcium-imaging recording and decide, for each one, whether a cell
+      at the centre lights up. Your answers stay in this browser until you download them.</p>
+    <div class="resume-list" id="resumeList" hidden></div>
+    <div class="field">
+      <label for="who_name"><strong>Your name</strong></label>
+      <input id="who_name" type="text" maxlength="60" autocomplete="name" required>
+    </div>
+    <fieldset>
+      <legend>Experience with calcium imaging</legend>
+      <div class="chips">
+        <label><input type="radio" name="exp" value="none"><span>New to it</span></label>
+        <label><input type="radio" name="exp" value="some" checked><span>Some</span></label>
+        <label><input type="radio" name="exp" value="expert"><span>Expert</span></label>
+      </div>
+    </fieldset>
+    <div class="field">
+      <label for="packZip"><strong>The pack you were sent</strong> (a .zip file)</label>
+      <div class="filepick"><input id="packZip" type="file" accept=".zip,application/zip"></div>
+      <label for="packDir" class="privacy">…or an unzipped pack folder: <input id="packDir" type="file" webkitdirectory></label>
+    </div>
+    <p class="err" id="welcomeErr" hidden></p>
+    <p class="privacy">Nothing is uploaded: the pack is read on this computer, and your answers are saved in this
+      browser. When you are done, use <em>Download results</em> and send the zip back.</p>
+    <div class="actions"><button type="submit" id="welcomeBtn" class="big">Open pack</button></div>
+  </form>
+</div>
 <div id="toast" role="status"></div>
 
 <script>
@@ -178,23 +227,231 @@ legend { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; colo
 const $ = id => document.getElementById(id);
 let M, S, F, N, items, decisions = {}, k = 0, frame = 0, playing = true, paused = false, done = false;
 let raw = null, ls = null, cache = new Map(), activeMs = 0, lastTick = performance.now(), sessionMs = 0;
-let goal = { kind: "items", value: 50 }, scope = null, sitCount = 0, sitStartMs = 0, mode = "setup";
+let goal = { kind: "items", value: 50 }, scope = null, sitCount = 0, sitStartMs = 0, mode = "setup", notes = {};
 const store = { get(key, d) { try { const v = localStorage.getItem("evlab:" + key); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(key, v) { try { localStorage.setItem("evlab:" + key, JSON.stringify(v)); } catch (e) {} } };
 
 function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove("on"), 1400); }
-async function post(rec) {
-  const r = await fetch("/api/log", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(rec) });
-  if (!r.ok) throw new Error("the server did not save this (" + r.status + ")");
-  return r.json();
-}
+// ---------------------------------------------------------------- backends
+// Server mode: label_server.py answers /api/*. Browser-only mode (a website or a file opened directly): the pack
+// is read from a zip or folder the reviewer picks, and the log is kept in IndexedDB until they download it.
+let backend = null;
+async function post(rec) { return backend.log(rec); }
 async function fetchClip(i) {
   if (cache.has(i)) return cache.get(i);
-  const p = Promise.all([fetch("/api/raw/" + i).then(r => r.arrayBuffer()), fetch("/api/ls/" + i).then(r => r.arrayBuffer())])
-    .then(([a, b]) => ({ raw: new Uint16Array(a), ls: new Int16Array(b) }));
+  const p = backend.clip(i);
   cache.set(i, p);
   if (cache.size > 8) cache.delete(cache.keys().next().value);
   return p;
+}
+
+const serverBackend = {
+  mode: "server",
+  async log(rec) {
+    const r = await fetch("/api/log", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(rec) });
+    if (!r.ok) throw new Error("the server did not save this (" + r.status + ")");
+    return r.json();
+  },
+  clip(i) {
+    return Promise.all([fetch("/api/raw/" + i).then(r => r.arrayBuffer()), fetch("/api/ls/" + i).then(r => r.arrayBuffer())])
+      .then(([a, b]) => ({ raw: new Uint16Array(a), ls: new Int16Array(b) }));
+  },
+  async context() { return new Uint8Array(await (await fetch("/api/context")).arrayBuffer()); },
+  beacon(rec) { navigator.sendBeacon && navigator.sendBeacon("/api/log", new Blob([JSON.stringify(rec)], { type: "application/json" })); }
+};
+
+// ---- IndexedDB (packs and logs live only in this browser)
+const IDB = {
+  db: null,
+  open() {
+    if (this.db) return Promise.resolve(this.db);
+    return new Promise((res, rej) => {
+      const rq = indexedDB.open("neurev-review", 1);
+      rq.onupgradeneeded = () => {
+        const d = rq.result;
+        d.createObjectStore("packs", { keyPath: "pack_id" });
+        d.createObjectStore("records", { autoIncrement: true }).createIndex("log", "log");
+        d.createObjectStore("sessions", { keyPath: "log" });
+      };
+      rq.onsuccess = () => { this.db = rq.result; res(this.db); };
+      rq.onerror = () => rej(rq.error);
+    });
+  },
+  async tx(store, mode, fn) {
+    const d = await this.open();
+    return new Promise((res, rej) => {
+      const t = d.transaction(store, mode), st = t.objectStore(store);
+      let out; const r = fn(st);
+      if (r) r.onsuccess = () => { out = r.result; };
+      t.oncomplete = () => res(out); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error);
+    });
+  },
+  put(store, v) { return this.tx(store, "readwrite", st => st.put(v)); },
+  get(store, key) { return this.tx(store, "readonly", st => st.get(key)); },
+  all(store) { return this.tx(store, "readonly", st => st.getAll()); },
+  records(log) { return this.tx("records", "readonly", st => st.index("log").getAll(log)); }
+};
+
+// ---- zip reading (stored and deflate entries; DecompressionStream) and writing (stored, CRC-32)
+async function readZip(file) {
+  const buf = new Uint8Array(await file.arrayBuffer()), dv = new DataView(buf.buffer);
+  let eocd = -1;
+  for (let i = buf.length - 22; i >= Math.max(0, buf.length - 65557); i--) if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  if (eocd < 0) throw new Error("this file is not a zip");
+  const n = dv.getUint16(eocd + 10, true);
+  let off = dv.getUint32(eocd + 16, true);
+  if (off === 0xffffffff) throw new Error("zip64 packs are not supported; zip the pack folder without zip64");
+  const out = {};
+  for (let e = 0; e < n; e++) {
+    if (dv.getUint32(off, true) !== 0x02014b50) throw new Error("damaged zip directory");
+    const method = dv.getUint16(off + 10, true), csize = dv.getUint32(off + 20, true);
+    const nlen = dv.getUint16(off + 28, true), xlen = dv.getUint16(off + 30, true), clen = dv.getUint16(off + 32, true);
+    const loc = dv.getUint32(off + 42, true);
+    const name = new TextDecoder().decode(buf.subarray(off + 46, off + 46 + nlen));
+    off += 46 + nlen + xlen + clen;
+    const base = name.split("/").pop();
+    if (!base || name.endsWith("/")) continue;
+    const start = loc + 30 + dv.getUint16(loc + 26, true) + dv.getUint16(loc + 28, true);
+    const data = buf.subarray(start, start + csize);
+    out[base] = { method, data };
+  }
+  return {
+    async bytes(base) {
+      const f = out[base];
+      if (!f) return null;
+      if (f.method === 0) return f.data.slice();
+      if (f.method !== 8) throw new Error("unsupported zip compression in " + base);
+      const ds = new Blob([f.data]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+      return new Uint8Array(await new Response(ds).arrayBuffer());
+    }
+  };
+}
+function readFolder(fileList) {
+  const byName = {};
+  for (const f of fileList) byName[f.name] = f;
+  return { async bytes(base) { const f = byName[base]; return f ? new Uint8Array(await f.arrayBuffer()) : null; } };
+}
+const CRC_TABLE = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(b) { let c = 0xffffffff; for (let i = 0; i < b.length; i++) c = CRC_TABLE[(c ^ b[i]) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; }
+function makeZip(files) {               // [{name, text}] -> Blob (stored entries)
+  const enc = new TextEncoder(), parts = [], central = [];
+  const now = new Date();
+  const dosTime = (now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1);
+  const dosDate = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate();
+  let off = 0;
+  for (const f of files) {
+    const name = enc.encode(f.name), data = enc.encode(f.text), crc = crc32(data);
+    const h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true);
+    h.setUint16(10, dosTime, true); h.setUint16(12, dosDate, true);
+    h.setUint32(14, crc, true); h.setUint32(18, data.length, true); h.setUint32(22, data.length, true); h.setUint16(26, name.length, true);
+    parts.push(h, name, data);
+    const c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true);
+    c.setUint16(12, dosTime, true); c.setUint16(14, dosDate, true);
+    c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true);
+    c.setUint16(28, name.length, true); c.setUint32(42, off, true);
+    central.push(c, name);
+    off += 30 + name.length + data.length;
+  }
+  const csize = central.reduce((s, x) => s + x.byteLength, 0);
+  const e = new DataView(new ArrayBuffer(22));
+  e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true);
+  e.setUint32(12, csize, true); e.setUint32(16, off, true);
+  return new Blob([...parts, ...central, e], { type: "application/zip" });
+}
+
+async function loadPack(src) {
+  const mtxt = await src.bytes("manifest.json");
+  if (!mtxt) throw new Error("no manifest.json in this pack: pick the pack zip or folder you were sent");
+  const man = JSON.parse(new TextDecoder().decode(mtxt));
+  if (![1, 2].includes(man.pack_format)) throw new Error("this pack was made by a newer version of the tool");
+  const want = man.items.length * man.clip.frames * man.clip.size * man.clip.size * 2;
+  const rawB = await src.bytes(man.files.raw), lsB = await src.bytes(man.files.ls), ctxB = await src.bytes(man.files.context);
+  if (!rawB || !lsB || !ctxB) throw new Error("the pack is missing clip files");
+  if (rawB.length !== want || lsB.length !== want) throw new Error("the pack's clip files are incomplete");
+  return { pack_id: man.pack_id, manifest: man, raw: new Blob([rawB]), ls: new Blob([lsB]), context: new Blob([ctxB]), saved: Date.now() };
+}
+
+function localBackend(pack, annotator, records, profile) {
+  const logKey = pack.pack_id + "|" + annotator;
+  const S2 = pack.manifest.clip.size, itemBytes = pack.manifest.clip.frames * S2 * S2 * 2;
+  let rawBuf = null, lsBuf = null;
+  const bufs = Promise.all([pack.raw.arrayBuffer(), pack.ls.arrayBuffer()]).then(([a, b]) => { rawBuf = a; lsBuf = b; });
+  const ids = new Set(pack.manifest.items.map(it => it.id));
+  return {
+    mode: "local", logKey, records, profile, pack,
+    async log(rec) {
+      if (rec.type === "decision" && (!ids.has(rec.item_id) || !["accept", "decline", "unsure"].includes(rec.decision))) throw new Error("unknown item or decision");
+      const full = Object.assign({}, rec, { pack_id: pack.pack_id, annotator, ts: new Date().toISOString(), unix: Date.now() / 1000 });
+      if (full.type === "decision") full.item_index = pack.manifest.items.findIndex(it => it.id === full.item_id);
+      records.push(full);
+      try { await IDB.put("records", { log: logKey, rec: full }); }
+      catch (e) { toast("Saved for this visit only: this browser blocks storage"); }
+      IDB.put("sessions", { log: logKey, pack_id: pack.pack_id, annotator, profile, source: pack.manifest.source.file,
+                           n: pack.manifest.items.length, decided: Object.keys(decisions).length + (full.type === "decision" ? 1 : 0),
+                           updated: Date.now() }).catch(() => {});
+      return { ok: true };
+    },
+    async clip(i) {
+      await bufs;
+      return { raw: new Uint16Array(rawBuf.slice(i * itemBytes, (i + 1) * itemBytes)),
+               ls: new Int16Array(lsBuf.slice(i * itemBytes, (i + 1) * itemBytes)) };
+    },
+    async context() { return new Uint8Array(await pack.context.arrayBuffer()); },
+    beacon(rec) { this.log(rec).catch(() => {}); }
+  };
+}
+
+function resultsZip() {
+  const b = backend, recs = b.records, man = b.pack.manifest;
+  const latest = {}, notesBy = {};
+  for (const r of recs) if (r.type === "decision") { latest[r.item_id] = r; }
+  const esc = v => { const t = v == null ? "" : String(v); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; };
+  const rows = ["queue_position,item_id,frame_ui,y_px,x_px,decision,note,active_s,decided_at"];
+  let acc = 0, dec = 0, uns = 0, act = [];
+  man.items.forEach((it, i) => {
+    const r = latest[it.id]; if (!r) return;
+    if (r.decision === "accept") acc++; else if (r.decision === "decline") dec++; else uns++;
+    const s = r.process && r.process.active_ms != null ? r.process.active_ms / 1000 : null;
+    if (s != null) act.push(s);
+    rows.push([i + 1, it.id, it.t, it.y, it.x, r.decision, r.note || "", s == null ? "" : s.toFixed(2), r.ts].map(esc).join(","));
+  });
+  act.sort((a, c) => a - c);
+  const med = act.length ? act[Math.floor(act.length / 2)] : null;
+  const sittings = recs.filter(r => r.type === "session_start").length;
+  const summary = [
+    "NeuRev Review results", "=====================", "",
+    "Reviewer:     " + b.profile.name + " (experience: " + b.profile.experience + ")",
+    "Pack:         " + man.pack_id + " (" + man.source.file + ", " + man.items.length + " items)",
+    "Exported:     " + new Date().toString(), "",
+    "Decided:      " + (acc + dec + uns) + " of " + man.items.length,
+    "  accept      " + acc, "  decline     " + dec, "  unsure      " + uns,
+    "Notes:        " + Object.values(latest).filter(r => r.note).length,
+    "Sittings:     " + sittings,
+    "Median time per decision: " + (med == null ? "n/a" : med.toFixed(1) + " s"), "",
+    "Files: labels_<pack>_<name>.jsonl is the complete log (every answer and how it was made);",
+    "decisions.csv is one row per item (latest answer); reviewer.json is the profile you entered.", ""
+  ].join("\n");
+  const name = "labels_" + man.pack_id + "_" + b.logKey.split("|")[1] + ".jsonl";
+  return makeZip([
+    { name, text: recs.map(r => JSON.stringify(r)).join("\n") + "\n" },
+    { name: "decisions.csv", text: rows.join("\n") + "\n" },
+    { name: "summary.txt", text: summary },
+    { name: "reviewer.json", text: JSON.stringify(Object.assign({ pack_id: man.pack_id }, b.profile), null, 1) + "\n" },
+    { name: "README.txt", text: "Send this zip back to the person who gave you the pack. Thank you!\n" }
+  ]);
+}
+function downloadResults() {
+  if (!backend || backend.mode !== "local") return;
+  const url = URL.createObjectURL(resultsZip());
+  const a = document.createElement("a");
+  const day = new Date().toISOString().slice(0, 10);
+  a.href = url; a.download = "neurev_review_" + backend.pack.pack_id + "_" + backend.logKey.split("|")[1] + "_" + day + ".zip";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+  post({ type: "results_downloaded", item_index: k }).catch(() => {});
+  toast("Results downloaded");
 }
 
 // ---------------------------------------------------------------- drawing
@@ -359,6 +616,7 @@ async function show(i) {
   playing = true; setPlayLabel();                // every item starts playing
   computeTraces(); drawFrame(); drawContext();
   const d = decisions[items[k].id];
+  $("note").value = notes[items[k].id] || "";
   const pr = $("prior"); pr.hidden = !d; pr.className = "prior " + (d || ""); pr.textContent = d ? "earlier: " + d : "";
   $("back").disabled = k === 0;
   updateHeader();
@@ -404,17 +662,24 @@ function updateHeader() {
 function scopeDone() {
   const L = limit();
   if (L >= N) return openOverlay("alldone", "All items decided",
-    "Thank you. Every decision is saved in " + logPath + ". Use Back to look at any item again.", "Look back through items", null);
+    backend.mode === "local" ? "Thank you! Download your results and send the zip back." :
+    "Thank you. Every decision is saved in " + logPath + ". Use Back to look at any item again.", "Look back through items",
+    backend.mode === "local" ? "Download results" : null);
   const more = Math.min(100, N - L);
   openOverlay("scope", "Top " + L + " items done",
     "Every decision is saved. You can widen the review to the next " + more + " items, or finish for now.",
     "Review the next " + more, "Finish for now");
 }
 function finishForNow() {
-  const nx = nextOpen(0);
+  const nx = nextOpen(0), at = nx < limit() ? " at item " + (nx + 1) : "";
+  if (backend.mode === "local") {
+    openOverlay("finished", "Saved in this browser",
+      "Download your results and send the zip back. To continue later, open this page again in the same browser" + at + ".",
+      "Keep going instead", "Download results");
+    return;
+  }
   openOverlay("finished", "All saved. See you next time",
-    "Close this window and press Ctrl+C in the terminal. Run the same command again to continue" +
-    (nx < limit() ? " at item " + (nx + 1) + "." : "."), "Keep going instead", null);
+    "Close this window and press Ctrl+C in the terminal. Run the same command again to continue" + at + ".", "Keep going instead", null);
 }
 function goalDone() {
   const t = goal.kind === "minutes" ? goal.value + " minutes" : goal.value + " items";
@@ -430,12 +695,14 @@ async function decide(dec, input) {
   busy = true;
   const it = items[k];
   try {
+    const note = $("note").value.trim();
     const r = await post({ type: "decision", item_id: it.id, decision: dec, active_ms: Math.round(activeMs),
                            display: Object.assign(radii(), { contrast: $("contrast").value, speed: +$("speed").value }),
-                           process: procOut(input || "mouse") });
+                           process: procOut(input || "mouse"), ...(note ? { note } : {}) });
     decisions[it.id] = dec;
+    if (note) notes[it.id] = note; else delete notes[it.id];
     sitCount++;
-    toast(dec === "accept" ? "Accepted" : "Declined");
+    toast(dec === "accept" ? "Accepted" : dec === "decline" ? "Declined" : "Marked unsure");
     if (goalReached()) goalDone();
     else await show(nextOpen(k + 1));
   } catch (e) { toast("Not saved: " + e.message); }
@@ -475,14 +742,17 @@ function mmss(ms) { const s = Math.floor(ms / 1000); return Math.floor(s / 60) +
 
 document.addEventListener("visibilitychange", () => { lastTick = performance.now(); });
 document.addEventListener("keydown", e => {
+  if (e.target.id === "note") { if (e.key === "Escape" || e.key === "Enter") { e.preventDefault(); e.target.blur(); } return; }
   if ((e.target.tagName === "INPUT" || e.target.tagName === "SELECT") && e.key !== " ") return;
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   const key = e.key.toLowerCase();
-  if (mode === "setup") return;                      // the form handles Enter
+  if (mode === "setup" || mode === "welcome") return;  // the form handles Enter
   if (paused) { if (key === "p" || key === "enter") { e.preventDefault(); setPaused(false); } return; }
   if (done) { if (key === "enter") { e.preventDefault(); $("resume").click(); } return; }
   if (key === "a") { e.preventDefault(); decide("accept", "key"); return; }
   else if (key === "d") { e.preventDefault(); decide("decline", "key"); return; }
+  else if (key === "u") { e.preventDefault(); decide("unsure", "key"); return; }
+  else if (key === "n") { e.preventDefault(); touch(); $("note").focus(); return; }
   touch();
   if (key === "b") { e.preventDefault(); goBack("key"); }
   else if (key === "p") { e.preventDefault(); setPaused(true); }
@@ -518,6 +788,7 @@ $("ovAlt").onclick = () => {
     return openSetup();
   }
   if (mode === "goal" || mode === "scope") return finishForNow();
+  if (mode === "finished" || mode === "alldone") return downloadResults();
 };
 function setScope(v) {
   scope = v >= N ? null : v;
@@ -558,7 +829,9 @@ $("setupForm").onsubmit = async e => {
   await show(nextOpen(0));
   $("accept").focus();
 };
-window.addEventListener("beforeunload", () => { navigator.sendBeacon && navigator.sendBeacon("/api/log", new Blob([JSON.stringify({ type: "pause", item_index: k })], { type: "application/json" })); });
+$("unsure").onclick = e => decide("unsure", e.detail === 0 ? "key" : "mouse");
+$("download").onclick = downloadResults;
+window.addEventListener("beforeunload", () => { if (backend && mode !== "welcome") backend.beacon({ type: "pause", item_index: k }); });
 
 let logPath = "";
 function ensureGoalChip() {          // a goal from --budget / --minutes that is not one of the chips gets its own chip
@@ -566,21 +839,87 @@ function ensureGoalChip() {          // a goal from --budget / --minutes that is
   const unit = goal.kind === "items" ? " items" : " min";
   $("goalChips").insertAdjacentHTML("afterbegin", `<label><input type="radio" name="goal" value="${goal.kind}:${goal.value}"><span>${goal.value}${unit}</span></label>`);
 }
-(async function boot() {
-  const st = await (await fetch("/api/state")).json();
-  M = st.manifest; S = M.clip.size; F = M.clip.frames; items = M.items; N = items.length; decisions = st.decisions; logPath = st.log_file;
+async function begin(st) {
+  M = st.manifest; S = M.clip.size; F = M.clip.frames; items = M.items; N = items.length; decisions = st.decisions;
+  notes = st.notes || {}; logPath = st.log_file;
   $("who").textContent = st.annotator + " · " + (M.source.file || M.lane || "") + " · pack " + M.pack_id;
   $("lsr").textContent = M.display.ls_range;
-  $("logpath").textContent = "saving to " + st.log_file;
-  ctxBytes = new Uint8Array(await (await fetch("/api/context")).arrayBuffer());
+  $("logpath").textContent = backend.mode === "local" ? "saved in this browser · use Download results to send them" : "saving to " + st.log_file;
+  $("download").hidden = backend.mode !== "local";
+  ctxBytes = await backend.context();
   setupCanvases(); initKnobs();
   const d = st.defaults || {};
   scope = (typeof st.scope === "number" && st.scope > 0) ? st.scope : (d.scope || null);
   goal = d.budget ? { kind: "items", value: d.budget } : d.minutes ? { kind: "minutes", value: d.minutes } : store.get("goal", goal);
   ensureGoalChip();
   openSetup();
+}
+function stateFromRecords(man, annotator, recs) {
+  const decisions = {}, notes = {}; let scope = null;
+  for (const r of recs) {
+    if (r.type === "decision") { decisions[r.item_id] = r.decision; if (r.note) notes[r.item_id] = r.note; else delete notes[r.item_id]; }
+    else if (r.type === "settings" && "scope" in r) scope = r.scope;
+  }
+  return { manifest: man, annotator, decisions, notes, scope, defaults: {}, log_file: "this browser" };
+}
+async function startLocal(pack, name, profile) {
+  const annotator = name.replace(/[^A-Za-z0-9_-]+/g, "_").replace(/^_+|_+$/g, "") || "reviewer";
+  let recs = [];
+  try { recs = (await IDB.records(pack.pack_id + "|" + annotator)).map(x => x.rec); } catch (e) {}
+  backend = localBackend(pack, annotator, recs, profile);
+  if (!recs.some(r => r.type === "reviewer")) await post({ type: "reviewer", name, experience: profile.experience });
+  $("welcome").classList.remove("on");
+  await begin(stateFromRecords(pack.manifest, annotator, recs));
+}
+async function openWelcome() {
+  mode = "welcome"; done = true;
+  $("welcome").classList.add("on");
+  let sessions = [];
+  try { sessions = (await IDB.all("sessions")).sort((a, b) => b.updated - a.updated); } catch (e) {}
+  const list = $("resumeList");
+  if (sessions.length) {
+    list.hidden = false;
+    list.innerHTML = "<strong>Continue where you left off</strong>";
+    for (const s of sessions.slice(0, 5)) {
+      const b = document.createElement("button"); b.type = "button";
+      const left = document.createElement("span"); left.textContent = s.profile.name + " · " + s.source;
+      const right = document.createElement("small"); right.textContent = s.decided + " / " + s.n + " decided";
+      b.append(left, right);
+      b.onclick = async () => {
+        const pack = await IDB.get("packs", s.pack_id);
+        if (!pack) return showErr("That pack is no longer stored in this browser; open the pack file again.");
+        startLocal(pack, s.profile.name, s.profile).catch(err => showErr(err.message));
+      };
+      list.appendChild(b);
+    }
+  }
+  $("who_name").value = store.get("name", "");
+}
+function showErr(m) { const e = $("welcomeErr"); e.textContent = m; e.hidden = !m; }
+$("welcomeForm").onsubmit = async e => {
+  e.preventDefault(); showErr("");
+  const name = $("who_name").value.trim();
+  if (!name) return showErr("Please enter your name.");
+  const zip = $("packZip").files[0], dir = $("packDir").files;
+  if (!zip && !(dir && dir.length)) return showErr("Choose the pack zip you were sent.");
+  $("welcomeBtn").disabled = true; $("welcomeBtn").textContent = "Opening…";
+  try {
+    const pack = await loadPack(zip ? await readZip(zip) : readFolder(dir));
+    try { await IDB.put("packs", pack); } catch (err) { toast("This browser will not keep the pack; you will need to open it again next time"); }
+    store.set("name", name);
+    await startLocal(pack, name, { name, experience: (document.querySelector("input[name=exp]:checked") || {}).value || "some" });
+  } catch (err) { showErr(err.message); }
+  $("welcomeBtn").disabled = false; $("welcomeBtn").textContent = "Open pack";
+};
+(async function boot() {
   requestAnimationFrame(tick);
-})().catch(e => { document.body.insertAdjacentHTML("afterbegin", "<p style='color:var(--decline)'>Could not start: " + e.message + ". Is the labeler server still running?</p>"); });
+  let st = null;
+  if (location.protocol.startsWith("http")) {
+    try { const r = await fetch("/api/state"); if (r.ok && (r.headers.get("content-type") || "").includes("json")) st = await r.json(); } catch (e) {}
+  }
+  if (st && st.manifest) { backend = serverBackend; return begin(st); }
+  return openWelcome();
+})().catch(e => { document.body.insertAdjacentHTML("afterbegin", "<p style='color:var(--decline)'>Could not start: " + e.message + "</p>"); });
 </script>
 </body>
 </html>

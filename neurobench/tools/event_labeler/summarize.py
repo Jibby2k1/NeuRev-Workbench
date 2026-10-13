@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Summarize labelling sessions against a pack's key (Python 3 standard library only).
 
-    python summarize.py --key PACK_KEY_DO_NOT_SHARE/key.json labels_<pack>_<name>.jsonl [more logs ...] [--json out.json]
+    python summarize.py --key PACK_KEY_DO_NOT_SHARE/key.json RESULTS [more ...] [--json out.json]
+
+RESULTS are label_server.py logs (labels_<pack>_<name>.jsonl) or the results zips reviewers download from the
+browser version (neurev_review_<pack>_<name>_<date>.zip); both can be mixed.
 
 Per annotator (latest decision per item counts):
   * decisions, accept rate per item kind: proposal, random (control patches), annotation (hidden reference
@@ -12,7 +15,9 @@ Per annotator (latest decision per item counts):
 Run it only where the key lives (not on a labeller's machine).
 """
 import argparse
+import io
 import json
+import zipfile
 import statistics
 from collections import defaultdict
 
@@ -21,9 +26,19 @@ def load_logs(paths, pack_id):
     by_ann = defaultdict(dict)
     proc = defaultdict(list)
     sittings = defaultdict(lambda: dict(sessions=0, goals_reached=0, last_scope=None))
+    def lines(p):
+        if str(p).endswith(".zip"):
+            with zipfile.ZipFile(p) as z:
+                for n in z.namelist():
+                    if n.endswith(".jsonl"):
+                        yield from io.TextIOWrapper(z.open(n), encoding="utf-8")
+        else:
+            with open(p, encoding="utf-8") as f:
+                yield from f
+
     for p in paths:
-        with open(p, encoding="utf-8") as f:
-            for line in f:
+        if True:
+            for line in lines(p):
                 line = line.strip()
                 if not line:
                     continue
@@ -34,6 +49,12 @@ def load_logs(paths, pack_id):
                 if r.get("pack_id") != pack_id:
                     raise SystemExit(f"{p} belongs to pack {r.get('pack_id')}, the key is for {pack_id}")
                 st = sittings[r.get("annotator")]
+                if r.get("type") == "reviewer":
+                    st["experience"] = r.get("experience")
+                if r.get("type") == "decision" and r.get("note"):
+                    st.setdefault("notes", {})[r["item_id"]] = r["note"]
+                elif r.get("type") == "decision":
+                    st.setdefault("notes", {}).pop(r["item_id"], None)
                 if r.get("type") == "session_start":
                     st["sessions"] += 1
                 elif r.get("type") == "goal_reached":
@@ -51,7 +72,8 @@ def load_logs(paths, pack_id):
 def rate(decs):
     n = len(decs)
     acc = sum(d == "accept" for d in decs)
-    return dict(decided=n, accepted=acc, accept_rate=round(acc / n, 3) if n else None)
+    uns = sum(d == "unsure" for d in decs)
+    return dict(decided=n, accepted=acc, unsure=uns, accept_rate=round(acc / n, 3) if n else None)
 
 
 def main():
@@ -91,9 +113,10 @@ def main():
         sit = sittings[name]
         print(f"\n== {name}: {len(decs)} decisions in {sit['sessions']} sittings "
               f"({sit['goals_reached']} session goals reached; scope: "
-              f"{'top ' + str(sit['last_scope']) if sit['last_scope'] else 'whole queue'})")
+              f"{'top ' + str(sit['last_scope']) if sit['last_scope'] else 'whole queue'}; "
+              f"experience: {sit.get('experience') or 'not given'}; notes: {len(sit.get('notes', {}))})")
         for k, v in rep["by_kind"].items():
-            print(f"  {k:30s} {v['accepted']:4d} / {v['decided']:4d} accepted ({v['accept_rate']})")
+            print(f"  {k:30s} {v['accepted']:4d} / {v['decided']:4d} accepted ({v['accept_rate']}), {v['unsure']} unsure")
         r = rep["reference_annotations_reaccepted"]
         print(f"  reference annotations re-accepted: {r['accepted']} / {r['decided']}")
         sp = rep["seconds_per_decision"]

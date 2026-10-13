@@ -1,9 +1,14 @@
 # Labelling guide
 
-You have received a **pack folder**. It contains everything you need. Install only Python 3.8 or newer
-(python.org); no other packages are needed.
+You have received a **pack**. The easiest way to review it needs nothing installed:
 
-## Start
+1. Open <https://www.raulv.dev/neurev/review/> (or open `labeler.html` from the pack folder).
+2. Enter your name, then choose the pack `.zip`.
+3. When you are done, press **Download results** and send the zip back.
+
+Nothing is uploaded: the pack is read on your computer and your answers stay in your browser.
+
+## Start with the local server instead (Python 3.8+)
 
 Open a terminal in the pack folder and run:
 
@@ -35,11 +40,14 @@ software found; a few are controls. Judge only what you see.
 
 **Accept** when a cell at the centre lights up: the centre brightens, more than the ring around it, and then fades.
 **Decline** anything else: noise, flicker, movement, or a brightening of the whole area.
+**Unsure** when you cannot tell; add a short note (`N`) whenever something is worth saying.
 
 | Key | Action |
 |---|---|
 | `A` | Accept |
 | `D` | Decline |
+| `U` | Unsure |
+| `N` | Type a note for this item (`Esc` leaves the box) |
 | `B` | Back, to change an earlier answer (the latest answer counts) |
 | `Space` | Play / stop the clip |
 | `←` `→` | Step one frame |
@@ -53,8 +61,8 @@ Run the same command again to continue where you stopped.
 
 ## Send back
 
-When you are done, or at the end of each session, send the file `labels_<pack id>_YOURNAME.jsonl` from the pack
-folder to whoever gave you the pack. It holds your answers and a record of how you reviewed each item (timings,
+In the browser, press **Download results** and send that zip. With the local server, send the file
+`labels_<pack id>_YOURNAME.jsonl` from the pack folder to whoever gave you the pack. It holds your answers and a record of how you reviewed each item (timings,
 frames viewed). It contains nothing else from your computer apart from the browser name and screen size.
 
 Two people on one computer: give each a different port, e.g. `--port 8766`.

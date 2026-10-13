@@ -151,6 +151,7 @@ def main(argv=None):
     ap.add_argument("--dedupe-px", type=float, default=10.0)
     ap.add_argument("--dedupe-frames", type=int, default=10)
     ap.add_argument("--seed", type=int, default=20261012)
+    ap.add_argument("--zip", action="store_true", help="also write <out>.zip, ready to send to reviewers")
     a = ap.parse_args(argv)
 
     pre = PRESETS.get(a.preset, {})
@@ -393,6 +394,14 @@ def main(argv=None):
                       for n, it in enumerate(items)])
     (key_dir / "key.json").write_text(json.dumps(key, indent=1))
     log(f"pack {manifest['pack_id']}: {N} items -> {out}")
+    if a.zip:
+        import zipfile
+        zpath = out.parent / (out.name + ".zip")
+        with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
+            for f in sorted(out.iterdir()):
+                if f.is_file() and not f.name.startswith("labels_"):
+                    z.write(f, f.name)
+        log(f"zip -> {zpath} ({zpath.stat().st_size / 1e6:.1f} MB): send this to reviewers")
     log(f"key -> {key_dir}  (keep it away from labellers)")
 
 
