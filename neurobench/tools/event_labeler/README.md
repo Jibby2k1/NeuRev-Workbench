@@ -1,149 +1,379 @@
-# Event labeler
+<h1 align="center">Event labeler</h1>
 
-The labeler gets people to label calcium events quickly. A detector ranks candidate events. People review only
-those candidates, as short clips, answering **Accept** or **Decline**. That replaces scanning every pixel of every
-frame. Every answer is saved as it is given, together with a record of how the item was reviewed.
+<p align="center">
+  <strong>Label calcium events by reviewing a short ranked list of candidates, not every pixel of every frame.</strong><br>
+  A detector proposes. A person decides, one short clip at a time. Every answer is saved the moment it is given.
+</p>
 
-The tool is self-contained. It runs from this folder with numpy, scipy and tifffile, and does not need the rest of
-`neurobench` or its heavy dependencies.
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/labeler-dark.png">
+    <img src="docs/labeler-light.png" alt="The labeler: a raw video clip with centre and annulus circles, the same clip after local standardization glowing at the centre, and a trace where the centre rises far above the annulus; Accept and Decline buttons below." width="900">
+  </picture>
+  <br><sub>A synthetic recording, shown as a labeller sees it.</sub>
+</p>
 
-## Two roles
+<p align="center">
+  <a href="#label-a-pack">Label a pack</a> ·
+  <a href="#build-a-pack">Build a pack</a> ·
+  <a href="#walkthrough-spon-ca-burst">Spon Ca Burst walkthrough</a> ·
+  <a href="#any-recording">Any recording</a> ·
+  <a href="#read-the-results">Results</a> ·
+  <a href="#troubleshooting">Troubleshooting</a>
+</p>
 
-| Role | Does | Needs |
-|---|---|---|
-| **Pack builder** | Runs the detector on a recording and writes a *pack* (clips) plus a *key* (which item is which). Gives out only the pack. | This repository, Python 3.9+, `requirements.txt` |
-| **Labeller** | Opens the pack in a browser and decides each item. Sends back one log file. | Python 3.8+ only |
+---
 
-**The builder must not be a labeller for the same pack.** The key reveals which items are control patches and
-which are hidden reference annotations, and the test only works if labellers do not know.
+## Why
 
-## Install (pack builder)
+Scanning a recording for events means inspecting every pixel of every frame, R × C × T values, by eye. The
+labeler turns that into a queue. The P1-phys detector ranks candidate events, most relevant first, and a person
+answers **Accept** or **Decline** for each one, usually in a few seconds.
 
+Three things set it apart from a plain viewer:
+
+- **The queue includes blinded controls.**
+  - Random patches show what the detector misses.
+  - Optional reference annotations, hidden among the top items, show whether people find known events again.
+  - Labellers cannot tell any of these apart from ordinary candidates.
+- **Nothing is lost.** Every answer is written to disk immediately. Close the window at any time and continue
+  later.
+- **The review itself is data.** Each answer carries a record of how it was made: time on the item, frames
+  viewed, replays and display changes. That record can be studied later.
+
+> [!NOTE]
+> **On Spon Ca Burst**, within the frames that have reference annotations:
+> - The top 72 candidates, about 4% of a clip-by-clip review, reached 34 of 76 reference events.
+> - The top 177, about 9%, reached 43.
+> - The detector's ceiling is about 51 of 76.
+>
+> These figures are descriptive: those annotations have been used many times. The labeler is built to measure
+> this properly, with fresh labellers.
+
+## How it works
+
+<p align="center">
+  <img src="docs/labeler-flow.svg" alt="Workflow: the pack builder turns a recording into a pack and a key; labellers review the pack in a browser and send back a log; the builder summarizes the logs with the key." width="900">
+</p>
+
+| | Role | Does | Needs |
+|---|---|---|---|
+| 🧰 | **Pack builder** | Runs the detector on a recording, gives out the **pack**, keeps the **key**, and summarizes the logs. | This repository, Python ≥ 3.9 and three packages |
+| 👀 | **Labeller** | Opens the pack in a browser, decides each item, and sends back one log file. | Python ≥ 3.8, nothing else |
+
+> [!IMPORTANT]
+> **The builder of a pack must not label it.** The key says which items are controls and which are hidden
+> reference annotations. The test only works if the labellers do not know.
+
+---
+
+## Label a pack
+
+You received a pack folder. Open a terminal **inside it** and run:
+
+```bash
+python3 label_server.py . --annotator YOURNAME
 ```
+
+<sub>On Windows: <code>py label_server.py . --annotator YOURNAME</code>. Always use the same name.</sub>
+
+Your browser opens on the first item you have not decided yet.
+
+### What you see
+
+| Panel | Shows | Look for |
+|---|---|---|
+| **Video** | The raw recording around the candidate: 25 × 25 px and 0.8 s (15 frames before, 25 after), looping. The small brain image marks where the clip is. | A spot at the centre that brightens and fades. |
+| **Local standardized** | The same clip after Gamma-LS standardization: each pixel's change compared with the ring of tissue around it. Orange is brighter than its surroundings, blue is darker. | An orange flash at the centre as the event begins. |
+| **Centre vs annulus** | ΔF/F₀ inside the orange circle and in the ring between the dashed circles. The dashed line is the item's frame. | The centre rising well above the annulus, then decaying. |
+
+**Accept** when a cell at the centre lights up. **Decline** anything else: noise, flicker, movement, or a
+brightening of the whole area.
+
+### Keys
+
+| Key | Action | | Key | Action |
+|:---:|---|---|:---:|---|
+| <kbd>A</kbd> | Accept | | <kbd>Space</kbd> | Play or stop the clip |
+| <kbd>D</kbd> | Decline | | <kbd>←</kbd> <kbd>→</kbd> | Step one frame |
+| <kbd>B</kbd> | Back, to change an answer | | <kbd>C</kbd> | Contrast: pack-wide or this clip |
+| <kbd>P</kbd> | Pause | | | The ring sizes are sliders under the traces |
+
+> [!TIP]
+> **To stop,** close the window and press <kbd>Ctrl</kbd>+<kbd>C</kbd> in the terminal. Run the same command
+> again to carry on exactly where you left off. When you are done, send back
+> `labels_<pack id>_YOURNAME.jsonl` from the pack folder.
+
+---
+
+## Build a pack
+
+### Install
+
+```bash
 git clone https://github.com/Jibby2k1/NeuRev-Workbench.git
 cd NeuRev-Workbench
 python3 -m venv .venv-labeler
-source .venv-labeler/bin/activate            # Windows: .venv-labeler\Scripts\activate
-pip install -r neurobench/tools/event_labeler/requirements.txt
+source .venv-labeler/bin/activate
+pip install -r neurobench/tools/event_labeler/requirements.txt     # numpy, scipy, tifffile
 ```
 
-On Ubuntu/Debian, if `python3 -m venv` fails with "ensurepip is not available", run
-`sudo apt install python3-venv` first, or create the environment with [uv](https://docs.astral.sh/uv/):
-`uv venv .venv-labeler && uv pip install -r neurobench/tools/event_labeler/requirements.txt`.
+<details>
+<summary><strong>Windows</strong></summary>
 
-Check the install (optional, needs `pip install pytest`): `python -m pytest tests/test_event_labeler.py`.
+```powershell
+py -m venv .venv-labeler
+.venv-labeler\Scripts\activate
+pip install -r neurobench/tools/event_labeler/requirements.txt
+```
+</details>
+
+<details>
+<summary><strong>Ubuntu / Debian: "ensurepip is not available"</strong></summary>
+
+Install the venv module with `sudo apt install python3-venv`, or use [uv](https://docs.astral.sh/uv/) instead:
+
+```bash
+uv venv .venv-labeler && source .venv-labeler/bin/activate
+uv pip install -r neurobench/tools/event_labeler/requirements.txt
+```
+</details>
+
+<details>
+<summary><strong>Check the install (optional)</strong></summary>
+
+```bash
+pip install pytest
+python -m pytest tests/test_event_labeler.py
+```
+
+This builds a pack from a small synthetic movie and checks that the planted events are among the top proposals,
+then checks that answers are saved and that a session resumes.
+</details>
+
+The labeler runs from its own folder. It does not need the rest of `neurobench`, which installs heavier
+dependencies.
+
+---
 
 ## Walkthrough: Spon Ca Burst
 
-The recording and its reference annotations are in the lab's shared `NeuRev-Workbench` folder:
+Both files are in the lab's shared `NeuRev-Workbench` folder, under `Inputs/Spon Ca Burst/`:
 
-- `Inputs/Spon Ca Burst/3 hindbrain to tail 488 20ms.tif`: 2359 frames, 340 × 573 px, 50 Hz
-- `Inputs/Spon Ca Burst/labels/labels_normalized.tsv`: the reference annotations, 79 cells in 4 bursts
-
-1. **Build the pack** (about 2 minutes):
-   ```
-   python neurobench/tools/event_labeler/build_pack.py --preset spon \
-       --tif "PATH/TO/Inputs/Spon Ca Burst/3 hindbrain to tail 488 20ms.tif" \
-       --annotations "PATH/TO/Inputs/Spon Ca Burst/labels/labels_normalized.tsv" \
-       --out packs/spon
-   ```
-   This writes `packs/spon/` (the pack, about 75 MB) and `packs/spon_KEY_DO_NOT_SHARE/` (the key). With these
-   settings the pack holds 699 items:
-   - **600 detector proposals**, most relevant first.
-   - **67 random control patches** at random queue positions.
-   - **32 hidden reference annotations**: the annotations the detector did not already propose, placed at random
-     positions among the first 300 items.
-
-   The other 47 annotations are already covered by a proposal, within 6 px inside their burst window. The key
-   records which proposal covers each one.
-2. **Give out the pack.** Zip `packs/spon/` and send it, or put it in the shared folder. Do not include the key.
-3. **Labellers** follow `LABELLING.md`, which is inside the pack: `python3 label_server.py . --annotator NAME`.
-   Each one sends back `labels_<pack id>_<NAME>.jsonl`.
-4. **Summarize** with the key:
-   ```
-   python neurobench/tools/event_labeler/summarize.py --key packs/spon_KEY_DO_NOT_SHARE/key.json labels_*.jsonl
-   ```
-   The summary reports, per labeller:
-   - accept rates for proposals, control patches and hidden annotations;
-   - how many reference annotations were accepted again;
-   - seconds per decision;
-   - how the proposal accept rate falls with queue position.
-
-## Any other recording
-
-```
-python neurobench/tools/event_labeler/build_pack.py --tif MOVIE.tif --out packs/movie [--annotations my.tsv]
-```
-
-Defaults for a recording without a preset:
-
-- **Reviewed area:** the whole frame (`--region Y X H W` to restrict it).
-- **Detector warm-up:** the first 200 frames (`--warmup`).
-- **Noise calibration:** the photon-noise line and the Gamma-LS floor are fitted on the next 200 frames
-  (`--setup FIRST LAST`). Pick frames without strong activity if you can, or give a known noise line with
-  `--photon A B`.
-- **Frame rate:** 50 Hz (`--fps`).
-
-Other useful options:
-
-- `--max-proposals` sets the number of proposals.
-- `--random-frac` sets the share of control patches.
-- `--half`, `--pre` and `--post` set the clip size and length.
-
-**Annotation file:** tab-separated, with a header row and columns `x_px y_px start_frame_ui end_frame_ui`, plus
-optionally `roi_identity` and `burst_id`.
-
-- Coordinates are full-frame pixels.
-- Frames are 1-based and give the window in which the cell is active.
-- Each hidden annotation is shown at the frame in its window where the centre disk is brightest.
-
-The input must be a single T × H × W TIFF stack. Movies in other formats must be converted first.
-
-## What a pack contains
-
-| File | Content |
+| File | What it is |
 |---|---|
-| `manifest.json` | Item positions (frame, y, x) in queue order, clip geometry and display ranges. It holds no item kinds and no scores. |
-| `raw.u16`, `ls.i16` | Clips: raw counts, and Gamma-LS z × 100. |
-| `context.u8` | The mean image used for the location map. |
-| `label_server.py`, `labeler.html`, `LABELLING.md` | The review app and the labeller guide. |
+| `3 hindbrain to tail 488 20ms.tif` | The recording: 2359 frames, 340 × 573 px, 50 Hz |
+| `labels/labels_normalized.tsv` | The reference annotations: 79 cells across 4 bursts |
 
-The key (`key.json`) holds each item's kind and detector score, every annotation's outcome (covered, hidden, or
-skipped), and the build settings.
+**1 · Build** (about 2 minutes)
 
-## What the log records
+```bash
+python neurobench/tools/event_labeler/build_pack.py --preset spon \
+    --tif "PATH/TO/Inputs/Spon Ca Burst/3 hindbrain to tail 488 20ms.tif" \
+    --annotations "PATH/TO/Inputs/Spon Ca Burst/labels/labels_normalized.tsv" \
+    --out packs/spon
+```
 
-Each line of `labels_<pack id>_<name>.jsonl` is one JSON record. Decision lines hold the answer plus a `process`
-record:
+You get two folders:
+
+```text
+packs/spon/                     ← the pack (~70 MB): give this out
+packs/spon_KEY_DO_NOT_SHARE/    ← the key: keep it
+```
+
+The pack holds **699 items**:
+
+| Items | What they are | Where in the queue |
+|---:|---|---|
+| 600 | Detector proposals | Ranked, most relevant first |
+| 67 | Random control patches, from the same periods but away from every event | Random positions |
+| 32 | Reference annotations the detector did not already propose | Random positions within the first 300 |
+
+The other 47 reference annotations already have a proposal within 6 px inside their burst. The key records which
+proposal covers each one.
+
+**2 · Share.** Zip `packs/spon/` and send it, or put it in the shared folder. Never include the key.
+
+**3 · Label.** Each labeller follows [Label a pack](#label-a-pack). The same guide ships inside the pack as
+`LABELLING.md`.
+
+**4 · Summarize.** Collect the `.jsonl` files and run:
+
+```bash
+python neurobench/tools/event_labeler/summarize.py \
+    --key packs/spon_KEY_DO_NOT_SHARE/key.json  labels_*.jsonl
+```
+
+---
+
+## Any recording
+
+```bash
+python neurobench/tools/event_labeler/build_pack.py --tif MOVIE.tif --out packs/movie
+```
+
+Without a preset, the whole frame is reviewed. The first 200 frames warm the detector up, and the noise
+calibration is fitted on the next 200.
+
+| Option | Default | Meaning |
+|---|---|---|
+| `--annotations FILE` | none | Reference annotations to hide in the queue (format below) |
+| `--annotation-window N` | 300 | Hidden annotations go within the first N items |
+| `--region Y X H W` | whole frame | Restrict the area that is reviewed |
+| `--warmup N` | 200 | Frames used to warm the detector up |
+| `--setup FIRST LAST` | the 200 after warm-up | Frames for the noise calibration; pick a quiet stretch if you can |
+| `--photon A B` | fitted | A known noise line, var = A · mean + B |
+| `--max-proposals N` | 600 | Number of detector proposals |
+| `--random-frac F` | 0.10 | Share of the queue that is control patches |
+| `--z-min Z` | 4.0 | Detector threshold for an event |
+| `--half H` · `--pre N` · `--post N` | 12 · 15 · 25 | Clip size 2H+1 px, frames before and after |
+| `--fps F` | 50 | Frame rate, used only for display |
+| `--first-ui N` | 1 | Frame number of the TIFF's first frame |
+| `--key-out DIR` | `<out>_KEY_DO_NOT_SHARE` | Where the key goes; never inside the pack |
+
+**Annotation file:** tab-separated, with a header row. Coordinates are full-frame pixels; frames are 1-based.
+
+```text
+x_px    y_px    start_frame_ui    end_frame_ui    roi_identity    burst_id
+120.0   85.5    400               460             cell_A          1
+```
+
+`roi_identity` and `burst_id` are optional. Each hidden annotation is shown at the frame in its window where its
+centre is brightest.
+
+> [!NOTE]
+> The input must be one T × H × W TIFF stack. Convert other formats first, for example with Fiji:
+> *File → Save As → Tiff*.
+
+---
+
+## Read the results
+
+`summarize.py` prints a block per labeller:
+
+```text
+== NAME: <decisions> decisions
+  annotation                     <accepted> / <decided> accepted (<rate>)
+  proposal                       ...
+  proposal_covering_annotation   ...
+  random                         ...
+  reference annotations re-accepted: <accepted> / <decided>
+  seconds per decision: median <s>, mean <s>; <n> decisions per active hour
+  proposal accept rate by queue block: {'1-100': ..., '101-200': ...}
+```
+
+| Line | Read it as |
+|---|---|
+| `proposal` | How many candidates people judge to be real events |
+| `random` | Events the detector **missed**: accepted control patches are real misses |
+| `annotation`, `reference annotations re-accepted` | Whether known events are found again when nobody says which they are |
+| `seconds per decision` | Review speed, with paused and hidden time excluded |
+| `by queue block` | How the accept rate falls with rank, i.e. where reviewing stops paying off |
+
+Add `--json report.json` for a machine-readable copy.
+
+<details>
+<summary><strong>What each log line records</strong></summary>
+
+`labels_<pack id>_<name>.jsonl` has one JSON object per line and is only ever appended to.
+
+**Decision lines** hold the answer plus a `process` record:
 
 - **Timing:** active, paused and hidden time on the item, and time to the first interaction.
-- **Viewing:** time spent on each clip frame, loops played, frame steps and play/stop presses.
+- **Viewing:** `dwell_ms`, the time spent on each of the 41 frames, plus loops played, frame steps and play/stop
+  presses.
 - **Display changes:** every ring, contrast and speed change, with its time, and the display at the start and at
   the decision.
 - **Navigation:** keyboard or mouse, and whether the item was revisited and what the earlier answer was.
 
-Session start, pause, resume, navigation and stop lines carry the timeline. Session start also records the
-browser, the screen and the tool's file hashes. Logs are append-only and tied to one pack: a log cannot be resumed
-against a different pack.
+**Other lines:**
 
-## The detector
+- **Session start:** the browser name, screen size, and hashes of the tool files.
+- **Pause, resume, back and stop:** the session timeline.
 
-`operators.py` holds standalone ports of the NeuRev three-part prescreener operators:
+The log holds nothing else from the labeller's computer. A log is tied to one pack and cannot be resumed against
+another.
+</details>
 
-- **P1-phys (arm A5):** Gaussian blur σ 3.24 px, fast EMA 0.4 minus lagged EMA 0.141, divided by the photon-noise
-  SD.
-- **Gamma-LS (arm A1):** a sigma-1 blur, the one-frame change of EMA 0.4 levels, standardized by a Gamma ring
-  (guard 7, half-width 15).
-- **Candidate extractor:** 13 × 13 local maxima with greater than 6 px separation.
+---
 
-Parity against the original implementation, on all 2359 Spon frames:
+## Reference
+
+<details>
+<summary><strong>Files in a pack, and in the key</strong></summary>
+
+| File | Content |
+|---|---|
+| `manifest.json` | Item positions (frame, y, x) in queue order, clip geometry and display ranges. It holds no item kinds and no scores. |
+| `raw.u16`, `ls.i16` | The clips: raw counts, and Gamma-LS z × 100 (little-endian) |
+| `context.u8` | The mean image used for the location map |
+| `label_server.py`, `labeler.html`, `LABELLING.md` | The review app and the labeller guide |
+
+The key folder holds `key.json`: each item's kind (proposal, random or annotation), detector score, queue position
+and covered annotations, plus every annotation's outcome and the build settings. It also holds `build.log`.
+</details>
+
+<details>
+<summary><strong>The detector, and its parity with the research code</strong></summary>
+
+`operators.py` holds standalone ports, numpy and scipy only, of the NeuRev three-part prescreener operators:
+
+| Operator | Definition |
+|---|---|
+| **P1-phys** (arm A5) | Gaussian blur σ 3.24 px. Fast EMA 0.4 minus lagged EMA 0.141, divided by the photon-noise SD √(c_t · g² ⊛ max(a·μ + b, 1)), where μ is a raw EMA at rate 0.02. |
+| **Gamma-LS** (arm A1) | The one-frame change of EMA 0.4 levels of a σ 1 blur, standardized by a Gamma ring (guard 7, half-width 15, shape 9, mode 7.5). The floor is the 10th percentile of the setup spread. |
+| **Candidates** | 13 × 13 local maxima, 6 px border, greater than 6 px separation, strict > 0 |
+| **Events** | Candidate rows above `--z-min`, linked across ≤ 6 px and ≤ 2 frames; one item per event at its peak |
+| **Noise line** | var(Yₜ − Yₜ₋₁) / 2 against the mean over the setup frames, in 40 equal-count bins, OLS fit |
+
+Parity against the original implementation, on all 2359 Spon Ca Burst frames:
 
 - **P1-phys scores:** bit-identical.
 - **Candidate rows:** all 397,775 identical.
 - **Gamma-LS z:** at most 1.2 × 10⁻¹³ apart.
 - **Gamma-LS floor:** identical.
 
-The Spon preset uses the sealed noise line `3.578 · mean − 303.4`. The automatic fit gives about 3.73 · mean − 408
-when it is run on that recording's whole frame.
+The Spon preset uses the calibrated noise line 3.578 · μ − 303.4. The automatic fit on that recording's whole
+frame gives about 3.73 · μ − 408.
+</details>
 
-Recordings and packs are lab data. Keep them out of this repository.
+<details>
+<summary><strong>Building the same pack twice</strong></summary>
+
+Builds are deterministic for a given recording, annotation file and settings (`--seed`). Rebuilding the Spon
+pack from a fresh clone reproduced the same pack id and byte-identical clips.
+</details>
+
+---
+
+## Troubleshooting
+
+<details>
+<summary><strong>"Address already in use"</strong></summary>
+
+Another program is using port 8765. Pick another port: `--port 8766`. Two labellers on one computer each need
+their own port.
+</details>
+
+<details>
+<summary><strong>The browser did not open</strong></summary>
+
+Open the address the terminal prints, `http://127.0.0.1:8765/` by default, in any browser.
+</details>
+
+<details>
+<summary><strong>"belongs to pack …, refusing to mix packs"</strong></summary>
+
+That log file was written for a different pack. Use the pack it came from, or a different `--annotator` name or
+`--log-dir`.
+</details>
+
+<details>
+<summary><strong>"setup frames … are outside the recording"</strong></summary>
+
+The recording is shorter than warm-up plus setup (400 frames by default). Lower `--warmup` or give `--setup`
+explicitly.
+</details>
+
+> [!CAUTION]
+> Recordings, packs, keys and logs are lab data. Keep them out of this repository.

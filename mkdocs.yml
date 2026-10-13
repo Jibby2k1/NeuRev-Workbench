@@ -194,6 +194,7 @@ nav:
       - Source-off predictor feasibility v1: workflows/source_off_predictor_feasibility_v1.md
       - External blinded review: workflows/external_blinded_bounded_review_v2.md
   - Review and annotate:
+      - Event labeler: https://github.com/Jibby2k1/NeuRev-Workbench/blob/main/neurobench/tools/event_labeler/README.md
       - Neuron Workbench: NEURON_WORKBENCH.md
       - Dashboard guide: HOW_TO_USE_DASHBOARD.md
       - Annotation schema: ANNOTATION_SCHEMA.md

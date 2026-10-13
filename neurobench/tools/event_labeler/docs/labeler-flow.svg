@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" role="img" aria-labelledby="flow-title flow-desc">
+  <title id="flow-title">Event labeler workflow</title>
+  <desc id="flow-desc">The pack builder turns a recording into a pack and a key. Labellers receive only the pack, review its clips in a browser and send back a log. The builder combines the logs with the key in summarize.py.</desc>
+  <defs>
+    <marker id="flow-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M 0 0 L 10 5 L 0 10 z"/>
+    </marker>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --canvas: #f7fafb; --surface: #ffffff; --ink: #102733; --muted: #526875; --border: #b9cad1;
+        --line: #607b87; --cyan: #147d87; --cyan-soft: #ddf4f5; --blue: #3158a5; --blue-soft: #e8eefb;
+        --violet: #6e53a4; --violet-soft: #f0eafa;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --canvas: #091015; --surface: #111b22; --ink: #eff7f8; --muted: #a9bac1; --border: #29404d;
+          --line: #7f98a3; --cyan: #61d4de; --cyan-soft: #0f2a30; --blue: #89a7f5; --blue-soft: #16213a;
+          --violet: #c4b5fd; --violet-soft: #221b36;
+        }
+      }
+      .canvas { fill: var(--canvas); }
+      .lane { stroke-width: 1.5; }
+      .lane.builder { fill: var(--cyan-soft); stroke: var(--cyan); }
+      .lane.labeller { fill: var(--blue-soft); stroke: var(--blue); }
+      .lane-label { font: 600 15px system-ui, -apple-system, "Segoe UI", sans-serif; letter-spacing: .12em; }
+      .lane-label.builder { fill: var(--cyan); } .lane-label.labeller { fill: var(--blue); }
+      .box { fill: var(--surface); stroke: var(--border); stroke-width: 1.5; }
+      .box.key { stroke: var(--violet); stroke-width: 2; stroke-dasharray: 6 4; }
+      .title { font: 700 19px system-ui, -apple-system, "Segoe UI", sans-serif; fill: var(--ink); }
+      .mono { font: 600 17px ui-monospace, SFMono-Regular, Menlo, monospace; fill: var(--ink); }
+      .sub { font: 400 14.5px system-ui, -apple-system, "Segoe UI", sans-serif; fill: var(--muted); }
+      .keynote { font: 600 14.5px system-ui, -apple-system, "Segoe UI", sans-serif; fill: var(--violet); }
+      .edge { stroke: var(--line); stroke-width: 2; fill: none; }
+      .edge.secret { stroke: var(--violet); stroke-dasharray: 6 4; }
+      .arrow-head { fill: var(--line); }
+      .edge-label { font: 500 13.5px system-ui, -apple-system, "Segoe UI", sans-serif; fill: var(--muted); }
+    </style>
+  </defs>
+
+  <rect class="canvas" width="1200" height="500"/>
+
+  <rect class="lane builder" x="16" y="30" width="1168" height="190" rx="14"/>
+  <text class="lane-label builder" x="36" y="58">PACK BUILDER</text>
+  <rect class="lane labeller" x="16" y="282" width="1168" height="190" rx="14"/>
+  <text class="lane-label labeller" x="36" y="310">LABELLERS</text>
+
+  <!-- builder lane -->
+  <rect class="box" x="40" y="78" width="220" height="112" rx="10"/>
+  <text class="title" x="60" y="114">Recording</text>
+  <text class="sub" x="60" y="142">one TIFF stack</text>
+  <text class="sub" x="60" y="164">+ annotations (optional)</text>
+
+  <rect class="box" x="330" y="78" width="250" height="112" rx="10"/>
+  <text class="mono" x="350" y="114">build_pack.py</text>
+  <text class="sub" x="350" y="142">P1-phys ranks the events,</text>
+  <text class="sub" x="350" y="164">mixes in controls</text>
+
+  <rect class="box key" x="650" y="78" width="220" height="112" rx="10"/>
+  <text class="title" x="670" y="114">Key</text>
+  <text class="sub" x="670" y="142">which item is which</text>
+  <text class="keynote" x="670" y="164">stays with the builder</text>
+
+  <rect class="box" x="940" y="78" width="220" height="112" rx="10"/>
+  <text class="mono" x="960" y="114">summarize.py</text>
+  <text class="sub" x="960" y="142">accept rates, s / item,</text>
+  <text class="sub" x="960" y="164">annotations found again</text>
+
+  <!-- labeller lane -->
+  <rect class="box" x="330" y="330" width="250" height="112" rx="10"/>
+  <text class="title" x="350" y="366">Pack folder</text>
+  <text class="sub" x="350" y="394">ranked 25 × 25 px clips</text>
+  <text class="sub" x="350" y="416">+ review app and guide</text>
+
+  <rect class="box" x="650" y="330" width="220" height="112" rx="10"/>
+  <text class="title" x="670" y="366">Browser review</text>
+  <text class="sub" x="670" y="394">Accept or Decline</text>
+  <text class="sub" x="670" y="416">pause and resume</text>
+
+  <rect class="box" x="940" y="330" width="220" height="112" rx="10"/>
+  <text class="title" x="960" y="366">Log file</text>
+  <text class="sub" x="960" y="394">answers + how each</text>
+  <text class="sub" x="960" y="416">item was reviewed</text>
+
+  <!-- edges -->
+  <path class="edge" d="M 260 134 L 326 134" marker-end="url(#flow-arrow)"/>
+  <path class="edge secret" d="M 580 134 L 646 134" marker-end="url(#flow-arrow)"/>
+  <path class="edge secret" d="M 870 134 L 936 134" marker-end="url(#flow-arrow)"/>
+  <path class="edge" d="M 455 190 L 455 326" marker-end="url(#flow-arrow)"/>
+  <text class="edge-label" x="466" y="262">shared</text>
+  <path class="edge" d="M 580 386 L 646 386" marker-end="url(#flow-arrow)"/>
+  <path class="edge" d="M 870 386 L 936 386" marker-end="url(#flow-arrow)"/>
+  <path class="edge" d="M 1050 330 L 1050 194" marker-end="url(#flow-arrow)"/>
+  <text class="edge-label" x="1061" y="262">sent back</text>
+</svg>
