@@ -152,6 +152,11 @@ def main(argv=None):
     ap.add_argument("--dedupe-frames", type=int, default=10)
     ap.add_argument("--seed", type=int, default=20261012)
     ap.add_argument("--zip", action="store_true", help="also write <out>.zip, ready to send to reviewers")
+    ap.add_argument("--reviewers", nargs="+", default=None, metavar="NAME",
+                    help="names offered to choose from when the pack is opened (kept in the pack, not on any website)")
+    ap.add_argument("--exclude-saturated", action="store_true",
+                    help="skip proposals within 18 px of a saturated (4095) pixel, e.g. for a clean demo pack")
+    ap.add_argument("--label", default=None, help="short name shown for this pack, e.g. 'Spon Ca Burst'")
     a = ap.parse_args(argv)
 
     pre = PRESETS.get(a.preset, {})
@@ -241,7 +246,7 @@ def main(argv=None):
 
     chosen = []
     for e in events:
-        if not fits(e["y"], e["x"], e["t"]):
+        if not fits(e["y"], e["x"], e["t"]) or (a.exclude_saturated and e["sat"]):
             continue
         if any(abs(e["t"] - c["t"]) <= a.dedupe_frames and
                (e["y"] - c["y"]) ** 2 + (e["x"] - c["x"]) ** 2 <= a.dedupe_px ** 2 for c in chosen):
@@ -369,6 +374,8 @@ def main(argv=None):
                      annulus_r1=max(3, min(10, a.half))),
         files=dict(raw="raw.u16", ls="ls.i16", context="context.u8"),
         order="most relevant first (detector ranking); control items are mixed in",
+        **({"reviewers": a.reviewers} if a.reviewers else {}),
+        **({"label": a.label} if a.label else {}),
         items=[dict(id=it["id"], t=it["t"], y=it["y"], x=it["x"]) for it in items],
     )
     manifest["file_sha256"] = {k: sha256_file(out / v) for k, v in manifest["files"].items()}

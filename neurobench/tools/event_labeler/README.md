@@ -207,6 +207,7 @@ Both files are in the lab's shared `NeuRev-Workbench` folder, under `Inputs/Spon
 python neurobench/tools/event_labeler/build_pack.py --preset spon \
     --tif "PATH/TO/Inputs/Spon Ca Burst/3 hindbrain to tail 488 20ms.tif" \
     --annotations "PATH/TO/Inputs/Spon Ca Burst/labels/labels_normalized.tsv" \
+    --reviewers "Reviewer One" "Reviewer Two" --label "Spon Ca Burst" \
     --out packs/spon --zip
 ```
 
@@ -244,6 +245,14 @@ python neurobench/tools/event_labeler/summarize.py \
 
 ---
 
+> [!TIP]
+> **A demo pack for showing the tool live:** five clear events from five different cells, with no controls.
+> ```bash
+> python neurobench/tools/event_labeler/build_pack.py --preset spon --tif "…/3 hindbrain to tail 488 20ms.tif" \
+>     --max-proposals 5 --random-frac 0 --dedupe-px 25 --dedupe-frames 5000 --exclude-saturated \
+>     --label "Spon Ca Burst demo" --out packs/spon_demo --zip
+> ```
+
 ## Any recording
 
 ```bash
@@ -267,6 +276,9 @@ calibration is fitted on the next 200.
 | `--half H` · `--pre N` · `--post N` | 12 · 15 · 25 | Clip size 2H+1 px, frames before and after |
 | `--fps F` | 50 | Frame rate, used only for display |
 | `--zip` | off | Also write `<out>.zip`, ready to send |
+| `--reviewers NAME …` | none | Names offered as choices when the pack is opened (stored in the pack, not on any website) |
+| `--label TEXT` | file name | Short name shown for the pack, e.g. `"Spon Ca Burst"` |
+| `--exclude-saturated` | off | Skip proposals next to saturated pixels (useful for a clean demo pack) |
 | `--first-ui N` | 1 | Frame number of the TIFF's first frame |
 | `--key-out DIR` | `<out>_KEY_DO_NOT_SHARE` | Where the key goes; never inside the pack |
 
