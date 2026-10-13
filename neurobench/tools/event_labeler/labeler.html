@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Event Labeler</title>
+<style>
+:root {
+  --bg: #f3f4f2; --panel: #ffffff; --ink: #1d2321; --muted: #5d6763; --line: #d6dbd8;
+  --accent: #1f6f5c; --accept: #1f7a45; --decline: #a33a2c; --center: #c2410c; --annulus: #2563a8;
+  --cursor: #1d2321; --chip: #e7ebe8;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121514; --panel: #1b201e; --ink: #e5e9e7; --muted: #98a29e; --line: #2d3532;
+    --accent: #5fbfa5; --accept: #4fbf7d; --decline: #e0705f; --center: #f08a4b; --annulus: #6ea8e8;
+    --cursor: #e5e9e7; --chip: #252c29;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121514; --panel: #1b201e; --ink: #e5e9e7; --muted: #98a29e; --line: #2d3532;
+  --accent: #5fbfa5; --accept: #4fbf7d; --decline: #e0705f; --center: #f08a4b; --annulus: #6ea8e8;
+  --cursor: #e5e9e7; --chip: #252c29;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, sans-serif; }
+body { padding: 14px 16px 24px; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; margin-bottom: 12px; }
+header h1 { font-size: 17px; margin: 0; font-weight: 650; letter-spacing: .01em; }
+.meta { color: var(--muted); font-variant-numeric: tabular-nums; }
+.bar { height: 6px; background: var(--chip); border-radius: 3px; overflow: hidden; flex: 1 1 220px; min-width: 160px; align-self: center; }
+.bar > i { display: block; height: 100%; width: 0; background: var(--accent); }
+main { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 980px) { main { grid-template-columns: 1fr; } }
+section { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+section h2 { margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; display: flex; justify-content: space-between; gap: 8px; }
+canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; background: #000; border-radius: 3px; }
+#traces { background: var(--panel); image-rendering: auto; }
+.legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); }
+.legend b { display: inline-block; width: 14px; height: 3px; vertical-align: middle; margin-right: 5px; border-radius: 2px; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 12px; }
+button { font: inherit; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 6px; padding: 8px 14px; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.big { font-size: 16px; font-weight: 650; padding: 12px 26px; min-width: 150px; }
+#accept { background: var(--accept); color: #fff; border-color: transparent; }
+#decline { background: var(--decline); color: #fff; border-color: transparent; }
+button[disabled] { opacity: .45; cursor: default; }
+.prior { font-size: 13px; padding: 3px 9px; border-radius: 12px; background: var(--chip); color: var(--muted); }
+.prior.accept { color: var(--accept); } .prior.decline { color: var(--decline); }
+.spacer { flex: 1; }
+.knobs { display: flex; flex-wrap: wrap; gap: 6px 16px; color: var(--muted); font-size: 12px; align-items: center; }
+.knobs label { display: flex; align-items: center; gap: 6px; }
+.knobs input[type=range] { width: 90px; }
+.knobs select { font: inherit; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 2px 4px; }
+.knobs output { font-variant-numeric: tabular-nums; min-width: 2.2em; color: var(--ink); }
+kbd { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--chip); }
+.help { color: var(--muted); font-size: 12px; margin-top: 10px; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+#ctx { max-width: 100%; }
+.ctxrow { display: flex; gap: 10px; align-items: flex-start; }
+.ctxrow canvas { width: 100%; }
+#overlay { position: fixed; inset: 0; background: color-mix(in srgb, var(--bg) 88%, transparent); display: none; align-items: center; justify-content: center; flex-direction: column; gap: 14px; z-index: 5; text-align: center; padding: 16px; }
+#overlay.on { display: flex; }
+#overlay h2 { margin: 0; font-size: 22px; }
+#overlay p { margin: 0; color: var(--muted); max-width: 46ch; }
+#toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 7px 14px; border-radius: 6px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+#toast.on { opacity: .92; }
+@media (prefers-reduced-motion: reduce) { #toast { transition: none; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Event Labeler</h1>
+  <span class="meta" id="who"></span>
+  <span class="meta" id="count"></span>
+  <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+  <span class="meta" id="timer"></span>
+</header>
+
+<main>
+  <section>
+    <h2><span>Video</span><span id="fr" class="meta"></span></h2>
+    <canvas id="raw" width="245" height="245" aria-label="raw video clip"></canvas>
+    <div class="ctxrow"><canvas id="ctx" aria-label="location in the recording"></canvas></div>
+  </section>
+  <section>
+    <h2><span>Local standardized</span><span class="meta">Gamma-LS z, ±<span id="lsr"></span></span></h2>
+    <canvas id="ls" width="245" height="245" aria-label="local standardized video clip"></canvas>
+    <div class="knobs">
+      <label for="contrast">Contrast <select id="contrast"><option value="pack">pack-wide</option><option value="clip">this clip</option></select></label>
+      <label for="speed">Speed <input id="speed" type="range" min="2" max="50" step="1" value="10"><output id="speedo"></output></label>
+    </div>
+  </section>
+  <section>
+    <h2><span>Centre vs annulus</span><span class="meta">ΔF/F₀ %</span></h2>
+    <canvas id="traces" width="520" height="320" aria-label="centre and annulus traces"></canvas>
+    <div class="legend"><span><b style="background:var(--center)"></b>Centre</span><span><b style="background:var(--annulus)"></b>Annulus</span></div>
+    <div class="knobs">
+      <label for="rc">Centre r <input id="rc" type="range" min="1" max="14" step="1"><output id="rco"></output></label>
+      <label for="ra0">Annulus <input id="ra0" type="range" min="2" max="20" step="1"><output id="ra0o"></output></label>
+      <label for="ra1">to <input id="ra1" type="range" min="3" max="24" step="1"><output id="ra1o"></output></label>
+    </div>
+  </section>
+</main>
+
+<div class="controls">
+  <button id="back" title="Back (B)">← Back</button>
+  <button id="play" title="Play / stop the clip (Space)">Stop clip</button>
+  <span class="prior" id="prior" hidden></span>
+  <span class="spacer"></span>
+  <button id="pause" title="Pause the session (P)">Pause session</button>
+  <button id="decline" class="big" title="Decline (D)">Decline</button>
+  <button id="accept" class="big" title="Accept (A)">Accept</button>
+</div>
+<div class="help">
+  <span><kbd>A</kbd> accept</span><span><kbd>D</kbd> decline</span><span><kbd>B</kbd> back</span>
+  <span><kbd>Space</kbd> play / stop</span><span><kbd>←</kbd><kbd>→</kbd> step frames</span><span><kbd>P</kbd> pause</span><span><kbd>C</kbd> contrast</span>
+  <span id="logpath"></span>
+</div>
+
+<div id="overlay" role="dialog" aria-modal="true" aria-labelledby="ovt">
+  <h2 id="ovt">Paused</h2>
+  <p id="ovp">Every decision so far is saved. You can close this window; starting the labeler again resumes where you left off.</p>
+  <button id="resume" class="big">Resume</button>
+</div>
+<div id="toast" role="status"></div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+let M, S, F, N, items, decisions = {}, k = 0, frame = 0, playing = true, paused = false, done = false;
+let raw = null, ls = null, cache = new Map(), activeMs = 0, lastTick = performance.now(), sessionMs = 0;
+const store = { get(key, d) { try { const v = localStorage.getItem("evlab:" + key); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+                set(key, v) { try { localStorage.setItem("evlab:" + key, JSON.stringify(v)); } catch (e) {} } };
+
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove("on"), 1400); }
+async function post(rec) {
+  const r = await fetch("/api/log", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(rec) });
+  if (!r.ok) throw new Error("the server did not save this (" + r.status + ")");
+  return r.json();
+}
+async function fetchClip(i) {
+  if (cache.has(i)) return cache.get(i);
+  const p = Promise.all([fetch("/api/raw/" + i).then(r => r.arrayBuffer()), fetch("/api/ls/" + i).then(r => r.arrayBuffer())])
+    .then(([a, b]) => ({ raw: new Uint16Array(a), ls: new Int16Array(b) }));
+  cache.set(i, p);
+  if (cache.size > 8) cache.delete(cache.keys().next().value);
+  return p;
+}
+
+// ---------------------------------------------------------------- drawing
+const rawCv = $("raw"), lsCv = $("ls"), trCv = $("traces"), ctxCv = $("ctx");
+let SCALE = 10;
+let rawImg, lsImg;
+function setupCanvases() {
+  SCALE = Math.max(4, Math.round(250 / S));
+  for (const c of [rawCv, lsCv]) { c.width = S * SCALE; c.height = S * SCALE; }
+  rawImg = new ImageData(S, S); lsImg = new ImageData(S, S);
+}
+const off = document.createElement("canvas");
+function blit(cv, img) {
+  off.width = S; off.height = S; off.getContext("2d").putImageData(img, 0, 0);
+  const g = cv.getContext("2d"); g.imageSmoothingEnabled = false; g.drawImage(off, 0, 0, cv.width, cv.height);
+  rings(g);
+}
+function rings(g) {
+  const c = (S * SCALE) / 2, r = radii();
+  g.lineWidth = 1.5;
+  g.setLineDash([]); g.strokeStyle = "rgba(255,140,60,.9)"; g.beginPath(); g.arc(c, c, r.c * SCALE, 0, 2 * Math.PI); g.stroke();
+  g.setLineDash([4, 4]); g.strokeStyle = "rgba(110,168,232,.9)";
+  g.beginPath(); g.arc(c, c, r.a0 * SCALE, 0, 2 * Math.PI); g.stroke();
+  g.beginPath(); g.arc(c, c, r.a1 * SCALE, 0, 2 * Math.PI); g.stroke();
+  g.setLineDash([]);
+}
+function divergent(z) {           // z in [-1, 1] -> blue / black / orange-white (dark-centred diverging map)
+  const a = Math.min(1, Math.abs(z));
+  return z >= 0 ? [255 * a, 170 * a * a + 60 * a, 40 * a * a] : [40 * a * a, 130 * a, 255 * a];
+}
+function drawFrame() {
+  if (!raw) return;
+  const n = S * S, o = frame * n, [lo, hi] = rawRange(), span = Math.max(hi - lo, 1);
+  const R = M.display.ls_range, sc = M.display.ls_scale;
+  for (let p = 0; p < n; p++) {
+    const v = Math.max(0, Math.min(255, (raw[o + p] - lo) / span * 255));
+    rawImg.data[4 * p] = rawImg.data[4 * p + 1] = rawImg.data[4 * p + 2] = v; rawImg.data[4 * p + 3] = 255;
+    const c = divergent(ls[o + p] / sc / R);
+    lsImg.data[4 * p] = c[0]; lsImg.data[4 * p + 1] = c[1]; lsImg.data[4 * p + 2] = c[2]; lsImg.data[4 * p + 3] = 255;
+  }
+  blit(rawCv, rawImg); blit(lsCv, lsImg);
+  const rel = frame - M.clip.pre;
+  $("fr").textContent = "frame " + (rel >= 0 ? "+" : "") + rel + " (" + (rel * 1000 / M.source.fps).toFixed(0) + " ms)";
+  drawTraces();
+}
+let clipRange = null;
+function rawRange() {
+  if ($("contrast").value !== "clip") return [M.display.raw_lo, M.display.raw_hi];
+  if (!clipRange) {                     // one range for the whole clip (never per frame): 0.5 / 99.9 percentiles
+    const v = Array.from(raw).sort((a, b) => a - b);
+    clipRange = [v[Math.floor(0.005 * (v.length - 1))], v[Math.floor(0.999 * (v.length - 1))]];
+  }
+  return clipRange;
+}
+let tr = null;
+function computeTraces() {
+  const r = radii(), c = (S - 1) / 2, cen = [], ann = [];
+  for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) {
+    const d2 = (y - c) ** 2 + (x - c) ** 2;
+    if (d2 <= r.c * r.c) cen.push(y * S + x); else if (d2 >= r.a0 * r.a0 && d2 <= r.a1 * r.a1) ann.push(y * S + x);
+  }
+  const mean = (idx, f) => { let s = 0; for (const p of idx) s += raw[f * S * S + p]; return s / Math.max(idx.length, 1); };
+  const C = [], A = [];
+  for (let f = 0; f < F; f++) { C.push(mean(cen, f)); A.push(mean(ann, f)); }
+  const nb = Math.max(3, M.clip.pre - 3);
+  const f0 = arr => arr.slice(0, nb).reduce((s, v) => s + v, 0) / nb;
+  const c0 = f0(C), a0 = f0(A);
+  tr = { C: C.map(v => 100 * (v - c0) / Math.max(c0, 1)), A: A.map(v => 100 * (v - a0) / Math.max(a0, 1)) };
+}
+function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function drawTraces() {
+  if (!tr) return;
+  const g = trCv.getContext("2d"), W = trCv.width, H = trCv.height, L = 46, Rm = 10, T = 12, B = 30;
+  g.clearRect(0, 0, W, H);
+  const all = tr.C.concat(tr.A);
+  let lo = Math.min(...all, 0), hi = Math.max(...all, 1);
+  const pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
+  const X = f => L + (W - L - Rm) * f / (F - 1), Y = v => T + (H - T - B) * (1 - (v - lo) / (hi - lo));
+  g.font = "12px system-ui, sans-serif"; g.fillStyle = cssVar("--muted"); g.strokeStyle = cssVar("--line"); g.lineWidth = 1;
+  const step = niceStep((hi - lo) / 5);
+  for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) {
+    g.beginPath(); g.moveTo(L, Y(v)); g.lineTo(W - Rm, Y(v)); g.stroke();
+    g.textAlign = "right"; g.textBaseline = "middle"; g.fillText(fmt(v), L - 6, Y(v));
+  }
+  g.textAlign = "center"; g.textBaseline = "top";
+  for (let f = 0; f < F; f += 5) { const rel = f - M.clip.pre; g.fillText(String(rel), X(f), H - B + 8); }
+  g.strokeStyle = cssVar("--muted"); g.setLineDash([3, 3]);
+  g.beginPath(); g.moveTo(X(M.clip.pre), T); g.lineTo(X(M.clip.pre), H - B); g.stroke(); g.setLineDash([]);
+  const line = (arr, col) => { g.strokeStyle = col; g.lineWidth = 2; g.beginPath(); arr.forEach((v, f) => f ? g.lineTo(X(f), Y(v)) : g.moveTo(X(f), Y(v))); g.stroke(); };
+  line(tr.A, cssVar("--annulus")); line(tr.C, cssVar("--center"));
+  g.strokeStyle = cssVar("--cursor"); g.lineWidth = 1.5; g.beginPath(); g.moveTo(X(frame), T); g.lineTo(X(frame), H - B); g.stroke();
+  g.fillStyle = cssVar("--muted"); g.textAlign = "right"; g.fillText("frames", W - Rm, H - 12);
+}
+function niceStep(x) { const p = Math.pow(10, Math.floor(Math.log10(x || 1))); const m = x / p; return (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10) * p; }
+function fmt(v) { return Math.abs(v) < 1e-9 ? "0" : (Math.abs(v) >= 10 ? v.toFixed(0) : v.toFixed(1)); }
+
+// ---------------------------------------------------------------- process record (how each decision was made)
+let proc = null, visits = {};
+function newProc(it) {
+  visits[it.id] = (visits[it.id] || 0) + 1;
+  return { shown_unix_ms: Date.now(), visit: visits[it.id], previous_decision: decisions[it.id] || null,
+           active_ms: 0, paused_ms: 0, hidden_ms: 0, first_interaction_ms: null, loops: 0, play_toggles: 0,
+           step_keys: 0, dwell_ms: new Array(F).fill(0), radii_changes: [], contrast_changes: [], speed_changes: [],
+           start_state: { playing, contrast: $("contrast").value, speed: +$("speed").value, radii: radii() } };
+}
+function touch() { if (proc && proc.first_interaction_ms === null) proc.first_interaction_ms = Math.round(proc.active_ms); }
+function procOut(input) {
+  const p = Object.assign({}, proc);
+  p.decided_unix_ms = Date.now(); p.input = input;
+  p.dwell_ms = proc.dwell_ms.map(v => Math.round(v));
+  p.frames_seen = proc.dwell_ms.filter(v => v > 0).length;
+  p.active_ms = Math.round(proc.active_ms); p.paused_ms = Math.round(proc.paused_ms); p.hidden_ms = Math.round(proc.hidden_ms);
+  p.end_state = { playing, frame, contrast: $("contrast").value, speed: +$("speed").value, radii: radii() };
+  return p;
+}
+
+let ctxBytes = null;
+function drawContext() {
+  const H = M.source.height, W = M.source.width;
+  if (!ctxBytes) return;
+  ctxCv.width = W; ctxCv.height = H;
+  const g = ctxCv.getContext("2d"), img = g.createImageData(W, H);
+  for (let p = 0; p < W * H; p++) { const v = ctxBytes[p]; img.data[4 * p] = img.data[4 * p + 1] = img.data[4 * p + 2] = v; img.data[4 * p + 3] = 255; }
+  g.putImageData(img, 0, 0);
+  const it = items[k]; if (!it) return;
+  const h = M.clip.half;
+  g.strokeStyle = "#ffb000"; g.lineWidth = 3; g.strokeRect(it.x - h, it.y - h, 2 * h + 1, 2 * h + 1);
+}
+
+// ---------------------------------------------------------------- radii
+function logContrast() { if (proc) { touch(); proc.contrast_changes.push({ t_ms: Math.round(proc.active_ms), contrast: $("contrast").value }); } }
+function radii() { return { c: +$("rc").value, a0: +$("ra0").value, a1: +$("ra1").value }; }
+function initKnobs() {
+  const d = M.display, h = M.clip.half;
+  $("rc").max = Math.max(1, h - 2); $("ra0").max = Math.max(2, h - 1); $("ra1").max = h;
+  const pk = "p" + M.pack_id + ":";   // radii remembered per pack (clip sizes differ between packs)
+  $("rc").value = store.get(pk + "rc", d.center_r); $("ra0").value = store.get(pk + "ra0", d.annulus_r0); $("ra1").value = store.get(pk + "ra1", d.annulus_r1);
+  $("speed").value = store.get("speed", 10);
+  $("contrast").value = store.get("contrast", "pack");
+  $("contrast").addEventListener("change", () => { store.set("contrast", $("contrast").value); logContrast(); drawFrame(); });
+  for (const id of ["rc", "ra0", "ra1", "speed"]) $(id).addEventListener("input", () => {
+    if (+$("ra0").value <= +$("rc").value) $("ra0").value = +$("rc").value + 1;
+    if (+$("ra1").value <= +$("ra0").value) $("ra1").value = +$("ra0").value + 1;
+    for (const j of ["rc", "ra0", "ra1", "speed"]) { $(j + "o").textContent = $(j).value; store.set(j === "speed" ? j : "p" + M.pack_id + ":" + j, +$(j).value); }
+    if (proc) { touch(); const t = Math.round(proc.active_ms);
+      if (id === "speed") proc.speed_changes.push({ t_ms: t, speed: +$("speed").value });
+      else proc.radii_changes.push(Object.assign({ t_ms: t }, radii())); }
+    computeTraces(); drawFrame();
+  });
+  for (const j of ["rc", "ra0", "ra1", "speed"]) $(j + "o").textContent = $(j).value;
+}
+
+// ---------------------------------------------------------------- items
+async function show(i) {
+  k = i; activeMs = 0; lastTick = performance.now();
+  if (i < N) proc = newProc(items[i]);
+  if (k >= N) return finish();
+  done = false;
+  const clip = await fetchClip(k);
+  if (k !== i) return;
+  raw = clip.raw; ls = clip.ls; frame = 0; clipRange = null; acc = 0;
+  playing = true; setPlayLabel();                // every item starts playing
+  computeTraces(); drawFrame(); drawContext();
+  const d = decisions[items[k].id];
+  const pr = $("prior"); pr.hidden = !d; pr.className = "prior " + (d || ""); pr.textContent = d ? "earlier: " + d : "";
+  $("back").disabled = k === 0;
+  updateHeader();
+  for (let j = 1; j <= 3; j++) if (k + j < N) fetchClip(k + j);
+}
+function nextOpen(from) {
+  for (let j = from; j < N; j++) if (!decisions[items[j].id]) return j;
+  for (let j = 0; j < N; j++) if (!decisions[items[j].id]) return j;
+  return N;
+}
+function updateHeader() {
+  const n = Object.keys(decisions).length;
+  $("count").textContent = n + " / " + N + " decided" + (k < N ? " · item " + (k + 1) : "");
+  $("bar").style.width = (100 * n / N).toFixed(2) + "%";
+}
+function finish() {
+  done = true; raw = null;
+  $("ovt").textContent = "All items decided";
+  $("ovp").textContent = "Thank you. Every decision is saved in " + logPath + ". Use Back to review any item.";
+  $("resume").textContent = "Review items";
+  $("overlay").classList.add("on");
+  updateHeader();
+}
+let busy = false;
+async function decide(dec, input) {
+  if (paused || done || busy || k >= N) return;
+  busy = true;
+  const it = items[k];
+  try {
+    const r = await post({ type: "decision", item_id: it.id, decision: dec, active_ms: Math.round(activeMs),
+                           display: Object.assign(radii(), { contrast: $("contrast").value, speed: +$("speed").value }),
+                           process: procOut(input || "mouse") });
+    decisions[it.id] = dec;
+    toast(dec === "accept" ? "Accepted" : "Declined");
+    await show(nextOpen(k + 1));
+  } catch (e) { toast("Not saved: " + e.message); }
+  busy = false;
+}
+async function setPaused(p) {
+  if (p === paused) return;
+  paused = p;
+  if (!done) {
+    $("ovt").textContent = "Paused";
+    $("ovp").textContent = "Every decision so far is saved. You can close this window; starting the labeler again resumes where you left off.";
+    $("resume").textContent = "Resume";
+  }
+  $("overlay").classList.toggle("on", p);
+  lastTick = performance.now();
+  try { await post({ type: p ? "pause" : "resume", item_index: k, input: "ui" }); } catch (e) {}
+  if (!p) $("accept").focus();
+}
+
+// ---------------------------------------------------------------- loop
+let acc = 0;
+function tick(now) {
+  const dt = now - lastTick; lastTick = now;
+  if (proc && !done) { if (paused) proc.paused_ms += dt; else if (document.visibilityState !== "visible") proc.hidden_ms += dt; }
+  if (!paused && !done && document.visibilityState === "visible") {
+    activeMs += dt; sessionMs += dt;
+    if (proc && raw) { proc.active_ms += dt; proc.dwell_ms[frame] += dt; }
+    if (playing && raw) { acc += dt; const per = 1000 / +$("speed").value; while (acc >= per) { acc -= per; frame = (frame + 1) % F; if (frame === 0 && proc) proc.loops++; drawFrame(); } }
+    $("timer").textContent = "active " + mmss(sessionMs);
+  }
+  requestAnimationFrame(tick);
+}
+function mmss(ms) { const s = Math.floor(ms / 1000); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+
+document.addEventListener("visibilitychange", () => { lastTick = performance.now(); });
+document.addEventListener("keydown", e => {
+  if ((e.target.tagName === "INPUT" || e.target.tagName === "SELECT") && e.key !== " ") return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const key = e.key.toLowerCase();
+  if (paused) { if (key === "p" || key === "enter") { e.preventDefault(); setPaused(false); } return; }
+  if (key === "a") { e.preventDefault(); decide("accept", "key"); return; }
+  else if (key === "d") { e.preventDefault(); decide("decline", "key"); return; }
+  touch();
+  if (key === "b") { e.preventDefault(); goBack("key"); }
+  else if (key === "p") { e.preventDefault(); setPaused(true); }
+  else if (key === "c") { e.preventDefault(); const c = $("contrast"); c.value = c.value === "pack" ? "clip" : "pack"; store.set("contrast", c.value); logContrast(); drawFrame(); }
+  else if (key === " ") { e.preventDefault(); togglePlay(); }
+  else if (key === "arrowright") { e.preventDefault(); if (proc) proc.step_keys++; playing = false; setPlayLabel(); frame = Math.min(F - 1, frame + 1); drawFrame(); }
+  else if (key === "arrowleft") { e.preventDefault(); if (proc) proc.step_keys++; playing = false; setPlayLabel(); frame = Math.max(0, frame - 1); drawFrame(); }
+});
+function togglePlay() { touch(); if (proc) proc.play_toggles++; playing = !playing; setPlayLabel(); }
+function goBack(input) {
+  if (k <= 0) return;
+  post({ type: "navigate", item_index: k, to_index: k - 1, reason: "back", input,
+         process: proc && k < N ? procOut(input) : null }).catch(() => {});   // what was done on the item being left
+  show(k - 1);
+}
+function setPlayLabel() { $("play").textContent = playing ? "Stop clip" : "Play clip"; }
+$("accept").onclick = e => decide("accept", e.detail === 0 ? "key" : "mouse");
+$("decline").onclick = e => decide("decline", e.detail === 0 ? "key" : "mouse");
+$("back").onclick = () => { touch(); goBack("mouse"); };
+$("play").onclick = togglePlay;
+$("pause").onclick = () => setPaused(true);
+$("resume").onclick = () => { if (done) { $("overlay").classList.remove("on"); done = false; show(N - 1); } else setPaused(false); };
+window.addEventListener("beforeunload", () => { navigator.sendBeacon && navigator.sendBeacon("/api/log", new Blob([JSON.stringify({ type: "pause", item_index: k })], { type: "application/json" })); });
+
+let logPath = "";
+(async function boot() {
+  const st = await (await fetch("/api/state")).json();
+  M = st.manifest; S = M.clip.size; F = M.clip.frames; items = M.items; N = items.length; decisions = st.decisions; logPath = st.log_file;
+  $("who").textContent = st.annotator + " · " + (M.source.file || M.lane || "") + " · pack " + M.pack_id;
+  $("lsr").textContent = M.display.ls_range;
+  $("logpath").textContent = "saving to " + st.log_file;
+  ctxBytes = new Uint8Array(await (await fetch("/api/context")).arrayBuffer());
+  setupCanvases(); initKnobs();
+  await post({ type: "session_start", item_index: st.next,
+               client: { user_agent: navigator.userAgent, viewport: [innerWidth, innerHeight], dpr: devicePixelRatio,
+                         screen: [screen.width, screen.height], tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                         theme: matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
+                         canvas_scale: SCALE } });
+  await show(st.next);
+  $("accept").focus();
+  requestAnimationFrame(tick);
+})().catch(e => { document.body.insertAdjacentHTML("afterbegin", "<p style='color:var(--decline)'>Could not start: " + e.message + ". Is the labeler server still running?</p>"); });
+</script>
+</body>
+</html>

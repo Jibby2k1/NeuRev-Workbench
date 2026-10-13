@@ -88,6 +88,7 @@ different evaluation populations and readouts; their results stay separate.
 | Follow the question → result → decision history | [Experiment timeline](research/generated/EXPERIMENT_TIMELINE.md) |
 | Process a raw video into an auditable report | [Raw-video workflow](docs/workflows/raw_video_to_report.md) |
 | Review or annotate candidates | [Workbench guide](docs/NEURON_WORKBENCH.md) |
+| Label calcium events in a browser, or hand recordings to labellers | [Event labeler](neurobench/tools/event_labeler/README.md) |
 | Run a reproducible experiment | [Scientific audit standard](docs/workflows/SCIENTIFIC_AUDIT_OUTPUT_STANDARD.md) |
 | Add a new experiment record | [Research registry guide](research/README.md) |
 | Extend the maintained Python package | [Codebase navigation](docs/CODEBASE_NAVIGATION.md) |
