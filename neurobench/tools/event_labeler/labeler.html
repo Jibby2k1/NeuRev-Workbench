@@ -49,6 +49,7 @@ button.big { font-size: 16px; font-weight: 650; padding: 12px 26px; min-width: 1
 #accept { background: var(--accept); color: #fff; border-color: transparent; }
 #decline { background: var(--decline); color: #fff; border-color: transparent; }
 #unsure { min-width: 110px; }
+button.small { padding: 3px 10px; font-size: 13px; }
 .prior.unsure { color: var(--ink); }
 #note { font: inherit; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; width: min(320px, 100%); }
 #download { border-color: var(--accent); color: var(--accent); }
@@ -99,6 +100,18 @@ legend { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; colo
 .card .actions { display: flex; justify-content: flex-end; gap: 10px; }
 #startBtn, #welcomeBtn { background: var(--accent); color: var(--panel); border-color: transparent; }
 .sess { font-variant-numeric: tabular-nums; padding: 2px 10px; border-radius: 12px; background: var(--chip); color: var(--ink); font-size: 13px; }
+.reasons { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 8px; justify-content: flex-end; color: var(--muted); font-size: 13px; }
+.reasons button { padding: 4px 10px; font-size: 13px; border-color: color-mix(in srgb, var(--decline) 45%, var(--line)); }
+.reasons button kbd { margin-right: 5px; }
+#linker { position: fixed; inset: 0; background: color-mix(in srgb, var(--bg) 96%, transparent); display: none; align-items: center; justify-content: center; z-index: 7; padding: 16px; overflow: auto; }
+#linker.on { display: flex; }
+#linker .card { max-width: 760px; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pair figure { margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.pair figcaption { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+#linkCtx { width: 100%; max-height: 220px; object-fit: contain; }
+#linkSame { background: var(--accept); color: #fff; border-color: transparent; }
+#linkDiff { background: var(--decline); color: #fff; border-color: transparent; }
 #toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 7px 14px; border-radius: 6px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
 #toast.on { opacity: .92; }
 @media (prefers-reduced-motion: reduce) { #toast { transition: none; } }
@@ -112,6 +125,7 @@ legend { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; colo
   <div class="bar" aria-hidden="true"><i id="bar"></i></div>
   <span class="sess" id="sess" title="Progress toward this sitting's goal"></span>
   <span class="meta" id="timer"></span>
+  <button id="linkBtn" class="small" title="Mark which accepted items show the same cell (L)">Link cells</button>
 </header>
 
 <main>
@@ -153,9 +167,12 @@ legend { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; colo
   <button id="unsure" title="Unsure (U)">Unsure</button>
   <button id="accept" class="big" title="Accept (A)">Accept</button>
 </div>
+<div class="reasons" id="reasons" role="group" aria-label="Decline with a reason (optional)">
+  <span>Decline because…</span>
+</div>
 <div class="help">
   <span><kbd>A</kbd> accept</span><span><kbd>D</kbd> decline</span><span><kbd>U</kbd> unsure</span><span><kbd>N</kbd> note</span><span><kbd>B</kbd> back</span>
-  <span><kbd>Space</kbd> play / stop</span><span><kbd>←</kbd><kbd>→</kbd> step frames</span><span><kbd>P</kbd> pause or change goal</span><span><kbd>C</kbd> contrast</span>
+  <span><kbd>Space</kbd> play / stop</span><span><kbd>←</kbd><kbd>→</kbd> step frames</span><span><kbd>P</kbd> pause or change goal</span><span><kbd>C</kbd> contrast</span><span><kbd>1</kbd>–<kbd>6</kbd> decline with a reason</span><span><kbd>L</kbd> link repeated cells</span>
   <span id="logpath"></span>
 </div>
 
@@ -226,6 +243,24 @@ legend { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; colo
     <div class="actions"><button type="submit" id="welcomeBtn" class="big">Open pack</button></div>
   </form>
 </div>
+<div id="linker" role="dialog" aria-modal="true" aria-labelledby="linkTitle">
+  <div class="card">
+    <h2 id="linkTitle">Same cell?</h2>
+    <p class="lead" id="linkLead">You accepted both of these clips, and they are close together in the recording. Do they show the same cell?</p>
+    <div class="pair">
+      <figure><canvas id="linkA" aria-label="first clip"></canvas><figcaption id="linkCapA"></figcaption></figure>
+      <figure><canvas id="linkB" aria-label="second clip"></canvas><figcaption id="linkCapB"></figcaption></figure>
+    </div>
+    <canvas id="linkCtx" aria-label="where the two clips are in the recording"></canvas>
+    <p class="privacy" id="linkInfo"></p>
+    <div class="actions">
+      <button id="linkDone" type="button" title="Back to reviewing (Esc)">Done for now</button>
+      <button id="linkSkip" type="button" title="Not sure: skip this pair (K)">Not sure, skip</button>
+      <button id="linkDiff" class="big" type="button" title="Different cells (X)">Different cells</button>
+      <button id="linkSame" class="big" type="button" title="Same cell (S)">Same cell</button>
+    </div>
+  </div>
+</div>
 <div id="toast" role="status"></div>
 
 <script>
@@ -234,6 +269,12 @@ const $ = id => document.getElementById(id);
 let M, S, F, N, items, decisions = {}, k = 0, frame = 0, playing = true, paused = false, done = false;
 let raw = null, ls = null, cache = new Map(), activeMs = 0, lastTick = performance.now(), sessionMs = 0;
 let goal = { kind: "items", value: 50 }, scope = null, sitCount = 0, sitStartMs = 0, mode = "setup", notes = {};
+let reasons = {}, links = {}, pendingReason = null;
+const REASONS = [["noise", "Noise or flicker"], ["motion", "Movement"], ["whole_area", "Whole area brightens"],
+                 ["saturated", "Saturated"], ["off_centre", "Cell nearby, not at centre"], ["other", "Other, with a note"]];
+const REASON_IDS = REASONS.map(r => r[0]);
+const reasonLabel = id => (REASONS.find(r => r[0] === id) || [id, id])[1];
+const pairKey = (a, b) => [a, b].sort().join("|");
 const store = { get(key, d) { try { const v = localStorage.getItem("evlab:" + key); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
                 set(key, v) { try { localStorage.setItem("evlab:" + key, JSON.stringify(v)); } catch (e) {} } };
 
@@ -389,6 +430,8 @@ function localBackend(pack, annotator, records, profile) {
     mode: "local", logKey, records, profile, pack,
     async log(rec) {
       if (rec.type === "decision" && (!ids.has(rec.item_id) || !["accept", "decline", "unsure"].includes(rec.decision))) throw new Error("unknown item or decision");
+      if (rec.type === "decision" && rec.reason != null && (rec.decision !== "decline" || !REASON_IDS.includes(rec.reason))) throw new Error("unknown decline reason");
+      if (rec.type === "link" && (!ids.has(rec.item_id) || !ids.has(rec.other_id) || rec.item_id === rec.other_id || typeof rec.same !== "boolean")) throw new Error("bad link");
       const full = Object.assign({}, rec, { pack_id: pack.pack_id, annotator, ts: new Date().toISOString(), unix: Date.now() / 1000 });
       if (full.type === "decision") full.item_index = pack.manifest.items.findIndex(it => it.id === full.item_id);
       records.push(full);
@@ -414,15 +457,21 @@ function resultsZip() {
   const latest = {}, notesBy = {};
   for (const r of recs) if (r.type === "decision") { latest[r.item_id] = r; }
   const esc = v => { const t = v == null ? "" : String(v); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; };
-  const rows = ["queue_position,item_id,frame_ui,y_px,x_px,decision,note,active_s,decided_at"];
+  const rows = ["queue_position,item_id,frame_ui,y_px,x_px,decision,note,active_s,decided_at,decline_reason"];
   let acc = 0, dec = 0, uns = 0, act = [];
   man.items.forEach((it, i) => {
     const r = latest[it.id]; if (!r) return;
     if (r.decision === "accept") acc++; else if (r.decision === "decline") dec++; else uns++;
     const s = r.process && r.process.active_ms != null ? r.process.active_ms / 1000 : null;
     if (s != null) act.push(s);
-    rows.push([i + 1, it.id, it.t, it.y, it.x, r.decision, r.note || "", s == null ? "" : s.toFixed(2), r.ts].map(esc).join(","));
+    rows.push([i + 1, it.id, it.t, it.y, it.x, r.decision, r.note || "", s == null ? "" : s.toFixed(2), r.ts, r.reason || ""].map(esc).join(","));
   });
+  const latestLink = {};
+  for (const r of recs) if (r.type === "link") latestLink[pairKey(r.item_id, r.other_id)] = r;
+  const linkRows = ["item_id,other_id,same_cell,answered_at"];
+  for (const r of Object.values(latestLink)) linkRows.push([r.item_id, r.other_id, r.same ? "yes" : "no", r.ts].map(esc).join(","));
+  const reasonCount = {};
+  for (const r of Object.values(latest)) if (r.decision === "decline" && r.reason) reasonCount[r.reason] = (reasonCount[r.reason] || 0) + 1;
   act.sort((a, c) => a - c);
   const med = act.length ? act[Math.floor(act.length / 2)] : null;
   const sittings = recs.filter(r => r.type === "session_start").length;
@@ -433,16 +482,20 @@ function resultsZip() {
     "Exported:     " + new Date().toString(), "",
     "Decided:      " + (acc + dec + uns) + " of " + man.items.length,
     "  accept      " + acc, "  decline     " + dec, "  unsure      " + uns,
+    "Decline reasons given: " + (Object.keys(reasonCount).length ? Object.entries(reasonCount).map(([k, v]) => reasonLabel(k) + " " + v).join(", ") : "none"),
     "Notes:        " + Object.values(latest).filter(r => r.note).length,
+    "Linked pairs: " + (linkRows.length - 1) + " (" + Object.values(latestLink).filter(r => r.same).length + " same cell)",
     "Sittings:     " + sittings,
     "Median time per decision: " + (med == null ? "n/a" : med.toFixed(1) + " s"), "",
     "Files: labels_<pack>_<name>.jsonl is the complete log (every answer and how it was made);",
-    "decisions.csv is one row per item (latest answer); reviewer.json is the profile you entered.", ""
+    "decisions.csv is one row per item (latest answer); links.csv is one row per pair you linked;",
+    "reviewer.json is the profile you entered.", ""
   ].join("\n");
   const name = "labels_" + man.pack_id + "_" + b.logKey.split("|")[1] + ".jsonl";
   return makeZip([
     { name, text: recs.map(r => JSON.stringify(r)).join("\n") + "\n" },
     { name: "decisions.csv", text: rows.join("\n") + "\n" },
+    { name: "links.csv", text: linkRows.join("\n") + "\n" },
     { name: "summary.txt", text: summary },
     { name: "reviewer.json", text: JSON.stringify(Object.assign({ pack_id: man.pack_id }, b.profile), null, 1) + "\n" },
     { name: "README.txt", text: "Send this zip back to the person who gave you the pack. Thank you!\n" }
@@ -612,6 +665,7 @@ function initKnobs() {
 
 // ---------------------------------------------------------------- items
 async function show(i) {
+  pendingReason = null;
   k = i; activeMs = 0; lastTick = performance.now();
   if (i < limit()) proc = newProc(items[i]);
   if (k >= limit()) return scopeDone();
@@ -623,7 +677,7 @@ async function show(i) {
   computeTraces(); drawFrame(); drawContext();
   const d = decisions[items[k].id];
   $("note").value = notes[items[k].id] || "";
-  const pr = $("prior"); pr.hidden = !d; pr.className = "prior " + (d || ""); pr.textContent = d ? "earlier: " + d : "";
+  const pr = $("prior"); pr.hidden = !d; pr.className = "prior " + (d || ""); pr.textContent = d ? "earlier: " + d + (d === "decline" && reasons[items[k].id] ? " (" + reasonLabel(reasons[items[k].id]).toLowerCase() + ")" : "") : "";
   $("back").disabled = k === 0;
   updateHeader();
   for (let j = 1; j <= 3; j++) if (k + j < N) fetchClip(k + j);
@@ -668,7 +722,7 @@ function updateHeader() {
 function scopeDone() {
   const L = limit();
   if (L >= N) return openOverlay("alldone", "All items decided",
-    backend.mode === "local" ? "Thank you! Download your results and send the zip back." :
+    backend.mode === "local" ? "Thank you! Optionally press L to mark which accepted clips show the same cell. Then download your results and send the zip back." :
     "Thank you. Every decision is saved in " + logPath + ". Use Back to look at any item again.", "Look back through items",
     backend.mode === "local" ? "Download results" : null);
   const more = Math.min(100, N - L);
@@ -696,23 +750,35 @@ function goalDone() {
     " of active time. Everything is saved.", "Keep going", "Finish for now");
 }
 let busy = false;
-async function decide(dec, input) {
+async function decide(dec, input, reason) {
   if (paused || done || busy || k >= N) return;
   busy = true;
+  pendingReason = null;
   const it = items[k];
   try {
     const note = $("note").value.trim();
     const r = await post({ type: "decision", item_id: it.id, decision: dec, active_ms: Math.round(activeMs),
                            display: Object.assign(radii(), { contrast: $("contrast").value, speed: +$("speed").value }),
-                           process: procOut(input || "mouse"), ...(note ? { note } : {}) });
+                           process: procOut(input || "mouse"), ...(note ? { note } : {}), ...(reason ? { reason } : {}) });
     decisions[it.id] = dec;
     if (note) notes[it.id] = note; else delete notes[it.id];
+    if (reason) reasons[it.id] = reason; else delete reasons[it.id];
     sitCount++;
-    toast(dec === "accept" ? "Accepted" : dec === "decline" ? "Declined" : "Marked unsure");
+    toast(dec === "accept" ? "Accepted" : dec === "decline" ? (reason ? "Declined: " + reasonLabel(reason).toLowerCase() + " (B to undo)" : "Declined") : "Marked unsure");
     if (goalReached()) goalDone();
     else await show(nextOpen(k + 1));
   } catch (e) { toast("Not saved: " + e.message); }
   busy = false;
+}
+$("note").addEventListener("blur", () => { pendingReason = null; });   // leaving the box any other way cancels "other"
+function declineWith(reason, input) {
+  if (paused || done || busy || k >= N) return;
+  if (reason === "other" && !$("note").value.trim()) {     // "other" asks for a short note first; Enter declines
+    pendingReason = "other"; touch(); $("note").focus();
+    toast("Type a short note, then Enter to decline (Esc cancels)");
+    return;
+  }
+  decide("decline", input, reason);
 }
 async function setPaused(p) {
   if (p === paused) return;
@@ -734,6 +800,7 @@ async function setPaused(p) {
 let acc = 0;
 function tick(now) {
   const dt = now - lastTick; lastTick = now;
+  if (mode === "link") { linkTick(dt); requestAnimationFrame(tick); return; }
   if (proc && !done) { if (paused) proc.paused_ms += dt; else if (document.visibilityState !== "visible") proc.hidden_ms += dt; }
   if (!paused && !done && document.visibilityState === "visible") {
     activeMs += dt; sessionMs += dt;
@@ -748,20 +815,30 @@ function mmss(ms) { const s = Math.floor(ms / 1000); return Math.floor(s / 60) +
 
 document.addEventListener("visibilitychange", () => { lastTick = performance.now(); });
 document.addEventListener("keydown", e => {
-  if (e.target.id === "note") { if (e.key === "Escape" || e.key === "Enter") { e.preventDefault(); e.target.blur(); } return; }
+  if (mode === "link") return linkKey(e);
+  if (e.target.id === "note") {
+    if (e.key === "Escape" || e.key === "Enter") {
+      e.preventDefault();
+      const pr = pendingReason; pendingReason = null; e.target.blur();
+      if (e.key === "Enter" && pr && e.target.value.trim()) decide("decline", "key", pr);
+    }
+    return;
+  }
   if ((e.target.tagName === "INPUT" || e.target.tagName === "SELECT") && e.key !== " ") return;
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   const key = e.key.toLowerCase();
   if (mode === "setup" || mode === "welcome") return;  // the form handles Enter
   if (paused) { if (key === "p" || key === "enter") { e.preventDefault(); setPaused(false); } return; }
-  if (done) { if (key === "enter") { e.preventDefault(); $("resume").click(); } return; }
+  if (done) { if (key === "enter") { e.preventDefault(); $("resume").click(); } else if (key === "l") { e.preventDefault(); openLinker("key"); } return; }
   if (key === "a") { e.preventDefault(); decide("accept", "key"); return; }
   else if (key === "d") { e.preventDefault(); decide("decline", "key"); return; }
   else if (key === "u") { e.preventDefault(); decide("unsure", "key"); return; }
   else if (key === "n") { e.preventDefault(); touch(); $("note").focus(); return; }
+  else if (/^[1-6]$/.test(key)) { e.preventDefault(); declineWith(REASON_IDS[+key - 1], "key"); return; }
   touch();
   if (key === "b") { e.preventDefault(); goBack("key"); }
   else if (key === "p") { e.preventDefault(); setPaused(true); }
+  else if (key === "l") { e.preventDefault(); openLinker("key"); }
   else if (key === "c") { e.preventDefault(); const c = $("contrast"); c.value = c.value === "pack" ? "clip" : "pack"; store.set("contrast", c.value); logContrast(); drawFrame(); }
   else if (key === " ") { e.preventDefault(); togglePlay(); }
   else if (key === "arrowright") { e.preventDefault(); if (proc) proc.step_keys++; playing = false; setPlayLabel(); frame = Math.min(F - 1, frame + 1); drawFrame(); }
@@ -839,6 +916,141 @@ $("unsure").onclick = e => decide("unsure", e.detail === 0 ? "key" : "mouse");
 $("download").onclick = downloadResults;
 window.addEventListener("beforeunload", () => { if (backend && mode !== "welcome") backend.beacon({ type: "pause", item_index: k }); });
 
+for (const [i, [id, label]] of REASONS.entries()) {
+  const b = document.createElement("button"); b.type = "button"; b.dataset.reason = id;
+  const kb = document.createElement("kbd"); kb.textContent = String(i + 1);
+  b.append(kb, label); b.title = "Decline: " + label + " (" + (i + 1) + ")";
+  b.onclick = ev => declineWith(id, ev.detail === 0 ? "key" : "mouse");
+  $("reasons").appendChild(b);
+}
+
+// ---------------------------------------------------------------- linking pass (after review, never during it)
+// Pairs of ACCEPTED items whose centres are within the clip half-width of each other, asked one at a time:
+// same cell or different cells. Pairs already joined through "same" answers are not asked again.
+let link = null;
+function linkGroups() {
+  const parent = {};
+  const find = a => { while (parent[a] && parent[a] !== a) a = parent[a]; return a; };
+  for (const [key, same] of Object.entries(links)) if (same) {
+    const [a, b] = key.split("|");
+    if (decisions[a] !== "accept" || decisions[b] !== "accept") continue;   // a link through a now-declined item no longer joins
+    const ra = find(a), rb = find(b);
+    if (ra !== rb) parent[ra] = rb;
+  }
+  return find;
+}
+function openPairs() {
+  const acc = items.map((it, i) => [it, i]).filter(([it]) => decisions[it.id] === "accept");
+  const h = M.clip.half, find = linkGroups(), out = [];
+  for (let a = 0; a < acc.length; a++) for (let b = a + 1; b < acc.length; b++) {
+    const [p, i] = acc[a], [q, j] = acc[b];
+    if ((p.y - q.y) ** 2 + (p.x - q.x) ** 2 > h * h) continue;
+    const key = pairKey(p.id, q.id);
+    if (key in links || (link && link.skipped.has(key)) || find(p.id) === find(q.id)) continue;
+    out.push([i, j]);
+  }
+  return out;
+}
+async function openLinker(input) {
+  if (!items || paused || mode === "setup" || mode === "welcome") return;
+  link = { prevMode: mode, prevDone: done, skipped: new Set(), pair: null, frame: 0, acc: 0, shownMs: 0, answered: 0 };
+  mode = "link"; done = true;
+  $("linker").classList.add("on");
+  post({ type: "link_session", item_index: k, input, open_pairs: openPairs().length }).catch(() => {});
+  await nextPair();
+}
+function closeLinker() {
+  if (!link) return;
+  post({ type: "link_session", item_index: k, input: "ui", closed: true, answered: link.answered }).catch(() => {});
+  $("linker").classList.remove("on");
+  mode = link.prevMode; done = link.prevDone; link = null; lastTick = performance.now();
+  if (mode === "review") $("accept").focus();
+}
+async function nextPair() {
+  const pairs = openPairs();
+  const has = pairs.length > 0;
+  for (const id of ["linkSame", "linkDiff", "linkSkip"]) $(id).disabled = !has;
+  $("linkA").parentElement.parentElement.hidden = !has; $("linkCtx").hidden = !has;
+  if (!has) {
+    link.pair = null;
+    $("linkTitle").textContent = "No pairs to link";
+    $("linkLead").textContent = "Every pair of accepted clips that are close together has an answer (or was skipped this time). Accept more items, then come back.";
+    $("linkInfo").textContent = "";
+    $("linkDone").focus();
+    return;
+  }
+  const [i, j] = pairs[0];
+  const [ca, cb] = await Promise.all([fetchClip(i), fetchClip(j)]);
+  if (!link) return;
+  link.pair = { i, j, a: ca.raw, b: cb.raw }; link.frame = 0; link.acc = 0; link.shownMs = 0;
+  const A = items[i], B = items[j], dt = Math.abs(B.t - A.t) / M.source.fps, dd = Math.hypot(A.y - B.y, A.x - B.x);
+  $("linkTitle").textContent = "Same cell?";
+  $("linkLead").textContent = "You accepted both of these clips, and their centres are close together in the recording. Do they show the same cell?";
+  $("linkCapA").textContent = "Clip 1"; $("linkCapB").textContent = "Clip 2 · " + dt.toFixed(1) + " s apart";
+  $("linkInfo").textContent = pairs.length + " pair" + (pairs.length === 1 ? "" : "s") + " left · centres " + dd.toFixed(1) + " px apart · S same · X different · K skip · Esc done";
+  for (const c of [$("linkA"), $("linkB")]) { c.width = S * SCALE; c.height = S * SCALE; }
+  drawLinkContext(A, B); drawLinkFrame();
+  $("linkDone").focus();
+}
+function drawLinkFrame() {
+  if (!link || !link.pair) return;
+  const n = S * S, o = link.frame * n, lo = M.display.raw_lo, span = Math.max(M.display.raw_hi - lo, 1);
+  for (const [cv, arr] of [[$("linkA"), link.pair.a], [$("linkB"), link.pair.b]]) {
+    const img = new ImageData(S, S);
+    for (let p = 0; p < n; p++) {
+      const v = Math.max(0, Math.min(255, (arr[o + p] - lo) / span * 255));
+      img.data[4 * p] = img.data[4 * p + 1] = img.data[4 * p + 2] = v; img.data[4 * p + 3] = 255;
+    }
+    blit(cv, img);
+  }
+}
+function drawLinkContext(A, B) {
+  const H = M.source.height, W = M.source.width, cv = $("linkCtx");
+  cv.width = W; cv.height = H;
+  const g = cv.getContext("2d"), img = g.createImageData(W, H);
+  for (let p = 0; p < W * H; p++) { const v = ctxBytes[p]; img.data[4 * p] = img.data[4 * p + 1] = img.data[4 * p + 2] = v; img.data[4 * p + 3] = 255; }
+  g.putImageData(img, 0, 0);
+  const h = M.clip.half;
+  g.lineWidth = 3;
+  g.strokeStyle = "#ffb000"; g.strokeRect(A.x - h, A.y - h, 2 * h + 1, 2 * h + 1);
+  g.strokeStyle = "#6ea8e8"; g.setLineDash([5, 4]); g.strokeRect(B.x - h, B.y - h, 2 * h + 1, 2 * h + 1); g.setLineDash([]);
+}
+async function answerLink(same, input) {
+  if (!link || !link.pair || busy) return;
+  busy = true;
+  const A = items[link.pair.i], B = items[link.pair.j];
+  try {
+    await post({ type: "link", item_id: A.id, other_id: B.id, same, process: { active_ms: Math.round(link.shownMs), input } });
+    links[pairKey(A.id, B.id)] = same; link.answered++;
+    toast(same ? "Same cell" : "Different cells");
+    await nextPair();
+  } catch (e) { toast("Not saved: " + e.message); }
+  busy = false;
+}
+function skipLink() { if (link && link.pair) { link.skipped.add(pairKey(items[link.pair.i].id, items[link.pair.j].id)); nextPair(); } }
+function linkKey(e) {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const key = e.key.toLowerCase();
+  if (key === " " || key === "enter") { e.preventDefault(); return; }   // only S / X answer; Space must not press a button
+  if (key === "escape") { e.preventDefault(); closeLinker(); }
+  else if (key === "s") { e.preventDefault(); answerLink(true, "key"); }
+  else if (key === "x") { e.preventDefault(); answerLink(false, "key"); }
+  else if (key === "k") { e.preventDefault(); skipLink(); }
+}
+function linkTick(dt) {
+  if (!link || !link.pair || document.visibilityState !== "visible") return;
+  link.shownMs += dt; link.acc += dt;
+  const per = 1000 / +$("speed").value;
+  let moved = false;
+  while (link.acc >= per) { link.acc -= per; link.frame = (link.frame + 1) % F; moved = true; }
+  if (moved) drawLinkFrame();
+}
+$("linkBtn").onclick = e => openLinker(e.detail === 0 ? "key" : "mouse");
+$("linkSame").onclick = e => answerLink(true, e.detail === 0 ? "key" : "mouse");
+$("linkDiff").onclick = e => answerLink(false, e.detail === 0 ? "key" : "mouse");
+$("linkSkip").onclick = skipLink;
+$("linkDone").onclick = closeLinker;
+
 let logPath = "";
 function ensureGoalChip() {          // a goal from --budget / --minutes that is not one of the chips gets its own chip
   if (goal.kind === "none" || document.querySelector(`input[name=goal][value='${goal.kind}:${goal.value}']`)) return;
@@ -847,7 +1059,7 @@ function ensureGoalChip() {          // a goal from --budget / --minutes that is
 }
 async function begin(st) {
   M = st.manifest; S = M.clip.size; F = M.clip.frames; items = M.items; N = items.length; decisions = st.decisions;
-  notes = st.notes || {}; logPath = st.log_file;
+  notes = st.notes || {}; reasons = st.reasons || {}; links = st.links || {}; logPath = st.log_file;
   $("who").textContent = st.annotator + " · " + (M.label || M.source.file || M.lane || "") + " · pack " + M.pack_id;
   $("lsr").textContent = M.display.ls_range;
   $("logpath").textContent = backend.mode === "local" ? "saved in this browser · use Download results to send them" : "saving to " + st.log_file;
@@ -861,12 +1073,17 @@ async function begin(st) {
   openSetup();
 }
 function stateFromRecords(man, annotator, recs) {
-  const decisions = {}, notes = {}; let scope = null;
+  const decisions = {}, notes = {}, reasons = {}, links = {}; let scope = null;
   for (const r of recs) {
-    if (r.type === "decision") { decisions[r.item_id] = r.decision; if (r.note) notes[r.item_id] = r.note; else delete notes[r.item_id]; }
+    if (r.type === "decision") {
+      decisions[r.item_id] = r.decision;
+      if (r.note) notes[r.item_id] = r.note; else delete notes[r.item_id];
+      if (r.reason) reasons[r.item_id] = r.reason; else delete reasons[r.item_id];
+    }
+    else if (r.type === "link") links[pairKey(r.item_id, r.other_id)] = r.same;
     else if (r.type === "settings" && "scope" in r) scope = r.scope;
   }
-  return { manifest: man, annotator, decisions, notes, scope, defaults: {}, log_file: "this browser" };
+  return { manifest: man, annotator, decisions, notes, reasons, links, scope, defaults: {}, log_file: "this browser" };
 }
 async function startLocal(pack, name, profile) {
   const annotator = name.replace(/[^A-Za-z0-9_-]+/g, "_").replace(/^_+|_+$/g, "") || "reviewer";

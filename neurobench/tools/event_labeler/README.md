@@ -135,6 +135,17 @@ something is worth saying.
 | <kbd>U</kbd> | Unsure | | <kbd>N</kbd> | Type a note (<kbd>Esc</kbd> to leave the box) |
 | <kbd>B</kbd> | Back, to change an answer | | <kbd>C</kbd> | Contrast: pack-wide or this clip |
 | <kbd>P</kbd> | Pause, or change the goal | | | The ring sizes are sliders under the traces |
+| <kbd>1</kbd>–<kbd>6</kbd> | Decline with a reason (optional) | | <kbd>L</kbd> | Link repeated cells (optional) |
+
+**Decline reasons** (optional, one keystroke instead of <kbd>D</kbd>): <kbd>1</kbd> noise or flicker,
+<kbd>2</kbd> movement, <kbd>3</kbd> the whole area brightens, <kbd>4</kbd> saturated, <kbd>5</kbd> a cell nearby but
+not at the centre, <kbd>6</kbd> other (type a note, then <kbd>Enter</kbd>).
+
+**Link repeated cells** (optional, usually after reviewing): <kbd>L</kbd> shows pairs of clips you **accepted**
+whose centres are within the clip's half-width of each other and asks **same cell** (<kbd>S</kbd>) or **different
+cells** (<kbd>X</kbd>); <kbd>K</kbd> skips a pair, <kbd>Esc</kbd> returns. Pairs already joined through earlier
+answers are not asked again. It is a separate step on purpose: a "seen here before" hint while deciding would change
+how repeats are judged, and would show up mostly on detector items rather than on control patches.
 
 > [!TIP]
 > **To stop,** just close the tab (or, with the local server, press <kbd>Ctrl</kbd>+<kbd>C</kbd> in the
@@ -305,7 +316,8 @@ Each reviewer's **results zip** holds:
 | File | Content |
 |---|---|
 | `labels_<pack>_<name>.jsonl` | The complete log: every answer, note and review record (same format as the local server's log) |
-| `decisions.csv` | One row per decided item: position, frame, location, answer, note, seconds |
+| `decisions.csv` | One row per decided item: position, frame, location, answer, note, seconds, decline reason |
+| `links.csv` | One row per pair answered in the linking step: the two items and same cell yes / no |
 | `summary.txt` | Counts, sittings and median time per decision, readable at a glance |
 | `reviewer.json` | Name and stated experience |
 
@@ -319,6 +331,8 @@ Each reviewer's **results zip** holds:
   random                         ...
   reference annotations re-accepted: <accepted> / <decided>
   seconds per decision: median <s>, mean <s>; <n> decisions per active hour
+  decline reasons, proposal               motion <n>, noise <n>, not given <n>, ...
+  linking: <n> pairs answered (<n> same cell); <n> accepted items = <n> distinct cells
   proposal accept rate by queue block: {'1-100': ..., '101-200': ...}
 ```
 
@@ -328,6 +342,8 @@ Each reviewer's **results zip** holds:
 | `random` | Events the detector **missed**: accepted control patches are real misses |
 | `annotation`, `reference annotations re-accepted` | Whether known events are found again when nobody says which they are |
 | `seconds per decision` | Review speed, with paused and hidden time excluded |
+| `decline reasons` | Why candidates are rejected, per item kind: which failure to fix first |
+| `linking` | How many different cells the accepted items show; items never linked count as their own cell |
 | `by queue block` | How the accept rate falls with rank, i.e. where reviewing stops paying off |
 
 Add `--json report.json` for a machine-readable copy.

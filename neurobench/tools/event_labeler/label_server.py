@@ -19,6 +19,10 @@ to first interaction, time spent on each clip frame (dwell_ms), loops played, fr
 contrast / speed changes with their times, start and end display state, keyboard or mouse, and whether the item was
 revisited (and its earlier answer). session_start lines carry the browser/screen and the tool's file hashes.
 
+A decline may carry a reason (keys 1-6 in the page): noise, motion, whole_area, saturated, off_centre, other.
+"link" lines record the optional linking pass over pairs of accepted items close to each other: whether the two
+are the same cell (same=true) or different cells (same=false). The latest answer for a pair wins.
+
 Export the decisions as a table:
     python3 label_server.py PACK_DIR --annotator NAME --export labels.tsv
 """
@@ -34,7 +38,9 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 DECISIONS = ("accept", "decline", "unsure")
-EVENTS = ("session_start", "pause", "resume", "session_stop", "navigate", "settings", "goal_reached", "reviewer")
+DECLINE_REASONS = ("noise", "motion", "whole_area", "saturated", "off_centre", "other")
+EVENTS = ("session_start", "pause", "resume", "session_stop", "navigate", "settings", "goal_reached", "reviewer",
+          "link_session")
 MAX_RECORD_BYTES = 64 * 1024
 
 
@@ -86,6 +92,8 @@ class Log:
     def __init__(self, path, pack_id, annotator):
         self.path, self.pack_id, self.annotator = Path(path), pack_id, annotator
         self.decisions = {}
+        self.reasons = {}            # item id -> decline reason of its latest decision
+        self.links = {}              # "id_a|id_b" (sorted) -> latest same-cell answer for that pair
         self.scope = None            # latest "review the top N items" choice (None = whole queue)
         self.notes = {}
         self.lock = threading.Lock()
@@ -104,12 +112,21 @@ class Log:
                     if r.get("pack_id") != pack_id:
                         raise SystemExit(f"{self.path} line {n} belongs to pack {r.get('pack_id')}, "
                                          f"not {pack_id}: refusing to mix packs")
-                    if r.get("type") == "decision":
-                        self.decisions[r["item_id"]] = r["decision"]
-                        self._note(r)
-                    elif r.get("type") == "settings" and "scope" in r:
-                        self.scope = r["scope"]
+                    self._apply(r)
         self.f = open(self.path, "a", encoding="utf-8")
+
+    def _apply(self, r):
+        if r.get("type") == "decision":
+            self.decisions[r["item_id"]] = r["decision"]
+            if r.get("reason"):
+                self.reasons[r["item_id"]] = r["reason"]
+            else:
+                self.reasons.pop(r["item_id"], None)
+            self._note(r)
+        elif r.get("type") == "link":
+            self.links[pair_key(r["item_id"], r["other_id"])] = bool(r["same"])
+        elif r.get("type") == "settings" and "scope" in r:
+            self.scope = r["scope"]
 
     def _note(self, r):
         if r.get("note"):
@@ -124,12 +141,12 @@ class Log:
             self.f.write(json.dumps(rec, sort_keys=True) + "\n")
             self.f.flush()
             os.fsync(self.f.fileno())
-            if rec.get("type") == "decision":
-                self.decisions[rec["item_id"]] = rec["decision"]
-                self._note(rec)
-            elif rec.get("type") == "settings" and "scope" in rec:
-                self.scope = rec["scope"]
+            self._apply(rec)
         return rec
+
+
+def pair_key(a, b):
+    return "|".join(sorted((a, b)))
 
 
 def scope_limit(pack, log):
@@ -172,7 +189,7 @@ def make_handler(pack, log, defaults=None):
             if p == "/api/state":
                 return self._json(dict(manifest=pack.public_manifest(), annotator=log.annotator,
                                        decisions=log.decisions, next=first_open(pack, log),
-                                       notes=log.notes, scope=log.scope, defaults=defaults,
+                                       notes=log.notes, reasons=log.reasons, links=log.links, scope=log.scope, defaults=defaults,
                                        log_file=str(log.path)))
             if p == "/api/context":
                 return self._send(200, pack.context(), "application/octet-stream")
@@ -197,15 +214,25 @@ def make_handler(pack, log, defaults=None):
             if t == "decision":
                 if r.get("item_id") not in pack.index or r.get("decision") not in DECISIONS:
                     return self._json(dict(error="unknown item or decision"), 400)
+                if r.get("reason") is not None and (r["decision"] != "decline" or r["reason"] not in DECLINE_REASONS):
+                    return self._json(dict(error="a reason goes only with a decline, and must be one of "
+                                                 + ", ".join(DECLINE_REASONS)), 400)
                 rec = dict(type="decision", item_id=r["item_id"], item_index=pack.index[r["item_id"]],
                            decision=r["decision"], active_ms=r.get("active_ms"),
                            display=r.get("display"), process=r.get("process"))
+                if r.get("reason"):
+                    rec["reason"] = r["reason"]
                 if isinstance(r.get("note"), str) and r["note"].strip():
                     rec["note"] = r["note"].strip()[:500]
+            elif t == "link":
+                a_id, b_id = r.get("item_id"), r.get("other_id")
+                if a_id not in pack.index or b_id not in pack.index or a_id == b_id or not isinstance(r.get("same"), bool):
+                    return self._json(dict(error="a link needs two different pack items and same = true/false"), 400)
+                rec = dict(type="link", item_id=a_id, other_id=b_id, same=r["same"], process=r.get("process"))
             elif t in EVENTS:
                 rec = dict(type=t, item_index=r.get("item_index"))
                 for f in ("to_index", "reason", "input", "client", "process", "goal", "scope", "session", "name",
-                          "experience"):
+                          "experience", "open_pairs", "closed", "answered"):
                     if f in r:
                         rec[f] = r[f]
                 if t == "session_start":
@@ -221,13 +248,22 @@ def make_handler(pack, log, defaults=None):
 
 def export(pack, log, out):
     with open(out, "w", encoding="utf-8") as f:
-        f.write("item_id\tframe_ui\ty_px\tx_px\tdecision\tnote\tannotator\tpack_id\n")
+        f.write("item_id\tframe_ui\ty_px\tx_px\tdecision\tnote\tannotator\tpack_id\tdecline_reason\n")
         for it in pack.m["items"]:
             d = log.decisions.get(it["id"])
             if d:
                 note = log.notes.get(it["id"], "").replace("\t", " ").replace("\n", " ")
-                f.write(f"{it['id']}\t{it['t']}\t{it['y']}\t{it['x']}\t{d}\t{note}\t{log.annotator}\t{pack.m['pack_id']}\n")
+                f.write(f"{it['id']}\t{it['t']}\t{it['y']}\t{it['x']}\t{d}\t{note}\t{log.annotator}\t{pack.m['pack_id']}"
+                        f"\t{log.reasons.get(it['id'], '')}\n")
     print(f"wrote {out}: {len(log.decisions)} of {pack.n} items decided")
+    if log.links:
+        lpath = Path(out).with_name(Path(out).stem + "_links.tsv")
+        with open(lpath, "w", encoding="utf-8") as f:
+            f.write("item_id\tother_id\tsame_cell\tannotator\tpack_id\n")
+            for k, same in sorted(log.links.items()):
+                a_id, b_id = k.split("|")
+                f.write(f"{a_id}\t{b_id}\t{'yes' if same else 'no'}\t{log.annotator}\t{pack.m['pack_id']}\n")
+        print(f"wrote {lpath}: {len(log.links)} linked pairs")
 
 
 def main():

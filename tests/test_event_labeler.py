@@ -3,6 +3,7 @@ import json
 import subprocess
 import sys
 import threading
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -63,11 +64,41 @@ def test_build_and_review(tmp_path):
 
     st = json.loads(urllib.request.urlopen(url + "/api/state").read())
     assert st["next"] == 0
-    first = m["items"][0]["id"]
+    first, second, third = (it["id"] for it in m["items"][:3])
     assert post(dict(type="decision", item_id=first, decision="accept", process=dict(active_ms=900)))["next"] == 1
+
+    def rejected(rec):
+        try:
+            post(rec)
+        except urllib.error.HTTPError as e:
+            return e.code == 400
+        return False
+
+    assert rejected(dict(type="decision", item_id=second, decision="decline", reason="boredom"))
+    assert rejected(dict(type="decision", item_id=second, decision="accept", reason="motion"))
+    assert rejected(dict(type="link", item_id=first, other_id=first, same=True))
+    assert rejected(dict(type="link", item_id=first, other_id="nope", same=True))
+    assert rejected(dict(type="link", item_id=first, other_id=second, same="yes"))
+    assert post(dict(type="decision", item_id=second, decision="decline", reason="motion"))["ok"]
+    assert post(dict(type="decision", item_id=third, decision="accept"))["ok"]
+    assert post(dict(type="link", item_id=third, other_id=first, same=True))["ok"]
+    st = json.loads(urllib.request.urlopen(url + "/api/state").read())
+    assert st["reasons"] == {second: "motion"} and st["links"] == {"|".join(sorted((first, third))): True}
     srv.shutdown()
     again = LS.Log(tmp_path / "l.jsonl", m["pack_id"], "tester")      # resume
-    assert again.decisions == {first: "accept"} and LS.first_open(p, again) == 1
+    assert again.decisions == {first: "accept", second: "decline", third: "accept"} and LS.first_open(p, again) == 3
+    assert again.reasons == {second: "motion"} and len(again.links) == 1
+    LS.export(p, again, tmp_path / "out.tsv")
+    rows = (tmp_path / "out.tsv").read_text().splitlines()
+    assert rows[0].endswith("\tdecline_reason") and any(r.startswith(second) and r.endswith("\tmotion") for r in rows)
+    assert len((tmp_path / "out_links.tsv").read_text().splitlines()) == 2
+    summ = subprocess.run([sys.executable, str(TOOL / "summarize.py"), "--key", str(key / "key.json"),
+                           str(tmp_path / "l.jsonl"), "--json", str(tmp_path / "s.json")],
+                          check=True, capture_output=True, text=True)
+    rep = json.loads((tmp_path / "s.json").read_text())["annotators"]["tester"]
+    assert rep["linking"] == dict(pairs_answered=1, same_cell=1, accepted_items=2, distinct_accepted_cells=1,
+                                  contradictions=0, pairs_dropped_after_redecision=0)
+    assert sum(sum(v.values()) for v in rep["decline_reasons_by_kind"].values()) == 1, summ.stdout
     again.write(dict(type="settings", scope=1))                     # review only the top item: it is done
     assert LS.first_open(p, again) == 1 and LS.Log(tmp_path / "l.jsonl", m["pack_id"], "tester").scope == 1
     with pytest.raises(SystemExit):

@@ -11,7 +11,10 @@ Per annotator (latest decision per item counts):
     annotations that were not among the proposals), and proposals that cover a reference annotation;
   * reference annotations re-accepted: hidden + covered items accepted / decided;
   * review speed: median / mean active seconds per decision, decisions per hour of active time;
-  * accept rate of proposals by queue position (blocks of 100), to see how relevance falls with rank.
+  * accept rate of proposals by queue position (blocks of 100), to see how relevance falls with rank;
+  * decline reasons (keys 1-6 in the page) per item kind;
+  * the optional linking pass: pairs answered, and distinct cells among the accepted items (accepted items joined
+    by "same cell" answers count once; items never linked count as their own cell).
 Run it only where the key lives (not on a labeller's machine).
 """
 import argparse
@@ -24,6 +27,8 @@ from collections import defaultdict
 
 def load_logs(paths, pack_id):
     by_ann = defaultdict(dict)
+    reasons = defaultdict(dict)
+    links = defaultdict(dict)
     proc = defaultdict(list)
     sittings = defaultdict(lambda: dict(sessions=0, goals_reached=0, last_scope=None))
     def lines(p):
@@ -61,12 +66,53 @@ def load_logs(paths, pack_id):
                     st["goals_reached"] += 1
                 elif r.get("type") == "settings":
                     st["last_scope"] = r.get("scope")
+                if r.get("type") == "link":
+                    links[r["annotator"]]["|".join(sorted((r["item_id"], r["other_id"])))] = bool(r.get("same"))
                 if r.get("type") == "decision":
                     by_ann[r["annotator"]][r["item_id"]] = r["decision"]
+                    if r.get("reason"):
+                        reasons[r["annotator"]][r["item_id"]] = r["reason"]
+                    else:
+                        reasons[r["annotator"]].pop(r["item_id"], None)
                     ms = (r.get("process") or {}).get("active_ms", r.get("active_ms"))
                     if isinstance(ms, (int, float)):
                         proc[r["annotator"]].append(ms / 1000.0)
-    return by_ann, proc, sittings
+    return by_ann, proc, sittings, reasons, links
+
+
+def distinct_cells(accepted, pair_answers):
+    """Accepted items joined by 'same cell' answers (union-find); every other accepted item is its own cell.
+    Returns (cells, contradictions): contradictions are 'different cell' answers whose two items end up joined
+    through a chain of 'same cell' answers (the reviewer's answers disagree; the 'same' chain wins)."""
+    parent = {i: i for i in accepted}
+
+    def find(a):
+        while parent[a] != a:
+            parent[a] = parent[parent[a]]
+            a = parent[a]
+        return a
+
+    for key, same in pair_answers.items():
+        a, b = key.split("|")
+        if same and a in parent and b in parent:
+            parent[find(a)] = find(b)
+    contra = 0
+    for key, same in pair_answers.items():
+        a, b = key.split("|")
+        if not same and a in parent and b in parent and find(a) == find(b):
+            contra += 1
+    return len({find(i) for i in accepted}), contra
+
+
+def linking(decs, pair_answers):
+    """Only pairs whose two items are both accepted now count (an item declined after linking drops its pairs)."""
+    acc = [i for i, d in decs.items() if d == "accept"]
+    ok = set(acc)
+    live = {k: v for k, v in pair_answers.items() if all(x in ok for x in k.split("|"))}
+    cells, contra = distinct_cells(acc, live)
+    return dict(pairs_answered=len(live), same_cell=sum(live.values()), accepted_items=len(acc),
+                distinct_accepted_cells=cells, contradictions=contra,
+                pairs_dropped_after_redecision=len(pair_answers) - len(live))
 
 
 def rate(decs):
@@ -84,16 +130,19 @@ def main():
     a = ap.parse_args()
     key = json.load(open(a.key, encoding="utf-8"))
     items = {it["id"]: it for it in key["items"]}
-    by_ann, secs, sittings = load_logs(a.logs, key["pack_id"])
+    by_ann, secs, sittings, reasons, links = load_logs(a.logs, key["pack_id"])
     report = dict(pack_id=key["pack_id"], counts=key["counts"], annotators={})
     for name, decs in sorted(by_ann.items()):
         kinds = defaultdict(list)
         blocks = defaultdict(list)
+        why = defaultdict(lambda: defaultdict(int))
         for iid, d in decs.items():
             it = items.get(iid)
             if it is None:
                 continue
             kinds[it["kind"]].append(d)
+            if d == "decline":
+                why[it["kind"]][reasons[name].get(iid, "not given")] += 1
             if it.get("covers_annotations"):
                 kinds["proposal_covering_annotation"].append(d)
             if it["kind"] == "proposal":
@@ -107,6 +156,8 @@ def main():
                                              mean=round(statistics.mean(s), 2) if s else None,
                                              decisions_per_active_hour=round(3600 * len(s) / sum(s), 1)
                                              if s and sum(s) > 0 else None),
+                   decline_reasons_by_kind={k: dict(sorted(v.items())) for k, v in sorted(why.items())},
+                   linking=linking(decs, links[name]),
                    proposal_accept_rate_by_queue_block={f"{100 * k + 1}-{100 * k + 100}": rate(v)["accept_rate"]
                                                         for k, v in sorted(blocks.items())})
         report["annotators"][name] = rep
@@ -122,6 +173,14 @@ def main():
         sp = rep["seconds_per_decision"]
         print(f"  seconds per decision: median {sp['median']}, mean {sp['mean']}; "
               f"{sp['decisions_per_active_hour']} decisions per active hour")
+        for k, v in rep["decline_reasons_by_kind"].items():
+            print(f"  decline reasons, {k:22s}", ", ".join(f"{r} {n}" for r, n in v.items()))
+        lk = rep["linking"]
+        print(f"  linking: {lk['pairs_answered']} pairs answered ({lk['same_cell']} same cell); "
+              f"{lk['accepted_items']} accepted items = {lk['distinct_accepted_cells']} distinct cells"
+              + (f"; {lk['contradictions']} 'different' answers contradicted by a 'same' chain" if lk['contradictions'] else "")
+              + (f"; {lk['pairs_dropped_after_redecision']} pairs ignored (an item is no longer accepted)"
+                 if lk['pairs_dropped_after_redecision'] else ""))
         print("  proposal accept rate by queue block:", rep["proposal_accept_rate_by_queue_block"])
     if a.json:
         with open(a.json, "w", encoding="utf-8") as f:

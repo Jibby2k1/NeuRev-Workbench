@@ -42,6 +42,18 @@ software found; a few are controls. Judge only what you see.
 **Decline** anything else: noise, flicker, movement, or a brightening of the whole area.
 **Unsure** when you cannot tell; add a short note (`N`) whenever something is worth saying.
 
+If you know why you are declining, you can say so in the same keystroke: press `1`–`6` instead of `D`
+(or click the matching button under the answers). This is optional; `D` alone is fine.
+
+| Key | Decline because… |
+|---|---|
+| `1` | Noise or flicker |
+| `2` | Movement |
+| `3` | The whole area brightens, not one cell |
+| `4` | Saturated (the brightest pixels are clipped) |
+| `5` | A cell is nearby, but not at the centre |
+| `6` | Other: type a short note, then `Enter` |
+
 | Key | Action |
 |---|---|
 | `A` | Accept |
@@ -53,6 +65,14 @@ software found; a few are controls. Judge only what you see.
 | `←` `→` | Step one frame |
 | `C` | Switch contrast: the same scale for every clip, or one scale for this clip |
 | `P` | Pause, or change this sitting's goal |
+| `L` | Link repeated cells (see below) |
+
+## Link repeated cells (optional, after reviewing)
+
+The software often finds the same cell more than once. Press `L` (or **Link cells**) at any time, usually when
+you have finished: the tool shows pairs of clips **you accepted** whose centres are close together, side by side,
+and asks whether they show the **same cell** (`S`) or **different cells** (`X`). `K` skips a pair you cannot judge,
+`Esc` goes back to reviewing. Pairs already joined through your answers are not asked again.
 
 ## Stop and continue
 
